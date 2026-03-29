@@ -646,16 +646,20 @@ html, body {
   color: #fff;
 }
 
-/* Settings row inside gameplay screen */
-#gameplay-settings-row {
+/* Action bar — horizontal toolbar of utility actions (surrender, settings, etc.)
+   Buttons get uniform horizontal breathing room via gap; no individual margins needed. */
+.action-bar {
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
   padding: 6px 12px 0;
   position: relative;
   z-index: 901;
   flex-shrink: 0;
 }
+
 
 /* =========================================================
    HUD
@@ -1259,7 +1263,7 @@ html, body {
   .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
 
   /* Halve all gaps between the stacked gameplay elements */
-  #gameplay-settings-row { padding: 3px 12px 0; }
+  .action-bar { padding: 3px 12px 0; }
   #arena { margin-top: 4px; }
   #mobile-numpad { padding: 1px 12px 4px; }
 

@@ -139,6 +139,9 @@ function showScreen(id) {
   if (el) el.classList.add('active');
   const backBtn = document.getElementById('btn-back');
   if (backBtn) backBtn.classList.toggle('hidden', id !== 'lobby' && id !== 'character-select');
+  // Hide the persistent header settings icon on gameplay — the action bar has its own
+  const headerSettings = document.getElementById('btn-settings');
+  if (headerSettings) headerSettings.classList.toggle('hidden', id === 'gameplay');
   if (id === 'character-select') triggerCharacterSelectAnim();
 }
 
