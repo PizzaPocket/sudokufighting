@@ -891,27 +891,23 @@ html, body {
 .cell.danger::after {
   content: '';
   position: absolute;
-  inset: 0;
+  /* Inset ~18% from each edge so the X doesn't reach the corners */
+  inset: 18%;
   pointer-events: none;
   z-index: 0;
+  /* A thin bar rotated to form each diagonal */
+  width: auto; height: 1.5px;
+  top: 50%; left: 18%; right: 18%;
+  border-radius: 2px;
+  background: var(--danger-color);
 }
 .cell.danger::before {
-  background: linear-gradient(
-    to bottom right,
-    transparent calc(50% - 1px),
-    var(--danger-color) calc(50% - 1px),
-    var(--danger-color) calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
+  transform: translateY(-50%) rotate(45deg);
+  transform-origin: center;
 }
 .cell.danger::after {
-  background: linear-gradient(
-    to bottom left,
-    transparent calc(50% - 1px),
-    var(--danger-color) calc(50% - 1px),
-    var(--danger-color) calc(50% + 1px),
-    transparent calc(50% + 1px)
-  );
+  transform: translateY(-50%) rotate(-45deg);
+  transform-origin: center;
 }
 
 /* --- P1 grid — set inherited colour tokens, then cell rules --- */
@@ -1245,30 +1241,56 @@ html, body {
     margin-top: 8px;
     flex: 0 0 auto;
   }
-  /* HUD — compact on mobile: slim 4px bar, no KO badge */
-  #hud { flex-wrap: nowrap; }
+  /* HUD — compact on mobile: slim 4px bar, purple center pip instead of KO text */
+  #hud { flex-wrap: nowrap; padding: 4px 12px 2px; }
   .hud-score, .combo-counter { font-size: var(--text-sm); }
-  .ko-block { display: none; }
+  .ko-block {
+    /* Keep the block but shrink to a narrow purple pip — no text */
+    font-size: 0;
+    padding: 0;
+    width: 6px;
+    flex-shrink: 0;
+    border-radius: 0;
+  }
   .hud-bar-row { height: 4px; }
   .hud-bar-track.left  { border-radius: 2px 0 0 2px; }
   .hud-bar-track.right { border-radius: 0 2px 2px 0; }
   .hud-bar-track.left  .hud-bar { border-radius: 2px 0 0 2px; }
   .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
 
+  /* Halve all gaps between the stacked gameplay elements */
+  #gameplay-settings-row { padding: 3px 12px 0; }
+  #arena { margin-top: 4px; }
+  #mobile-numpad { padding: 1px 12px 4px; }
+
   /* Hide opponent panel, show only own grid */
   .player-panel { display: none; }
   .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
 
-  /* Fighter stage — slim strip at bottom */
+  /* Fighter stage — slim strip pinned to bottom */
   #fight-stage {
     display: flex;
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    height: 100px;
+    height: 110px;
     padding-bottom: 0;
     z-index: 2;
     pointer-events: none;
+    overflow: visible;
   }
+
+  /* Ground anchors inside the fixed fight-stage on mobile */
+  #fight-ground {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 0;
+  }
+
+  /* Sprites flush to the stage bottom — no extra breathing room */
+  #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
+  #fight-stage .character-sprite { width: 90px; height: 90px; }
 
 }
 
@@ -1315,7 +1337,7 @@ html, body {
   }
 
   .numpad-clear {
-    color: var(--danger-color);
+    color: var(--text-primary); /* same as number text — no alarming red */
   }
 }
 
