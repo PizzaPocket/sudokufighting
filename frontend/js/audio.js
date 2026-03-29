@@ -76,15 +76,9 @@ export async function startFightMusic(backgroundId) {
     currentSource = null;
   }
 
-  // Resume context if blocked by autoplay policy
-  if (audioCtx.state === 'suspended') {
-    const resume = async () => {
-      await audioCtx.resume();
-      document.removeEventListener('click', resume);
-      document.removeEventListener('keydown', resume);
-    };
-    document.addEventListener('click', resume);
-    document.addEventListener('keydown', resume);
+  // Ensure context is running before trying to play (required on iOS Safari)
+  if (audioCtx.state !== 'running') {
+    await audioCtx.resume();
   }
 
   // Restore gain (respecting mute state) in case it was faded out
@@ -131,6 +125,12 @@ export function preloadAllTracks() {
 export function playAudioLogoThenSelectMusic() {
   // Apply select default synchronously so carousel title updates immediately
   selectedTrackIndex = SELECT_TRACK_INDEX;
+  // iOS unlock: playing a silent buffer in the gesture handler permanently unlocks the AudioContext
+  const silentBuf = audioCtx.createBuffer(1, 1, 22050);
+  const silent = audioCtx.createBufferSource();
+  silent.buffer = silentBuf;
+  silent.connect(audioCtx.destination);
+  silent.start(0);
   if (sfxEnabled) {
     const logo = new Audio('/sounds/Sudoku_Fighting_Audio_Logo.mp3');
     logo.play().catch(() => {});

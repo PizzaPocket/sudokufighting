@@ -211,6 +211,8 @@ function showOverlay(mainText, subText, color, durationMs, subColor) {
 function hideOverlay() {
   const overlay = document.getElementById('game-overlay');
   if (overlay) overlay.classList.add('hidden');
+  // Always re-hide the end-game buttons when the overlay is dismissed
+  document.getElementById('overlay-btn-row')?.classList.add('hidden');
 }
 
 // ---------------------------------------------------------------------------
@@ -330,12 +332,22 @@ function applyBackground(backgroundId) {
   });
 }
 
+// Held references prevent GC from discarding preloaded images before they finish loading
+const _preloadedImages = [];
+
 function renderCharacterSelect() {
   const grid = document.getElementById('character-grid');
   grid.innerHTML = '';
 
-  // Preload all portrait images to prevent flash of unstyled content
-  state.characters.forEach(char => { new Image().src = char.portraitPath; });
+  // Preload all portrait images — store refs so GC doesn't discard them mid-load
+  state.characters.forEach(char => {
+    [char.portraitPath, char.altPortraitPath].filter(Boolean).forEach(src => {
+      if (_preloadedImages.some(img => img.src.endsWith(src))) return;
+      const img = new Image();
+      img.src = src;
+      _preloadedImages.push(img);
+    });
+  });
 
   state.characters.forEach((char) => {
     const card = document.createElement('div');
@@ -558,7 +570,9 @@ function initGrids(puzzle, opponentGivens) {
   updateOpponentGrid();
 
   const myGridEl = document.getElementById(myGridId);
-  myGridEl.addEventListener('click', (e) => {
+  // Use pointerdown so cell selection is registered immediately on touch,
+  // before any subsequent pointerdown on the numpad can fire.
+  myGridEl.addEventListener('pointerdown', (e) => {
     const cell = e.target.closest('.cell');
     if (!cell) return;
     const row = parseInt(cell.dataset.row);
@@ -1226,6 +1240,10 @@ function resetLobbyUI() {
     document.querySelector(`${sel} .lobby-status`).textContent = 'WAITING...';
     document.querySelector(sel).classList.remove('is-me');
   });
+  // Clear seat-specific is-me from game elements so a new game starts clean
+  ['p1-panel', 'p2-panel', 'p1-grid', 'p2-grid'].forEach(id => {
+    document.getElementById(id)?.classList.remove('is-me');
+  });
   document.getElementById('lobby-share-section').classList.add('hidden');
 }
 
@@ -1399,11 +1417,13 @@ document.getElementById('btn-back').addEventListener('click', () => {
     resetLobbyUI();
     state.myCharacter = null;
     state.myName = null;
+    state.mySeat = null;
     state.shareCode = null;
     document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('btn-select-char').disabled = true;
     showScreen('character-select');
   } else if (currentScreen === 'character-select') {
+    disconnect(); // defensive: ensure no lingering connection from a previous lobby visit
     showScreen('start');
   }
 });

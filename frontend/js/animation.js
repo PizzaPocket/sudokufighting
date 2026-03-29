@@ -95,7 +95,8 @@ export class AnimationController {
 
   _updateSrc() {
     const src = `/characters/${this.characterId}/${this.currentState}_frame${this.currentFrame}.svg`;
-    if (this.img && this.img.src !== src) {
+    if (this.img && this._lastSrc !== src) {
+      this._lastSrc = src;
       this.img.src = src;
     }
   }
