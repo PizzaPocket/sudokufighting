@@ -1428,20 +1428,26 @@ document.getElementById('btn-copy-link').addEventListener('click', () => {
   }).catch(() => prompt('Copy this link:', url));
 });
 
+function showPromoFeedback() {
+  const c = document.getElementById('lobby-promo-confirm');
+  c.classList.add('visible');
+  setTimeout(() => c.classList.remove('visible'), 2500);
+}
+
 document.getElementById('btn-share-game').addEventListener('click', () => {
   const shareData = {
     title: 'Sudoku Fighting',
     text: 'Multiplayer sudoku with fighting game combat — challenge me!',
     url: location.origin,
   };
-  if (navigator.share) {
+  // Use native share sheet only on genuine touch devices, not resized desktop browsers
+  const isTouchDevice = navigator.maxTouchPoints > 0 && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (isTouchDevice && navigator.share) {
     navigator.share(shareData).catch(() => {});
   } else {
-    navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`).then(() => {
-      const c = document.getElementById('lobby-promo-confirm');
-      c.classList.remove('hidden');
-      setTimeout(() => c.classList.add('hidden'), 2000);
-    }).catch(() => prompt('Share this link:', shareData.url));
+    navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`)
+      .then(showPromoFeedback)
+      .catch(() => prompt('Share this link:', shareData.url));
   }
 });
 

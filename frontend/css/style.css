@@ -575,7 +575,7 @@ html, body {
 .lobby-status.ready { color: #ffffff; background: var(--accent); }
 .lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
 
-.lobby-hint { font-size: var(--text-base); color: #ffffff; text-shadow: 1px 2px 0 var(--accent); animation: fade-pulse 1.4s ease-in-out infinite; }
+.lobby-hint { font-size: var(--text-base); color: #ffffff; text-shadow: 1px 2px 0 var(--accent); animation: fade-pulse 1.4s ease-in-out infinite; margin-top: 10px; }
 
 /* Lobby title */
 .lobby-title {
@@ -586,16 +586,35 @@ html, body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-shadow: 2px 2px 0 var(--accent);
-  margin: 0 0 0 0;
+  margin: 0;
 }
 
-/* Lobby share / invite section */
+/* Quick Play share — bare (no card) */
+.lobby-promo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 12px 0 0;
+}
+.lobby-promo.hidden { display: none; }
+/* Reserve space so the button never jumps when feedback appears */
+.lobby-promo-feedback {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+  visibility: hidden;
+}
+.lobby-promo-feedback.visible { visibility: visible; }
+
+/* Private Room invite — card */
 .lobby-share {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   padding: 12px 20px;
   background: rgba(255,255,255,0.12);
   border-radius: var(--radius-md);
@@ -603,10 +622,10 @@ html, body {
 }
 .lobby-share.hidden { display: none; }
 .lobby-share-label {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: var(--weight-bold);
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 0.12em;
+  color: #ffffff;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .lobby-invite-row {
@@ -631,10 +650,9 @@ html, body {
   letter-spacing: 0.05em;
 }
 .lobby-copy-confirm {
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   color: rgba(255,255,255,0.85);
   margin: 0;
-  animation: fade-pulse 0.8s ease-in-out 2;
 }
 .lobby-copy-confirm.hidden { display: none; }
 
@@ -1229,6 +1247,9 @@ html, body {
     --text-3xl: 44px;  /* match-end title (was 66px) */
     --text-4xl: 56px;  /* main overlay: FIGHT! KO VICTORY (was 96px) */
   }
+
+  /* Lobby — hide READY/WAITING pill on narrow screens */
+  .lobby-status { display: none; }
 
   /* Character select — mobile layout */
 
