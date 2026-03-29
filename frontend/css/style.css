@@ -1290,7 +1290,6 @@ html, body {
 
   /* Sprites flush to the stage bottom — no extra breathing room */
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
-  #fight-stage .character-sprite { width: 90px; height: 90px; }
 
 }
 
