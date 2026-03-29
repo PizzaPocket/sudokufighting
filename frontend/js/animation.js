@@ -28,6 +28,25 @@ const ANIMATION_CONFIG = {
   [ANIM.WIN]:             { frames: 2, frameDuration: 300, loop: true,  priority: 4 },
 };
 
+/**
+ * Preload every sprite frame for the given characterId into the browser cache.
+ * Called as soon as both character IDs are known (game_start) so frames are
+ * ready before fast animations (punch, damage_light) trigger them.
+ */
+export function preloadCharacterSprites(characterId) {
+  for (const [animName, cfg] of Object.entries(ANIMATION_CONFIG)) {
+    for (let f = 1; f <= cfg.frames; f++) {
+      const src = `/characters/${characterId}/${animName}_frame${f}.svg`;
+      if (!_spriteCache.has(src)) {
+        const img = new Image();
+        img.src = src;
+        _spriteCache.set(src, img);
+      }
+    }
+  }
+}
+const _spriteCache = new Map();
+
 export class AnimationController {
   constructor(characterId, imgElement) {
     this.characterId = characterId;

@@ -132,6 +132,7 @@ html, body {
   border: none;
   border-radius: var(--radius-sm);
   color: #ffffff;
+  font-weight: var(--weight-bold);
   cursor: pointer;
   transition: background 0.15s;
 }

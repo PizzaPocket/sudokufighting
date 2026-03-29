@@ -360,6 +360,11 @@ wss.on('connection', (ws) => {
       return;
     }
 
+    if (room && room.state === 'match_end') {
+      deleteRoom(room.roomId);
+      return;
+    }
+
     if (room && (room.state === 'in_round' || room.state === 'round_end')) {
       const loserSeat = room.players.findIndex(p => p.id === playerId);
       const winnerSeat = 1 - loserSeat;

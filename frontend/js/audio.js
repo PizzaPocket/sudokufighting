@@ -95,6 +95,17 @@ export async function startFightMusic(backgroundId) {
   currentSrc = src;
 }
 
+// Fade out fight music and switch back to the select-screen track.
+// Safe to call from any screen — no-op if nothing is playing.
+export function switchToSelectMusic() {
+  const delay = 500;
+  fadeOutMusic(delay);
+  setTimeout(() => {
+    selectedTrackIndex = SELECT_TRACK_INDEX;
+    startFightMusic(); // no backgroundId → uses selectedTrackIndex
+  }, delay + 50);
+}
+
 export function fadeOutMusic(durationMs = 500) {
   if (!currentSource) return;
   const duration = durationMs / 1000;

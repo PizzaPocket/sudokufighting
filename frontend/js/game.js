@@ -1,7 +1,7 @@
 // Client-side game orchestrator
 import { connect, disconnect, send, on, off } from './ws.js';
-import { AnimationController, ANIM } from './animation.js';
-import { startFightMusic, fadeOutMusic, preloadAllTracks, playAudioLogoThenSelectMusic, playRoundAnnouncer, playFightAnnouncer, playKOAnnouncer, playTKOAnnouncer, playVictoryAnnouncer, playDevastationAnnouncer, playAttackSFX, setMusicEnabled, setSfxEnabled, TRACKS, getSelectedTrackIndex, setTrackIndex } from './audio.js';
+import { AnimationController, ANIM, preloadCharacterSprites } from './animation.js';
+import { startFightMusic, fadeOutMusic, switchToSelectMusic, preloadAllTracks, playAudioLogoThenSelectMusic, playRoundAnnouncer, playFightAnnouncer, playKOAnnouncer, playTKOAnnouncer, playVictoryAnnouncer, playDevastationAnnouncer, playAttackSFX, setMusicEnabled, setSfxEnabled, TRACKS, getSelectedTrackIndex, setTrackIndex } from './audio.js';
 import { ARENAS, getArena } from './arenas.js';
 
 // ---------------------------------------------------------------------------
@@ -915,6 +915,10 @@ on('game_start', ({ roundNumber, puzzle, solution, opponentGivens, opponentName,
   if (p1Img && p1Char) p1Img.src = `/characters/${p1AnimId}/idle_frame1.svg`;
   if (p2Img && p2Char) p2Img.src = `/characters/${p2AnimId}/idle_frame1.svg`;
 
+  // Preload all frames for both characters so fast animations don't fetch mid-play
+  preloadCharacterSprites(p1AnimId);
+  preloadCharacterSprites(p2AnimId);
+
   state.animP1?.stop();
   state.animP2?.stop();
   if (p1Img) state.animP1 = new AnimationController(p1AnimId, p1Img);
@@ -1417,6 +1421,7 @@ document.getElementById('btn-copy-link').addEventListener('click', () => {
 document.getElementById('btn-back').addEventListener('click', () => {
   if (currentScreen === 'lobby') {
     disconnect();
+    switchToSelectMusic();
     resetLobbyUI();
     state.myCharacter = null;
     state.myName = null;
@@ -1439,7 +1444,9 @@ document.getElementById('btn-play-again').addEventListener('click', () => {
   hideOverlay();
   resetBgFade();
   document.getElementById('overlay-btn-row').classList.add('hidden');
-  // Re-enter the same flow: friend mode re-creates a room after char select
+  switchToSelectMusic();
+  // Disconnect first so connect() in proceedToLobby gets a fresh socket
+  disconnect();
   state.friendCreating = state.gameMode === 'friend';
   resetGameState();
   showScreen('character-select');
@@ -1449,6 +1456,7 @@ document.getElementById('btn-leave').addEventListener('click', () => {
   hideOverlay();
   resetBgFade();
   disconnect();
+  switchToSelectMusic();
   document.getElementById('overlay-btn-row').classList.add('hidden');
   resetLobbyUI();
   resetGameState();
