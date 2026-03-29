@@ -1,3 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" width="200" height="300">
-<g transform="translate(50,0)"><ellipse cx="105" cy="268" rx="46" ry="8" fill="rgba(0,0,0,0.13)"/><rect x="72" y="136" width="24" height="42" fill="#002288"/><rect x="74" y="178" width="20" height="40" fill="#0044CC"/><rect x="64" y="216" width="34" height="12" fill="#002288"/><rect x="94" y="136" width="24" height="42" fill="#002288"/><rect x="96" y="178" width="20" height="40" fill="#0044CC"/><rect x="88" y="216" width="36" height="12" fill="#002288"/><rect x="56" y="50" width="18" height="42" fill="#0044CC"/><rect x="52" y="34" width="14" height="28" fill="#4488FF"/><rect x="51" y="22" width="14" height="14" fill="#FFAA88" rx="2"/><rect x="81" y="62" width="52" height="72" fill="#0044CC"/><rect x="83" y="64" width="48" height="28" fill="#4488FF"/><rect x="85" y="120" width="44" height="10" fill="#00CCFF"/><rect x="133" y="68" width="18" height="36" fill="#0044CC"/><rect x="149" y="72" width="28" height="14" fill="#4488FF"/><rect x="177" y="70" width="14" height="16" fill="#FFAA88" rx="2"/><rect x="87" y="18" width="44" height="42" fill="#FFAA88" rx="4"/><rect x="85" y="12" width="48" height="16" fill="#0044CC" rx="3"/><rect x="85" y="26" width="8" height="26" fill="#0044CC"/><rect x="125" y="26" width="8" height="26" fill="#0044CC"/><rect x="101" y="28" width="6" height="6" fill="#002288"/><rect x="111" y="28" width="6" height="6" fill="#002288"/></g>
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4038_3921)">
+<path d="M210 65H130V95H210V65Z" fill="#6A9149"/>
+<path d="M300 110H185V130H300V110Z" fill="#3C3C3C"/>
+<path d="M270 130H180V140H270V130Z" fill="#3C3C3C"/>
+<path d="M190 120H140V150H190V120Z" fill="#3C3C3C"/>
+<path d="M180 150H150V160H180V150Z" fill="#3C3C3C"/>
+<path d="M180 160H150V170H180V160Z" fill="#3C3C3C"/>
+<path d="M180 170H150V180H180V170Z" fill="#3C3C3C"/>
+<path d="M180 180H150V190H180V180Z" fill="#3C3C3C"/>
+<path d="M180 190H150V200H180V190Z" fill="#3C3C3C"/>
+<path d="M180 200H150V210H180V200Z" fill="#3C3C3C"/>
+<path d="M170 210H150V220H170V210Z" fill="#3C3C3C"/>
+<path d="M170 220H150V230H170V220Z" fill="#3C3C3C"/>
+<path d="M160 90H140V130H160V90Z" fill="#6A9149"/>
+<path d="M130 110H140V130H130V110Z" fill="#6A9149"/>
+<path d="M190 60H170V130H190V60Z" fill="#556976"/>
+<path d="M160 60H170V120H160V60Z" fill="#8E2424"/>
+<path d="M160 130H150V120H160V130Z" fill="#8E2424"/>
+<path d="M190 60H200V130H190V60Z" fill="#8E2424"/>
+<path d="M190 130H170V120H190V130Z" fill="#FFC300"/>
+<path d="M230 65H210V95H230V65Z" fill="#4F663B"/>
+<path d="M230 45H220V65H230V45Z" fill="#4F663B"/>
+<path d="M230 45H210V65H230V45Z" fill="#3C3C3C"/>
+<path d="M190 65H140V55H190V65Z" fill="#6A9149"/>
+<path d="M180 85H140V105H180V85Z" fill="#4F663B"/>
+<path d="M150 95H130V65H150V95Z" fill="#4F663B"/>
+<path d="M150 55H140V65H150V55Z" fill="#4F663B"/>
+<path d="M200 85H180V105H200V85Z" fill="#3C3C3C"/>
+<path d="M190 55H160V65H190V55Z" fill="#D4A570"/>
+<rect x="190" y="55" width="10" height="10" fill="#6A9149"/>
+<path d="M170 35H150V55H170V35Z" fill="#623100"/>
+<path d="M160 15H150V25H160V15Z" fill="#623100"/>
+<path d="M170 15H160V25H170V15Z" fill="#623100"/>
+<path d="M180 15H170V25H180V15Z" fill="#623100"/>
+<path d="M170 -5H160V5H170V-5Z" fill="#3C3C3C"/>
+<path d="M160 -5H150V5H160V-5Z" fill="#3C3C3C"/>
+<path d="M200 15H190V25H200V15Z" fill="#623100"/>
+<path d="M190 15H180V25H190V15Z" fill="#623100"/>
+<path d="M190 45H160V55H190V45Z" fill="#D4A570"/>
+<path d="M200 5H150V25H200V5Z" fill="#3C3C3C"/>
+<path d="M170 25H160V65H170V25Z" fill="#623100"/>
+<path d="M200 25H190V65H200V25Z" fill="#623100"/>
+<path d="M200 25H160V35H200V25Z" fill="#D4A570"/>
+<path d="M200 35H170V45H200V35Z" fill="#D4A570"/>
+<path d="M170 25H150V35H170V25Z" fill="#623100"/>
+<path d="M160 35H150V25H160V35Z" fill="#3C3C3C"/>
+<path d="M300 260H110V270H300V260Z" fill="black" fill-opacity="0.05"/>
+</g>
+<defs>
+<clipPath id="clip0_4038_3921">
+<rect width="300" height="300" fill="white"/>
+</clipPath>
+</defs>
 </svg>
