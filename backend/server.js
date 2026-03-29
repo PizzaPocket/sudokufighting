@@ -227,6 +227,7 @@ wss.on('connection', (ws) => {
         if (result.error === 'not_found') { send(ws, 'room_not_found', {}); break; }
         if (result.error === 'full')      { send(ws, 'room_full', {}); break; }
         const room = result.room;
+        if (result.host?.preferredArenaId) room.preferredArenaId = result.host.preferredArenaId;
         for (const player of room.players) {
           send(player.ws, 'room_assigned', { roomId: room.roomId });
           send(player.ws, 'player_joined', {

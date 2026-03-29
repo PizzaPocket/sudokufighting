@@ -3,6 +3,8 @@ import { connect, disconnect, send, on, off } from './ws.js';
 import { AnimationController, ANIM, preloadCharacterSprites } from './animation.js';
 import { startFightMusic, fadeOutMusic, switchToSelectMusic, preloadAllTracks, playAudioLogoThenSelectMusic, playRoundAnnouncer, playFightAnnouncer, playKOAnnouncer, playTKOAnnouncer, playVictoryAnnouncer, playDevastationAnnouncer, playAttackSFX, setMusicEnabled, setSfxEnabled, TRACKS, getSelectedTrackIndex, setTrackIndex } from './audio.js';
 import { ARENAS, getArena } from './arenas.js';
+import { startBirds, stopBirds } from './birds.js';
+import { startClouds, stopClouds } from './clouds.js';
 
 // ---------------------------------------------------------------------------
 // State
@@ -133,6 +135,7 @@ let healthUpdateDelay = 150;
 let currentScreen = 'start';
 
 function showScreen(id) {
+  if (id !== 'gameplay') { stopBirds(); stopClouds(); }
   currentScreen = id;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(`screen-${id}`);
@@ -146,6 +149,9 @@ function showScreen(id) {
   if (id === 'lobby') {
     const titleEl = document.getElementById('lobby-title');
     if (titleEl) titleEl.textContent = state.gameMode === 'friend' ? 'PRIVATE ROOM' : 'MATCHMAKING';
+    // Label the invite button based on platform
+    const isTouchDevice = navigator.maxTouchPoints > 0 && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    document.getElementById('btn-copy-link').textContent = isTouchDevice ? 'INVITE' : 'COPY INVITE';
     // Pre-show invite box at fixed size to prevent layout jump
     if (state.gameMode === 'friend') {
       document.getElementById('lobby-invite').classList.remove('hidden');
@@ -345,6 +351,14 @@ function applyBackground(backgroundId) {
       overlayEl.style.display = 'none';
     }
   });
+
+  // Birds + clouds — only for Paradiso; stop first only if switching away
+  if (arena.id !== 'bg_2') { stopBirds(); stopClouds(); }
+  if (arena.id === 'bg_2') {
+    const gameplayEl = document.getElementById('screen-gameplay');
+    startBirds(gameplayEl);
+    startClouds(gameplayEl);
+  }
 }
 
 // Held references prevent GC from discarding preloaded images before they finish loading
@@ -1153,16 +1167,21 @@ on('round_end', ({ winnerSeat, roundWins }) => {
   const winnerAnim = winnerSeat === 0 ? state.animP1 : state.animP2;
   const loserAnim  = winnerSeat === 0 ? state.animP2 : state.animP1;
 
-  winnerAnim?.play(ANIM.WIN);
-  // Wait for the loser's damage animation to finish before KO fall
-  loserAnim?.queue(ANIM.KO);
-  // Fallback for TKO/timeout where only idle (a loop) is playing — queue never fires
-  setTimeout(() => {
-    if (loserAnim?.currentState !== ANIM.KO) loserAnim?.play(ANIM.KO);
-  }, 500);
-
   const loserSeat = 1 - winnerSeat;
   const isTrueKO = state.health[loserSeat] <= 0;
+
+  winnerAnim?.play(ANIM.WIN);
+  if (isTrueKO) {
+    // Wait for the loser's damage animation to finish before KO fall
+    loserAnim?.queue(ANIM.KO);
+    // Fallback: if idle (a loop) is playing the queue never fires
+    setTimeout(() => {
+      if (loserAnim?.currentState !== ANIM.KO) loserAnim?.play(ANIM.KO);
+    }, 500);
+  } else {
+    // TKO / timeout — loser stays in idle, they haven't been knocked out
+    loserAnim?.play(ANIM.IDLE);
+  }
   const mainText = isTrueKO ? 'KO' : 'TKO';
   const mainColor = '#F00013';
   const wName = winnerSeat === state.mySeat ? state.myName : state.opponentName;
@@ -1205,19 +1224,13 @@ on('match_end', ({ winnerSeat, winnerName }) => {
   const winnerCharId = winnerSeat === state.mySeat ? state.myCharacter : state.opponentCharacter;
   const winnerChar = state.characters.find(c => c.id === winnerCharId);
   const winnerUseAlt = winnerSeat === state.mySeat ? state.myUseAlt : state.opponentUseAlt;
-  const winnerAnimId = winnerUseAlt ? (winnerChar?.altId ?? winnerCharId) : winnerCharId;
   const winnerDisplayName = (winnerUseAlt && winnerChar?.altName)
     ? winnerChar.altName
     : (winnerName ?? 'Unknown');
 
-  // Ensure winner plays WIN loop; loser stays frozen on KO frame 2
-  if (winnerSeat === 0) {
-    state.animP1 = new AnimationController(winnerAnimId, document.getElementById('p1-char-img'));
-    state.animP1.play(ANIM.WIN);
-  } else {
-    state.animP2 = new AnimationController(winnerAnimId, document.getElementById('p2-char-img'));
-    state.animP2.play(ANIM.WIN);
-  }
+  // Ensure winner plays WIN — reuse the existing controller so its timer isn't orphaned
+  const winAnim = winnerSeat === 0 ? state.animP1 : state.animP2;
+  if (winAnim?.currentState !== ANIM.WIN) winAnim?.play(ANIM.WIN);
 
   const mainText = isWinner ? 'VICTORY!' : 'DEVASTATION!';
   const mainColor = isWinner ? '#FF8B16' : '#F00013';
@@ -1421,11 +1434,21 @@ on('opponent_left_lobby', () => {
 
 document.getElementById('btn-copy-link').addEventListener('click', () => {
   const url = `${location.origin}?room=${state.shareCode}`;
-  navigator.clipboard.writeText(url).then(() => {
-    const c = document.getElementById('lobby-copy-confirm');
-    c.classList.remove('hidden');
-    setTimeout(() => c.classList.add('hidden'), 2000);
-  }).catch(() => prompt('Copy this link:', url));
+  const isTouchDevice = navigator.maxTouchPoints > 0 && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (isTouchDevice && navigator.share) {
+    navigator.share({
+      title: 'Sudoku Fighting',
+      text: `Join my room! Use code ${state.shareCode} or tap the link:`,
+      url,
+    }).catch(() => {});
+  } else {
+    const message = `Join my room on Sudoku Fighting! Use code ${state.shareCode} or tap the link: ${url}`;
+    navigator.clipboard.writeText(message).then(() => {
+      const label = document.getElementById('lobby-invite-label');
+      label.textContent = 'Copied!';
+      setTimeout(() => { label.textContent = 'INVITE A FRIEND'; }, 1500);
+    }).catch(() => prompt('Copy this link:', url));
+  }
 });
 
 function showPromoFeedback() {

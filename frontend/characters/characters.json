@@ -27,15 +27,8 @@
     "id": "fighter4",
     "name": "Senna",
     "altId": "fighter4_alt",
+    "altName": "Ninja",
     "portraitPath": "/characters/fighter4/portrait.png",
     "altPortraitPath": "/characters/fighter4_alt/portrait.png"
-  },
-  {
-    "id": "fighter5",
-    "name": "Boombox",
-    "altId": "fighter5_alt",
-    "altName": "Icebox",
-    "portraitPath": "/characters/fighter5/portrait.png",
-    "altPortraitPath": "/characters/fighter5_alt/portrait.png"
   }
 ]

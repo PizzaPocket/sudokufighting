@@ -198,8 +198,8 @@ export function handleCellInput(roomId, playerId, row, col, value, scheduleTimer
   puzz.correctCount++;
   round.consecutiveCorrect[attackerSeat]++;
 
-  // Single-cell attack: base 5 pts, punch or kick every 5th
-  const attackType = round.consecutiveCorrect[attackerSeat] % 5 === 0 ? 'kick' : 'punch';
+  // Single-cell attack: base 5 pts, kick every 3rd hit to mix it up
+  const attackType = round.consecutiveCorrect[attackerSeat] % 3 === 0 ? 'kick' : 'punch';
   const cellDamage = Math.round(5 * speedMult * comboMult);
   const cellPoints = cellDamage;
   round.score[attackerSeat] += cellPoints;

@@ -422,7 +422,6 @@ html, body {
 /* Join combo — input + secondary button fused into one fixed-width pill */
 .join-combo {
   display: flex;
-  height: 32px;
   border: 2px solid #ffffff;
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -432,9 +431,9 @@ html, body {
 .join-combo .join-input {
   flex: 1;
   min-width: 0;
-  background: var(--bg); /* #f2f2f2 — same as cell-given-bg and page bg */
+  background: var(--bg);
   border: none;
-  padding: 0 10px;
+  padding: 12px 14px;
   font-family: var(--font);
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
@@ -452,12 +451,11 @@ html, body {
 
 .join-combo #btn-join-room {
   flex-shrink: 0;
-  height: 100%;
-  padding: 0 14px;
+  padding: 12px 20px;
   background: #ffffff;
   color: var(--accent);
   font-family: var(--font);
-  font-size: var(--text-sm);
+  font-size: 15px;
   font-weight: var(--weight-bold);
   letter-spacing: 0.05em;
   border: none;
@@ -853,7 +851,7 @@ html, body {
 
 #arena {
   display: grid;
-  grid-template-columns: 1fr 300px 1fr;
+  grid-template-columns: 1fr clamp(0px, calc(100vw - 700px), 300px) 1fr;
   position: relative;
   z-index: 1;
   gap: 8px;
@@ -872,6 +870,7 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-width: 0;
 }
 
 /* --- Sudoku Grid --- */
@@ -894,7 +893,7 @@ html, body {
   aspect-ratio: 1;
   background: rgba(255,255,255,0.2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 19px; font-weight: var(--weight-medium);
+  font-size: clamp(11px, calc(4vw - 9px), 19px); font-weight: var(--weight-medium);
   cursor: pointer; user-select: none;
   color: var(--text-primary);
   transition: background 0.1s;
@@ -1089,8 +1088,10 @@ html, body {
   display: none;
   position: absolute;
   bottom: 9vw;
-  left: 0;
-  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 100px); /* 50px overflow each side */
+  max-width: 2100px;         /* = 2000px content + 100px overflow */
   height: auto;
   z-index: 1;
 }
@@ -1198,9 +1199,9 @@ html, body {
 .overlay-sub {
   font-size: var(--text-lg);
   font-weight: var(--weight-bold);
-  color: #ffffff;
+  color: #FFCA00; /* never white — sub-text can appear over bright/white arena backgrounds */
   letter-spacing: -0.3px;
-  text-shadow: 1px 2px 0 var(--accent);
+  text-shadow: 1px 2px 0 #8B49FF;
 }
 
 @keyframes pop-in {
@@ -1241,7 +1242,7 @@ html, body {
    Mobile
    ========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 500px) {
   :root {
     --text-xl:  18px;  /* timer + share code (was 26px) */
     --text-3xl: 44px;  /* match-end title (was 66px) */
@@ -1318,6 +1319,7 @@ html, body {
   /* Hide opponent panel, show only own grid */
   .player-panel { display: none; }
   .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
+  .player-panel.is-me .cell { font-size: 19px; }
 
   /* Fighter stage — slim strip pinned to bottom */
   #fight-stage {
@@ -1331,13 +1333,13 @@ html, body {
     overflow: visible;
   }
 
-  /* Ground anchors inside the fixed fight-stage on mobile */
+  /* Ground pinned to visual viewport bottom — avoids 100vh chrome issue */
   #fight-ground {
-    position: absolute;
+    position: fixed;
     bottom: 0; left: 0;
     width: 100%;
     height: auto;
-    z-index: 0;
+    z-index: 1;
   }
 
   /* Sprites flush to the stage bottom — no extra breathing room */
