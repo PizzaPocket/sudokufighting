@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Sudoku Fighting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -53,14 +53,33 @@
     </div>
   </div>
 
-  <!-- ===== CHARACTER SELECT ===== -->
-  <div id="screen-character-select" class="screen active">
-    <div id="start-prompt" class="start-prompt">CLICK TO START</div>
-    <div class="char-select-scroll">
-      <div class="game-logo-container">
-        <img src="/assets/ui/Logo1_Sudoku.svg" alt="Sudoku" class="game-logo-top" />
-        <img src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" class="game-logo-bottom" />
+  <!-- ===== START ===== -->
+  <div id="screen-start" class="screen active">
+    <div class="start-logo-container">
+      <img src="/assets/ui/Logo1_Sudoku.svg" alt="Sudoku" class="start-logo-top" />
+      <img src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" class="start-logo-bottom" />
+    </div>
+    <div class="start-actions">
+      <div class="start-section">
+        <span class="start-section-label">Join matchmaking queue</span>
+        <button class="btn" id="btn-quick-play">QUICK PLAY</button>
       </div>
+      <div class="start-divider"></div>
+      <div class="start-section">
+        <span class="start-section-label">Play with a friend</span>
+        <button class="btn" id="btn-create-room">CREATE ROOM</button>
+        <div class="join-combo">
+          <input type="text" id="input-join-code" class="join-input" placeholder="Enter room code..." maxlength="6" autocomplete="off" spellcheck="false" />
+          <button id="btn-join-room">JOIN</button>
+        </div>
+        <p class="start-error hidden" id="start-error"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHARACTER SELECT ===== -->
+  <div id="screen-character-select" class="screen">
+    <div class="char-select-scroll">
       <p class="subtitle">Choose your fighter</p>
       <div id="character-grid"></div>
       <button id="btn-select-char" class="btn" disabled>SELECT</button>
@@ -83,6 +102,12 @@
         <span id="lobby-p2-name">---</span>
         <span class="lobby-status waiting">WAITING...</span>
       </div>
+    </div>
+    <div id="lobby-share-section" class="lobby-share hidden">
+      <span class="lobby-share-label">INVITE A FRIEND</span>
+      <div class="lobby-share-code" id="lobby-share-code">------</div>
+      <button class="btn btn-sm" id="btn-copy-link">COPY LINK</button>
+      <p class="lobby-copy-confirm hidden" id="lobby-copy-confirm">Copied!</p>
     </div>
     <p class="lobby-hint">Waiting for opponent...</p>
     <div class="lobby-arena-picker">
@@ -189,7 +214,10 @@
     <div id="game-overlay" class="game-overlay hidden">
       <div id="game-overlay-main" class="overlay-main"></div>
       <div id="game-overlay-sub" class="overlay-sub"></div>
-      <button class="btn hidden" id="btn-play-again">PLAY AGAIN</button>
+      <div class="overlay-btn-row hidden" id="overlay-btn-row">
+        <button class="btn" id="btn-play-again">PLAY AGAIN</button>
+        <button class="btn btn-leave" id="btn-leave">LEAVE</button>
+      </div>
     </div>
 
     <!-- Attack flash -->

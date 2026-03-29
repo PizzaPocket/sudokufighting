@@ -8,6 +8,18 @@ const rooms = new Map();
 // matchmaking queue: Array<{ playerId, ws, characterId, name }>
 const queue = [];
 
+// shareCodeMap: Map<shareCode, { type: 'queue'|'private', id: playerId|roomId }>
+const shareCodeMap = new Map();
+
+function generateShareCode() {
+  const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // omit O/0/I/1 for legibility
+  let code;
+  do {
+    code = Array.from({ length: 6 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+  } while (shareCodeMap.has(code));
+  return code;
+}
+
 // ---------------------------------------------------------------------------
 // Room creation & player management
 // ---------------------------------------------------------------------------
@@ -52,7 +64,10 @@ export function getRoomCount() {
 // ---------------------------------------------------------------------------
 
 export function enqueue(playerId, ws, characterId, name, preferredArenaId = null) {
-  queue.push({ playerId, ws, characterId, name, preferredArenaId });
+  const shareCode = generateShareCode();
+  shareCodeMap.set(shareCode, { type: 'queue', id: playerId });
+  queue.push({ playerId, ws, characterId, name, preferredArenaId, shareCode });
+  return shareCode;
 }
 
 export function setQueuedArenaPreference(playerId, arenaId) {
@@ -75,7 +90,10 @@ export function tryMatch() {
 
 export function dequeue(playerId) {
   const idx = queue.findIndex(p => p.playerId === playerId);
-  if (idx !== -1) queue.splice(idx, 1);
+  if (idx !== -1) {
+    const entry = queue.splice(idx, 1)[0];
+    if (entry.shareCode) shareCodeMap.delete(entry.shareCode);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -453,6 +471,52 @@ function wipeBox(puzz, boxRow, boxCol) {
       puzz.playerGrid[r][c] = null;
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Private rooms (Play with a Friend)
+// ---------------------------------------------------------------------------
+
+export function createPrivateRoom(playerId, ws, characterId, name) {
+  const roomId = createRoom();
+  addPlayerToRoom(roomId, playerId, ws, characterId, name);
+  const shareCode = generateShareCode();
+  shareCodeMap.set(shareCode, { type: 'private', id: roomId });
+  const room = rooms.get(roomId);
+  room.shareCode = shareCode;
+  room.state = 'waiting_private';
+  return { roomId, shareCode };
+}
+
+export function joinByShareCode(shareCode, playerId, ws, characterId, name) {
+  const entry = shareCodeMap.get(shareCode);
+  if (!entry) return { error: 'not_found' };
+
+  if (entry.type === 'private') {
+    const room = rooms.get(entry.id);
+    if (!room) return { error: 'not_found' };
+    if (room.players.length >= 2) return { error: 'full' };
+    addPlayerToRoom(entry.id, playerId, ws, characterId, name);
+    if (room.players[0].characterId === room.players[1].characterId) room.players[1].useAlt = true;
+    shareCodeMap.delete(shareCode);
+    room.shareCode = null;
+    return { type: 'joined_private', roomId: entry.id, room };
+  }
+
+  if (entry.type === 'queue') {
+    const idx = queue.findIndex(p => p.playerId === entry.id);
+    if (idx === -1) return { error: 'not_found' };
+    const host = queue.splice(idx, 1)[0];
+    if (host.shareCode) shareCodeMap.delete(host.shareCode);
+    const roomId = createRoom();
+    addPlayerToRoom(roomId, host.playerId, host.ws, host.characterId, host.name);
+    addPlayerToRoom(roomId, playerId, ws, characterId, name);
+    const room = rooms.get(roomId);
+    if (room.players[0].characterId === room.players[1].characterId) room.players[1].useAlt = true;
+    return { type: 'joined_queue', roomId, room, host };
+  }
+
+  return { error: 'not_found' };
 }
 
 // Find a room by player id

@@ -10,6 +10,7 @@ import {
   findRoomByPlayer, getRoom, deleteRoom, getRoomCount,
   startRound, handleCellInput, applyDamageFromAttack, applyCounterDamage,
   endRound, advanceRound, determineRoundWinner, getRoundPuzzleForPlayer,
+  createPrivateRoom, joinByShareCode,
 } from './game.js';
 
 const PORT = process.env.PORT || 8080;
@@ -171,7 +172,7 @@ wss.on('connection', (ws) => {
     switch (type) {
       case 'find_match': {
         const { characterId = 'fighter1', name = 'Player', preferredArenaId = null } = payload;
-        enqueue(playerId, ws, characterId, name, preferredArenaId);
+        const shareCode = enqueue(playerId, ws, characterId, name, preferredArenaId);
         const matched = tryMatch();
         if (matched) {
           const room = getRoom(matched.roomId);
@@ -207,8 +208,41 @@ wss.on('connection', (ws) => {
           // Start round 1
           startGameRound(matched.roomId, room);
         } else {
-          send(ws, 'waiting_for_opponent', {});
+          send(ws, 'waiting_for_opponent', { shareCode });
         }
+        break;
+      }
+
+      case 'create_room': {
+        const { characterId = 'fighter1', name = 'Player' } = payload;
+        const { roomId, shareCode: roomShareCode } = createPrivateRoom(playerId, ws, characterId, name);
+        send(ws, 'room_created', { roomId, shareCode: roomShareCode });
+        break;
+      }
+
+      case 'join_room': {
+        const { shareCode: joinCode, characterId = 'fighter1', name = 'Player' } = payload;
+        if (!joinCode) { send(ws, 'room_not_found', {}); break; }
+        const result = joinByShareCode(joinCode.toUpperCase(), playerId, ws, characterId, name);
+        if (result.error === 'not_found') { send(ws, 'room_not_found', {}); break; }
+        if (result.error === 'full')      { send(ws, 'room_full', {}); break; }
+        const room = result.room;
+        for (const player of room.players) {
+          send(player.ws, 'room_assigned', { roomId: room.roomId });
+          send(player.ws, 'player_joined', {
+            playerId: player.id, seat: player.seat,
+            name: player.name, characterId: player.characterId, useAlt: player.useAlt,
+          });
+        }
+        send(room.players[0].ws, 'opponent_joined', {
+          name: room.players[1].name, characterId: room.players[1].characterId,
+          useAlt: room.players[1].useAlt, seat: 1,
+        });
+        send(room.players[1].ws, 'opponent_joined', {
+          name: room.players[0].name, characterId: room.players[0].characterId,
+          useAlt: room.players[0].useAlt, seat: 0,
+        });
+        startGameRound(room.roomId, room);
         break;
       }
 
@@ -317,6 +351,15 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     dequeue(playerId);
     const room = findRoomByPlayer(playerId);
+
+    // Player disconnects from a private room still waiting for a second player
+    if (room && room.state === 'waiting_private') {
+      const other = room.players.find(p => p.id !== playerId);
+      if (other) send(other.ws, 'opponent_left_lobby', {});
+      deleteRoom(room.roomId);
+      return;
+    }
+
     if (room && (room.state === 'in_round' || room.state === 'round_end')) {
       const loserSeat = room.players.findIndex(p => p.id === playerId);
       const winnerSeat = 1 - loserSeat;

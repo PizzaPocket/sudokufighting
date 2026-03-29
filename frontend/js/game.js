@@ -38,6 +38,13 @@ const state = {
   characters: [],
   animP1: null,
   animP2: null,
+  // Flow state
+  gameMode: null,           // 'quick' | 'friend'
+  shareCode: null,          // invite code shown in lobby
+  pendingJoinCode: null,    // code from URL param or input, used after char select
+  friendCreating: false,    // true when this player is the room creator
+  initialInteractionDone: false,
+  opponentDisconnected: false,
 };
 
 // Round timer
@@ -123,12 +130,45 @@ let healthUpdateDelay = 150;
 // Screen management
 // ---------------------------------------------------------------------------
 
+let currentScreen = 'start';
+
 function showScreen(id) {
+  currentScreen = id;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(`screen-${id}`);
   if (el) el.classList.add('active');
   const backBtn = document.getElementById('btn-back');
-  if (backBtn) backBtn.classList.toggle('hidden', id !== 'lobby');
+  if (backBtn) backBtn.classList.toggle('hidden', id !== 'lobby' && id !== 'character-select');
+  if (id === 'character-select') triggerCharacterSelectAnim();
+}
+
+function triggerCharacterSelectAnim() {
+  const screen = document.getElementById('screen-character-select');
+  screen.classList.remove('cards-ready');
+  void screen.offsetWidth;
+  screen.classList.add('cards-ready');
+  const cards = [...screen.querySelectorAll('.character-card')];
+  const subtitle = screen.querySelector('.subtitle');
+  const cleanAnim = (el, delay) => {
+    el.style.opacity = '0';
+    el.style.animationDelay = delay;
+    el.classList.remove('card-intro');
+    void el.offsetWidth;
+    el.classList.add('card-intro');
+    el.addEventListener('animationend', () => {
+      el.classList.remove('card-intro');
+      el.style.opacity = '1';
+    }, { once: true });
+  };
+  if (subtitle) cleanAnim(subtitle, '0s');
+  cards.forEach((card, i) => cleanAnim(card, `${i * 0.07}s`));
+}
+
+function onInitialInteraction() {
+  if (state.initialInteractionDone) return;
+  state.initialInteractionDone = true;
+  playAudioLogoThenSelectMusic();
+  renderTrackTitle();
 }
 
 // ---------------------------------------------------------------------------
@@ -309,44 +349,6 @@ function renderCharacterSelect() {
     });
     grid.appendChild(card);
   });
-
-  // First interaction unlocks audio and kicks off all intro animations
-  const screen = document.getElementById('screen-character-select');
-  const prompt = document.getElementById('start-prompt');
-  const subtitle = document.querySelector('#screen-character-select .subtitle');
-
-  const triggerIntro = () => {
-    prompt.classList.add('hidden');
-    screen.classList.add('anim-go');
-    playAudioLogoThenSelectMusic();
-    renderTrackTitle();
-
-    const cards = [...screen.querySelectorAll('.character-card')];
-    const btn = document.getElementById('btn-select-char');
-
-    // Subtitle + cards stagger in after logo lands (~0.85s); button follows last card
-    const cleanAnim = el => el.addEventListener('animationend', () => {
-      el.classList.remove('card-intro');
-      el.style.animationDelay = '';
-      el.style.opacity = '1';
-    }, { once: true });
-
-    subtitle.style.animationDelay = '0.85s';
-    subtitle.classList.add('card-intro');
-    cleanAnim(subtitle);
-
-    cards.forEach((card, i) => {
-      card.style.animationDelay = `${0.9 + i * 0.1}s`;
-      card.classList.add('card-intro');
-      cleanAnim(card);
-    });
-
-    btn.style.animationDelay = `${0.9 + cards.length * 0.1}s`;
-    btn.classList.add('card-intro');
-    cleanAnim(btn);
-  };
-
-  prompt.addEventListener('click', triggerIntro, { once: true });
 }
 
 // ---------------------------------------------------------------------------
@@ -632,7 +634,8 @@ document.addEventListener('keydown', (e) => {
 // Mobile number pad
 // ---------------------------------------------------------------------------
 
-document.getElementById('mobile-numpad').addEventListener('click', e => {
+document.getElementById('mobile-numpad').addEventListener('pointerdown', e => {
+  e.preventDefault(); // fire instantly; suppresses the synthetic click that follows
   const btn = e.target.closest('.numpad-btn');
   if (!btn) return;
   if (!state.selectedCell || state.roundOver) return;
@@ -786,10 +789,14 @@ const ANIM_MAP = {
 
 on('connected', () => {});
 
-on('waiting_for_opponent', () => {
-  showScreen('lobby');
-  // Re-send preference now that socket is confirmed open
+on('waiting_for_opponent', ({ shareCode }) => {
+  // Re-send arena preference now that socket is confirmed open
   send('set_arena_preference', { arenaId: state.preferredArenaId });
+  if (shareCode) {
+    state.shareCode = shareCode;
+    document.getElementById('lobby-share-code').textContent = shareCode;
+    document.getElementById('lobby-share-section').classList.remove('hidden');
+  }
 });
 
 on('room_assigned', () => {});
@@ -833,6 +840,8 @@ on('opponent_joined', ({ name, characterId, useAlt }) => {
   const char = state.characters.find(c => c.id === characterId);
   const portrait = (useAlt && char?.altPortraitPath) ? char.altPortraitPath : char?.portraitPath;
   updateLobbySlot(1 - state.mySeat, portrait, name, true);
+  // Hide invite section — room is now full
+  document.getElementById('lobby-share-section').classList.add('hidden');
 });
 
 on('game_start', ({ roundNumber, puzzle, solution, opponentGivens, opponentName, opponentCharacter, mySeat, myUseAlt, opponentUseAlt, roundStartTime, backgroundId }) => {
@@ -1151,14 +1160,15 @@ on('match_end', ({ winnerSeat, winnerName }) => {
     state.animP2?.play(ANIM.IDLE);
     setTimeout(() => {
       showOverlay('TIE', "IT'S A TIE", '#8B49FF', 0);
-      const playAgainBtn = document.getElementById('btn-play-again');
-      if (playAgainBtn) playAgainBtn.classList.remove('hidden');
+      document.getElementById('overlay-btn-row').classList.remove('hidden');
     }, 400);
     return;
   }
 
   const isWinner = winnerSeat === state.mySeat;
-  if (isWinner) playVictoryAnnouncer(); else playDevastationAnnouncer();
+  if (!state.opponentDisconnected) {
+    if (isWinner) playVictoryAnnouncer(); else playDevastationAnnouncer();
+  }
 
   const winnerCharId = winnerSeat === state.mySeat ? state.myCharacter : state.opponentCharacter;
   const winnerChar = state.characters.find(c => c.id === winnerCharId);
@@ -1179,7 +1189,10 @@ on('match_end', ({ winnerSeat, winnerName }) => {
 
   const mainText = isWinner ? 'VICTORY!' : 'DEVASTATION!';
   const mainColor = isWinner ? '#FF8B16' : '#F00013';
-  const subText = winnerDisplayName.toUpperCase() + ' WINS!';
+  const subText = state.opponentDisconnected
+    ? 'OPPONENT DISCONNECTED'
+    : winnerDisplayName.toUpperCase() + ' WINS!';
+  state.opponentDisconnected = false;
 
   setTimeout(() => {
     if (isWinner) {
@@ -1189,15 +1202,57 @@ on('match_end', ({ winnerSeat, winnerName }) => {
       showOverlay(mainText, subText, mainColor, 0);
       document.getElementById('game-overlay-main').style.textShadow = '4px 5px 0 #FF8B16';
     }
-    const playAgainBtn = document.getElementById('btn-play-again');
-    if (playAgainBtn) playAgainBtn.classList.remove('hidden');
+    document.getElementById('overlay-btn-row').classList.remove('hidden');
   }, 400);
 });
 
-on('opponent_disconnected', () => {});
+on('opponent_disconnected', () => { state.opponentDisconnected = true; });
 
 // ---------------------------------------------------------------------------
 // UI wiring
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Helpers: state reset + lobby UI reset
+// ---------------------------------------------------------------------------
+
+function resetLobbyUI() {
+  document.getElementById('lobby-p1-portrait').src = '/characters/placeholder_fighter.svg';
+  document.getElementById('lobby-p2-portrait').src = '/characters/placeholder_fighter.svg';
+  document.getElementById('lobby-p1-name').textContent = '---';
+  document.getElementById('lobby-p2-name').textContent = '---';
+  ['#lobby-p1', '#lobby-p2'].forEach(sel => {
+    document.querySelector(`${sel} .lobby-status`).className = 'lobby-status waiting';
+    document.querySelector(`${sel} .lobby-status`).textContent = 'WAITING...';
+    document.querySelector(sel).classList.remove('is-me');
+  });
+  document.getElementById('lobby-share-section').classList.add('hidden');
+}
+
+function resetGameState() {
+  state.mySeat = null;
+  state.myCharacter = null;
+  state.myUseAlt = false;
+  state.myName = null;
+  state.opponentName = null;
+  state.selectedCell = null;
+  state.counterWindowActive = false;
+  state.roundOver = false;
+  state.matchOver = false;
+  state.opponentDisconnected = false;
+  state.health = [100, 100];
+  state.roundWins = [0, 0];
+  state.animP1 = null;
+  state.animP2 = null;
+  state.shareCode = null;
+  stopRoundTimer();
+  document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('btn-select-char').disabled = true;
+  document.getElementById('btn-surrender').classList.remove('hidden');
+}
+
+// ---------------------------------------------------------------------------
+// proceedToLobby — dispatches on gameMode
 // ---------------------------------------------------------------------------
 
 function proceedToLobby() {
@@ -1206,7 +1261,6 @@ function proceedToLobby() {
   const name = char?.name?.toUpperCase() ?? 'FIGHTER';
   state.myName = name;
 
-  // Show their portrait immediately — player_joined will move it to the correct seat slot
   if (char) {
     document.getElementById('lobby-p1-portrait').src = char.portraitPath;
     document.getElementById('lobby-p1-name').textContent = name;
@@ -1217,62 +1271,168 @@ function proceedToLobby() {
 
   showScreen('lobby');
 
-  function sendFindMatch() {
-    off('_connected', sendFindMatch);
-    send('find_match', { characterId: state.myCharacter, name, preferredArenaId: state.preferredArenaId });
+  if (state.gameMode === 'quick') {
+    function sendFindMatch() {
+      off('_connected', sendFindMatch);
+      send('find_match', { characterId: state.myCharacter, name, preferredArenaId: state.preferredArenaId });
+    }
+    connect();
+    on('_connected', sendFindMatch);
+
+  } else if (state.gameMode === 'friend' && state.friendCreating) {
+    function sendCreateRoom() {
+      off('_connected', sendCreateRoom);
+      send('create_room', { characterId: state.myCharacter, name });
+    }
+    connect();
+    on('_connected', sendCreateRoom);
+
+  } else if (state.gameMode === 'friend' && !state.friendCreating) {
+    function sendJoinRoom() {
+      off('_connected', sendJoinRoom);
+      send('join_room', { shareCode: state.pendingJoinCode, characterId: state.myCharacter, name });
+    }
+    connect();
+    on('_connected', sendJoinRoom);
   }
-  connect();
-  on('_connected', sendFindMatch);
 }
 
 document.getElementById('btn-select-char').addEventListener('click', () => proceedToLobby());
 
-document.getElementById('btn-back').addEventListener('click', () => {
-  disconnect();
+// ---------------------------------------------------------------------------
+// Start screen handlers + URL param
+// ---------------------------------------------------------------------------
 
-  // Reset lobby UI
-  document.getElementById('lobby-p1-portrait').src = '/characters/placeholder_fighter.svg';
-  document.getElementById('lobby-p2-portrait').src = '/characters/placeholder_fighter.svg';
-  document.getElementById('lobby-p1-name').textContent = '---';
-  document.getElementById('lobby-p2-name').textContent = '---';
-  document.querySelector('#lobby-p1 .lobby-status').className = 'lobby-status waiting';
-  document.querySelector('#lobby-p1 .lobby-status').textContent = 'WAITING...';
-  document.querySelector('#lobby-p2 .lobby-status').className = 'lobby-status waiting';
-  document.querySelector('#lobby-p2 .lobby-status').textContent = 'WAITING...';
-  document.getElementById('lobby-p1').classList.remove('is-me');
-  document.getElementById('lobby-p2').classList.remove('is-me');
+function readUrlRoomCode() {
+  const params = new URLSearchParams(location.search);
+  const code = params.get('room');
+  if (code) {
+    const input = document.getElementById('input-join-code');
+    if (input) input.value = code.toUpperCase();
+    state.pendingJoinCode = code.toUpperCase();
+  }
+}
 
-  // Deselect character
-  state.myCharacter = null;
-  state.myName = null;
-  document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('btn-select-char').disabled = true;
+function showStartError(msg) {
+  const el = document.getElementById('start-error');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 5000);
+}
 
-  // Return to character select — already animated, just show it
+document.getElementById('btn-quick-play').addEventListener('click', () => {
+  onInitialInteraction();
+  state.gameMode = 'quick';
   showScreen('character-select');
 });
+
+document.getElementById('btn-create-room').addEventListener('click', () => {
+  onInitialInteraction();
+  state.gameMode = 'friend';
+  state.friendCreating = true;
+  showScreen('character-select');
+});
+
+document.getElementById('btn-join-room').addEventListener('click', () => {
+  const code = document.getElementById('input-join-code').value.trim().toUpperCase();
+  if (!code || code.length < 4) return;
+  state.pendingJoinCode = code;
+  onInitialInteraction();
+  state.gameMode = 'friend';
+  state.friendCreating = false;
+  showScreen('character-select');
+});
+
+// Allow pressing Enter in the join input to trigger join
+document.getElementById('input-join-code').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('btn-join-room').click();
+});
+
+// ---------------------------------------------------------------------------
+// New WS event handlers (share codes, private rooms)
+// ---------------------------------------------------------------------------
+
+on('room_created', ({ shareCode }) => {
+  state.shareCode = shareCode;
+  document.getElementById('lobby-share-code').textContent = shareCode;
+  document.getElementById('lobby-share-section').classList.remove('hidden');
+});
+
+on('room_not_found', () => {
+  disconnect();
+  showStartError('Room not found. Check the code and try again.');
+  showScreen('start');
+});
+
+on('room_full', () => {
+  disconnect();
+  showStartError('That room is already full.');
+  showScreen('start');
+});
+
+on('opponent_left_lobby', () => {
+  document.getElementById('lobby-p2-portrait').src = '/characters/placeholder_fighter.svg';
+  document.getElementById('lobby-p2-name').textContent = '---';
+  document.querySelector('#lobby-p2 .lobby-status').className = 'lobby-status waiting';
+  document.querySelector('#lobby-p2 .lobby-status').textContent = 'WAITING...';
+  document.getElementById('lobby-p2').classList.remove('is-me');
+  if (state.shareCode) document.getElementById('lobby-share-section').classList.remove('hidden');
+});
+
+document.getElementById('btn-copy-link').addEventListener('click', () => {
+  const url = `${location.origin}?room=${state.shareCode}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const c = document.getElementById('lobby-copy-confirm');
+    c.classList.remove('hidden');
+    setTimeout(() => c.classList.add('hidden'), 2000);
+  }).catch(() => prompt('Copy this link:', url));
+});
+
+// ---------------------------------------------------------------------------
+// Back button (context-aware)
+// ---------------------------------------------------------------------------
+
+document.getElementById('btn-back').addEventListener('click', () => {
+  if (currentScreen === 'lobby') {
+    disconnect();
+    resetLobbyUI();
+    state.myCharacter = null;
+    state.myName = null;
+    state.shareCode = null;
+    document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('btn-select-char').disabled = true;
+    showScreen('character-select');
+  } else if (currentScreen === 'character-select') {
+    showScreen('start');
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Play Again + Leave
+// ---------------------------------------------------------------------------
 
 document.getElementById('btn-play-again').addEventListener('click', () => {
   hideOverlay();
   resetBgFade();
-  document.getElementById('btn-play-again').classList.add('hidden');
-  document.getElementById('btn-surrender').classList.remove('hidden');
-  state.mySeat = null;
-  state.myCharacter = null;
-  state.myUseAlt = false;
-  state.myName = null;
-  state.opponentName = null;
-  state.selectedCell = null;
-  state.counterWindowActive = false;
-  state.roundOver = false;
-  state.health = [100, 100];
-  state.roundWins = [0, 0];
-  state.animP1 = null;
-  state.animP2 = null;
-  stopRoundTimer();
-  document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('btn-select-char').disabled = true;
+  document.getElementById('overlay-btn-row').classList.add('hidden');
+  // Re-enter the same flow: friend mode re-creates a room after char select
+  state.friendCreating = state.gameMode === 'friend';
+  resetGameState();
   showScreen('character-select');
+});
+
+document.getElementById('btn-leave').addEventListener('click', () => {
+  hideOverlay();
+  resetBgFade();
+  disconnect();
+  document.getElementById('overlay-btn-row').classList.add('hidden');
+  resetLobbyUI();
+  resetGameState();
+  state.gameMode = null;
+  state.friendCreating = false;
+  state.pendingJoinCode = null;
+  showScreen('start');
 });
 
 // ---------------------------------------------------------------------------
@@ -1349,4 +1509,5 @@ document.getElementById('toggle-sfx').addEventListener('change', e => {
 // Init
 // ---------------------------------------------------------------------------
 
+readUrlRoomCode();
 loadCharacters();

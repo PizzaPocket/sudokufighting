@@ -97,6 +97,7 @@ html, body {
   font-size: var(--text-base);
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  touch-action: manipulation; /* disable double-tap zoom globally */
 }
 
 /* =========================================================
@@ -267,6 +268,7 @@ html, body {
 }
 .screen.active { display: flex; }
 
+#screen-start,
 #screen-character-select,
 #screen-lobby {
   background-image: url(/assets/ui/bg_0.svg);
@@ -311,6 +313,26 @@ html, body {
 .btn.btn-sm:hover { box-shadow: 3px 3px 0 #ffffff; }
 .btn.btn-sm:active { box-shadow: 1px 1px 0 #ffffff; }
 
+/* Secondary button — white background, brand accent text, purple shadow */
+.btn-secondary {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 32px;
+  background: #ffffff;
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 0 var(--accent);
+  margin-top: 12px;
+}
+.btn-secondary:hover { background: var(--accent-light); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+.btn-secondary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
+.btn-secondary:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
 /* =========================================================
    Character Select
    ========================================================= */
@@ -318,23 +340,6 @@ html, body {
 /* On desktop the scroll wrapper is invisible — just passes through flex layout */
 .char-select-scroll {
   display: contents;
-}
-
-.game-logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 16px;
-}
-
-.game-logo-top,
-.game-logo-bottom {
-  max-width: 380px;
-  width: 100%;
-  height: auto;
-  display: block;
-  opacity: 0;
 }
 
 @keyframes slam-from-top {
@@ -351,11 +356,129 @@ html, body {
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-#screen-character-select:not(.anim-go) .character-card,
-#screen-character-select:not(.anim-go) #btn-select-char { opacity: 0; pointer-events: none; }
+/* =========================================================
+   Start Screen
+   ========================================================= */
 
-#screen-character-select.anim-go .game-logo-top    { animation: slam-from-top    0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
-#screen-character-select.anim-go .game-logo-bottom { animation: slam-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.27s both; }
+/* Logo fires immediately on page load — no class trigger needed */
+.start-logo-top    { animation: slam-from-top    0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.start-logo-bottom { animation: slam-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.27s both; }
+
+.start-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.start-logo-top,
+.start-logo-bottom {
+  max-width: 380px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.start-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.start-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.start-section-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  text-shadow: 1px 1px 0 var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Fixed width shared by all three start-screen CTAs; buttons lose their default margin-top
+   since the column gap handles all spacing here */
+#screen-start .btn,
+#screen-start .join-combo { width: 240px; box-sizing: border-box; }
+#screen-start .btn { margin-top: 0; }
+#screen-start .join-combo { margin-top: 8px; }
+
+.start-divider {
+  width: 240px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin: 4px 0;
+}
+
+/* Join combo — input + secondary button fused into one fixed-width pill */
+.join-combo {
+  display: flex;
+  height: 32px;
+  border: 2px solid #ffffff;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.join-combo .join-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg); /* #f2f2f2 — same as cell-given-bg and page bg */
+  border: none;
+  padding: 0 10px;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: none;
+}
+.join-combo .join-input::placeholder {
+  color: var(--text-tertiary);
+  font-weight: var(--weight-normal);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.join-combo #btn-join-room {
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0 14px;
+  background: #ffffff;
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.join-combo #btn-join-room:hover  { background: var(--accent-light); }
+.join-combo #btn-join-room:active { background: var(--accent); color: #ffffff; }
+
+.start-error {
+  font-size: var(--text-sm);
+  color: var(--danger-color);
+  font-weight: var(--weight-bold);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  margin: 0;
+}
+.start-error.hidden { display: none; }
+
+/* Character select — cards hidden until .cards-ready is added by JS */
+#screen-character-select:not(.cards-ready) .character-card,
+#screen-character-select:not(.cards-ready) .subtitle { opacity: 0; pointer-events: none; }
 
 @keyframes card-appear {
   from { opacity: 0; transform: translateY(22px) scale(0.84); }
@@ -365,23 +488,6 @@ html, body {
 .card-intro {
   animation: card-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-
-.start-prompt {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-lg);
-  font-weight: var(--weight-black);
-  color: #ffffff;
-  letter-spacing: 0.15em;
-  text-shadow: 2px 2px 0 var(--accent);
-  animation: fade-pulse 1.2s ease-in-out infinite;
-  cursor: pointer;
-  z-index: 10;
-}
-.start-prompt.hidden { display: none; }
 
 .subtitle {
   font-size: var(--text-base);
@@ -468,6 +574,42 @@ html, body {
 .lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
 
 .lobby-hint { font-size: var(--text-base); color: #ffffff; text-shadow: 1px 2px 0 var(--accent); animation: fade-pulse 1.4s ease-in-out infinite; }
+
+/* Lobby share / invite section */
+.lobby-share {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 14px 24px;
+  background: rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.lobby-share.hidden { display: none; }
+.lobby-share-label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.lobby-share-code {
+  font-family: var(--font);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.35em;
+  text-shadow: 2px 2px 0 var(--accent);
+}
+.lobby-copy-confirm {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+  animation: fade-pulse 0.8s ease-in-out 2;
+}
+.lobby-copy-confirm.hidden { display: none; }
 
 .lobby-arena-picker {
   display: flex;
@@ -991,7 +1133,10 @@ html, body {
   pointer-events: none;
 }
 .game-overlay.hidden { display: none; }
-.game-overlay #btn-play-again { pointer-events: all; margin-top: 12px; }
+.overlay-btn-row { display: flex; gap: 16px; margin-top: 12px; pointer-events: all; }
+.overlay-btn-row.hidden { display: none; }
+.btn-leave { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
+.btn-leave:hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
 
 .overlay-main {
   font-family: var(--font-display);
@@ -1053,6 +1198,7 @@ html, body {
 
 @media (max-width: 1000px) {
   :root {
+    --text-xl:  18px;  /* timer + share code (was 26px) */
     --text-3xl: 44px;  /* match-end title (was 66px) */
     --text-4xl: 56px;  /* main overlay: FIGHT! KO VICTORY (was 96px) */
   }
@@ -1076,8 +1222,8 @@ html, body {
     width: 100%;
   }
 
-  .game-logo-top,
-  .game-logo-bottom { max-width: 200px; }
+  .start-logo-top,
+  .start-logo-bottom { max-width: 200px; }
 
   #character-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1099,9 +1245,15 @@ html, body {
     margin-top: 8px;
     flex: 0 0 auto;
   }
-  /* HUD never wraps — fixed height rows only */
+  /* HUD — compact on mobile: slim 4px bar, no KO badge */
   #hud { flex-wrap: nowrap; }
   .hud-score, .combo-counter { font-size: var(--text-sm); }
+  .ko-block { display: none; }
+  .hud-bar-row { height: 4px; }
+  .hud-bar-track.left  { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right { border-radius: 0 2px 2px 0; }
+  .hud-bar-track.left  .hud-bar { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
 
   /* Hide opponent panel, show only own grid */
   .player-panel { display: none; }
@@ -1154,6 +1306,7 @@ html, body {
     transition: background 0.1s, transform 0.08s;
     text-shadow: none;
     user-select: none;
+    touch-action: manipulation;
   }
 
   .numpad-btn:active {
