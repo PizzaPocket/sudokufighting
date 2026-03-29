@@ -1,4 +1,4 @@
-app = "sudoku-street-fight-backend"
+app = "sudoku-fighting-backend"
 primary_region = "lax"
 
 [build]
