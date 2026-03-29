@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//usr/local/**)",
+      "Read(//opt/homebrew/**)",
+      "Bash(/usr/bin/python3 gen_sprites.py)",
+      "Bash(/usr/bin/python3 gen_backgrounds.py)",
+      "Bash(ls /usr/local/bin/node*)",
+      "Read(//Users/leonard/.nvm/versions/**)",
+      "Bash(wc -l /Users/leonard/dev/sudoku-street-fight/frontend/js/*.js /Users/leonard/dev/sudoku-street-fight/frontend/css/style.css)",
+      "Bash(python3 -:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(ls /Users/leonard/dev/sudoku-fighting/frontend/backgrounds/bg_blocky*)",
+      "Bash(find /Users/leonard/dev/sudoku-fighting/frontend/assets -name \"*blocky*\" -delete)",
+      "Bash(__NEW_LINE_5bc88d88ecfc930a__ mv:*)",
+      "Bash(__NEW_LINE_5bc88d88ecfc930a__ rmdir:*)",
+      "Bash(sed -n '86,130p' /Users/leonard/dev/sudoku-fighting/frontend/css/style.css)",
+      "Bash(sed -n '445,470p' /Users/leonard/dev/sudoku-fighting/frontend/css/style.css)"
+    ]
+  }
+}

@@ -1,0 +1,389 @@
+import express from 'express';
+import { createServer } from 'http';
+import { WebSocketServer, WebSocket } from 'ws';
+import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
+import { join, dirname } from 'path';
+import { ARENAS } from '../frontend/js/arenas.js';
+import {
+  enqueue, dequeue, tryMatch, setQueuedArenaPreference,
+  findRoomByPlayer, getRoom, deleteRoom, getRoomCount,
+  startRound, handleCellInput, applyDamageFromAttack, applyCounterDamage,
+  endRound, advanceRound, determineRoundWinner, getRoundPuzzleForPlayer,
+} from './game.js';
+
+const PORT = process.env.PORT || 8080;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const FRONTEND_DIR = join(__dirname, '..', 'frontend');
+
+const app = express();
+app.use(express.json());
+
+// CORS headers for cross-domain fetch
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+
+// Serve frontend statically in development
+app.use(express.static(FRONTEND_DIR));
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', rooms: getRoomCount() });
+});
+
+const httpServer = createServer(app);
+const wss = new WebSocketServer({ server: httpServer });
+
+// pendingTimers: Map<attackId, timeoutHandle>
+const pendingTimers = new Map();
+
+// roundTimers: Map<roomId, timeoutHandle>
+const roundTimers = new Map();
+
+function startRoundTimer(roomId) {
+  clearRoundTimer(roomId);
+  const handle = setTimeout(() => {
+    roundTimers.delete(roomId);
+    const room = getRoom(roomId);
+    if (!room || room.state !== 'in_round') return;
+    const winnerSeat = determineRoundWinner(roomId);
+    broadcast(room, 'time_up', {});
+    triggerRoundEnd(roomId, room, winnerSeat);
+  }, 99000);
+  roundTimers.set(roomId, handle);
+}
+
+function clearRoundTimer(roomId) {
+  const handle = roundTimers.get(roomId);
+  if (handle) { clearTimeout(handle); roundTimers.delete(roomId); }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function send(ws, type, payload) {
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type, payload }));
+  }
+}
+
+function broadcast(room, type, payload, excludePlayerId = null) {
+  for (const player of room.players) {
+    if (player.id !== excludePlayerId) {
+      send(player.ws, type, payload);
+    }
+  }
+}
+
+function sendToSeat(room, seat, type, payload) {
+  const player = room.players[seat];
+  if (player) send(player.ws, type, payload);
+}
+
+function scheduleAttackTimer(attackId, roomId, delayMs) {
+  const handle = setTimeout(() => {
+    pendingTimers.delete(attackId);
+    const room = getRoom(roomId);
+    if (!room) return;
+
+    const result = applyDamageFromAttack(roomId, attackId);
+    if (!result) return; // already handled by counter
+
+    // attack_landed fires at the same time as damage so animations sync
+    broadcast(room, 'attack_landed', {
+      attackerSeat: result.attackerSeat,
+      defenderSeat: result.defenderSeat,
+      type: result.attackType,
+      damage: result.damage,
+    });
+    broadcast(room, 'health_update', { health: result.health });
+    broadcast(room, 'combo_update', { seat: result.defenderSeat, combo: 0 });
+
+    // Check round end
+    checkRoundEnd(roomId, room);
+  }, delayMs);
+  pendingTimers.set(attackId, handle);
+  return handle;
+}
+
+function clearAttackTimer(attackId) {
+  const handle = pendingTimers.get(attackId);
+  if (handle) {
+    clearTimeout(handle);
+    pendingTimers.delete(attackId);
+  }
+}
+
+function checkRoundEnd(roomId, room) {
+  if (!room || room.state !== 'in_round') return;
+  const { health } = room.round;
+  if (health[0] <= 0 || health[1] <= 0) {
+    let winnerSeat = health[0] > health[1] ? 0 : 1;
+    if (health[0] <= 0 && health[1] <= 0) winnerSeat = -1;
+    triggerRoundEnd(roomId, room, winnerSeat);
+  }
+}
+
+function triggerRoundEnd(roomId, room, winnerSeat) {
+  clearRoundTimer(roomId);
+  // Clear all pending timers for this room
+  for (const attack of (room.round?.pendingAttacks ?? [])) {
+    clearAttackTimer(attack.id);
+  }
+
+  const result = endRound(roomId, winnerSeat);
+  if (!result) return;
+
+  broadcast(room, 'round_end', {
+    winnerSeat,
+    roundWins: result.roundWins,
+    roundNumber: room.match.roundNumber,
+  });
+
+  if (result.matchOver) {
+    const mw = result.matchWinnerSeat;
+    const winner = mw !== -1 ? room.players[mw] : null;
+    broadcast(room, 'match_end', {
+      winnerSeat: mw,
+      winnerName: winner?.name ?? 'Unknown',
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// WebSocket connection handler
+// ---------------------------------------------------------------------------
+
+wss.on('connection', (ws) => {
+  const playerId = uuidv4();
+  ws.playerId = playerId;
+
+  send(ws, 'connected', { playerId });
+
+  ws.on('message', (raw) => {
+    let msg;
+    try { msg = JSON.parse(raw); } catch { return; }
+    const { type, payload = {} } = msg;
+
+    switch (type) {
+      case 'find_match': {
+        const { characterId = 'fighter1', name = 'Player', preferredArenaId = null } = payload;
+        enqueue(playerId, ws, characterId, name, preferredArenaId);
+        const matched = tryMatch();
+        if (matched) {
+          const room = getRoom(matched.roomId);
+          room.preferredArenaId = matched.preferredArenaId;
+          // Mirror match: seat 1 gets the alt costume
+          if (room.players[0].characterId === room.players[1].characterId) {
+            room.players[1].useAlt = true;
+          }
+          // Notify both players
+          for (const player of room.players) {
+            send(player.ws, 'room_assigned', { roomId: matched.roomId });
+            send(player.ws, 'player_joined', {
+              playerId: player.id,
+              seat: player.seat,
+              name: player.name,
+              characterId: player.characterId,
+              useAlt: player.useAlt,
+            });
+          }
+          // Notify each player of their opponent
+          send(room.players[0].ws, 'opponent_joined', {
+            name: room.players[1].name,
+            characterId: room.players[1].characterId,
+            useAlt: room.players[1].useAlt,
+            seat: 1,
+          });
+          send(room.players[1].ws, 'opponent_joined', {
+            name: room.players[0].name,
+            characterId: room.players[0].characterId,
+            useAlt: room.players[0].useAlt,
+            seat: 0,
+          });
+          // Start round 1
+          startGameRound(matched.roomId, room);
+        } else {
+          send(ws, 'waiting_for_opponent', {});
+        }
+        break;
+      }
+
+      case 'set_arena_preference': {
+        const { arenaId } = payload;
+        if (ARENAS.find(a => a.id === arenaId)) {
+          setQueuedArenaPreference(playerId, arenaId);
+        }
+        break;
+      }
+
+      case 'cell_input': {
+        const room = findRoomByPlayer(playerId);
+        if (!room) return;
+        const { row, col, value } = payload;
+        if (row == null || col == null || value == null) return;
+
+        const events = handleCellInput(
+          room.roomId, playerId, row, col, value,
+          (attackId, roomId, delay) => scheduleAttackTimer(attackId, roomId, delay)
+        );
+
+        for (const evt of events) {
+          if (evt.type === 'cell_update' || evt.type === 'cursor_update') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'attack_incoming') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'counter_window_active') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'row_wiped' || evt.type === 'column_wiped' || evt.type === 'box_wiped') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'health_update') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'combo_update' || evt.type === 'score_update') {
+            broadcast(room, evt.type, evt.payload);
+          } else if (evt.type === 'auto_counter') {
+            // Defender entered correct cell during counter window — auto-trigger
+            clearAttackTimer(evt.payload.attackId);
+            const cResult = applyCounterDamage(room.roomId, evt.payload.attackId);
+            if (cResult) {
+              broadcast(room, 'counter_landed', {
+                counterSeat: cResult.defenderSeat,
+                reducedDamage: cResult.reducedDamage,
+                counterDamage: cResult.counterDamage,
+              });
+              broadcast(room, 'health_update', { health: cResult.health });
+              broadcast(room, 'combo_update', { seat: cResult.attackerSeat, combo: 0 });
+              checkRoundEnd(room.roomId, room);
+            }
+          } else if (evt.type === 'puzzle_complete') {
+            const winnerSeat = determineRoundWinner(room.roomId);
+            triggerRoundEnd(room.roomId, room, winnerSeat);
+          }
+        }
+
+        // Check round end after applying events
+        checkRoundEnd(room.roomId, room);
+        break;
+      }
+
+      case 'cursor_move': {
+        const room = findRoomByPlayer(playerId);
+        if (!room) return;
+        const seat = room.players.findIndex(p => p.id === playerId);
+        const { row, col } = payload;
+        broadcast(room, 'cursor_update', { seat, row, col }, playerId);
+        break;
+      }
+
+      case 'surrender': {
+        const room = findRoomByPlayer(playerId);
+        if (!room || room.state !== 'in_round') break;
+        const loserSeat = room.players.findIndex(p => p.id === playerId);
+        const winnerSeat = 1 - loserSeat;
+        clearRoundTimer(room.roomId);
+        for (const attack of (room.round?.pendingAttacks ?? [])) clearAttackTimer(attack.id);
+        room.state = 'match_end';
+        const winner = room.players[winnerSeat];
+        broadcast(room, 'match_end', {
+          winnerSeat,
+          winnerName: winner?.name ?? 'Unknown',
+        });
+        break;
+      }
+
+      case 'next_round': {
+        // Client signals ready for next round (both must signal)
+        const room = findRoomByPlayer(playerId);
+        if (!room || room.state !== 'round_end') return;
+        const player = room.players.find(p => p.id === playerId);
+        if (player) player.readyForNext = true;
+        const allReady = room.players.length === 2 && room.players.every(p => p.readyForNext);
+        if (allReady) {
+          room.players.forEach(p => delete p.readyForNext);
+          advanceRound(room.roomId);
+          startGameRound(room.roomId, room);
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  });
+
+  ws.on('close', () => {
+    dequeue(playerId);
+    const room = findRoomByPlayer(playerId);
+    if (room && (room.state === 'in_round' || room.state === 'round_end')) {
+      const loserSeat = room.players.findIndex(p => p.id === playerId);
+      const winnerSeat = 1 - loserSeat;
+      clearRoundTimer(room.roomId);
+      // Clear timers
+      for (const attack of (room.round?.pendingAttacks ?? [])) {
+        clearAttackTimer(attack.id);
+      }
+      broadcast(room, 'opponent_disconnected', { seat: loserSeat });
+      endRound(room.roomId, winnerSeat);
+      broadcast(room, 'match_end', {
+        winnerSeat,
+        winnerName: room.players[winnerSeat]?.name ?? 'Unknown',
+        reason: 'disconnect',
+      });
+      deleteRoom(room.roomId);
+    }
+  });
+
+  ws.on('error', (err) => {
+    console.error('WS error:', err.message);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Start a game round
+// ---------------------------------------------------------------------------
+
+function startGameRound(roomId, room) {
+  const round = startRound(roomId);
+  if (!round) return;
+
+  // Pick background once per match; keep it for all subsequent rounds
+  if (!room.backgroundId) {
+    const validPref = ARENAS.find(a => a.id === room.preferredArenaId);
+    room.backgroundId = validPref
+      ? validPref.id
+      : ARENAS[Math.floor(Math.random() * ARENAS.length)].id;
+  }
+
+  const roundStartTime = Date.now();
+  startRoundTimer(roomId);
+
+  for (const player of room.players) {
+    const puzz = getRoundPuzzleForPlayer(roomId, player.seat);
+    const opponent = room.players[1 - player.seat];
+    const oppPuzz = getRoundPuzzleForPlayer(roomId, 1 - player.seat);
+    send(player.ws, 'game_start', {
+      roundNumber: room.match.roundNumber,
+      puzzle: puzz.given,
+      solution: puzz.solution,
+      opponentGivens: oppPuzz.given,
+      opponentName: opponent?.name,
+      opponentCharacter: opponent?.characterId,
+      mySeat: player.seat,
+      myUseAlt: player.useAlt,
+      opponentUseAlt: opponent.useAlt,
+      roundStartTime,
+      backgroundId: room.backgroundId,
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Start server
+// ---------------------------------------------------------------------------
+
+httpServer.listen(PORT, () => {
+  console.log(`Sudoku Street Fight backend running on port ${PORT}`);
+});

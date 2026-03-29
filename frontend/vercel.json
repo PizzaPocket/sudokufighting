@@ -1,0 +1,18 @@
+{
+  "buildCommand": "echo \"window.WS_URL='$WS_URL'\" > js/config.js",
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "WS_URL": "@sudoku-ws-url"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
