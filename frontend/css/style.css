@@ -128,6 +128,7 @@ html, body {
 /* Utility button — semi-transparent dark pill for unemphasised functional actions
    (settings icon, carousel chevrons, etc.) */
 .btn-utility {
+  font-weight: var(--weight-bold);
   background: rgba(0,0,0,0.35);
   border: none;
   border-radius: var(--radius-sm);
@@ -537,7 +538,7 @@ html, body {
   letter-spacing: -0.7px;
 }
 
-.lobby-players { display: flex; align-items: center; gap: 40px; margin: 32px 0; }
+.lobby-players { display: flex; align-items: center; gap: 40px; margin: 16px 0 0; }
 
 .lobby-player {
   display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -576,14 +577,26 @@ html, body {
 
 .lobby-hint { font-size: var(--text-base); color: #ffffff; text-shadow: 1px 2px 0 var(--accent); animation: fade-pulse 1.4s ease-in-out infinite; }
 
+/* Lobby title */
+.lobby-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--accent);
+  margin: 0 0 0 0;
+}
+
 /* Lobby share / invite section */
 .lobby-share {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin: 12px 0;
-  padding: 14px 24px;
+  margin: 8px 0 0;
+  padding: 12px 20px;
   background: rgba(255,255,255,0.12);
   border-radius: var(--radius-md);
   border: 1px solid rgba(255,255,255,0.25);
@@ -596,6 +609,11 @@ html, body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+.lobby-invite-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .lobby-share-code {
   font-family: var(--font);
   font-size: var(--text-xl);
@@ -603,6 +621,14 @@ html, body {
   color: #ffffff;
   letter-spacing: 0.35em;
   text-shadow: 2px 2px 0 var(--accent);
+  min-width: 8ch;
+  text-align: center;
+}
+.lobby-share-loading {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.05em;
 }
 .lobby-copy-confirm {
   font-size: var(--text-xs);

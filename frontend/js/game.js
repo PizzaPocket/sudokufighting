@@ -143,6 +143,18 @@ function showScreen(id) {
   const headerSettings = document.getElementById('btn-settings');
   if (headerSettings) headerSettings.classList.toggle('hidden', id === 'gameplay');
   if (id === 'character-select') triggerCharacterSelectAnim();
+  if (id === 'lobby') {
+    const titleEl = document.getElementById('lobby-title');
+    if (titleEl) titleEl.textContent = state.gameMode === 'friend' ? 'PRIVATE ROOM' : 'MATCHMAKING';
+    // Pre-show invite box at fixed size to prevent layout jump
+    if (state.gameMode === 'friend') {
+      document.getElementById('lobby-invite').classList.remove('hidden');
+      document.getElementById('lobby-promo').classList.add('hidden');
+    } else {
+      document.getElementById('lobby-promo').classList.remove('hidden');
+      document.getElementById('lobby-invite').classList.add('hidden');
+    }
+  }
 }
 
 function triggerCharacterSelectAnim() {
@@ -806,14 +818,12 @@ const ANIM_MAP = {
 
 on('connected', () => {});
 
-on('waiting_for_opponent', ({ shareCode }) => {
+on('waiting_for_opponent', () => {
   // Re-send arena preference now that socket is confirmed open
   send('set_arena_preference', { arenaId: state.preferredArenaId });
-  if (shareCode) {
-    state.shareCode = shareCode;
-    document.getElementById('lobby-share-code').textContent = shareCode;
-    document.getElementById('lobby-share-section').classList.remove('hidden');
-  }
+  // Quick Play: no room code — show promo share instead
+  document.getElementById('lobby-promo').classList.remove('hidden');
+  document.getElementById('lobby-invite').classList.add('hidden');
 });
 
 on('room_assigned', () => {});
@@ -857,8 +867,9 @@ on('opponent_joined', ({ name, characterId, useAlt }) => {
   const char = state.characters.find(c => c.id === characterId);
   const portrait = (useAlt && char?.altPortraitPath) ? char.altPortraitPath : char?.portraitPath;
   updateLobbySlot(1 - state.mySeat, portrait, name, true);
-  // Hide invite section — room is now full
-  document.getElementById('lobby-share-section').classList.add('hidden');
+  // Hide share sections — room is now full
+  document.getElementById('lobby-promo').classList.add('hidden');
+  document.getElementById('lobby-invite').classList.add('hidden');
 });
 
 on('game_start', ({ roundNumber, puzzle, solution, opponentGivens, opponentName, opponentCharacter, mySeat, myUseAlt, opponentUseAlt, roundStartTime, backgroundId }) => {
@@ -1251,7 +1262,10 @@ function resetLobbyUI() {
   ['p1-panel', 'p2-panel', 'p1-grid', 'p2-grid'].forEach(id => {
     document.getElementById(id)?.classList.remove('is-me');
   });
-  document.getElementById('lobby-share-section').classList.add('hidden');
+  document.getElementById('lobby-promo').classList.add('hidden');
+  document.getElementById('lobby-invite').classList.add('hidden');
+  // Reset invite code back to loading state
+  document.getElementById('lobby-share-code').innerHTML = '<span class="lobby-share-loading">loading…</span>';
 }
 
 function resetGameState() {
@@ -1381,7 +1395,7 @@ document.getElementById('input-join-code').addEventListener('keydown', (e) => {
 on('room_created', ({ shareCode }) => {
   state.shareCode = shareCode;
   document.getElementById('lobby-share-code').textContent = shareCode;
-  document.getElementById('lobby-share-section').classList.remove('hidden');
+  // lobby-invite is already visible (shown in showScreen); just populate the code
 });
 
 on('room_not_found', () => {
@@ -1402,7 +1416,7 @@ on('opponent_left_lobby', () => {
   document.querySelector('#lobby-p2 .lobby-status').className = 'lobby-status waiting';
   document.querySelector('#lobby-p2 .lobby-status').textContent = 'WAITING...';
   document.getElementById('lobby-p2').classList.remove('is-me');
-  if (state.shareCode) document.getElementById('lobby-share-section').classList.remove('hidden');
+  if (state.shareCode) document.getElementById('lobby-invite').classList.remove('hidden');
 });
 
 document.getElementById('btn-copy-link').addEventListener('click', () => {
@@ -1412,6 +1426,23 @@ document.getElementById('btn-copy-link').addEventListener('click', () => {
     c.classList.remove('hidden');
     setTimeout(() => c.classList.add('hidden'), 2000);
   }).catch(() => prompt('Copy this link:', url));
+});
+
+document.getElementById('btn-share-game').addEventListener('click', () => {
+  const shareData = {
+    title: 'Sudoku Fighting',
+    text: 'Multiplayer sudoku with fighting game combat — challenge me!',
+    url: location.origin,
+  };
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`).then(() => {
+      const c = document.getElementById('lobby-promo-confirm');
+      c.classList.remove('hidden');
+      setTimeout(() => c.classList.add('hidden'), 2000);
+    }).catch(() => prompt('Share this link:', shareData.url));
+  }
 });
 
 // ---------------------------------------------------------------------------

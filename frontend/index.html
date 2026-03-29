@@ -16,12 +16,13 @@
   <meta name="theme-color" content="#FF8B16" />
   <meta property="og:title" content="Sudoku Fighting" />
   <meta property="og:description" content="Multiplayer sudoku with fighting game combat" />
-  <meta property="og:image" content="/assets/shared/share_image.png" />
+  <meta property="og:image" content="https://sudokufighting.com/assets/shared/share_image.png" />
+  <meta property="og:url" content="https://sudokufighting.com/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Sudoku Fighting" />
   <meta name="twitter:description" content="Multiplayer sudoku with fighting game combat" />
-  <meta name="twitter:image" content="/assets/shared/share_image.png" />
+  <meta name="twitter:image" content="https://sudokufighting.com/assets/shared/share_image.png" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -103,6 +104,7 @@
 
   <!-- ===== LOBBY ===== -->
   <div id="screen-lobby" class="screen">
+    <h2 class="lobby-title" id="lobby-title">MATCHMAKING</h2>
     <div class="lobby-players">
       <div class="lobby-player" id="lobby-p1">
         <div class="lobby-player-label">PLAYER 1</div>
@@ -118,12 +120,26 @@
         <span class="lobby-status waiting">WAITING...</span>
       </div>
     </div>
-    <div id="lobby-share-section" class="lobby-share hidden">
+
+    <!-- Quick Play: promo share (replaces room code) -->
+    <div id="lobby-promo" class="lobby-share hidden">
+      <span class="lobby-share-label">SHARE THE GAME</span>
+      <button class="btn btn-sm" id="btn-share-game">SHARE</button>
+      <p class="lobby-copy-confirm hidden" id="lobby-promo-confirm">Copied!</p>
+    </div>
+
+    <!-- Private Room: invite code + copy inline, reserved height from the start -->
+    <div id="lobby-invite" class="lobby-share hidden">
       <span class="lobby-share-label">INVITE A FRIEND</span>
-      <div class="lobby-share-code" id="lobby-share-code">------</div>
-      <button class="btn btn-sm" id="btn-copy-link">COPY LINK</button>
+      <div class="lobby-invite-row">
+        <div class="lobby-share-code" id="lobby-share-code">
+          <span class="lobby-share-loading">loading…</span>
+        </div>
+        <button class="btn btn-sm" id="btn-copy-link">COPY</button>
+      </div>
       <p class="lobby-copy-confirm hidden" id="lobby-copy-confirm">Copied!</p>
     </div>
+
     <p class="lobby-hint">Waiting for opponent...</p>
     <div class="lobby-arena-picker">
       <span class="settings-label">ARENA</span>
