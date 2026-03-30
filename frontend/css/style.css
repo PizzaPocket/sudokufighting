@@ -1090,28 +1090,34 @@ html, body {
   z-index: 0;
 }
 
-/* --- Palm Trees (arena bg_1 only) --- */
-#palm-trees {
+/* --- Midground graphics (arena overlays that sit just above the ground) ---
+   Examples: palm_trees (El Tropical), buildings (Derelict).
+   On desktop these are absolute within the arena container.
+   On real mobile browsers 100vh > window.innerHeight (address bar not accounted
+   for), so the containing block extends below the visible fold. The mobile media
+   query below switches midground graphics to position:fixed so they are always
+   anchored to the actual visual viewport, matching the fight-ground treatment. */
+.midground-graphic {
   display: none;
   position: absolute;
   bottom: 9vw;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Palm Trees (arena bg_1 only) --- */
+#palm-trees {
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% + 100px); /* 50px overflow each side */
   max-width: 2100px;         /* = 2000px content + 100px overflow */
-  height: auto;
-  z-index: 1;
 }
 
 /* --- Buildings (arena bg_3 only) --- */
 #buildings {
-  display: none;
-  position: absolute;
-  bottom: 9vw;
   left: 0;
   width: 100%;
-  height: auto;
-  z-index: 1;
 }
 
 /* --- Fight Stage --- */
@@ -1352,6 +1358,11 @@ html, body {
     z-index: 1;
   }
 
+  /* Midground graphics also pinned to visual viewport — same reason as fight-ground */
+  .midground-graphic {
+    position: fixed;
+  }
+
   /* Sprites flush to the stage bottom — no extra breathing room */
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
 
@@ -1364,7 +1375,7 @@ html, body {
 @media (pointer: coarse) {
   #mobile-numpad {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(9, 1fr);
     gap: 4px;
     width: 100%;
     max-width: 480px;
@@ -1399,9 +1410,7 @@ html, body {
     transform: scale(0.93);
   }
 
-  .numpad-clear {
-    color: var(--text-primary); /* same as number text — no alarming red */
-  }
+
 }
 
 /* ===========================================================================

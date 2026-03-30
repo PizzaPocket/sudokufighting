@@ -2,6 +2,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { generatePuzzle } from './puzzle.js';
 
+// ---------------------------------------------------------------------------
+// Combat constants
+// ---------------------------------------------------------------------------
+
+// Damage dealt to yourself when you submit a wrong number.
+// High enough to actively discourage speculative guessing — roughly 22% of
+// starting health (1800 HP) per mistake, meaning 4–5 wrong guesses loses a round.
+const WRONG_GUESS_DAMAGE = 400;
+
 // rooms: Map<roomId, Room>
 const rooms = new Map();
 
@@ -175,7 +184,7 @@ export function handleCellInput(roomId, playerId, row, col, value, scheduleTimer
     // Wrong answer — self-damage, reset streaks
     round.consecutiveCorrect[attackerSeat] = 0;
     round.combo[attackerSeat] = 0;
-    const selfDmg = 100; // 5 baseline × 20
+    const selfDmg = WRONG_GUESS_DAMAGE;
     round.health[attackerSeat] = Math.max(0, round.health[attackerSeat] - selfDmg);
     events.push({ type: 'self_damage', payload: { seat: attackerSeat, damage: selfDmg } });
     events.push({ type: 'health_update', payload: { health: [...round.health] } });

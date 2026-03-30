@@ -1304,6 +1304,8 @@ function resetGameState() {
   state.opponentDisconnected = false;
   state.health = [100, 100];
   state.roundWins = [0, 0];
+  state.animP1?.stop();
+  state.animP2?.stop();
   state.animP1 = null;
   state.animP2 = null;
   state.shareCode = null;
