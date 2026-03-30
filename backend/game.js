@@ -474,6 +474,25 @@ function wipeBox(puzz, boxRow, boxCol) {
 }
 
 // ---------------------------------------------------------------------------
+// Single-player rooms (VS AI)
+// ---------------------------------------------------------------------------
+
+export function createSinglePlayerRoom(realPlayerId, ws, charId, name, aiCharId, aiName) {
+  const roomId = createRoom();
+  addPlayerToRoom(roomId, realPlayerId, ws, charId, name);
+  const botId = 'bot_' + uuidv4();
+  addPlayerToRoom(roomId, botId, null, aiCharId, aiName);
+  const room = rooms.get(roomId);
+  room.isSinglePlayer = true;
+  room.botId = botId;
+  // Mirror-match: if player and AI share same character, give AI the alt costume
+  if (room.players[0].characterId === room.players[1].characterId) {
+    room.players[1].useAlt = true;
+  }
+  return { roomId, room };
+}
+
+// ---------------------------------------------------------------------------
 // Private rooms (Play with a Friend)
 // ---------------------------------------------------------------------------
 

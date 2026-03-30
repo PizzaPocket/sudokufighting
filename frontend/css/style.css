@@ -272,7 +272,8 @@ html, body {
 
 #screen-start,
 #screen-character-select,
-#screen-lobby {
+#screen-lobby,
+#screen-sp-lobby {
   background-image: url(/assets/ui/bg_0.svg);
   background-size: cover;
   background-position: center;
@@ -558,6 +559,12 @@ html, body {
 #lobby-p1.is-me img { border: 8px solid var(--p1-color); }
 #lobby-p2.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p2-color); text-shadow: 3px 3px 0 #ffffff; }
 #lobby-p2.is-me img { border: 8px solid var(--p2-color); }
+
+/* SP lobby player highlights */
+#sp-lobby-p1.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p1-color); text-shadow: 3px 3px 0 #ffffff; }
+#sp-lobby-p1.is-me img { border: 8px solid var(--p1-color); }
+#sp-lobby-p2 .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p2-color); text-shadow: 3px 3px 0 #ffffff; }
+#sp-lobby-p2 img { border: 8px solid var(--p2-color); }
 
 /* Own sudoku grid — override outer border only via custom properties */
 #p1-grid.is-me { --_grid-outline-color: var(--p1-color); --_grid-outline-width: 3px; }
@@ -1288,6 +1295,9 @@ html, body {
   /* Lobby — show only own player */
   .lobby-player:not(.is-me) { display: none; }
   .lobby-vs { display: none; }
+  /* SP lobby — hide AI slot on mobile */
+  #screen-sp-lobby #sp-lobby-p2 { display: none; }
+  #screen-sp-lobby .lobby-vs { display: none; }
 
   #arena {
     grid-template-columns: 1fr;
@@ -1393,5 +1403,73 @@ html, body {
     color: var(--text-primary); /* same as number text — no alarming red */
   }
 }
+
+/* ===========================================================================
+   Single-Player mode — start screen + SP lobby
+   =========================================================================== */
+
+/* Section mode labels (2 PLAYER / SINGLE PLAYER) */
+.start-mode-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-shadow: 2px 2px 0 var(--accent);
+  margin: 4px 0 2px;
+  text-align: center;
+}
+
+/* VS AI button — orange accent to distinguish from multiplayer */
+.btn-vs-ai {
+  background: var(--orange);
+  box-shadow: 4px 4px 0 #8b4400;
+}
+.btn-vs-ai:hover { background: #e07500; }
+.btn-vs-ai:active { background: #c06200; box-shadow: 2px 2px 0 #8b4400; }
+
+/* AI portrait faces left (same as P2 in multiplayer) */
+#sp-lobby-p2-portrait { transform: scaleX(-1); }
+
+/* Difficulty selector */
+.sp-difficulty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+.sp-difficulty-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 var(--accent);
+}
+.sp-difficulty-btns {
+  display: flex;
+  gap: 10px;
+}
+.sp-diff-btn {
+  min-width: 76px;
+  opacity: 0.55;
+}
+.sp-diff-btn.selected {
+  opacity: 1;
+  outline: 2px solid #ffffff;
+  outline-offset: 1px;
+}
+
+/* SP start button */
+.btn-sp-start {
+  margin-top: 18px;
+  min-width: 160px;
+  background: var(--orange);
+  box-shadow: 4px 4px 0 #8b4400;
+}
+.btn-sp-start:hover { background: #e07500; }
+.btn-sp-start:active { background: #c06200; box-shadow: 2px 2px 0 #8b4400; }
 
 .hidden { display: none !important; }

@@ -41,12 +41,16 @@ const state = {
   animP1: null,
   animP2: null,
   // Flow state
-  gameMode: null,           // 'quick' | 'friend'
+  gameMode: null,           // 'quick' | 'friend' | 'singleplayer'
   shareCode: null,          // invite code shown in lobby
   pendingJoinCode: null,    // code from URL param or input, used after char select
   friendCreating: false,    // true when this player is the room creator
   initialInteractionDone: false,
   opponentDisconnected: false,
+  // Single-player state
+  spDifficulty: 'medium',   // 'easy' | 'medium' | 'hard'
+  aiCharacterId: null,
+  aiName: null,
 };
 
 // Round timer
@@ -141,7 +145,7 @@ function showScreen(id) {
   const el = document.getElementById(`screen-${id}`);
   if (el) el.classList.add('active');
   const backBtn = document.getElementById('btn-back');
-  if (backBtn) backBtn.classList.toggle('hidden', id !== 'lobby' && id !== 'character-select');
+  if (backBtn) backBtn.classList.toggle('hidden', id !== 'lobby' && id !== 'character-select' && id !== 'sp-lobby');
   // Hide the persistent header settings icon on gameplay — the action bar has its own
   const headerSettings = document.getElementById('btn-settings');
   if (headerSettings) headerSettings.classList.toggle('hidden', id === 'gameplay');
@@ -974,23 +978,29 @@ on('game_start', ({ roundNumber, puzzle, solution, opponentGivens, opponentName,
       updateLobbySlot(1 - state.mySeat, oppChar.altPortraitPath ?? oppChar.portraitPath, oppLobbyName, true);
     }
 
-    // 3-second countdown — arena carousel stays live so last selection wins
-    const hint = document.querySelector('#screen-lobby .lobby-hint');
-    let countdown = 3;
-    if (hint) hint.textContent = `FIGHTERS READY (${countdown})`;
-    const countdownInterval = setInterval(() => {
-      countdown--;
-      if (countdown > 0) {
-        if (hint) hint.textContent = `FIGHTERS READY (${countdown})`;
-      } else {
-        clearInterval(countdownInterval);
-        if (hint) hint.textContent = '';
-      }
-    }, 1000);
+    if (state.gameMode === 'singleplayer') {
+      // Single player: skip the lobby countdown and go straight in
+      fadeOutMusic(500);
+      setTimeout(() => showPreRound(roundNumber, backgroundId), 500);
+    } else {
+      // Multiplayer: 3-second countdown — arena carousel stays live so last selection wins
+      const hint = document.querySelector('#screen-lobby .lobby-hint');
+      let countdown = 3;
+      if (hint) hint.textContent = `FIGHTERS READY (${countdown})`;
+      const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          if (hint) hint.textContent = `FIGHTERS READY (${countdown})`;
+        } else {
+          clearInterval(countdownInterval);
+          if (hint) hint.textContent = '';
+        }
+      }, 1000);
 
-    // Fade music just before the transition, enter with whichever arena is showing
-    setTimeout(() => fadeOutMusic(500), 2500);
-    setTimeout(() => showPreRound(roundNumber, ARENAS[selectedArenaIndex].id), 3000);
+      // Fade music just before the transition, enter with whichever arena is showing
+      setTimeout(() => fadeOutMusic(500), 2500);
+      setTimeout(() => showPreRound(roundNumber, ARENAS[selectedArenaIndex].id), 3000);
+    }
   } else {
     // Subsequent rounds — music keeps playing, jump straight in
     showPreRound(roundNumber, backgroundId);
@@ -1297,6 +1307,9 @@ function resetGameState() {
   state.animP1 = null;
   state.animP2 = null;
   state.shareCode = null;
+  state.aiCharacterId = null;
+  state.aiName = null;
+  document.getElementById('sp-lobby-p1')?.classList.remove('is-me');
   stopRoundTimer();
   document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('btn-select-char').disabled = true;
@@ -1312,6 +1325,12 @@ function proceedToLobby() {
   const char = state.characters.find(c => c.id === state.myCharacter);
   const name = char?.name?.toUpperCase() ?? 'FIGHTER';
   state.myName = name;
+
+  // Single-player takes its own lobby path
+  if (state.gameMode === 'singleplayer') {
+    showSinglePlayerLobby();
+    return;
+  }
 
   if (char) {
     document.getElementById('lobby-p1-portrait').src = char.portraitPath;
@@ -1352,6 +1371,77 @@ function proceedToLobby() {
 document.getElementById('btn-select-char').addEventListener('click', () => proceedToLobby());
 
 // ---------------------------------------------------------------------------
+// Single-player lobby
+// ---------------------------------------------------------------------------
+
+let spSelectedArenaIndex = 0;
+
+function renderSpArenaTitle() {
+  document.getElementById('sp-arena-title').textContent = ARENAS[spSelectedArenaIndex].name;
+}
+
+function showSinglePlayerLobby() {
+  const char = state.characters.find(c => c.id === state.myCharacter);
+  const name = char?.name?.toUpperCase() ?? 'FIGHTER';
+
+  // Populate player slot
+  document.getElementById('sp-lobby-p1-portrait').src = char?.portraitPath ?? '/characters/placeholder_fighter.svg';
+  document.getElementById('sp-lobby-p1-name').textContent = name;
+  document.getElementById('sp-lobby-p1').classList.add('is-me');
+
+  // Pick a random AI character different from the player's
+  const others = state.characters.filter(c => c.id !== state.myCharacter);
+  const aiChar = others[Math.floor(Math.random() * others.length)];
+  state.aiCharacterId = aiChar.id;
+  state.aiName = aiChar.name.toUpperCase();
+  document.getElementById('sp-lobby-p2-portrait').src = aiChar.portraitPath;
+  document.getElementById('sp-lobby-p2-name').textContent = state.aiName;
+
+  // Sync difficulty button selection
+  document.querySelectorAll('.sp-diff-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.diff === state.spDifficulty);
+  });
+
+  renderSpArenaTitle();
+  showScreen('sp-lobby');
+}
+
+document.querySelectorAll('.sp-diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.spDifficulty = btn.dataset.diff;
+    document.querySelectorAll('.sp-diff-btn').forEach(b =>
+      b.classList.toggle('selected', b === btn)
+    );
+  });
+});
+
+document.getElementById('sp-arena-prev').addEventListener('click', () => {
+  spSelectedArenaIndex = ((spSelectedArenaIndex - 1 + ARENAS.length) % ARENAS.length);
+  renderSpArenaTitle();
+});
+document.getElementById('sp-arena-next').addEventListener('click', () => {
+  spSelectedArenaIndex = ((spSelectedArenaIndex + 1) % ARENAS.length);
+  renderSpArenaTitle();
+});
+
+document.getElementById('btn-sp-start').addEventListener('click', () => {
+  const preferredArenaId = ARENAS[spSelectedArenaIndex].id;
+  function sendStartSP() {
+    off('_connected', sendStartSP);
+    send('start_singleplayer', {
+      characterId: state.myCharacter,
+      name: state.myName,
+      difficulty: state.spDifficulty,
+      aiCharacterId: state.aiCharacterId,
+      aiName: state.aiName,
+      preferredArenaId,
+    });
+  }
+  connect();
+  on('_connected', sendStartSP);
+});
+
+// ---------------------------------------------------------------------------
 // Start screen handlers + URL param
 // ---------------------------------------------------------------------------
 
@@ -1372,6 +1462,12 @@ function showStartError(msg) {
   el.classList.remove('hidden');
   setTimeout(() => el.classList.add('hidden'), 5000);
 }
+
+document.getElementById('btn-single-player').addEventListener('click', () => {
+  onInitialInteraction();
+  state.gameMode = 'singleplayer';
+  showScreen('character-select');
+});
 
 document.getElementById('btn-quick-play').addEventListener('click', () => {
   onInitialInteraction();
@@ -1487,6 +1583,13 @@ document.getElementById('btn-back').addEventListener('click', () => {
     state.myName = null;
     state.mySeat = null;
     state.shareCode = null;
+    document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('btn-select-char').disabled = true;
+    showScreen('character-select');
+  } else if (currentScreen === 'sp-lobby') {
+    document.getElementById('sp-lobby-p1').classList.remove('is-me');
+    state.aiCharacterId = null;
+    state.aiName = null;
     document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('btn-select-char').disabled = true;
     showScreen('character-select');

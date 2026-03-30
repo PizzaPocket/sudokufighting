@@ -76,6 +76,7 @@
       <img src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" class="start-logo-bottom" />
     </div>
     <div class="start-actions">
+      <h3 class="start-mode-label">2 PLAYER</h3>
       <div class="start-section">
         <span class="start-section-label">Join matchmaking queue</span>
         <button class="btn" id="btn-quick-play">QUICK PLAY</button>
@@ -89,6 +90,11 @@
           <button id="btn-join-room">JOIN</button>
         </div>
         <p class="start-error hidden" id="start-error"></p>
+      </div>
+      <div class="start-divider"></div>
+      <h3 class="start-mode-label">SINGLE PLAYER</h3>
+      <div class="start-section">
+        <button class="btn btn-vs-ai" id="btn-single-player">VS AI</button>
       </div>
     </div>
   </div>
@@ -147,6 +153,46 @@
         <button class="carousel-btn btn-utility" id="arena-next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
       </div>
     </div>
+  </div>
+
+  <!-- ===== SP LOBBY ===== -->
+  <div id="screen-sp-lobby" class="screen">
+    <h2 class="lobby-title">VS AI</h2>
+    <div class="lobby-players">
+      <div class="lobby-player" id="sp-lobby-p1">
+        <div class="lobby-player-label">YOU</div>
+        <img id="sp-lobby-p1-portrait" src="/characters/placeholder_fighter.svg" alt="" />
+        <span id="sp-lobby-p1-name">---</span>
+        <span class="lobby-status ready">READY</span>
+      </div>
+      <div class="lobby-vs">VS</div>
+      <div class="lobby-player" id="sp-lobby-p2">
+        <div class="lobby-player-label">AI</div>
+        <img id="sp-lobby-p2-portrait" src="/characters/placeholder_fighter.svg" alt="" />
+        <span id="sp-lobby-p2-name">---</span>
+        <span class="lobby-status ready">READY</span>
+      </div>
+    </div>
+
+    <div class="sp-difficulty">
+      <span class="sp-difficulty-label">DIFFICULTY</span>
+      <div class="sp-difficulty-btns">
+        <button class="btn btn-sm btn-secondary sp-diff-btn" data-diff="easy">EASY</button>
+        <button class="btn btn-sm btn-secondary sp-diff-btn selected" data-diff="medium">MEDIUM</button>
+        <button class="btn btn-sm btn-secondary sp-diff-btn" data-diff="hard">HARD</button>
+      </div>
+    </div>
+
+    <div class="lobby-arena-picker">
+      <span class="settings-label">ARENA</span>
+      <div class="track-carousel">
+        <button class="carousel-btn btn-utility" id="sp-arena-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
+        <span class="track-title" id="sp-arena-title"></span>
+        <button class="carousel-btn btn-utility" id="sp-arena-next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
+      </div>
+    </div>
+
+    <button class="btn btn-sp-start" id="btn-sp-start">START!</button>
   </div>
 
   <!-- ===== GAMEPLAY (pre-round, round, round-end all happen here as overlays) ===== -->

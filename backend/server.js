@@ -10,8 +10,9 @@ import {
   findRoomByPlayer, getRoom, deleteRoom, getRoomCount,
   startRound, handleCellInput, applyDamageFromAttack, applyCounterDamage,
   endRound, advanceRound, determineRoundWinner, getRoundPuzzleForPlayer,
-  createPrivateRoom, joinByShareCode,
+  createPrivateRoom, joinByShareCode, createSinglePlayerRoom,
 } from './game.js';
+import { startBotAI, stopBotAI } from './bot.js';
 
 const PORT = process.env.PORT || 8080;
 
@@ -66,9 +67,8 @@ function clearRoundTimer(roomId) {
 // ---------------------------------------------------------------------------
 
 function send(ws, type, payload) {
-  if (ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({ type, payload }));
-  }
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify({ type, payload }));
 }
 
 function broadcast(room, type, payload, excludePlayerId = null) {
@@ -118,6 +118,52 @@ function clearAttackTimer(attackId) {
   }
 }
 
+// Shared event dispatcher — used by both cell_input (real player) and bot moves
+function processCellEvents(room, events) {
+  for (const evt of events) {
+    if (evt.type === 'cell_update' || evt.type === 'cursor_update') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'attack_incoming') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'counter_window_active') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'row_wiped' || evt.type === 'column_wiped' || evt.type === 'box_wiped') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'health_update') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'combo_update' || evt.type === 'score_update') {
+      broadcast(room, evt.type, evt.payload);
+    } else if (evt.type === 'auto_counter') {
+      clearAttackTimer(evt.payload.attackId);
+      const cResult = applyCounterDamage(room.roomId, evt.payload.attackId);
+      if (cResult) {
+        broadcast(room, 'counter_landed', {
+          counterSeat: cResult.defenderSeat,
+          reducedDamage: cResult.reducedDamage,
+          counterDamage: cResult.counterDamage,
+        });
+        broadcast(room, 'health_update', { health: cResult.health });
+        broadcast(room, 'combo_update', { seat: cResult.attackerSeat, combo: 0 });
+        checkRoundEnd(room.roomId, room);
+      }
+    } else if (evt.type === 'puzzle_complete') {
+      const winnerSeat = determineRoundWinner(room.roomId);
+      triggerRoundEnd(room.roomId, room, winnerSeat);
+    }
+  }
+}
+
+// Factory: returns a makeBotMove(botId, row, col, value) callback for use in bot.js
+function makeBotMoveProcessor(roomId) {
+  return function(botId, row, col, value) {
+    const room = getRoom(roomId);
+    if (!room || room.state !== 'in_round') return;
+    const events = handleCellInput(room.roomId, botId, row, col, value, scheduleAttackTimer);
+    processCellEvents(room, events);
+    checkRoundEnd(room.roomId, room);
+  };
+}
+
 function checkRoundEnd(roomId, room) {
   if (!room || room.state !== 'in_round') return;
   const { health } = room.round;
@@ -134,6 +180,8 @@ function triggerRoundEnd(roomId, room, winnerSeat) {
   for (const attack of (room.round?.pendingAttacks ?? [])) {
     clearAttackTimer(attack.id);
   }
+  // Stop bot AI for this round (restarted per-round in next_round handler)
+  if (room.isSinglePlayer) stopBotAI(roomId);
 
   const result = endRound(roomId, winnerSeat);
   if (!result) return;
@@ -247,6 +295,31 @@ wss.on('connection', (ws) => {
         break;
       }
 
+      case 'start_singleplayer': {
+        const { characterId = 'fighter1', name = 'Player', difficulty = 'medium',
+                aiCharacterId = 'fighter2', aiName = 'AI', preferredArenaId = null } = payload;
+        const { roomId: spRoomId, room: spRoom } = createSinglePlayerRoom(
+          playerId, ws, characterId, name, aiCharacterId, aiName
+        );
+        spRoom.preferredArenaId = ARENAS.find(a => a.id === preferredArenaId) ? preferredArenaId : null;
+        spRoom.botDifficulty = difficulty;
+
+        // Notify the real player (bot has null ws — send() silently skips it)
+        send(ws, 'room_assigned', { roomId: spRoomId });
+        send(ws, 'player_joined', {
+          playerId, seat: 0,
+          name, characterId, useAlt: spRoom.players[0].useAlt,
+        });
+        send(ws, 'opponent_joined', {
+          name: aiName, characterId: aiCharacterId,
+          useAlt: spRoom.players[1].useAlt, seat: 1,
+        });
+
+        startGameRound(spRoomId, spRoom);
+        startBotAI(spRoom, difficulty, makeBotMoveProcessor(spRoomId));
+        break;
+      }
+
       case 'set_arena_preference': {
         const { arenaId } = payload;
         if (ARENAS.find(a => a.id === arenaId)) {
@@ -261,45 +334,8 @@ wss.on('connection', (ws) => {
         const { row, col, value } = payload;
         if (row == null || col == null || value == null) return;
 
-        const events = handleCellInput(
-          room.roomId, playerId, row, col, value,
-          (attackId, roomId, delay) => scheduleAttackTimer(attackId, roomId, delay)
-        );
-
-        for (const evt of events) {
-          if (evt.type === 'cell_update' || evt.type === 'cursor_update') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'attack_incoming') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'counter_window_active') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'row_wiped' || evt.type === 'column_wiped' || evt.type === 'box_wiped') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'health_update') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'combo_update' || evt.type === 'score_update') {
-            broadcast(room, evt.type, evt.payload);
-          } else if (evt.type === 'auto_counter') {
-            // Defender entered correct cell during counter window — auto-trigger
-            clearAttackTimer(evt.payload.attackId);
-            const cResult = applyCounterDamage(room.roomId, evt.payload.attackId);
-            if (cResult) {
-              broadcast(room, 'counter_landed', {
-                counterSeat: cResult.defenderSeat,
-                reducedDamage: cResult.reducedDamage,
-                counterDamage: cResult.counterDamage,
-              });
-              broadcast(room, 'health_update', { health: cResult.health });
-              broadcast(room, 'combo_update', { seat: cResult.attackerSeat, combo: 0 });
-              checkRoundEnd(room.roomId, room);
-            }
-          } else if (evt.type === 'puzzle_complete') {
-            const winnerSeat = determineRoundWinner(room.roomId);
-            triggerRoundEnd(room.roomId, room, winnerSeat);
-          }
-        }
-
-        // Check round end after applying events
+        const events = handleCellInput(room.roomId, playerId, row, col, value, scheduleAttackTimer);
+        processCellEvents(room, events);
         checkRoundEnd(room.roomId, room);
         break;
       }
@@ -320,6 +356,7 @@ wss.on('connection', (ws) => {
         const winnerSeat = 1 - loserSeat;
         clearRoundTimer(room.roomId);
         for (const attack of (room.round?.pendingAttacks ?? [])) clearAttackTimer(attack.id);
+        if (room.isSinglePlayer) stopBotAI(room.roomId);
         room.state = 'match_end';
         const winner = room.players[winnerSeat];
         broadcast(room, 'match_end', {
@@ -335,11 +372,19 @@ wss.on('connection', (ws) => {
         if (!room || room.state !== 'round_end') return;
         const player = room.players.find(p => p.id === playerId);
         if (player) player.readyForNext = true;
+        // Bot is always immediately ready
+        if (room.isSinglePlayer) {
+          const bot = room.players.find(p => p.id === room.botId);
+          if (bot) bot.readyForNext = true;
+        }
         const allReady = room.players.length === 2 && room.players.every(p => p.readyForNext);
         if (allReady) {
           room.players.forEach(p => delete p.readyForNext);
           advanceRound(room.roomId);
           startGameRound(room.roomId, room);
+          if (room.isSinglePlayer) {
+            startBotAI(room, room.botDifficulty, makeBotMoveProcessor(room.roomId));
+          }
         }
         break;
       }
@@ -352,6 +397,15 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     dequeue(playerId);
     const room = findRoomByPlayer(playerId);
+
+    // Single-player: just clean up quietly
+    if (room && room.isSinglePlayer) {
+      stopBotAI(room.roomId);
+      clearRoundTimer(room.roomId);
+      for (const attack of (room.round?.pendingAttacks ?? [])) clearAttackTimer(attack.id);
+      deleteRoom(room.roomId);
+      return;
+    }
 
     // Player disconnects from a private room still waiting for a second player
     if (room && room.state === 'waiting_private') {
