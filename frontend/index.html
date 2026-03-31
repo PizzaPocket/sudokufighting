@@ -42,33 +42,33 @@
     </div>
   </header>
 
-  <!-- ===== SETTINGS PANEL ===== -->
-  <div class="settings-panel hidden" id="settings-panel">
-    <div class="settings-item">
-      <span class="settings-label">MUSIC</span>
+  <!-- ===== CONTEXTUAL MENU (Settings) ===== -->
+  <div class="ctx-menu hidden" id="settings-panel">
+    <div class="ctx-menu-item">
+      <span class="ctx-label">MUSIC</span>
       <label class="toggle-switch">
         <input type="checkbox" id="toggle-music" checked />
         <span class="toggle-slider"></span>
       </label>
     </div>
-    <div class="settings-item track-row">
-      <span class="settings-label">TRACK</span>
+    <div class="ctx-menu-item stacked">
+      <span class="ctx-label">TRACK</span>
       <div class="track-carousel">
         <button class="carousel-btn btn-utility" id="track-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
         <span class="track-title" id="track-title"></span>
         <button class="carousel-btn btn-utility" id="track-next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
       </div>
     </div>
-    <div class="settings-divider"></div>
-    <div class="settings-item">
-      <span class="settings-label">SOUND EFFECTS</span>
+    <div class="ctx-menu-divider"></div>
+    <div class="ctx-menu-item">
+      <span class="ctx-label">SOUND EFFECTS</span>
       <label class="toggle-switch">
         <input type="checkbox" id="toggle-sfx" checked />
         <span class="toggle-slider"></span>
       </label>
     </div>
-    <div class="settings-divider"></div>
-    <div class="settings-item">
+    <div class="ctx-menu-divider"></div>
+    <div class="ctx-menu-item">
       <a href="/style-guide.html" target="_blank" style="font-family:var(--font);font-size:var(--text-xs);font-weight:var(--weight-bold);letter-spacing:0.08em;color:rgba(255,255,255,0.55);text-decoration:none;text-shadow:1px 1px 0 rgba(0,0,0,0.4);">STYLE GUIDE ↗</a>
     </div>
   </div>
@@ -150,7 +150,7 @@
 
     <p class="lobby-hint">Waiting for opponent...</p>
     <div class="lobby-arena-picker">
-      <span class="settings-label">ARENA</span>
+      <span class="ctx-label">ARENA</span>
       <div class="track-carousel">
         <button class="carousel-btn btn-utility" id="arena-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
         <span class="track-title" id="arena-title"></span>
@@ -188,7 +188,7 @@
     </div>
 
     <div class="lobby-arena-picker">
-      <span class="settings-label">ARENA</span>
+      <span class="ctx-label">ARENA</span>
       <div class="track-carousel">
         <button class="carousel-btn btn-utility" id="sp-arena-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
         <span class="track-title" id="sp-arena-title"></span>
