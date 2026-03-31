@@ -22,15 +22,18 @@
   /* Shared layout */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-xs:   5px;   /* small buttons */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-pill: 999px; /* status pills, infinite-radius */
   /* Typography */
   --font:         'Roboto Mono', monospace;
   --font-display: 'Barlow Condensed', sans-serif; /* weight 900 only — FIGHT! KO VICTORY etc */
 
   /* Type scale */
   --text-xs:   10px;  /* fine print */
+  --text-btn:  15px;  /* buttons — intentionally between base and md */
   --text-sm:   12px;  /* settings labels, status text */
   --text-base: 14px;  /* body, HUD info */
   --text-md:   18px;  /* player names, round label, lobby labels */
@@ -68,7 +71,9 @@
   --danger-bg-mid:   #FFCED1;
 
   /* Shared action colours */
-  --orange: #FF8B16;
+  --orange:       #FF8B16;
+  --orange-hover: #E07500;  /* .btn-alt hover */
+  --orange-dark:  #C06200;  /* .btn-alt active */
   --yellow: #FFCA00;
 
   /*
@@ -288,7 +293,7 @@ html, body {
 
 .btn {
   font-family: var(--font);
-  font-size: 15px;
+  font-size: var(--text-btn);
   font-weight: 700;
   padding: 12px 32px;
   background: var(--accent);
@@ -299,7 +304,6 @@ html, body {
   letter-spacing: 0.01em;
   transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
   box-shadow: 4px 4px 0 #ffffff;
-  margin-top: 12px;
 }
 .btn:hover { background: var(--accent-hover); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
 .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
@@ -309,17 +313,29 @@ html, body {
 .btn.btn-sm {
   font-size: var(--text-sm);
   padding: 5px 14px;
-  margin-top: 0;
   box-shadow: 2px 2px 0 #ffffff;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xs);
 }
 .btn.btn-sm:hover { box-shadow: 3px 3px 0 #ffffff; }
 .btn.btn-sm:active { box-shadow: 1px 1px 0 #ffffff; }
 
+/* When .btn-secondary is combined with .btn or .btn.btn-sm, purple shadow must win
+   (.btn.btn-sm specificity 0,2,0 would otherwise beat .btn-secondary 0,1,0) */
+.btn.btn-secondary {
+  background: #ffffff;
+  color: var(--accent);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.btn.btn-secondary:hover  { background: var(--accent-light); box-shadow: 5px 6px 0 var(--accent); }
+.btn.btn-secondary:active { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary         { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:hover   { box-shadow: 3px 3px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:active  { box-shadow: 1px 1px 0 var(--accent); }
+
 /* Secondary button — white background, brand accent text, purple shadow */
 .btn-secondary {
   font-family: var(--font);
-  font-size: 15px;
+  font-size: var(--text-btn);
   font-weight: 700;
   padding: 12px 32px;
   background: #ffffff;
@@ -330,7 +346,6 @@ html, body {
   letter-spacing: 0.01em;
   transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
   box-shadow: 4px 4px 0 var(--accent);
-  margin-top: 12px;
 }
 .btn-secondary:hover { background: var(--accent-light); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
 .btn-secondary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
@@ -406,11 +421,9 @@ html, body {
   text-transform: uppercase;
 }
 
-/* Fixed width shared by all three start-screen CTAs; buttons lose their default margin-top
-   since the column gap handles all spacing here */
+/* Fixed width shared by all start-screen CTAs */
 #screen-start .btn,
 #screen-start .join-combo { width: 240px; box-sizing: border-box; }
-#screen-start .btn { margin-top: 0; }
 #screen-start .join-combo { margin-top: 8px; }
 
 .start-divider {
@@ -575,7 +588,7 @@ html, body {
 
 .lobby-status {
   font-size: var(--text-sm); font-weight: var(--weight-bold); padding: 3px 10px;
-  border-radius: 20px; letter-spacing: 0.04em;
+  border-radius: var(--radius-pill); letter-spacing: 0.04em;
 }
 .lobby-status.ready { color: #ffffff; background: var(--accent); }
 .lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
@@ -1194,8 +1207,9 @@ html, body {
 .game-overlay.hidden { display: none; }
 .overlay-btn-row { display: flex; gap: 16px; margin-top: 12px; pointer-events: all; }
 .overlay-btn-row.hidden { display: none; }
-.btn-leave { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
-.btn-leave:hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn-danger { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
+.btn-danger:hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn-danger:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
 
 .overlay-main {
   font-family: var(--font-display);
@@ -1212,9 +1226,9 @@ html, body {
 .overlay-sub {
   font-size: var(--text-lg);
   font-weight: var(--weight-bold);
-  color: #FFCA00; /* never white — sub-text can appear over bright/white arena backgrounds */
+  color: var(--yellow); /* never white — sub-text can appear over bright/white arena backgrounds */
   letter-spacing: -0.3px;
-  text-shadow: 1px 2px 0 #8B49FF;
+  text-shadow: 1px 2px 0 var(--accent);
 }
 
 @keyframes pop-in {
@@ -1236,11 +1250,11 @@ html, body {
 .match-end-title {
   font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-black); color: var(--accent); letter-spacing: 0;
   animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  text-shadow: 0 2px 0 rgba(255,255,255,0.7), 2px 4px 12px rgba(0,0,0,0.15);
+  text-shadow: 3px 4px 0 #ffffff;
 }
 .match-end-title.defeat { color: var(--danger-color); }
 .match-winner-name { font-size: var(--text-xl); font-weight: var(--weight-heavy); color: var(--accent); letter-spacing: -0.5px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.8), 1px 2px 6px rgba(0,0,0,0.12); }
+  text-shadow: 2px 3px 0 #ffffff; }
 .match-winner-char img { width: 120px; height: 120px; object-fit: cover; object-position: 50% 12%; border-radius: 12px; image-rendering: pixelated; }
 
 /* =========================================================
@@ -1429,13 +1443,13 @@ html, body {
   text-align: center;
 }
 
-/* VS AI button — orange accent to distinguish from multiplayer */
-.btn-vs-ai {
+/* Alternate primary — orange, used when a second primary-weight CTA needs contrast on the same page */
+.btn-alt {
   background: var(--orange);
-  box-shadow: 4px 4px 0 #8b4400;
+  box-shadow: 4px 4px 0 #ffffff;
 }
-.btn-vs-ai:hover { background: #e07500; }
-.btn-vs-ai:active { background: #c06200; box-shadow: 2px 2px 0 #8b4400; }
+.btn-alt:hover  { background: var(--orange-hover); box-shadow: 5px 6px 0 #ffffff; }
+.btn-alt:active { background: var(--orange-dark);  box-shadow: 2px 2px 0 #ffffff; }
 
 /* AI portrait faces left (same as P2 in multiplayer) */
 #sp-lobby-p2-portrait { transform: scaleX(-1); }
@@ -1467,18 +1481,12 @@ html, body {
 }
 .sp-diff-btn.selected {
   opacity: 1;
-  outline: 2px solid #ffffff;
-  outline-offset: 1px;
 }
 
-/* SP start button */
-.btn-sp-start {
+/* SP start button — layout specifics only; colour comes from .btn-alt */
+#btn-sp-start {
   margin-top: 18px;
   min-width: 160px;
-  background: var(--orange);
-  box-shadow: 4px 4px 0 #8b4400;
 }
-.btn-sp-start:hover { background: #e07500; }
-.btn-sp-start:active { background: #c06200; box-shadow: 2px 2px 0 #8b4400; }
 
 .hidden { display: none !important; }
