@@ -1,6 +1,5 @@
 <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_4135_9854)">
-<path d="M210 65H130V95H210V65Z" fill="#515050"/>
+<path d="M210 70H130V100H210V70Z" fill="#515050"/>
 <path d="M300 110H185V130H300V110Z" fill="#515050"/>
 <path d="M270 130H180V140H270V130Z" fill="#515050"/>
 <path d="M190 120H140V150H190V120Z" fill="#515050"/>
@@ -19,37 +18,30 @@
 <path d="M160 130H150V120H160V130Z" fill="#515050"/>
 <path d="M190 60H200V130H190V60Z" fill="#515050"/>
 <path d="M190 130H170V120H190V130Z" fill="#5A5A5A"/>
-<path d="M230 65H210V95H230V65Z" fill="#636363"/>
-<path d="M230 45H220V65H230V45Z" fill="#636363"/>
-<path d="M230 45H210V65H230V45Z" fill="#515050"/>
-<path d="M190 65H140V55H190V65Z" fill="#515050"/>
-<path d="M180 85H140V105H180V85Z" fill="#636363"/>
-<path d="M150 95H130V65H150V95Z" fill="#636363"/>
-<path d="M150 55H140V65H150V55Z" fill="#636363"/>
-<path d="M200 85H180V105H200V85Z" fill="#515050"/>
-<path d="M190 55H160V65H190V55Z" fill="#636363"/>
-<rect x="190" y="55" width="10" height="10" fill="#515050"/>
-<path d="M170 35H150V55H170V35Z" fill="#636363"/>
-<path d="M160 15H150V25H160V15Z" fill="#636363"/>
-<path d="M170 15H160V25H170V15Z" fill="#636363"/>
-<path d="M180 15H170V25H180V15Z" fill="#636363"/>
-<path d="M170 -5H160V5H170V-5Z" fill="#515050"/>
-<path d="M160 -5H150V5H160V-5Z" fill="#515050"/>
-<path d="M200 15H190V25H200V15Z" fill="#636363"/>
-<path d="M190 15H180V25H190V15Z" fill="#636363"/>
-<path d="M190 45H160V55H190V45Z" fill="#636363"/>
-<path d="M200 5H150V25H200V5Z" fill="#515050"/>
-<path d="M170 25H160V65H170V25Z" fill="#636363"/>
-<path d="M200 25H190V65H200V25Z" fill="#636363"/>
-<path d="M200 25H160V35H200V25Z" fill="#636363"/>
-<path d="M200 35H170V45H200V35Z" fill="#636363"/>
-<path d="M170 25H150V35H170V25Z" fill="#636363"/>
-<path d="M160 35H150V25H160V35Z" fill="#515050"/>
+<path d="M230 70H210V100H230V70Z" fill="#636363"/>
+<path d="M230 50H220V70H230V50Z" fill="#636363"/>
+<path d="M230 50H210V70H230V50Z" fill="#515050"/>
+<path d="M190 70H140V60H190V70Z" fill="#515050"/>
+<path d="M180 90H140V110H180V90Z" fill="#636363"/>
+<path d="M150 100H130V70H150V100Z" fill="#636363"/>
+<path d="M150 60H140V70H150V60Z" fill="#636363"/>
+<path d="M200 90H180V110H200V90Z" fill="#515050"/>
+<path d="M190 60H160V70H190V60Z" fill="#636363"/>
+<rect x="190" y="60" width="10" height="10" fill="#515050"/>
+<path d="M170 40H150V60H170V40Z" fill="#636363"/>
+<path d="M160 20H150V30H160V20Z" fill="#636363"/>
+<path d="M170 20H160V30H170V20Z" fill="#636363"/>
+<path d="M180 20H170V30H180V20Z" fill="#636363"/>
+<path d="M200 20H190V30H200V20Z" fill="#636363"/>
+<path d="M190 20H180V30H190V20Z" fill="#636363"/>
+<path d="M190 50H160V60H190V50Z" fill="#636363"/>
+<path d="M170 30H160V70H170V30Z" fill="#636363"/>
+<path d="M200 30H160V40H200V30Z" fill="#636363"/>
+<path d="M200 40H170V50H200V40Z" fill="#636363"/>
+<path d="M170 30H150V40H170V30Z" fill="#636363"/>
 <path d="M300 260H110V270H300V260Z" fill="black" fill-opacity="0.05"/>
-</g>
-<defs>
-<clipPath id="clip0_4135_9854">
-<rect width="300" height="300" fill="white"/>
-</clipPath>
-</defs>
+<path d="M190 10H180V20H190V10Z" fill="#DFDFDF"/>
+<path d="M180 10H160V20H180V10Z" fill="#636363"/>
+<path d="M200 20H170V30H200V20Z" fill="#DFDFDF"/>
+<path d="M200 30H180V40H200V30Z" fill="#D4A570"/>
 </svg>

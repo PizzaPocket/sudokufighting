@@ -37,4 +37,5 @@
 <rect x="180" y="80" width="10" height="10" fill="#6A9149"/>
 <path d="M160 50H140V60H160V50Z" fill="#623100"/>
 <path d="M150 60H140V50H150V60Z" fill="#3C3C3C"/>
+<path d="M190 110H170V130H190V110Z" fill="#3C3C3C"/>
 </svg>
