@@ -1,0 +1,70 @@
+/* =========================================================
+   Buttons — verbatim port from frontend/css/style.css
+   ========================================================= */
+
+.btn {
+  font-family: var(--font);
+  font-size: var(--text-btn);
+  font-weight: 700;
+  padding: 12px 32px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 0 #ffffff;
+}
+.btn:hover { background: var(--accent-hover); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+.btn:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn.btn-sm {
+  font-size: var(--text-sm);
+  padding: 5px 14px;
+  box-shadow: 2px 2px 0 #ffffff;
+  border-radius: var(--radius-xs);
+}
+.btn.btn-sm:hover { box-shadow: 3px 3px 0 #ffffff; }
+.btn.btn-sm:active { box-shadow: 1px 1px 0 #ffffff; }
+
+.btn.btn-secondary {
+  background: #ffffff;
+  color: var(--accent);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.btn.btn-secondary:hover  { background: var(--accent-light); box-shadow: 5px 6px 0 var(--accent); }
+.btn.btn-secondary:active { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary         { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:hover   { box-shadow: 3px 3px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:active  { box-shadow: 1px 1px 0 var(--accent); }
+
+.btn-secondary {
+  font-family: var(--font);
+  font-size: var(--text-btn);
+  font-weight: 700;
+  padding: 12px 32px;
+  background: #ffffff;
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.btn-secondary:hover { background: var(--accent-light); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+.btn-secondary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
+.btn-secondary:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-alt {
+  background: var(--orange);
+  box-shadow: 4px 4px 0 #ffffff;
+}
+.btn-alt:hover  { background: var(--orange-hover); box-shadow: 5px 6px 0 #ffffff; }
+.btn-alt:active { background: var(--orange-dark);  box-shadow: 2px 2px 0 #ffffff; }
+
+.btn-danger { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
+.btn-danger:hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn-danger:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }

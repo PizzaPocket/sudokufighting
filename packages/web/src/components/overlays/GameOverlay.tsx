@@ -1,0 +1,214 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useGameStore } from '../../store/gameStore';
+import { send } from '../../hooks/useGameSocket';
+import { startVsAIRound } from '../../ai/useVsAI';
+import {
+  playRoundAnnouncer, playFightAnnouncer,
+  playKOAnnouncer, playTKOAnnouncer,
+  playVictoryAnnouncer, playDevastationAnnouncer,
+  startFightMusic,
+} from '../../audio/audioManager';
+
+interface OverlayContent {
+  main: string;
+  sub: string;
+  mainColor: string;
+  mainShadow?: string;
+  subColor?: string;
+  nonce: number;
+}
+
+export default function GameOverlay() {
+  const preRoundSignal = useGameStore(s => s.preRoundSignal);
+  const roundOver = useGameStore(s => s.roundOver);
+  const roundWinnerSeat = useGameStore(s => s.roundWinnerSeat);
+  const matchOver = useGameStore(s => s.matchOver);
+  const mySeat = useGameStore(s => s.mySeat);
+  const health = useGameStore(s => s.health);
+  const myName = useGameStore(s => s.myName);
+  const opponentName = useGameStore(s => s.opponentName);
+  const matchWinnerSeat = useGameStore(s => s.matchWinnerSeat);
+  const matchWinnerName = useGameStore(s => s.matchWinnerName);
+  const opponentDisconnected = useGameStore(s => s.opponentDisconnected);
+  const gameMode = useGameStore(s => s.gameMode);
+  const resetAll = useGameStore(s => s.resetAll);
+
+  const [overlay, setOverlay] = useState<OverlayContent | null>(null);
+  const [showButtons, setShowButtons] = useState(false);
+  const [hidden, setHidden] = useState(true);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  function clearTimers() {
+    timers.current.forEach(t => clearTimeout(t));
+    timers.current = [];
+  }
+
+  function addTimer(fn: () => void, ms: number) {
+    timers.current.push(setTimeout(fn, ms));
+  }
+
+  function showOverlay(content: OverlayContent) {
+    setOverlay(content);
+    setHidden(false);
+    // Re-trigger animation
+    if (mainRef.current) {
+      mainRef.current.style.animation = 'none';
+      void mainRef.current.offsetWidth;
+      mainRef.current.style.animation = '';
+    }
+  }
+
+  function hideOverlay() {
+    setHidden(true);
+  }
+
+  // Pre-round sequence: ROUND X (2s) → FIGHT! (1s) → hide
+  const preRoundNonce = preRoundSignal?.nonce;
+  useEffect(() => {
+    if (!preRoundSignal) return;
+    clearTimers();
+    setShowButtons(false);
+
+    const { roundNumber, backgroundId } = preRoundSignal;
+    playRoundAnnouncer(roundNumber);
+    showOverlay({
+      main: `ROUND ${roundNumber}`,
+      sub: '',
+      mainColor: 'var(--accent)',
+      nonce: preRoundSignal.nonce,
+    });
+
+    addTimer(() => {
+      playFightAnnouncer();
+      if (roundNumber === 1) startFightMusic(backgroundId);
+      showOverlay({
+        main: 'FIGHT!',
+        sub: '',
+        mainColor: '#dc2626',
+        mainShadow: '4px 5px 0 #FF8B16',
+        nonce: preRoundSignal.nonce + 0.5,
+      });
+      addTimer(() => hideOverlay(), 1000);
+    }, 2000);
+  }, [preRoundNonce]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Round-end overlay: KO / TKO / TIE
+  useEffect(() => {
+    if (!roundOver || matchOver) return;
+    clearTimers();
+
+    addTimer(() => {
+      const st = useGameStore.getState();
+      const winner = st.roundWinnerSeat ?? -1;
+
+      if (winner === -1) {
+        showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
+      } else {
+        const isTrueKO = st.health[(1 - winner) as 0|1] <= 0;
+        const winnerIsMe = winner === st.mySeat;
+        const wName = winnerIsMe ? st.myName : st.opponentName;
+        const subText = ((wName ?? 'Player').toUpperCase()) + ' WINS!';
+        if (isTrueKO) playKOAnnouncer(); else playTKOAnnouncer();
+        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: subText, mainColor: '#F00013', nonce: Date.now() });
+      }
+
+      addTimer(() => {
+        if (useGameStore.getState().matchOver) return;
+        hideOverlay();
+        const cur = useGameStore.getState();
+        if (cur.gameMode === 'singleplayer') {
+          startVsAIRound(cur.roundNumber + 1);
+        } else {
+          send('next_round', {});
+        }
+      }, 2500);
+    }, 400);
+  }, [roundOver]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Match-end overlay: VICTORY / DEVASTATION
+  useEffect(() => {
+    if (!matchOver || matchWinnerSeat === null) return;
+    clearTimers();
+    setShowButtons(false);
+
+    addTimer(() => {
+      if (matchWinnerSeat === -1) {
+        showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
+        setShowButtons(true);
+        return;
+      }
+
+      const isWinner = matchWinnerSeat === mySeat;
+      const winnerDisplayName = opponentDisconnected
+        ? 'OPPONENT DISCONNECTED'
+        : (matchWinnerName ?? 'Unknown').toUpperCase() + ' WINS!';
+
+      if (isWinner) {
+        playVictoryAnnouncer();
+        showOverlay({
+          main: 'VICTORY!',
+          sub: winnerDisplayName,
+          mainColor: '#FF8B16',
+          mainShadow: '4px 5px 0 #8B49FF',
+          subColor: '#FFCA00',
+          nonce: Date.now(),
+        });
+      } else {
+        if (!opponentDisconnected) playDevastationAnnouncer();
+        showOverlay({
+          main: 'DEVASTATION!',
+          sub: winnerDisplayName,
+          mainColor: '#F00013',
+          mainShadow: '4px 5px 0 #FF8B16',
+          nonce: Date.now(),
+        });
+      }
+      setShowButtons(true);
+    }, 400);
+  }, [matchOver]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (hidden || !overlay) return null;
+
+  return (
+    <div className={`game-overlay${hidden ? ' hidden' : ''}`}>
+      <div
+        ref={mainRef}
+        id="game-overlay-main"
+        className="overlay-main"
+        style={{ color: overlay.mainColor, textShadow: overlay.mainShadow }}
+      >
+        {overlay.main}
+      </div>
+      {overlay.sub && (
+        <div className="overlay-sub" style={overlay.subColor ? { color: overlay.subColor } : undefined}>
+          {overlay.sub}
+        </div>
+      )}
+      {showButtons && (
+        <div className="overlay-btn-row">
+          {gameMode === 'singleplayer' && (
+            <button
+              className="btn btn-alt"
+              onClick={() => {
+                const st = useGameStore.getState();
+                useGameStore.setState({ matchOver: false, matchWinnerSeat: null, roundWins: [0, 0] });
+                startVsAIRound(1);
+                setShowButtons(false);
+                setHidden(true);
+              }}
+            >
+              PLAY AGAIN
+            </button>
+          )}
+          <button
+            className="btn btn-secondary"
+            onClick={() => resetAll()}
+          >
+            LEAVE
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

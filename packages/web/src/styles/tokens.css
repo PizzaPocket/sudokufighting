@@ -1,0 +1,81 @@
+/* Design tokens — verbatim port from frontend/css/style.css :root block */
+
+:root {
+  /* Neutral greyscale */
+  --bg:             #f2f2f2;
+  --surface:        #ffffff;
+  --border:         #e5e5e5;
+  --text-primary:   #111111;
+  --text-secondary: #333333;
+  --text-tertiary:  #555555;
+  --grid-border:    #d5d5d5;
+  --grid-box-border:#888888;
+  --cell-given-bg:  var(--bg);
+
+  /* Brand accent */
+  --accent:       #8B49FF;
+  --accent-light: #EDE0FF;
+  --accent-hover: #7235e0;
+
+  /* Shadows / radii */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --radius-xs:   5px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-pill: 999px;
+
+  /* Typography */
+  --font:         'Roboto Mono', monospace;
+  --font-display: 'Barlow Condensed', sans-serif;
+
+  /* Type scale */
+  --text-xs:   10px;
+  --text-btn:  15px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   18px;
+  --text-lg:   22px;
+  --text-xl:   26px;
+  --text-2xl:  28px;
+  --text-3xl:  66px;
+  --text-4xl:  96px;
+
+  /* Weight scale */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+  --weight-heavy:  800;
+  --weight-black:  900;
+
+  /* Player 1 — blue-cyan ramp */
+  --p1-color:    #17B9EF;
+  --p1-mid-dark: #0A8FBB;
+  --p1-dark:     #006B8F;
+  --p1-bg-light: #E5F7FD;
+  --p1-bg-mid:   #B8ECFB;
+
+  /* Player 2 — magenta ramp */
+  --p2-color:    #F31299;
+  --p2-mid-dark: #BC0074;
+  --p2-dark:     #880055;
+  --p2-bg-light: #FFEBF8;
+  --p2-bg-mid:   #FFD0EF;
+
+  /* Danger — red ramp */
+  --danger-color:    #F00013;
+  --danger-dark:     #A8000F;
+  --danger-bg-light: #FFEBEC;
+  --danger-bg-mid:   #FFCED1;
+
+  /* Shared action colours */
+  --orange:       #FF8B16;
+  --orange-hover: #E07500;
+  --orange-dark:  #C06200;
+  --yellow: #FFCA00;
+
+  --text-layer-shadow: 2px 2px 0 var(--accent);
+
+  --header-h: 48px;
+}

@@ -1,0 +1,14 @@
+export declare const STARTING_HEALTH = 1800;
+export declare const WRONG_GUESS_DAMAGE = 400;
+export declare const COUNTER_DAMAGE_REDUCTION = 0.5;
+export declare const COUNTER_DAMAGE_TO_ATTACKER = 60;
+export declare const BASE_CELL_DAMAGE = 5;
+export declare const COMPLETION_BASE = 25;
+export declare const MAX_SPEED_MULTIPLIER = 10;
+export declare const SPEED_DECAY_MS = 2000;
+export declare const ROUND_DURATION_MS = 99000;
+export declare const ATTACK_DELAY_MS = 1500;
+export declare const COUNTER_WINDOW_MS = 1500;
+export declare const HEALTH_UPDATE_DELAY_LIGHT = 150;
+export declare const HEALTH_UPDATE_DELAY_HEAVY = 300;
+//# sourceMappingURL=constants.d.ts.map
