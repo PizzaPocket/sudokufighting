@@ -1,6 +1,6 @@
 {
-  "buildCommand": "echo \"window.WS_URL='$WS_URL'\" > js/config.js",
-  "outputDirectory": ".",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
   "redirects": [
     { "source": "/favicon.ico", "destination": "/assets/favicons/favicon.ico", "permanent": true }
   ],

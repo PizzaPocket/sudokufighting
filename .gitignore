@@ -1,4 +1,5 @@
 node_modules/
+packages/web/dist/
 frontend/js/config.js
 .env
 *.log
