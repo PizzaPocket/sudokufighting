@@ -42,7 +42,27 @@ html, body {
   pointer-events: all;
 }
 
+/* Centred title (position absolute so it doesn't push left/right zones) */
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.action-bar-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--accent);
+  white-space: nowrap;
+}
+
 .btn-utility {
+  font-family: var(--font);
   font-weight: var(--weight-bold);
   background: rgba(0,0,0,0.35);
   border: none;
@@ -51,8 +71,11 @@ html, body {
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-utility:hover { background: rgba(0,0,0,0.55); }
+.btn-utility:hover  { background: rgba(0,0,0,0.55); }
+.btn-utility:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-utility:disabled:hover { background: rgba(0,0,0,0.35); }
 
+/* Square touch target — icon-only buttons (settings) */
 .header-icon-btn {
   width: 36px;
   height: 36px;
@@ -60,6 +83,37 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
+/* Wider pill — labelled action-bar buttons (SURRENDER) */
+.header-text-btn {
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 12px;
+  height: 36px;
+}
+
+/* Back button — chevron icon + label */
+.header-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 12px;
+  height: 36px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* SVG icon images inherit white via filter (SVGs use currentColor → black by default in <img>) */
+.header-icon-img {
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.header-back-btn .header-icon-img { width: 16px; height: 16px; }
+.header-icon-btn .header-icon-img { width: 20px; height: 20px; }
+.carousel-btn    .header-icon-img { width: 14px; height: 14px; }
 
 /* =========================================================
    Screens

@@ -26,13 +26,23 @@ export const ARENAS: Arena[] = [
   },
   {
     id: 'bg_3',
-    name: 'Derelict',
+    name: 'Sky City',
     background: '/assets/arenas/derelict/bg.svg',
     ground: '/assets/arenas/derelict/ground.svg',
     overlays: [
       { id: 'buildings', src: '/assets/arenas/derelict/buildings.svg' },
     ],
     trackIndex: 3,
+  },
+  {
+    id: 'bg_4',
+    name: 'Shinobi Alley',
+    background: '/assets/arenas/shinobi-alley/bg.svg',
+    ground: '/assets/arenas/shinobi-alley/ground.svg',
+    overlays: [
+      { id: 'alley', src: '/assets/arenas/shinobi-alley/alley.svg' },
+    ],
+    trackIndex: 1,
   },
 ];
 

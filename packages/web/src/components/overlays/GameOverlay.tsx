@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { send } from '../../hooks/useGameSocket';
 import { startVsAIRound } from '../../ai/useVsAI';
@@ -18,17 +18,16 @@ interface OverlayContent {
   nonce: number;
 }
 
+function charName(charId: string | null, characters: Array<{ id: string; name: string }>) {
+  return characters.find(c => c.id === charId)?.name ?? null;
+}
+
 export default function GameOverlay() {
   const preRoundSignal = useGameStore(s => s.preRoundSignal);
   const roundOver = useGameStore(s => s.roundOver);
-  const roundWinnerSeat = useGameStore(s => s.roundWinnerSeat);
   const matchOver = useGameStore(s => s.matchOver);
   const mySeat = useGameStore(s => s.mySeat);
-  const health = useGameStore(s => s.health);
-  const myName = useGameStore(s => s.myName);
-  const opponentName = useGameStore(s => s.opponentName);
   const matchWinnerSeat = useGameStore(s => s.matchWinnerSeat);
-  const matchWinnerName = useGameStore(s => s.matchWinnerName);
   const opponentDisconnected = useGameStore(s => s.opponentDisconnected);
   const gameMode = useGameStore(s => s.gameMode);
   const resetAll = useGameStore(s => s.resetAll);
@@ -51,7 +50,6 @@ export default function GameOverlay() {
   function showOverlay(content: OverlayContent) {
     setOverlay(content);
     setHidden(false);
-    // Re-trigger animation
     if (mainRef.current) {
       mainRef.current.style.animation = 'none';
       void mainRef.current.offsetWidth;
@@ -106,11 +104,10 @@ export default function GameOverlay() {
         showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
       } else {
         const isTrueKO = st.health[(1 - winner) as 0|1] <= 0;
-        const winnerIsMe = winner === st.mySeat;
-        const wName = winnerIsMe ? st.myName : st.opponentName;
-        const subText = ((wName ?? 'Player').toUpperCase()) + ' WINS!';
+        const winnerCharId = winner === st.mySeat ? st.myCharacter : st.opponentCharacter;
+        const wName = charName(winnerCharId, st.characters) ?? (winner === st.mySeat ? st.myName : st.opponentName) ?? 'Player';
         if (isTrueKO) playKOAnnouncer(); else playTKOAnnouncer();
-        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: subText, mainColor: '#F00013', nonce: Date.now() });
+        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: wName.toUpperCase() + ' WINS!', mainColor: '#F00013', nonce: Date.now() });
       }
 
       addTimer(() => {
@@ -139,10 +136,13 @@ export default function GameOverlay() {
         return;
       }
 
+      const st = useGameStore.getState();
       const isWinner = matchWinnerSeat === mySeat;
+      const winnerCharId = matchWinnerSeat === st.mySeat ? st.myCharacter : st.opponentCharacter;
+      const winnerName = charName(winnerCharId, st.characters) ?? st.matchWinnerName ?? 'Unknown';
       const winnerDisplayName = opponentDisconnected
         ? 'OPPONENT DISCONNECTED'
-        : (matchWinnerName ?? 'Unknown').toUpperCase() + ' WINS!';
+        : winnerName.toUpperCase() + ' WINS!';
 
       if (isWinner) {
         playVictoryAnnouncer();
@@ -191,8 +191,7 @@ export default function GameOverlay() {
             <button
               className="btn btn-alt"
               onClick={() => {
-                const st = useGameStore.getState();
-                useGameStore.setState({ matchOver: false, matchWinnerSeat: null, roundWins: [0, 0] });
+                useGameStore.setState({ matchOver: false, matchWinnerSeat: null, roundWins: [0, 0] } as never);
                 startVsAIRound(1);
                 setShowButtons(false);
                 setHidden(true);

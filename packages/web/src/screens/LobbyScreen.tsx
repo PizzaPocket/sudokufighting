@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { send } from '../hooks/useGameSocket';
 import { ARENAS } from '@sudoku-fighting/shared';
@@ -12,23 +12,18 @@ export default function LobbyScreen({ active }: Props) {
   const myName = useGameStore(s => s.myName);
   const myUseAlt = useGameStore(s => s.myUseAlt);
   const characters = useGameStore(s => s.characters);
-  const opponentName = useGameStore(s => s.opponentName);
   const opponentCharacter = useGameStore(s => s.opponentCharacter);
   const opponentUseAlt = useGameStore(s => s.opponentUseAlt);
   const lobbyOpponentReady = useGameStore(s => s.lobbyOpponentReady);
   const shareCode = useGameStore(s => s.shareCode);
   const gameMode = useGameStore(s => s.gameMode);
-  const preferredArenaId = useGameStore(s => s.preferredArenaId);
   const setPreferredArena = useGameStore(s => s.setPreferredArena);
-  const spArenaIndex = useGameStore(s => s.spArenaIndex);
-  const setSpArenaIndex = useGameStore(s => s.setSpArenaIndex);
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [arenaIndex, setArenaIndex] = useState(0);
   const hasSentJoin = useRef(false);
 
   const isPrivate = gameMode === 'friend';
-  const title = isPrivate ? 'PRIVATE ROOM' : 'MATCHMAKING';
 
   const myChar = characters.find(c => c.id === myCharacter);
   const oppChar = characters.find(c => c.id === opponentCharacter);
@@ -68,8 +63,6 @@ export default function LobbyScreen({ active }: Props) {
     setTimeout(() => setCopyFeedback(false), 2000);
   }
 
-  const p1Seat = 0;
-  const p2Seat = 1;
   // Default to P1 while waiting for seat assignment from server (create_room doesn't
   // immediately send player_joined — it only arrives once both players are in the room)
   const myP1 = mySeat === null ? true : mySeat === 0;
@@ -79,10 +72,11 @@ export default function LobbyScreen({ active }: Props) {
     return useAlt && char.altPortraitPath ? char.altPortraitPath : char.portraitPath;
   }
 
+  const p1CharName = (myP1 ? myChar : oppChar)?.name;
+  const p2CharName = (!myP1 ? myChar : oppChar)?.name;
+
   return (
     <div id="screen-lobby" className={`screen${active ? ' active' : ''}`}>
-      <h1 className="lobby-title">{title}</h1>
-
       <div className="lobby-players">
         <div id="lobby-p1" className={`lobby-player${myP1 ? ' is-me' : ''}`}>
           <span className="lobby-player-label">P1</span>
@@ -91,7 +85,7 @@ export default function LobbyScreen({ active }: Props) {
             src={getPortrait(myP1 ? myChar : oppChar, myP1 ? myUseAlt : opponentUseAlt)}
             alt=""
           />
-          <span>{myP1 ? (myName ?? '—') : (opponentName ?? '—')}</span>
+          <span className="lobby-player-name">{p1CharName ?? '—'}</span>
           <span className={`lobby-status ${(myP1 ? true : lobbyOpponentReady) ? 'ready' : 'waiting'}`}>
             {(myP1 ? true : lobbyOpponentReady) ? 'READY' : 'WAITING...'}
           </span>
@@ -106,7 +100,7 @@ export default function LobbyScreen({ active }: Props) {
             src={getPortrait(!myP1 ? myChar : oppChar, !myP1 ? myUseAlt : opponentUseAlt)}
             alt=""
           />
-          <span>{!myP1 ? (myName ?? '—') : (opponentName ?? '—')}</span>
+          <span className="lobby-player-name">{p2CharName ?? '—'}</span>
           <span className={`lobby-status ${(!myP1 ? true : lobbyOpponentReady) ? 'ready' : 'waiting'}`}>
             {(!myP1 ? true : lobbyOpponentReady) ? 'READY' : 'WAITING...'}
           </span>

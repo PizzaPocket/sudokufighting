@@ -28,7 +28,8 @@ export function handleCellInput(
   attackerSeat: 0 | 1,
   row: number,
   col: number,
-  value: number
+  value: number,
+  wrongGuessDamage = WRONG_GUESS_DAMAGE
 ): ServerMessage[] {
   const defenderSeat = (1 - attackerSeat) as 0 | 1;
   const puzz = round.puzzles[attackerSeat];
@@ -50,8 +51,8 @@ export function handleCellInput(
   if (!correct) {
     round.consecutiveCorrect[attackerSeat] = 0;
     round.combo[attackerSeat] = 0;
-    round.health[attackerSeat] = Math.max(0, round.health[attackerSeat] - WRONG_GUESS_DAMAGE);
-    events.push({ type: 'self_damage', payload: { seat: attackerSeat, damage: WRONG_GUESS_DAMAGE } });
+    round.health[attackerSeat] = Math.max(0, round.health[attackerSeat] - wrongGuessDamage);
+    events.push({ type: 'self_damage', payload: { seat: attackerSeat, damage: wrongGuessDamage } });
     events.push({ type: 'health_update', payload: { health: [...round.health] as [number, number] } });
     events.push({ type: 'combo_update', payload: { seat: attackerSeat, combo: 0 } });
     return events;

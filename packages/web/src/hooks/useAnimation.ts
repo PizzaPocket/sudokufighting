@@ -98,10 +98,10 @@ export class AnimationController {
     this.currentState = null;
   }
 
-  reset() {
+  reset(idleStartFrame = 1) {
     this.stop();
     this.queued = null;
-    this.play('idle');
+    this.play('idle', idleStartFrame);
   }
 
   setCharacter(characterId: string) {

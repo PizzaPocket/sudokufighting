@@ -7,6 +7,7 @@ export default defineConfig({
   publicDir: path.resolve(__dirname, '../../frontend'),
   resolve: {
     alias: {
+      '@sudoku-fighting/shared': path.resolve(__dirname, '../../packages/shared/src/index.ts'),
       '@shared': path.resolve(__dirname, '../../packages/shared/src'),
       '@': path.resolve(__dirname, 'src'),
     },

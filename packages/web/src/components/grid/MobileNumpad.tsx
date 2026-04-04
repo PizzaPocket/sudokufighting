@@ -16,25 +16,20 @@ export default function MobileNumpad() {
     const { row, col } = st.selectedCell;
     const value = parseInt(btn.dataset.value ?? '0');
 
-    if (value === 0) {
-      // Clear
-      if (st.myPuzzle?.[row]?.[col] !== null) return;
-      st.setLocalCellValue(row, col, null);
+    if (st.myPuzzle?.[row]?.[col] !== null) return;
+    if (st.mySolution?.[row]?.[col] != null && st.myGrid?.[row]?.[col] === st.mySolution[row][col]) return;
+    st.setLocalCellValue(row, col, value);
+    if (st.mySolution && st.mySolution[row][col] !== value) {
+      const nonce = Date.now();
+      const animKey = st.mySeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
+      const mistakeKey = st.mySeat === 0 ? 'p1MistakeSignal' : 'p2MistakeSignal';
+      useGameStore.setState({ [animKey]: { state: 'damage_heavy', nonce }, [mistakeKey]: { nonce }, attackFlashType: 'self' });
+      setTimeout(() => useGameStore.getState().setSelfDamagePredicted(), 300);
+    }
+    if (st.gameMode === 'singleplayer') {
+      vsAiPlayerMove?.(row, col, value);
     } else {
-      if (st.myPuzzle?.[row]?.[col] !== null) return;
-      if (st.mySolution?.[row]?.[col] != null && st.myGrid?.[row]?.[col] === st.mySolution[row][col]) return;
-      st.setLocalCellValue(row, col, value);
-      if (st.mySolution && st.mySolution[row][col] !== value) {
-        const nonce = Date.now();
-        const key = st.mySeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
-        useGameStore.setState({ [key]: { state: 'damage_light', nonce }, attackFlashType: 'self' });
-        st.setSelfDamagePredicted();
-      }
-      if (st.gameMode === 'singleplayer') {
-        vsAiPlayerMove?.(row, col, value);
-      } else {
-        send('cell_input', { row, col, value });
-      }
+      send('cell_input', { row, col, value });
     }
   };
 
@@ -43,7 +38,6 @@ export default function MobileNumpad() {
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
         <div key={n} className="numpad-btn" data-value={n}>{n}</div>
       ))}
-      <div className="numpad-btn" data-value={0} style={{ gridColumn: 'span 9' }}>⌫</div>
     </div>
   );
 }

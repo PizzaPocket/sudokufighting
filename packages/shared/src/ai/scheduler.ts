@@ -71,11 +71,11 @@ export function scheduleNext(
 ): void {
   if (session.stopped || queue.length === 0) return;
 
-  const cfg: DifficultyConfig = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium;
+  const cfg: DifficultyConfig = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.normal;
 
   if (replenish) replenish(queue);
 
-  if (difficulty === 'hard' && queue.length > 1) {
+  if (difficulty === 'extreme' && queue.length > 1) {
     const reordered = sortForCompletions(queue);
     queue.length = 0;
     queue.push(...reordered);

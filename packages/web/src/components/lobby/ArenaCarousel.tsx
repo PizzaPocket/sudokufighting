@@ -1,4 +1,3 @@
-import React from 'react';
 import { ARENAS } from '@sudoku-fighting/shared';
 import { send } from '../../hooks/useGameSocket';
 
@@ -27,9 +26,13 @@ export default function ArenaCarousel({ arenaIndex, onIndexChange, sendToServer 
     <div className="lobby-arena-picker">
       <span className="settings-label" style={{ color: '#ffffff' }}>ARENA</span>
       <div className="track-carousel">
-        <button className="btn-utility carousel-btn" onClick={prev}>‹</button>
+        <button className="btn-utility carousel-btn" onClick={prev}>
+          <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="Previous" />
+        </button>
         <span className="track-title">{arena.name}</span>
-        <button className="btn-utility carousel-btn" onClick={next}>›</button>
+        <button className="btn-utility carousel-btn" onClick={next}>
+          <img src="/assets/ui/chevron-right.svg" className="header-icon-img" alt="Next" />
+        </button>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { AnimationController, preloadCharacterSprites } from '../../hooks/useAnimation';
 import type { AnimSignal } from '../../store/gameStore';
+import MistakeEffect from './MistakeEffect';
 
 interface Props {
   seat: 0 | 1;
@@ -46,14 +47,14 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
       controllerRef.current.setCharacter(resolvedCharId);
       controllerRef.current.setImage(imgRef.current);
     }
-    controllerRef.current.reset();
+    controllerRef.current.reset(seat === 1 ? 3 : 1);
   }, [resolvedCharId]);
 
   // Respond to animation signals; null signal resets to idle (e.g. between rounds)
   useEffect(() => {
     if (!controllerRef.current) return;
     if (!signal) {
-      controllerRef.current.reset(); // clears priority, returns to idle
+      controllerRef.current.reset(seat === 1 ? 3 : 1); // clears priority, returns to idle
       return;
     }
     controllerRef.current.play(signal.state);
@@ -66,6 +67,7 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
       id={wrapId}
       className={`character-wrap${flipped ? ' flipped' : ''}`}
     >
+      <MistakeEffect seat={seat} />
       <img
         id={id}
         ref={imgRef}

@@ -1,4 +1,10 @@
-/* Design tokens — verbatim port from frontend/css/style.css :root block */
+/* =========================================================
+   Design Tokens — single source of truth for all visual values.
+   Symlinked as frontend/css/tokens.css for the style guide.
+
+   RULE: Never hardcode a color, size, or radius anywhere else.
+         Add new tokens here if the right one doesn't exist.
+   ========================================================= */
 
 :root {
   /* Neutral greyscale */

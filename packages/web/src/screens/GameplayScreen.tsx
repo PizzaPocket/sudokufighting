@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { getArena } from '@sudoku-fighting/shared';
-import { send } from '../hooks/useGameSocket';
 import { useVsAI } from '../ai/useVsAI';
 import HUD from '../components/hud/HUD';
 import FightStage from '../components/character/FightStage';
@@ -21,8 +20,6 @@ interface Props {
 export default function GameplayScreen({ active }: Props) {
   const mySeat = useGameStore(s => s.mySeat);
   const backgroundId = useGameStore(s => s.backgroundId);
-  const matchOver = useGameStore(s => s.matchOver);
-  const gameMode = useGameStore(s => s.gameMode);
 
   const screenRef = useRef<HTMLDivElement>(null);
   useVsAI();
@@ -56,33 +53,6 @@ export default function GameplayScreen({ active }: Props) {
       {isParadiso && <Birds containerRef={screenRef as React.RefObject<HTMLElement>} />}
       {isParadiso && <Clouds containerRef={screenRef as React.RefObject<HTMLElement>} />}
 
-      {/* Action bar (settings + surrender) */}
-      <div className="action-bar">
-        {!matchOver && (
-          <button
-            id="btn-surrender"
-            className="btn btn-secondary"
-            onClick={() => {
-              if (gameMode === 'singleplayer') {
-                const { mySeat: seat } = useGameStore.getState();
-                const aiSeat = (1 - (seat ?? 0)) as 0 | 1;
-                useGameStore.getState().applyServerMessage({
-                  type: 'match_end',
-                  payload: {
-                    winnerSeat: aiSeat,
-                    winnerName: useGameStore.getState().opponentName ?? 'CPU',
-                  },
-                });
-              } else {
-                send('surrender', {});
-              }
-            }}
-          >
-            SURRENDER
-          </button>
-        )}
-      </div>
-
       {/* HUD */}
       <HUD />
 
@@ -91,6 +61,7 @@ export default function GameplayScreen({ active }: Props) {
         {/* P1 panel */}
         <div id="p1-panel" className={p1PanelClass}>
           <SudokuGrid gridSeat={0} id={p1GridId} />
+          {mySeat === 0 && <MobileNumpad />}
         </div>
 
         {/* Fight stage (center column) */}
@@ -99,11 +70,9 @@ export default function GameplayScreen({ active }: Props) {
         {/* P2 panel */}
         <div id="p2-panel" className={p2PanelClass}>
           <SudokuGrid gridSeat={1} id={p2GridId} />
+          {mySeat === 1 && <MobileNumpad />}
         </div>
       </div>
-
-      {/* Mobile numpad (visible on pointer:coarse devices) */}
-      <MobileNumpad />
 
       {/* Overlays */}
       <AttackFlash />

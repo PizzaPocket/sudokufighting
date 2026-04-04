@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { ARENAS } from '@sudoku-fighting/shared';
 import type { Character, Difficulty } from '@sudoku-fighting/shared';
@@ -6,7 +6,7 @@ import ArenaCarousel from '../components/lobby/ArenaCarousel';
 
 interface Props { active: boolean; }
 
-const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
+const DIFFICULTIES: Difficulty[] = ['easy', 'normal', 'extreme'];
 
 function pickAICharacter(myCharId: string | null, characters: Character[]): Character | null {
   const others = characters.filter(c => c.id !== myCharId);
@@ -21,7 +21,6 @@ export default function SpLobbyScreen({ active }: Props) {
   const spArenaIndex = useGameStore(s => s.spArenaIndex);
   const setSpArenaIndex = useGameStore(s => s.setSpArenaIndex);
   const myCharacter = useGameStore(s => s.myCharacter);
-  const myName = useGameStore(s => s.myName);
   const characters = useGameStore(s => s.characters);
 
   const myChar = characters.find(c => c.id === myCharacter) ?? null;
@@ -47,6 +46,7 @@ export default function SpLobbyScreen({ active }: Props) {
     useGameStore.setState({
       opponentCharacter: aiChar?.id ?? 'fighter2',
       opponentName: aiChar?.name ?? 'CPU',
+      myName: myChar?.name ?? 'Player',
       backgroundId: arenaId,
       mySeat: 0,
     } as never);
@@ -56,25 +56,21 @@ export default function SpLobbyScreen({ active }: Props) {
 
   return (
     <div id="screen-sp-lobby" className={`screen${active ? ' active' : ''}`}>
-      <h1 className="lobby-title">VS AI</h1>
-
       <div className="lobby-players">
         <div id="sp-lobby-p1" className="lobby-player is-me">
-          <span className="lobby-player-label">YOU</span>
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />
-          <span>{myName ?? 'Player'}</span>
+          <span className="lobby-player-name">{myChar?.name ?? '—'}</span>
         </div>
 
         <span className="lobby-vs">VS</span>
 
         <div id="sp-lobby-p2" className="lobby-player">
-          <span className="lobby-player-label">AI</span>
           <img
             id="sp-lobby-p2-portrait"
             src={aiChar?.portraitPath ?? '/characters/placeholder_fighter.svg'}
             alt={aiChar?.name ?? 'CPU'}
           />
-          <span>{aiChar?.name ?? 'CPU'}</span>
+          <span className="lobby-player-name">{aiChar?.name ?? 'CPU'}</span>
         </div>
       </div>
 
@@ -84,7 +80,7 @@ export default function SpLobbyScreen({ active }: Props) {
           {DIFFICULTIES.map(d => (
             <button
               key={d}
-              className={`btn btn-sm sp-diff-btn${spDifficulty === d ? ' selected' : ''}`}
+              className={`btn btn-sm btn-secondary sp-diff-btn${spDifficulty === d ? ' selected' : ''}`}
               onClick={() => setSpDifficulty(d)}
             >
               {d.toUpperCase()}

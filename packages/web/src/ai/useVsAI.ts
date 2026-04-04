@@ -7,7 +7,7 @@ import {
   generatePuzzle,
   handleCellInput, applyDamageFromAttack,
   buildCellQueue, scheduleNext,
-  STARTING_HEALTH, ATTACK_DELAY_MS,
+  STARTING_HEALTH, ATTACK_DELAY_MS, DIFFICULTY_CONFIG,
 } from '@sudoku-fighting/shared';
 import type { RoundState, Difficulty, BotCell, BotSession } from '@sudoku-fighting/shared';
 import { injectServerMessage } from '../hooks/useGameSocket';
@@ -113,7 +113,9 @@ export function useVsAI() {
   }
 
   function processMove(seat: 0 | 1, row: number, col: number, value: number) {
-    const events = handleCellInput(roundState.current, seat, row, col, value);
+    const difficulty = useGameStore.getState().spDifficulty as Difficulty;
+    const wrongGuessDamage = DIFFICULTY_CONFIG[difficulty]?.wrongGuessDamage;
+    const events = handleCellInput(roundState.current, seat, row, col, value, wrongGuessDamage);
     for (const ev of events) {
       injectServerMessage(ev);
       if (ev.type === 'attack_incoming') {

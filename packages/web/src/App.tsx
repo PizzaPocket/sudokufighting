@@ -8,7 +8,7 @@ import LobbyScreen from './screens/LobbyScreen';
 import SpLobbyScreen from './screens/SpLobbyScreen';
 import GameplayScreen from './screens/GameplayScreen';
 import AppHeader from './components/layout/AppHeader';
-import SettingsPanel from './components/layout/SettingsPanel';
+import ContextualMenu from './components/layout/ContextualMenu';
 
 export default function App() {
   const currentScreen = useGameStore(s => s.currentScreen);
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <>
       <AppHeader />
-      <SettingsPanel />
+      <ContextualMenu />
       <StartScreen active={currentScreen === 'start'} />
       <CharacterSelectScreen active={currentScreen === 'character-select'} />
       <LobbyScreen active={currentScreen === 'lobby'} />

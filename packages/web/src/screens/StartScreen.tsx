@@ -1,17 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { send } from '../hooks/useGameSocket';
-import { ARENAS } from '@sudoku-fighting/shared';
 
 interface Props { active: boolean; }
 
 export default function StartScreen({ active }: Props) {
   const setScreen = useGameStore(s => s.setScreen);
   const setGameMode = useGameStore(s => s.setGameMode);
-  const myName = useGameStore(s => s.myName);
-  const setMyName = useGameStore(s => s.setMyName);
   const lobbyJoinError = useGameStore(s => s.lobbyJoinError);
-  const setLobbyJoinError = (err: string | null) => useGameStore.setState({ lobbyJoinError: err });
 
   const joinCodeRef = useRef<HTMLInputElement>(null);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -69,10 +64,10 @@ export default function StartScreen({ active }: Props) {
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('friend')}>
             CREATE ROOM
           </button>
-          <div className="join-combo">
+          <div className="combo-input">
             <input
               ref={joinCodeRef}
-              className="join-input"
+              className="combo-text"
               type="text"
               maxLength={8}
               placeholder="Room code"

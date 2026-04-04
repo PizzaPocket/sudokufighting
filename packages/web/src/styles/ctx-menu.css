@@ -1,8 +1,12 @@
 /* =========================================================
-   Settings Panel — verbatim port from frontend/css/style.css
+   Contextual Menu — generic dark floating panel
+   anchored to a trigger (e.g. settings icon in AppHeader).
+   Not named for any specific use case — reuse .ctx-menu,
+   .ctx-menu-item, .ctx-label, .ctx-menu-divider anywhere
+   a contextual control surface is needed.
    ========================================================= */
 
-.settings-panel {
+.ctx-menu {
   position: fixed;
   top: calc(var(--header-h) + 4px);
   right: 12px;
@@ -17,22 +21,22 @@
   min-width: 220px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
-.settings-panel.hidden { display: none; }
+.ctx-menu.hidden { display: none; }
 
-.settings-item {
+.ctx-menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
 
-.settings-item.track-row {
+.ctx-menu-item.stacked {
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
 }
 
-.settings-label {
+.ctx-label {
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   letter-spacing: 0.1em;
@@ -40,7 +44,7 @@
   text-shadow: var(--text-layer-shadow);
 }
 
-.settings-divider {
+.ctx-menu-divider {
   height: 1px;
   background: rgba(255,255,255,0.1);
   margin: 2px 0;

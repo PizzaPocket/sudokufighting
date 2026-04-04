@@ -85,6 +85,8 @@ interface GameStore {
   // ── Animation signals ─────────────────────────────────────────────────────
   p1AnimSignal: AnimSignal | null;
   p2AnimSignal: AnimSignal | null;
+  p1MistakeSignal: { nonce: number } | null;
+  p2MistakeSignal: { nonce: number } | null;
   attackFlashType: 'punch' | 'heavy' | 'self' | null;
   floatingPoints: FloatingPointsEvent[];
   wipingCells: WipingCell[];
@@ -157,7 +159,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   lobbyOpponentReady: false,
   lobbyJoinError: null,
 
-  spDifficulty: 'medium',
+  spDifficulty: 'normal',
   spArenaIndex: 0,
 
   roundNumber: 1,
@@ -187,6 +189,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   p1AnimSignal: null,
   p2AnimSignal: null,
+  p1MistakeSignal: null,
+  p2MistakeSignal: null,
   attackFlashType: null,
   floatingPoints: [],
   wipingCells: [],
@@ -292,7 +296,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     counterWindowActive: false, selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
     opponentDisconnected: false, backgroundId: null, roundStartTime: null,
-    p1AnimSignal: null, p2AnimSignal: null, attackFlashType: null, floatingPoints: [],
+    p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null,
+    attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
     settingsOpen: false,
   }),
@@ -368,7 +373,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           backgroundId: p.backgroundId,
           roundStartTime: p.roundStartTime,
           selectedCell: null, opponentCursorPos: null,
-          p1AnimSignal: null, p2AnimSignal: null, attackFlashType: null,
+          p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null, attackFlashType: null,
           floatingPoints: [],
           currentScreen: 'gameplay',
           preRoundSignal: { roundNumber: p.roundNumber, backgroundId: p.backgroundId, nonce: ++_nonce },
@@ -541,21 +546,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       case 'round_end': {
         const { winnerSeat, roundWins } = msg.payload;
-        const nonce = ++_nonce;
-        const updates: Partial<GameStore> = {
+        set({
           roundWins: roundWins as [number, number],
           roundWinnerSeat: winnerSeat,
           roundOver: true,
-        };
+        });
         if (winnerSeat !== -1) {
-          const loserSeat = (1 - winnerSeat) as 0 | 1;
-          const winnerKey = winnerSeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
-          const loserKey = loserSeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
-          const isTrueKO = get().health[loserSeat] <= 0;
-          updates[winnerKey] = { state: 'win', nonce };
-          updates[loserKey] = { state: isTrueKO ? 'ko' : 'idle', nonce: nonce + 1 };
+          // Delay anim signals past the health_update setTimeout (max 300ms) so
+          // health is already updated when we check for a true KO.
+          setTimeout(() => {
+            const nonce = ++_nonce;
+            const loserSeat = (1 - winnerSeat) as 0 | 1;
+            const winnerKey = winnerSeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
+            const loserKey  = loserSeat  === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
+            const isTrueKO = get().health[loserSeat] <= 0;
+            set({
+              [winnerKey]: { state: 'win', nonce },
+              [loserKey]:  { state: isTrueKO ? 'ko' : 'idle', nonce: nonce + 1 },
+            });
+          }, HEALTH_UPDATE_DELAY_HEAVY + 50);
         }
-        set(updates);
         break;
       }
 

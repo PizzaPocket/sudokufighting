@@ -1,4 +1,4 @@
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = 'easy' | 'normal' | 'extreme';
 
 // Grid types
 export type Grid = (number | null)[][];

@@ -23,8 +23,8 @@
   text-shadow: 1px 1px 0 var(--accent); letter-spacing: 0.08em; text-transform: uppercase;
 }
 #screen-start .btn,
-#screen-start .join-combo { width: 240px; box-sizing: border-box; }
-#screen-start .join-combo { margin-top: 8px; }
+#screen-start .combo-input { width: 240px; box-sizing: border-box; }
+#screen-start .combo-input { margin-top: 8px; }
 
 .start-divider { width: 240px; height: 1px; background: rgba(255,255,255,0.25); margin: 4px 0; }
 
@@ -34,30 +34,30 @@
   margin: 4px 0 2px; text-align: center;
 }
 
-.join-combo {
+.combo-input {
   display: flex;
   border: 2px solid #ffffff;
   border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: 4px 4px 0 var(--accent);
 }
-.join-combo .join-input {
+.combo-input .combo-text {
   flex: 1; min-width: 0; background: var(--bg); border: none; padding: 12px 14px;
   font-family: var(--font); font-size: var(--text-sm); font-weight: var(--weight-bold);
   color: var(--text-primary); letter-spacing: 0.1em; text-transform: uppercase; outline: none;
 }
-.join-combo .join-input::placeholder {
+.combo-input .combo-text::placeholder {
   color: var(--text-tertiary); font-weight: var(--weight-normal);
   letter-spacing: 0.01em; text-transform: none;
 }
-.join-combo #btn-join-room {
+.combo-input #btn-join-room {
   flex-shrink: 0; padding: 12px 20px; background: #ffffff; color: var(--accent);
   font-family: var(--font); font-size: 15px; font-weight: var(--weight-bold);
   letter-spacing: 0.05em; border: none; border-left: 1px solid var(--border);
   border-radius: 0; cursor: pointer; transition: background 0.12s;
 }
-.join-combo #btn-join-room:hover  { background: var(--accent-light); }
-.join-combo #btn-join-room:active { background: var(--accent); color: #ffffff; }
+.combo-input #btn-join-room:hover  { background: var(--accent-light); }
+.combo-input #btn-join-room:active { background: var(--accent); color: #ffffff; }
 
 .start-error {
   font-size: var(--text-sm); color: var(--danger-color); font-weight: var(--weight-bold);
@@ -118,6 +118,7 @@
 #lobby-p2-portrait,
 #sp-lobby-p2-portrait { transform: scaleX(-1); }
 .lobby-player > span:first-of-type { font-size: var(--text-md); font-weight: var(--weight-bold); color: #ffffff; text-shadow: var(--text-layer-shadow); }
+.lobby-player-name { font-size: var(--text-md); font-weight: var(--weight-bold); color: #ffffff; text-shadow: var(--text-layer-shadow); }
 
 #lobby-p1.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p1-color); text-shadow: 3px 3px 0 #ffffff; }
 #lobby-p1.is-me img { border: 8px solid var(--p1-color); }
@@ -181,7 +182,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 0;
+  padding: var(--header-h) 0 0;
   gap: 0;
   background: var(--bg);
   background-size: cover;
@@ -374,6 +375,7 @@
 }
 #palm-trees { left: 50%; transform: translateX(-50%); width: calc(100% + 100px); max-width: 2100px; }
 #buildings  { left: 0; width: 100%; }
+#alley      { left: 50%; transform: translateX(-50%); width: calc(100% * 1544 / 1200); }
 
 /* Fight stage */
 #fight-stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; z-index: 10; padding-bottom: 16px; }
@@ -384,6 +386,7 @@
 .character-wrap.flipped { transform: scaleX(-1); }
 .character-wrap.attacking { z-index: 3; }
 .character-sprite { width: 150px; height: 150px; image-rendering: pixelated; }
+.mistake-effect   { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 150px; image-rendering: pixelated; pointer-events: none; }
 
 /* Attack flash */
 .attack-flash { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
@@ -449,7 +452,6 @@
   .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
   .action-bar { padding: 3px 12px 0; }
   #arena { margin-top: 4px; }
-  #mobile-numpad { padding: 1px 12px 4px; }
   .player-panel { display: none; }
   .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
   .player-panel.is-me .cell { font-size: 19px; }
@@ -462,7 +464,7 @@
 @media (pointer: coarse) {
   #mobile-numpad {
     display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px;
-    width: 100%; max-width: 480px; padding: 2px 12px 8px;
+    width: 100%; padding: 2px 0 8px;
     margin-top: 0; flex-shrink: 0; position: relative; z-index: 10;
   }
   .numpad-btn {

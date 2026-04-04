@@ -33,4 +33,6 @@
 <path d="M160 50H130V60H160V50Z" fill="#D4A570"/>
 <path d="M160 150H150V160H160V150Z" fill="#FF0000"/>
 <path d="M160 0H150V10H160V0Z" fill="#599439"/>
+<path d="M150 0H140V20H150V0Z" fill="#599439"/>
+<path d="M160 10H150V30H160V10Z" fill="#599439"/>
 </svg>

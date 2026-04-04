@@ -7,70 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet" />
+  <!-- Tokens imported from the canonical source — packages/web/src/styles/tokens.css,
+       symlinked to frontend/css/tokens.css so this file never drifts from the app. -->
+  <link rel="stylesheet" href="/css/tokens.css" />
   <style>
-    /* ── Variables (mirrored from style.css) ─────────────────────────── */
-    :root {
-      --bg:             #f2f2f2;
-      --surface:        #ffffff;
-      --border:         #e5e5e5;
-      --text-primary:   #111111;
-      --text-secondary: #333333;
-      --text-tertiary:  #555555;
-      --grid-border:    #d5d5d5;
-      --grid-box-border:#888888;
-
-      --accent:       #8B49FF;
-      --accent-light: #EDE0FF;
-      --accent-hover: #7235e0;
-
-      --p1-color:    #17B9EF;
-      --p1-mid-dark: #0A8FBB;
-      --p1-dark:     #006B8F;
-      --p1-bg-light: #E5F7FD;
-      --p1-bg-mid:   #B8ECFB;
-
-      --p2-color:    #F31299;
-      --p2-mid-dark: #BC0074;
-      --p2-dark:     #880055;
-      --p2-bg-light: #FFEBF8;
-      --p2-bg-mid:   #FFD0EF;
-
-      --danger-color:    #F00013;
-      --danger-dark:     #A8000F;
-      --danger-bg-light: #FFEBEC;
-      --danger-bg-mid:   #FFCED1;
-
-      --orange:       #FF8B16;
-      --orange-hover: #E07500;
-      --orange-dark:  #C06200;
-      --yellow: #FFCA00;
-
-      --radius-xs:   5px;
-      --radius-sm:   8px;
-      --radius-md:   12px;
-      --radius-lg:   16px;
-      --radius-pill: 999px;
-
-      --font:         'Roboto Mono', monospace;
-      --font-display: 'Barlow Condensed', sans-serif;
-
-      --text-xs:   10px;
-      --text-btn:  15px;
-      --text-sm:   12px;
-      --text-base: 14px;
-      --text-md:   18px;
-      --text-lg:   22px;
-      --text-xl:   26px;
-      --text-2xl:  28px;
-      --text-3xl:  66px;
-      --text-4xl:  96px;
-
-      --weight-normal: 400;
-      --weight-medium: 500;
-      --weight-bold:   700;
-      --weight-heavy:  800;
-      --weight-black:  900;
-    }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -521,17 +461,26 @@
       text-shadow: 1px 2px 0 var(--accent);
     }
 
-    /* ── Lobby status ────────────────────────────────────────────────── */
-    .lobby-status {
-      font-size: var(--text-sm);
+    /* ── Status Pill (unified: lobby status + badges) ───────────────── */
+    .status-pill {
+      font-size: var(--text-xs);
       font-weight: var(--weight-bold);
       padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.04em;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       display: inline-block;
+      line-height: 1.6;
     }
-    .lobby-status.ready   { color: #ffffff; background: var(--accent); }
-    .lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
+    /* Intent states */
+    .status-pill.active   { color: #ffffff; background: var(--accent); }
+    .status-pill.inactive { color: var(--text-secondary); background: var(--border); }
+    .status-pill.alert    { color: #ffffff; background: var(--danger-color); }
+    /* Player identity */
+    .status-pill.p1       { color: #ffffff; background: var(--p1-color); }
+    .status-pill.p2       { color: #ffffff; background: var(--p2-color); }
+    /* Notification count — compact circular */
+    .status-pill.count    { min-width: 20px; text-align: center; padding: 2px 5px; background: var(--danger-color); color: #ffffff; }
 
     /* ── Toggle ──────────────────────────────────────────────────────── */
     .toggle-switch {
@@ -575,8 +524,8 @@
     }
     .char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary); transition: color 0.15s; }
 
-    /* ── Settings panel specimen ─────────────────────────────────────── */
-    .demo-settings {
+    /* ── Contextual Menu specimen ────────────────────────────────────── */
+    .demo-ctx-menu {
       background: rgba(20,20,20,0.96);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
@@ -587,17 +536,18 @@
       min-width: 220px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-    .settings-item {
+    .ctx-menu-item {
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
     }
-    .settings-label {
+    .ctx-menu-item.stacked { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .ctx-label {
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
       letter-spacing: 0.1em;
       color: #ffffff;
     }
-    .settings-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0; }
+    .ctx-menu-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0; }
 
     /* ── Shadow scale table ──────────────────────────────────────────── */
     .shadow-table {
@@ -707,7 +657,7 @@
     .demo-match-title.defeat { color: var(--danger-color); }
 
     /* ── Join combo ──────────────────────────────────────────────────── */
-    .demo-join-combo {
+    .demo-combo-input {
       display: flex;
       border: 2px solid #ffffff;
       border-radius: var(--radius-sm);
@@ -715,7 +665,7 @@
       box-shadow: 4px 4px 0 var(--accent);
       width: 240px;
     }
-    .demo-join-input {
+    .demo-combo-text {
       flex: 1; min-width: 0;
       background: var(--bg);
       border: none;
@@ -728,7 +678,7 @@
       text-transform: uppercase;
       outline: none;
     }
-    .demo-join-input::placeholder {
+    .demo-combo-text::placeholder {
       color: var(--text-tertiary);
       font-weight: var(--weight-normal);
       letter-spacing: 0.01em;
@@ -907,29 +857,9 @@
       background: rgba(255,255,255,0.25);
     }
 
-    /* ── Badge / tag ─────────────────────────────────────────────────── */
-    .sg-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-      font-family: var(--font);
-      font-size: var(--text-xs);
-      font-weight: var(--weight-bold);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      line-height: 1.6;
-    }
-    .sg-badge.badge-new      { background: var(--accent); color: #ffffff; }
-    .sg-badge.badge-beta     { background: var(--orange); color: #ffffff; }
-    .sg-badge.badge-count    { background: var(--danger-color); color: #ffffff; min-width: 20px; justify-content: center; padding: 2px 5px; }
-    .sg-badge.badge-p1       { background: var(--p1-color); color: #ffffff; }
-    .sg-badge.badge-p2       { background: var(--p2-color); color: #ffffff; }
-    .sg-badge.badge-neutral  { background: var(--border); color: var(--text-secondary); }
-
-    /* ── Toast ───────────────────────────────────────────────────────── */
+    /* ── Toast (dark mode) ───────────────────────────────────────────── */
     .sg-toast {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 10px;
       padding: 10px 16px;
@@ -938,15 +868,24 @@
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
       letter-spacing: 0.04em;
-      box-shadow: var(--shadow-md);
-      min-width: 200px;
+      box-shadow: 3px 4px 0 rgba(0,0,0,0.5);
+      min-width: 220px;
+      background: rgba(20,20,20,0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #ffffff;
     }
-    .sg-toast.toast-success { background: var(--surface); border-left: 4px solid var(--accent); color: var(--text-primary); }
-    .sg-toast.toast-error   { background: var(--surface); border-left: 4px solid var(--danger-color); color: var(--text-primary); }
-    .sg-toast.toast-info    { background: var(--surface); border-left: 4px solid var(--grid-box-border); color: var(--text-primary); }
+    .sg-toast.toast-success { border-left: 4px solid var(--accent); }
+    .sg-toast.toast-error   { border-left: 4px solid var(--danger-color); }
+    .sg-toast.toast-info    { border-left: 4px solid var(--grid-box-border); }
     .sg-toast-icon { font-size: 16px; flex-shrink: 0; }
+    /* Toast container — fixed bottom-center in production */
+    .sg-toast-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-    /* ── Modal ───────────────────────────────────────────────────────── */
+    /* ── Modal (dark mode) ───────────────────────────────────────────── */
     .sg-modal-backdrop {
       position: relative;
       background: rgba(0,0,0,0.65);
@@ -957,73 +896,38 @@
       justify-content: center;
     }
     .sg-modal {
-      background: var(--surface);
+      background: rgba(20,20,20,0.96);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: var(--radius-md);
       padding: 24px 28px;
       max-width: 360px;
       width: 100%;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
     }
     .sg-modal-title {
       font-family: var(--font);
       font-size: var(--text-md);
       font-weight: var(--weight-bold);
-      color: var(--text-primary);
+      color: #ffffff;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
       margin-bottom: 8px;
     }
     .sg-modal-body {
       font-family: var(--font);
       font-size: var(--text-sm);
-      color: var(--text-secondary);
+      color: rgba(255,255,255,0.65);
       line-height: 1.6;
       margin-bottom: 20px;
+    }
+    .sg-modal-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 0 0 20px;
     }
     .sg-modal-actions {
       display: flex;
       gap: 10px;
       justify-content: flex-end;
-    }
-
-    /* ── Tooltip ─────────────────────────────────────────────────────── */
-    .sg-tooltip-wrap {
-      position: relative;
-      display: inline-flex;
-    }
-    .sg-tooltip-target {
-      background: var(--border);
-      border-radius: var(--radius-xs);
-      padding: 4px 8px;
-      font-family: var(--font);
-      font-size: var(--text-sm);
-      font-weight: var(--weight-bold);
-      color: var(--text-secondary);
-      cursor: default;
-      border-bottom: 1px dashed var(--text-tertiary);
-    }
-    .sg-tooltip-bubble {
-      position: absolute;
-      bottom: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a2e;
-      color: #ffffff;
-      font-family: var(--font);
-      font-size: var(--text-xs);
-      font-weight: var(--weight-bold);
-      letter-spacing: 0.04em;
-      padding: 5px 10px;
-      border-radius: var(--radius-xs);
-      white-space: nowrap;
-      pointer-events: none;
-      box-shadow: 2px 2px 0 var(--accent);
-    }
-    .sg-tooltip-bubble::after {
-      content: '';
-      position: absolute;
-      top: 100%; left: 50%;
-      transform: translateX(-50%);
-      border: 5px solid transparent;
-      border-top-color: #1a1a2e;
     }
 
     /* ── Standalone dropdown ─────────────────────────────────────────── */
@@ -1068,6 +972,94 @@
     }
     .sg-spinner.sm { width: 16px; height: 16px; border-width: 2px; }
 
+    /* ── Icons section ───────────────────────────────────────────────── */
+    .sg-icon-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .sg-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 80px;
+    }
+    .sg-icon-preview {
+      width: 44px;
+      height: 44px;
+      background: rgba(20,20,20,0.96);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .sg-icon-preview img, .sg-icon-preview svg {
+      width: 20px;
+      height: 20px;
+    }
+    .sg-icon-name {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      text-align: center;
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Level separators ────────────────────────────────────────────── */
+    .sg-level {
+      margin: 80px 0 48px;
+      padding-top: 24px;
+      border-top: 3px solid var(--text-primary);
+    }
+    .sg-level-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: var(--weight-black);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .sg-level-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.6;
+      max-width: 640px;
+      margin-bottom: 0;
+    }
+
+    /* ── Lobby player row molecule ───────────────────────────────────── */
+    .demo-player-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .demo-player-label {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-black);
+      color: var(--p1-color);
+      text-shadow: 3px 3px 0 #ffffff;
+      letter-spacing: 0.05em;
+    }
+    .demo-player-label.p2 { color: var(--p2-color); }
+    .demo-player-portrait {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      image-rendering: pixelated;
+    }
+    .demo-player-name {
+      font-size: var(--text-md);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      text-shadow: 2px 2px 0 var(--accent);
+    }
+
     /* ── Promo feedback (visibility-based) ───────────────────────────── */
     .demo-promo-feedback {
       font-family: var(--font);
@@ -1083,12 +1075,41 @@
 <body>
 <div class="sg-page">
 
-  <!-- ===== HEADER ===== -->
   <h1 class="sg-title">STYLE GUIDE</h1>
   <p class="sg-subtitle">Sudoku Fighting — visual design reference &amp; component inventory</p>
+  <p class="sg-note" style="margin-bottom:0;max-width:640px;line-height:1.8">Organized by Atomic Design: <strong>Foundations → Atoms → Molecules → Organisms → Templates.</strong> Each level builds on the previous and introduces no new visual primitives. React migration path: foundations → theme/token files; atoms/molecules/organisms → component files; templates → screen layout files.</p>
 
+  <section class="sg-section" style="margin-top:32px">
+    <h2 class="sg-section-title">Naming Principle</h2>
+    <p class="sg-note" style="max-width:680px;line-height:1.8">
+      <strong>Components are named for the pattern, not the use case.</strong>
+      A component should start with its most abstract, reusable identity. The current instance — where it appears, what it contains — lives in the consuming screen or its props, not in the component's own name or class.
+    </p>
+    <div class="sg-row" style="margin-top:16px;gap:16px">
+      <div class="sg-card" style="flex:1;min-width:220px">
+        <div class="sg-card-label">Wrong — named for use case</div>
+        <code>SettingsPanel</code> → only makes sense as a settings menu<br>
+        <code>.join-combo</code> → implies room-joining, can't be reused<br>
+        <code>.lobby-status</code> → tied to lobby screen context
+      </div>
+      <div class="sg-card" style="flex:1;min-width:220px">
+        <div class="sg-card-label">Right — named for pattern</div>
+        <code>ContextualMenu</code> → any dark floating control panel<br>
+        <code>.combo-input</code> → any fused input + action button<br>
+        <code>.status-pill</code> → any semantic state label
+      </div>
+    </div>
+    <p class="sg-note" style="margin-top:12px;max-width:680px;line-height:1.8">
+      When you find yourself naming a component after where it lives (<em>Lobby</em>Header, <em>Game</em>Button, <em>Settings</em>Panel), stop and ask: what is the <em>shape</em> of this thing? Name that instead. The specific context belongs to the parent.
+    </p>
+  </section>
 
-  <!-- ===== 1. COLORS ===== -->
+  <!-- ===== FOUNDATIONS LEVEL ===== -->
+  <div class="sg-level">
+    <div class="sg-level-title">FOUNDATIONS</div>
+    <p class="sg-level-desc">Raw design tokens and display rules. No components here — only the shared visual language every component is built from.</p>
+  </div>
+
   <section class="sg-section">
     <h2 class="sg-section-title">Colors</h2>
 
@@ -1233,7 +1254,9 @@
   </section>
 
 
-  <!-- ===== 2. TYPOGRAPHY ===== -->
+
+
+  <!-- ===== TYPOGRAPHY ===== -->
   <section class="sg-section">
     <h2 class="sg-section-title">Typography</h2>
 
@@ -1343,7 +1366,81 @@
   </section>
 
 
-  <!-- ===== 3. BUTTONS ===== -->
+  <!-- ===== TEXT SHADOW PRINCIPLES ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Text Shadow Principles</h2>
+
+    <p class="sg-note" style="margin-bottom:24px">The game renders UI over complex, colorful arena backgrounds. All readable text therefore uses white or high-chroma colors with hard pixel shadows that ensure contrast regardless of what's behind.</p>
+
+    <table class="shadow-table">
+      <thead><tr><th>Context</th><th>Text color</th><th>Shadow color</th><th>Offset</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Generic white text over arena</td><td>#ffffff</td><td>accent #8B49FF</td><td>2px 2px 0</td><td>Purple provides contrast on any bg</td></tr>
+        <tr><td>P1 player name (HUD)</td><td>#ffffff</td><td>p1-mid-dark #0A8FBB</td><td>2px 2px 0</td><td>Cyan shadow reinforces P1 identity</td></tr>
+        <tr><td>P2 player name (HUD)</td><td>#ffffff</td><td>p2-mid-dark #BC0074</td><td>2px 2px 0</td><td>Magenta shadow reinforces P2 identity</td></tr>
+        <tr><td>P1 player label (lobby, selected)</td><td>p1-color #17B9EF</td><td>#ffffff</td><td>3px 3px 0</td><td>Player-color on dark bg; white grounds it</td></tr>
+        <tr><td>P2 player label (lobby, selected)</td><td>p2-color #F31299</td><td>#ffffff</td><td>3px 3px 0</td><td>Same logic, magenta</td></tr>
+        <tr><td>Round timer (normal)</td><td>#ffffff</td><td>accent #8B49FF</td><td>3px 3px 0</td><td>Large text, offset scales up</td></tr>
+        <tr><td>Round timer (urgent ≤10s)</td><td>danger-color #F00013</td><td>orange #FF8B16</td><td>2px 3px 0</td><td>Red with warm orange shadow — high alarm</td></tr>
+        <tr><td>Main overlay (FIGHT! / VICTORY)</td><td>accent #8B49FF</td><td>#ffffff</td><td>4px 5px 0</td><td>Biggest text; needs widest shadow</td></tr>
+        <tr><td>Main overlay (DEFEAT)</td><td>danger-color #F00013</td><td>#ffffff</td><td>4px 5px 0</td><td>Red as danger signal</td></tr>
+        <tr><td>Overlay sub-text</td><td>yellow #FFCA00</td><td>accent #8B49FF</td><td>1px 2px 0</td><td>Yellow is legible on both light and dark arenas</td></tr>
+        <tr><td>Primary btn text</td><td>#ffffff</td><td>n/a (box-shadow on element)</td><td>—</td><td>Button surface carries the shadow</td></tr>
+        <tr><td>Secondary btn text</td><td>accent #8B49FF</td><td>n/a</td><td>—</td><td>White surface, no text shadow needed</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sg-divider"></div>
+
+    <h3 class="sg-subsection-title">The Mid-Dark Rule</h3>
+    <p class="sg-note">When white text appears with a player-color shadow, use the <strong>mid-dark</strong> variant (<code>p1-mid-dark</code>, <code>p2-mid-dark</code>), not the primary color. The primary cyan and magenta are too bright for a shadow — they'd feel garish. The mid-dark is dark enough to read as a grounding shadow while still being clearly player-colored.</p>
+
+  </section>
+
+
+  <!-- ===== ICONS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Icons</h2>
+
+    <p class="sg-note" style="margin-bottom:12px">SVG assets from <code>/assets/ui/</code>. Use <code>currentColor</code> for stroke so they inherit color from the parent element. On React Native, platform-specific icon sets should live in <code>/assets/icons/native/</code> to allow conditional imports.</p>
+    <div class="sg-row">
+      <div class="sg-card" style="flex:1;padding:20px">
+        <div class="sg-icon-grid">
+          <div class="sg-icon-item">
+            <div class="sg-icon-preview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></div>
+            <span class="sg-icon-name">chevron-left</span>
+          </div>
+          <div class="sg-icon-item">
+            <div class="sg-icon-preview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></div>
+            <span class="sg-icon-name">chevron-right</span>
+          </div>
+          <div class="sg-icon-item">
+            <div class="sg-icon-preview">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" style="color:#fff"><path d="M12 15.5a3.5 3.5 0 0 1-3.5-3.5A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.33.07-.64.07-.97s-.03-.66-.07-1l2.16-1.63c.19-.15.24-.42.12-.64l-2.04-3.53c-.12-.22-.37-.3-.59-.22l-2.55 1.01c-.53-.4-1.11-.73-1.73-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.62.25-1.2.58-1.73.98L4.86 5.05c-.22-.08-.47 0-.59.22L2.23 8.8c-.12.22-.07.49.12.64L4.51 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.15 1.64c-.19.15-.24.42-.12.64l2.04 3.53c.12.22.37.3.59.22l2.55-1.01c.53.4 1.11.73 1.73.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.62-.25 1.2-.58 1.73-.98l2.55 1.01c.22.08.47 0 .59-.22l2.04-3.53c.12-.22.07-.49-.12-.64l-2.16-1.61z"/></svg>
+            </div>
+            <span class="sg-icon-name">settings (inline SVG)</span>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        <strong>Chevrons:</strong> <code>/assets/ui/chevron-left.svg</code>, <code>chevron-right.svg</code> — stroke-based with <code>currentColor</code>. Must be inlined as <code>&lt;svg&gt;</code> (not <code>&lt;img&gt;</code>) to inherit the parent element's color — <code>&lt;img&gt;</code> isolates the SVG's rendering context and breaks <code>currentColor</code>.<br><br>
+        <strong>Settings gear:</strong> inline SVG in HTML (no separate file yet). Fill-based.<br><br>
+        <strong>React Native:</strong> Replace <code>&lt;img&gt;</code> with <code>&lt;Image&gt;</code> or an icon component that maps name → platform asset. Store as <code>assets/icons/web/</code> and <code>assets/icons/native/</code> for platform-specific variants.
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ===== ATOMS LEVEL ===== -->
+  <div class="sg-level">
+    <div class="sg-level-title">ATOMS</div>
+    <p class="sg-level-desc">Smallest indivisible pieces. No internal composition. Maps to primitive component files in React.</p>
+  </div>
+
+
+  <!-- ===== BUTTONS ===== -->
   <section class="sg-section">
     <h2 class="sg-section-title">Buttons</h2>
 
@@ -1431,9 +1528,9 @@
     <h3 class="sg-subsection-title">Utility — <code>.btn-utility</code></h3>
     <div class="sg-row center">
       <div class="sg-card arena" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <button class="btn-utility" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px">⚙</button>
-        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">◀</button>
-        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">SURRENDER</button>
+        <button class="btn-utility" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px"><img src="/assets/ui/icon-settings.svg" style="width:20px;height:20px;filter:brightness(0) invert(1)" alt="Settings" /></button>
+        <button class="btn-utility" style="display:flex;align-items:center;gap:5px;padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em"><img src="/assets/ui/chevron-left.svg" style="width:16px;height:16px;filter:brightness(0) invert(1)" alt="" />BACK</button>
+        <button class="btn-utility" style="padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em">SURRENDER</button>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
@@ -1506,18 +1603,350 @@
   </section>
 
 
-  <!-- ===== 4. SUDOKU GRID ===== -->
+  <!-- ===== ATOMS: Toggle ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Toggle — <code>.toggle-switch</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Binary on/off control. Wraps a hidden checkbox — the label is the touch/click target for the full track. Used in the contextual menu for Music and SFX.</p>
+    <div class="sg-row center">
+      <div class="sg-card dark" style="display:flex;gap:24px;align-items:center;padding:20px;flex:0 0 auto">
+        <label class="toggle-switch"><input type="checkbox" /><span class="toggle-slider"></span></label>
+        <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">States</div>
+        <strong>Off:</strong> text-tertiary grey track<br>
+        <strong>On:</strong> accent purple track<br>
+        Knob: white 18px circle, 0.2s ease transition<br>
+        Min touch target: 44×24px wrapper
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ATOMS: Status Pill ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Status Pill — <code>.status-pill</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Unified pill label for all state indicators. Replaces the game's <code>.lobby-status</code> and any badge variants. States are keyed to abstract semantic intent — never to specific use cases or instance names.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1;padding:20px">
+        <span class="status-pill active">READY</span>
+        <span class="status-pill inactive">WAITING...</span>
+        <span class="status-pill alert">DISCONNECTED</span>
+        <span class="status-pill p1">P1</span>
+        <span class="status-pill p2">P2</span>
+        <span class="status-pill count">3</span>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">States</div>
+        <code>.active</code> — accent: on/ready/live<br>
+        <code>.inactive</code> — neutral grey: off/waiting<br>
+        <code>.alert</code> — danger red: error/warning<br>
+        <code>.p1</code> / <code>.p2</code> — player identity<br>
+        <code>.count</code> — compact circular count<br><br>
+        Base: 10px bold uppercase, radius-pill<br>
+        <em>Game currently uses <code>.lobby-status.ready/waiting</code> — migrate to <code>.status-pill.active/inactive</code>.</em>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ATOMS: Spinner ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Spinner</h2>
+    <p class="sg-note" style="margin-bottom:12px">Indeterminate wait indicator. Use when the shape of what's loading is unknown — e.g. connecting, form submit. For known shapes, use Skeleton (Molecules).</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;gap:16px;align-items:center;padding:20px;flex:0 0 auto">
+        <div class="sg-spinner"></div>
+        <div class="sg-spinner sm"></div>
+        <span style="font-size:var(--text-sm);color:var(--text-tertiary)">Connecting...</span>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Sizes</div>
+        Default: 24×24px, 3px border<br>
+        Small (<code>.sm</code>): 16×16px, 2px border<br>
+        Track: <code>--border</code> grey. Arc: <code>--accent</code> purple<br>
+        0.7s linear rotation
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div class="sg-level">
+    <div class="sg-level-title">Molecules</div>
+    <p class="sg-level-desc">Atoms combined into minimal functional units. Each molecule does exactly one thing. Maps to focused, single-responsibility component files in React.</p>
+  </div>
+
+  <!-- ===== MOLECULES: Character Card ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Character Card</h2>
+    <div class="sg-card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:16px">
+        <div>
+          <div class="character-card">
+            <div class="char-portrait"><img src="/characters/fighter1/portrait.png" alt="Xiao Long" style="width:80px;height:80px;object-fit:cover;image-rendering:pixelated" /></div>
+            <div class="char-name">Xiao Long</div>
+          </div>
+          <div class="sg-note" style="margin-top:6px">Default</div>
+        </div>
+        <div>
+          <div class="character-card selected">
+            <div class="char-portrait" style="background:var(--accent-hover)"><img src="/characters/fighter1/portrait.png" alt="Xiao Long" style="width:80px;height:80px;object-fit:cover;image-rendering:pixelated" /></div>
+            <div class="char-name">Xiao Long</div>
+          </div>
+          <div class="sg-note" style="margin-top:6px">Selected</div>
+        </div>
+      </div>
+      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
+        White surface, radius 0, 4px 4px purple shadow.<br>
+        Selected: accent fill, white shadow (4px 4px), name turns white.<br>
+        Hover: translate(-1px,-2px), shadow grows to 5px 6px.<br><br>
+        Atoms inside: portrait image + name label. Composed into a grid in the Character Select template.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Lobby Player Row ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Lobby Player Row</h2>
+    <p class="sg-note" style="margin-bottom:12px">A single player slot in a lobby. Composed of a player label (display text), portrait image, character name, and a Status Pill atom. Two of these flank a VS divider to form the lobby's VS row in the Lobby template.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:48px;align-items:center;justify-content:center;padding:24px;flex:1">
+        <div class="demo-player-row">
+          <div class="demo-player-label">YOU</div>
+          <img class="demo-player-portrait" src="/characters/fighter1/portrait.png" alt="Xiao Long" />
+          <div class="demo-player-name">Xiao Long</div>
+          <span class="status-pill active">READY</span>
+        </div>
+        <div class="demo-lobby-vs">VS</div>
+        <div class="demo-player-row">
+          <div class="demo-player-label p2" style="color:var(--p2-color)">PLAYER 2</div>
+          <img class="demo-player-portrait" src="/characters/placeholder_fighter.svg" alt="" style="opacity:0.5" />
+          <div class="demo-player-name">---</div>
+          <span class="status-pill inactive">WAITING...</span>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Anatomy</div>
+        <strong>Player label:</strong> Barlow Condensed 28px w900, player-color, white shadow (3px 3px)<br>
+        <strong>Portrait:</strong> 80px, object-fit:cover, image-rendering:pixelated. Use <code>placeholder_fighter.svg</code> until assigned.<br>
+        <strong>Name:</strong> Roboto Mono 18px bold, white, purple shadow (2px 2px)<br>
+        <strong>Status:</strong> <code>.status-pill.active</code> or <code>.status-pill.inactive</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Combo Input ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Combo Input — <code>.combo-input</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Input and action button fused into a single bordered unit. Named generically — usable in any code/value entry context, not just room joining. White outer border, purple box-shadow. The inner button acts as a secondary action (white bg, accent text) with no border-radius.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px">
+        <div class="demo-combo-input">
+          <input class="demo-combo-text" placeholder="Enter room code..." />
+          <button class="demo-join-btn">JOIN</button>
+        </div>
+        <div class="demo-combo-input">
+          <input class="demo-combo-text" value="AB12CD" />
+          <button class="demo-join-btn">JOIN</button>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Anatomy</div>
+        <strong>Container:</strong> 2px white border, radius-sm, purple shadow (4px 4px), overflow hidden<br>
+        <strong>Input:</strong> bg surface, 12px bold uppercase, letter-spacing 0.1em<br>
+        <strong>Placeholder:</strong> tertiary, normal weight, no letter-spacing<br>
+        <strong>Button:</strong> white bg, accent text, 15px bold, 1px left-border<br>
+        <strong>Active:</strong> accent bg, white text (inverts)
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Standalone Input ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Standalone Input</h2>
+    <p class="sg-note" style="margin-bottom:12px">For future forms — player name entry, search, etc. Not currently used standalone. Focus ring uses accent-light at 3px spread rather than hard pixel shadow, since this appears on a white-bg surface not an arena overlay.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1">
+        <input class="demo-input" placeholder="Default state" />
+        <input class="demo-input" value="Focused state" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)" />
+        <input class="demo-input error" value="Error state" />
+        <input class="demo-input" value="Disabled state" disabled />
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">States</div>
+        <strong>Default:</strong> 2px border #E5E5E5, radius-sm<br>
+        <strong>Focus:</strong> accent border, 3px soft accent-light glow<br>
+        <strong>Error:</strong> danger border, danger-bg-light glow<br>
+        <strong>Disabled:</strong> bg #F2F2F2, tertiary text, not-allowed
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Carousel ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Carousel — <code>.track-carousel</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Prev/next navigation for a named list. Chevron SVGs must be inlined (not <code>&lt;img&gt;</code>) to inherit <code>currentColor</code>. 44×44px minimum touch target on chevron buttons. Used for music track and arena selection.</p>
+    <div class="sg-row center">
+      <div class="sg-card dark" style="padding:16px 24px">
+        <div class="demo-carousel">
+          <button class="demo-carousel-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
+          <span class="demo-carousel-title">El Tropical</span>
+          <button class="demo-carousel-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Anatomy</div>
+        Chevrons: <code>.btn-utility</code> style, min 44×44px<br>
+        Title: Roboto Mono 14px bold, white, 160px fixed width, ellipsis
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Inline Message ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Inline Message</h2>
+    <p class="sg-note" style="margin-bottom:12px">Feedback text rendered in-place. Always use <code>visibility: hidden/visible</code> — never <code>display: none</code> — so layout never shifts when messages appear or disappear.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;padding:24px">
+        <p class="demo-inline-error">Room not found. Check the code and try again.</p>
+        <p class="demo-inline-success">Copied to clipboard!</p>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Variants</div>
+        <strong>Error:</strong> danger-color, 1px 1px dark shadow<br>
+        <strong>Success:</strong> accent, 1px 1px white shadow<br>
+        Reserve line height when empty. Toggle <code>visibility</code> not <code>display</code>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Glass Card ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Glass Card — <code>.glass-card</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Semi-transparent panel for grouping content over a complex/arena background. Use sparingly — only when content needs grouping without a solid surface.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:32px;display:flex;justify-content:center">
+        <div class="demo-glass-card">
+          <div class="demo-glass-label">Invite a Friend</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="demo-share-code">AB12CD</div>
+            <button class="btn btn-sm">COPY</button>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Background: <code>rgba(255,255,255,0.12)</code><br>
+        Border: 1px <code>rgba(255,255,255,0.25)</code><br>
+        Radius: radius-md (12px)
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Difficulty Selector ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Difficulty Selector</h2>
+    <p class="sg-note" style="margin-bottom:12px">A row of small secondary buttons where inactive options dim to 55% opacity. The selected button at full opacity is the only selection signal needed — no outline required.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
+        <div class="demo-diff-group">
+          <div class="demo-diff-label">Difficulty</div>
+          <div class="demo-diff-btns">
+            <button class="btn btn-sm btn-secondary sp-diff-btn">EASY</button>
+            <button class="btn btn-sm btn-secondary sp-diff-btn selected">MEDIUM</button>
+            <button class="btn btn-sm btn-secondary sp-diff-btn">HARD</button>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Pattern</div>
+        Base: <code>.btn.btn-sm.btn-secondary</code> at opacity 0.55<br>
+        Selected: opacity 1.0 — no outline (conflicts with box-shadow)
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Dropdown ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Dropdown / Select</h2>
+    <p class="sg-note" style="margin-bottom:12px">Styled <code>&lt;select&gt;</code> for settings with more than 2–3 options. Custom chevron via background-image SVG replaces native arrow. <strong>React Native:</strong> replace with a custom Picker — native <code>&lt;select&gt;</code> doesn't exist on native.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1;padding:20px">
+        <select class="demo-select">
+          <option>English</option>
+          <option>日本語</option>
+          <option>Español</option>
+        </select>
+        <select class="demo-select" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)">
+          <option>Focused state</option>
+        </select>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Same base as Standalone Input: 2px border, radius-sm, 12px bold<br>
+        <code>appearance: none</code> removes native chrome<br>
+        Focus: accent border + accent-light glow
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Skeleton ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Skeleton</h2>
+    <p class="sg-note" style="margin-bottom:12px">Reserves exact layout space during async load — prevents layout shift. Use when the shape of what's loading is known (portrait, name line). For unknown shapes use Spinner (Atoms).</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:16px;flex:1;padding:20px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="sg-skeleton" style="width:64px;height:64px;border-radius:var(--radius-xs)"></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="sg-skeleton" style="width:120px;height:14px"></div>
+            <div class="sg-skeleton" style="width:80px;height:10px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        90° shimmer gradient: <code>--border</code> → <code>--bg</code> → <code>--border</code><br>
+        800px background-size, 1.4s infinite sweep
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Mobile Numpad ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Mobile Numpad</h2>
+    <p class="sg-note" style="margin-bottom:12px">Shown only on touch (coarse pointer) devices. One tap = number entry into the grid. Hidden on desktop via CSS pointer query.</p>
+    <div class="sg-row center" style="margin-top:12px">
+      <div class="sg-card dark" style="flex:0 0 auto;padding:16px">
+        <div class="sg-row center" style="gap:4px;margin:0">
+          <div class="numpad-btn-demo">1</div><div class="numpad-btn-demo">2</div><div class="numpad-btn-demo">3</div><div class="numpad-btn-demo">4</div><div class="numpad-btn-demo">5</div><div class="numpad-btn-demo">6</div><div class="numpad-btn-demo">7</div><div class="numpad-btn-demo">8</div><div class="numpad-btn-demo">9</div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Background: rgba(255,255,255,0.85) · Border: 2px rgba(0,0,0,0.15) · Radius: 6px<br>
+        Font: 19px w700 Roboto Mono · Active: scale(0.93) + fully opaque white
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div class="sg-level">
+    <div class="sg-level-title">Organisms</div>
+    <p class="sg-level-desc">Self-contained UI sections with their own internal logic and state. Each organism is too complex or too specific to be a molecule. Maps to feature-level component files in React.</p>
+  </div>
+
+  <!-- ===== ORGANISMS: Sudoku Grid ===== -->
   <section class="sg-section">
     <h2 class="sg-section-title">Sudoku Grid &amp; Cell States</h2>
 
-    <p class="sg-note" style="margin-bottom:20px">The grid renders over an arena background. Cell backgrounds use white at varying opacity so the arena art shows through on ghosted cells. <strong>Own grid</strong> uses 88% opacity white for clarity. <strong>Opponent empty cells</strong> use 25% — visibly ghosted to signal "not yours". <strong>Opponent filled cells</strong> match own-grid opacity (90%) to show progress legibly.</p>
+    <p class="sg-note" style="margin-bottom:20px">The central game component. Renders over an arena background — cell backgrounds use white at varying opacity so arena art shows through. <strong>Own grid:</strong> 88% opacity. <strong>Opponent empty cells:</strong> 25% — ghosted. <strong>Opponent filled cells:</strong> 90% — legible.</p>
 
     <h3 class="sg-subsection-title">Grid Identity &amp; Borders</h3>
     <div class="sg-row">
       <div class="demo-grid-block">
         <div class="sg-card-label">Default (neutral, spectator)</div>
         <div class="mini-grid">
-          <!-- just a few cells for demo -->
           <div class="mini-cell box-left box-top given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">4</div><div class="mini-cell box-top box-left">6</div><div class="mini-cell box-top">7</div><div class="mini-cell box-top pre-box-right">8</div><div class="mini-cell box-top box-left given">9</div><div class="mini-cell box-top given">1</div><div class="mini-cell box-top given">2</div>
           <div class="mini-cell box-left given">6</div><div class="mini-cell given">7</div><div class="mini-cell pre-box-right given">2</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">9</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">3</div><div class="mini-cell given">4</div><div class="mini-cell given">8</div>
           <div class="mini-cell box-left pre-box-bottom">1</div><div class="mini-cell pre-box-bottom">9</div><div class="mini-cell pre-box-right pre-box-bottom">8</div><div class="mini-cell box-left pre-box-bottom">3</div><div class="mini-cell pre-box-bottom">4</div><div class="mini-cell pre-box-right pre-box-bottom">2</div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">5</div><div class="mini-cell pre-box-bottom given">7</div>
@@ -1568,46 +1997,27 @@
       <tbody>
         <tr><td>Empty (own)</td><td><code>.is-me .cell</code></td><td>rgba(255,255,255,0.88)</td><td>—</td><td>Active puzzle cells</td></tr>
         <tr><td>Empty (opponent)</td><td><code>.cell</code> (not is-me)</td><td>rgba(255,255,255,0.25)</td><td>—</td><td>Ghosted — not interactive</td></tr>
-        <tr><td>Given number</td><td><code>.cell.given</code></td><td>inherits</td><td>text-secondary #333, w700</td><td>Pre-filled clue cells. Still clickable.</td></tr>
+        <tr><td>Given number</td><td><code>.cell.given</code></td><td>inherits</td><td>text-secondary #333, w700</td><td>Pre-filled clue cells</td></tr>
         <tr><td>Correctly filled</td><td><code>.cell.correct</code></td><td>rgba(255,255,255,0.88)</td><td>p1-dark/p2-dark, w600</td><td>Color keyed to grid owner</td></tr>
         <tr><td>Highlighted row/col</td><td><code>.cell.highlight</code></td><td>p1/p2-bg-light</td><td>—</td><td>Same row/col as cursor</td></tr>
         <tr><td>Same number</td><td><code>.cell.same-number</code></td><td>p1/p2-bg-mid</td><td>—</td><td>All cells matching entered digit</td></tr>
         <tr><td>Selected cursor</td><td><code>.cell.selected</code></td><td>p1/p2-bg-light</td><td>—</td><td>Inset box-shadow: 2px solid p1/p2-color</td></tr>
-        <tr><td>Invalid entry</td><td><code>.cell.danger</code></td><td>danger-bg-light #FFEBEC</td><td>danger-dark #A8000F, w600</td><td>Red diagonal X overlay via ::before/::after</td></tr>
+        <tr><td>Invalid entry</td><td><code>.cell.danger</code></td><td>danger-bg-light #FFEBEC</td><td>danger-dark #A8000F, w600</td><td>Red diagonal X via ::before/::after</td></tr>
         <tr><td>Opponent cursor</td><td><code>.cell.opponent-cursor</code></td><td>p1/p2-bg-light</td><td>—</td><td>3px inset outline in p1/p2 color</td></tr>
-        <tr><td>Opponent filled</td><td><code>.cell.opponent-filled</code></td><td>rgba(255,255,255,0.9)</td><td>p1/p2-dark, w600</td><td>Matches own-grid opacity to show legibly</td></tr>
+        <tr><td>Opponent filled</td><td><code>.cell.opponent-filled</code></td><td>rgba(255,255,255,0.9)</td><td>p1/p2-dark, w600</td><td>Matches own-grid opacity</td></tr>
       </tbody>
     </table>
 
     <h3 class="sg-subsection-title">Grid Borders &amp; Box Dividers</h3>
-    <p class="sg-note">Thin cell lines: 1px <code>#D5D5D5</code>. Thick 3×3 box dividers: 2px <code>#888888</code>. The outer border uses CSS custom properties (<code>--_grid-outline-color</code>, <code>--_grid-outline-width</code>) so that <code>.is-me</code> overrides both color and width on the same single <code>border</code> declaration — it fully replaces the neutral border rather than layering on top of it. Default: 2px <code>grid-box-border</code>. Own grid: 3px in the player's identity color. Right and bottom borders of cells adjacent to box lines are suppressed to prevent double-border artifacts.</p>
-
-    <h3 class="sg-subsection-title">Mobile Numpad</h3>
-    <div class="sg-row center" style="margin-top:12px">
-      <div class="sg-card dark" style="flex:0 0 auto;padding:16px">
-        <div class="sg-row center" style="gap:4px;margin:0">
-          <div class="numpad-btn-demo">1</div><div class="numpad-btn-demo">2</div><div class="numpad-btn-demo">3</div><div class="numpad-btn-demo">4</div><div class="numpad-btn-demo">5</div><div class="numpad-btn-demo">6</div><div class="numpad-btn-demo">7</div><div class="numpad-btn-demo">8</div><div class="numpad-btn-demo">9</div>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Usage</div>
-        Shown only on touch (coarse pointer) devices. One tap = number entry.<br><br>
-        <strong>Background:</strong> rgba(255,255,255,0.85)<br>
-        <strong>Border:</strong> 2px rgba(0,0,0,0.15)<br>
-        <strong>Radius:</strong> 6px<br>
-        <strong>Font:</strong> 19px, w700, Roboto Mono<br>
-        <strong>Active:</strong> scale(0.93) + fully opaque white
-      </div>
-    </div>
+    <p class="sg-note">Thin cell lines: 1px <code>#D5D5D5</code>. Thick 3×3 box dividers: 2px <code>#888888</code>. The outer border uses CSS custom properties (<code>--_grid-outline-color</code>, <code>--_grid-outline-width</code>) so that <code>.is-me</code> fully replaces the neutral border rather than layering on top. Default: 2px <code>grid-box-border</code>. Own grid: 3px in player color. Right and bottom borders adjacent to box lines are suppressed to prevent double-border artifacts.</p>
   </section>
 
-
-  <!-- ===== 5. HUD & GAMEPLAY ===== -->
+  <!-- ===== ORGANISMS: HUD ===== -->
   <section class="sg-section">
-    <h2 class="sg-section-title">HUD &amp; Gameplay UI</h2>
+    <h2 class="sg-section-title">HUD</h2>
 
     <h3 class="sg-subsection-title">Health Bar System</h3>
-    <p class="sg-note" style="margin-bottom:16px">The bar track is always danger red — the red is the "low HP" signal already baked in. The fill bar covers it: yellow at full, orange at ~50%, then pulsing yellow at low HP.</p>
+    <p class="sg-note" style="margin-bottom:16px">Track is always danger red — the "low HP" signal is already baked in. The fill bar covers it: yellow at full, orange at ~50%, pulsing yellow at low.</p>
     <div class="sg-row" style="gap:16px;margin-bottom:16px">
       <div style="display:flex;flex-direction:column;gap:8px;flex:1">
         <div class="sg-card-label">Full HP (yellow)</div>
@@ -1657,9 +2067,35 @@
         </div>
       </div>
     </div>
-    <div class="sg-note" style="margin-top:10px">Timer at &lt;=10s: color switches to <code>danger-color</code>, shadow to <code>orange</code>, blinks. KO block: Barlow Condensed 28px, accent purple fill, white text.</div>
+    <div class="sg-note" style="margin-top:10px">Timer at ≤10s: switches to <code>danger-color</code>, shadow to <code>orange</code>, blinks. KO block: Barlow Condensed 28px, accent fill, white text.</div>
 
-    <h3 class="sg-subsection-title">Game Overlay</h3>
+    <h3 class="sg-subsection-title">Combo Counter</h3>
+    <p class="sg-note" style="margin-bottom:12px">Lives in the HUD sub-row alongside scores. Always reserves <code>min-height: 1em</code> so scores don't shift when a combo appears or disappears.</p>
+    <div class="sg-row center">
+      <div class="sg-card dark" style="padding:16px 24px;display:flex;gap:24px;align-items:center">
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">No combo</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark);min-height:1em;display:block">&nbsp;</span>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">Active</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark)">×3 COMBO!</span>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">P2</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p2-mid-dark)">×5 COMBO!</span>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        18px bold white, player mid-dark shadow. P1: <code>p1-mid-dark</code> · P2: <code>p2-mid-dark</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ORGANISMS: Game Overlay ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Game Overlay</h2>
+
     <div class="sg-row">
       <div class="sg-card arena" style="flex:1">
         <div class="demo-overlay">
@@ -1680,217 +2116,131 @@
         </div>
       </div>
     </div>
-    <div class="sg-note">Main text: Barlow Condensed 96px w900. Normal state: <code>accent</code> purple + white shadow. Defeat: <code>danger-color</code> red. Sub-text: Roboto Mono 22px w700, yellow + purple shadow (never white — legible on any arena bg).</div>
+    <div class="sg-note" style="margin-top:10px">Main text: Barlow Condensed 96px w900. Normal: <code>accent</code> + white shadow. Defeat: <code>danger-color</code>. Sub-text: 22px w700 yellow + purple shadow — never white, legible on any arena.</div>
 
     <h3 class="sg-subsection-title">Floating Score Pop</h3>
-    <p class="sg-note">Appears near the cell where a correct number is entered. 13px, w800, <code>accent</code> purple. Floats up 36px and fades out over 0.75s.</p>
+    <p class="sg-note">Appears near the cell where a correct entry is made. 13px w800, <code>accent</code> purple. Floats up 36px and fades out over 0.75s.</p>
 
     <h3 class="sg-subsection-title">Attack Flash</h3>
-    <p class="sg-note">Full-screen inset box-shadow flashes on hit, keyed to attack type:
-      <br>• Punch: <code>rgba(240,0,19,0.22)</code> — subtle red, 0.25s
-      <br>• Heavy: <code>rgba(255,139,22,0.32)</code> → red — orange then red, 0.35s
-      <br>• Self-hit: <code>rgba(240,0,19,0.20)</code> — 0.2s
+    <p class="sg-note">Full-screen inset box-shadow, keyed to hit type:<br>
+      • Punch: <code>rgba(240,0,19,0.22)</code> — subtle red, 0.25s<br>
+      • Heavy: <code>rgba(255,139,22,0.32)</code> → red — orange then red, 0.35s<br>
+      • Self-hit: <code>rgba(240,0,19,0.20)</code> — 0.2s
     </p>
   </section>
 
-
-  <!-- ===== 6. LOBBY & SCREENS ===== -->
+  <!-- ===== ORGANISMS: Contextual Menu ===== -->
   <section class="sg-section">
-    <h2 class="sg-section-title">Lobby &amp; Screen Components</h2>
-
-    <h3 class="sg-subsection-title">Lobby Text Hierarchy</h3>
-    <div class="sg-card arena" style="padding:24px 32px">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
-        <div class="demo-lobby-title">MATCHMAKING</div>
-        <div style="display:flex;align-items:center;gap:24px;margin-top:8px">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--p1-color);text-shadow:3px 3px 0 #fff">YOU</div>
-            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">Xiao Long</div>
-            <span class="lobby-status ready">READY</span>
-          </div>
-          <div class="demo-lobby-vs">VS</div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">PLAYER 2</div>
-            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">---</div>
-            <span class="lobby-status waiting">WAITING...</span>
-          </div>
-        </div>
-        <div class="demo-share-code" style="margin-top:8px">AB12CD</div>
-      </div>
-    </div>
-    <div class="sg-note" style="margin-top:10px">
-      Lobby title: Barlow Condensed 26px w900, white + purple shadow (2px 2px).<br>
-      VS: Barlow Condensed 28px w900, white + purple shadow (2px 3px).<br>
-      Own player label: Barlow Condensed 28px w900, player color + white shadow (3px 3px).<br>
-      Other player label: Barlow Condensed / Roboto Mono 18px w700, white + purple shadow.<br>
-      Player name: Roboto Mono 18px w700, white + purple shadow.<br>
-      Share code: Roboto Mono 26px w900, white + purple shadow, letter-spacing 0.35em.<br>
-      Status pills: 12px w700, radius 20px — Ready: white text on accent; Waiting: text-secondary on border.
-    </div>
-
-    <h3 class="sg-subsection-title">Start Screen Labels</h3>
-    <div class="sg-card arena" style="padding:24px">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-        <div class="demo-start-label">2 PLAYER</div>
-        <div class="demo-section-label">Join matchmaking queue</div>
-        <button class="btn" style="width:240px">QUICK PLAY</button>
-        <div class="demo-start-label" style="margin-top:12px">SINGLE PLAYER</div>
-        <button class="btn btn-alt" style="width:240px">VS AI</button>
-      </div>
-    </div>
-    <div class="sg-note" style="margin-top:10px">
-      Mode labels: Barlow Condensed 26px w900, white + purple shadow (2px 2px), letter-spacing 0.12em.<br>
-      Section labels: Roboto Mono 12px w700, white + purple shadow (1px 1px), letter-spacing 0.08em, uppercase.
-    </div>
-
-    <h3 class="sg-subsection-title">Character Card</h3>
-    <div class="sg-card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
-      <div style="display:flex;gap:16px">
-        <div>
-          <div class="character-card">
-            <div class="char-portrait">🥊</div>
-            <div class="char-name">Xiao Long</div>
-          </div>
-          <div class="sg-note" style="margin-top:6px">Default</div>
-        </div>
-        <div>
-          <div class="character-card selected">
-            <div class="char-portrait" style="background:var(--accent-hover)">🥊</div>
-            <div class="char-name">Xiao Long</div>
-          </div>
-          <div class="sg-note" style="margin-top:6px">Selected</div>
-        </div>
-      </div>
-      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
-        White surface card, radius 0, purple shadow (4px 4px).<br>
-        Selected: accent purple fill, white shadow (4px 4px), name turns white.<br>
-        Hover: translate(-1px, -2px) + shadow grows to 5px 6px.
-      </div>
-    </div>
-
-    <h3 class="sg-subsection-title">Settings Panel</h3>
+    <h2 class="sg-section-title">Contextual Menu — <code>.ctx-menu</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Generic dark floating panel anchored to a trigger. Not settings-specific — can host any contextual controls. Consistent dark aesthetic with Toast and Modal.</p>
     <div class="sg-card" style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
-      <div class="demo-settings">
-        <div class="settings-item">
-          <span class="settings-label">MUSIC</span>
-          <label class="toggle-switch">
-            <input type="checkbox" checked />
-            <span class="toggle-slider"></span>
-          </label>
+      <div class="demo-ctx-menu">
+        <div class="ctx-menu-item">
+          <span class="ctx-label">MUSIC</span>
+          <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
         </div>
-        <div class="settings-item" style="flex-direction:column;align-items:flex-start;gap:6px">
-          <span class="settings-label">TRACK</span>
+        <div class="ctx-menu-item stacked">
+          <span class="ctx-label">TRACK</span>
           <div style="display:flex;align-items:center;gap:4px">
-            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px">◀</button>
-            <span style="font-size:14px;font-weight:700;color:#fff;width:160px;text-align:center">Track Title</span>
-            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px">▶</button>
+            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 9 12 15 19"/></svg></button>
+            <span style="font-size:14px;font-weight:700;color:#fff;width:140px;text-align:center">El Tropical</span>
+            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
           </div>
         </div>
-        <div class="settings-divider"></div>
-        <div class="settings-item">
-          <span class="settings-label">SOUND EFFECTS</span>
-          <label class="toggle-switch">
-            <input type="checkbox" />
-            <span class="toggle-slider"></span>
-          </label>
+        <div class="ctx-menu-divider"></div>
+        <div class="ctx-menu-item">
+          <span class="ctx-label">SOUND EFFECTS</span>
+          <label class="toggle-switch"><input type="checkbox" /><span class="toggle-slider"></span></label>
         </div>
       </div>
       <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
-        Panel: rgba(20,20,20,0.96) near-black with subtle white border. Fixed to top-right.<br>
-        Labels: 12px w700 white, letter-spacing 0.1em, uppercase.<br>
-        Toggle on: accent purple. Toggle off: text-tertiary grey.<br>
-        Carousel chevrons: utility buttons (44×44px minimum touch target).
+        <strong>Panel:</strong> rgba(20,20,20,0.96), 1px white border at 10%, fixed anchor<br>
+        <strong>Row (<code>.ctx-menu-item</code>):</strong> flex row, space-between<br>
+        <strong>Stacked (<code>.stacked</code>):</strong> label above, control below — for Carousel rows<br>
+        <strong>Labels (<code>.ctx-label</code>):</strong> 12px w700 white uppercase, letter-spacing 0.1em<br>
+        <strong>Divider:</strong> 1px rgba white 10%<br>
+        Atoms inside: Toggle, Carousel
       </div>
     </div>
   </section>
 
-
-  <!-- ===== 6b. SCREEN & FORM COMPONENTS ===== -->
+  <!-- ===== ORGANISMS: Toast ===== -->
   <section class="sg-section">
-    <h2 class="sg-section-title">Screen &amp; Form Components</h2>
-
-    <h3 class="sg-subsection-title">Join Combo — <code>.join-combo</code></h3>
-    <p class="sg-note" style="margin-bottom:12px">Input and action button fused into a single bordered unit. Currently appears once on the start screen for room code entry. White outer border, purple box-shadow. The inner button acts as a secondary action (white bg, accent text) with no border-radius.</p>
+    <h2 class="sg-section-title">Toast Notification</h2>
+    <p class="sg-note" style="margin-bottom:12px">Ephemeral feedback over gameplay or between screens. Fixed bottom-center, slides up on show, auto-dismisses at 3s. Dark mode — readable over any arena. Left border carries the semantic signal.</p>
     <div class="sg-row center">
-      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px">
-        <div class="demo-join-combo">
-          <input class="demo-join-input" placeholder="Enter room code..." />
-          <button class="demo-join-btn">JOIN</button>
+      <div class="sg-card dark" style="display:flex;flex-direction:column;gap:10px;flex:1;padding:20px">
+        <div class="sg-toast toast-success"><span class="sg-toast-icon">✓</span><span>Match saved to history</span></div>
+        <div class="sg-toast toast-error"><span class="sg-toast-icon">✕</span><span>Connection lost — reconnecting</span></div>
+        <div class="sg-toast toast-info"><span class="sg-toast-icon">i</span><span>Opponent joined the room</span></div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Variants</div>
+        <code>toast-success</code> → accent left border<br>
+        <code>toast-error</code> → danger left border<br>
+        <code>toast-info</code> → grey left border<br><br>
+        Panel: rgba(20,20,20,0.96), hard pixel shadow<br>
+        <strong>JS:</strong> add to DOM → slide-up + fade-in 0.2s → auto-remove after 3s
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ORGANISMS: Modal ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Modal / Confirmation Dialog</h2>
+    <p class="sg-note" style="margin-bottom:12px">Blocks interaction for destructive or important confirmations. Dark mode panel consistent with Contextual Menu and Toast. Cancel always left of destructive.</p>
+    <div class="sg-modal-backdrop">
+      <div class="sg-modal">
+        <div class="sg-modal-title">Surrender match?</div>
+        <div class="sg-modal-divider"></div>
+        <div class="sg-modal-body">You'll forfeit the current round. This can't be undone.</div>
+        <div class="sg-modal-actions">
+          <button class="btn-secondary" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">CANCEL</button>
+          <button class="btn btn-danger" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">SURRENDER</button>
         </div>
-        <div class="demo-join-combo">
-          <input class="demo-join-input" value="AB12CD" />
-          <button class="demo-join-btn">JOIN</button>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Anatomy</div>
-        <strong>Container:</strong> 2px white border, radius-sm, purple box-shadow (4px 4px), overflow:hidden<br>
-        <strong>Input:</strong> bg surface, 12px bold uppercase, letter-spacing 0.1em<br>
-        <strong>Placeholder:</strong> tertiary color, normal weight, no letter-spacing<br>
-        <strong>Button:</strong> white bg, accent text, 15px bold, left-border 1px<br>
-        <strong>Button hover:</strong> accent-light bg<br>
-        <strong>Button active:</strong> accent bg, white text (inverts)
       </div>
     </div>
-
-    <h3 class="sg-subsection-title">Standalone Input</h3>
-    <p class="sg-note" style="margin-bottom:12px">Proposed for future forms (player name entry, search, etc.). Not currently used standalone in the game. Focus ring uses accent-light at 3px spread — soft glow rather than hard pixel, since this is a white-bg form context not an arena overlay.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1">
-        <input class="demo-input" placeholder="Default state" />
-        <input class="demo-input" value="Focused state" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)" />
-        <input class="demo-input error" value="Error state" />
-        <input class="demo-input" value="Disabled state" disabled />
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">States</div>
-        <strong>Default:</strong> 2px border #E5E5E5, radius-sm<br>
-        <strong>Focus:</strong> border accent, 3px soft glow accent-light<br>
-        <strong>Error:</strong> border danger-color, glow danger-bg-light<br>
-        <strong>Disabled:</strong> bg surface (#F2F2F2), tertiary text, not-allowed cursor<br><br>
-        Font: Roboto Mono 12px bold. Inherits game aesthetic but softens the focus ring compared to hard-pixel shadows (appropriate for form UI on white background).
-      </div>
+    <div class="sg-note" style="margin-top:10px">
+      Backdrop: rgba(0,0,0,0.65). Panel: rgba(20,20,20,0.96), 1px white border, radius-md.<br>
+      Title: 18px bold white. Body: 12px rgba(white,0.65). Divider: 1px rgba white 10%.<br>
+      Actions right-aligned. Cancel left of destructive — platform convention.
     </div>
+  </section>
 
-    <h3 class="sg-subsection-title">Inline Messages — Error &amp; Success</h3>
-    <p class="sg-note" style="margin-bottom:12px">Inline feedback text beneath form elements. Rendered in-place using <code>visibility: hidden</code> / <code>visibility: visible</code> — never <code>display: none</code> — so layout does not shift when they appear.</p>
-    <div class="sg-row center">
-      <div class="sg-card arena" style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;padding:24px">
-        <p class="demo-inline-error">Room not found. Check the code and try again.</p>
-        <p class="demo-inline-success">Copied to clipboard!</p>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Usage</div>
-        <strong>Error:</strong> danger-color, 1px 1px dark shadow (improves legibility over arena)<br>
-        <strong>Success:</strong> accent color, 1px 1px white shadow<br>
-        Always reserve the line height even when empty. Use <code>visibility</code> not <code>display</code> to toggle.
-      </div>
-    </div>
 
-    <h3 class="sg-subsection-title">Glass Card — <code>.lobby-share</code></h3>
-    <p class="sg-note" style="margin-bottom:12px">Semi-transparent frosted panel used for the private room invite code. Sits over the arena background. Used sparingly — only when content needs grouping against a complex background.</p>
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div class="sg-level">
+    <div class="sg-level-title">Templates</div>
+    <p class="sg-level-desc">Screen-level compositions. Templates reference organisms and molecules — they introduce no new visual atoms. Maps to screen/route files in React (e.g. <code>StartScreen.tsx</code>, <code>LobbyScreen.tsx</code>).</p>
+  </div>
+
+  <!-- ===== TEMPLATES: Start Screen ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Start Screen</h2>
+    <p class="sg-note" style="margin-bottom:20px">Fixed-width actions column (240px). Two modes (2 PLAYER / SINGLE PLAYER) divided by a 1px rule. The promo feedback text always holds its line height via <code>visibility</code> — button never jumps.</p>
+
+    <h3 class="sg-subsection-title">Mode Labels &amp; Section Sub-labels</h3>
     <div class="sg-row center">
-      <div class="sg-card arena" style="padding:32px;display:flex;justify-content:center">
-        <div class="demo-glass-card">
-          <div class="demo-glass-label">Invite a Friend</div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <div class="demo-share-code">AB12CD</div>
-            <button class="btn btn-sm">COPY</button>
-          </div>
+      <div class="sg-card arena" style="padding:24px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div class="demo-start-label">2 PLAYER</div>
+          <div class="demo-section-label">Join matchmaking queue</div>
+          <button class="btn" style="width:240px">QUICK PLAY</button>
+          <div class="demo-start-divider"></div>
+          <div class="demo-start-label">SINGLE PLAYER</div>
+          <button class="btn btn-alt" style="width:240px">VS AI</button>
         </div>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
-        Background: <code>rgba(255,255,255,0.12)</code><br>
-        Border: 1px <code>rgba(255,255,255,0.25)</code><br>
-        Radius: radius-md (12px)<br><br>
-        Inner label: 12px bold white, uppercase, letter-spacing 0.08em<br>
-        Share code: Roboto Mono 26px w900, white, letter-spacing 0.35em, purple shadow
+        <strong>Mode labels:</strong> Barlow Condensed 26px w900, white + purple shadow (2px 2px), letter-spacing 0.12em<br>
+        <strong>Section sub-labels:</strong> Roboto Mono 12px w700, white + purple shadow (1px 1px), uppercase<br>
+        <strong>Divider:</strong> 240px wide, 1px, rgba(255,255,255,0.25) — matches CTA width<br>
+        Molecules used: Combo Input, Buttons
       </div>
     </div>
 
-    <h3 class="sg-subsection-title">Lobby Promo — visibility-based feedback</h3>
-    <p class="sg-note" style="margin-bottom:12px">Quick Play share row. The feedback text ("Copied to clipboard") always occupies its line height via <code>visibility: hidden/visible</code> — this prevents the button from jumping down when feedback appears.</p>
+    <h3 class="sg-subsection-title">Promo Feedback — no-jump pattern</h3>
+    <p class="sg-note" style="margin-bottom:12px">The "Copied to clipboard" feedback always occupies its line height via <code>visibility: hidden/visible</code>. The button never moves.</p>
     <div class="sg-row center">
       <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:24px">
         <p class="demo-promo-feedback">Copied to clipboard</p>
@@ -1901,303 +2251,105 @@
         <button class="btn btn-sm btn-secondary">SHARE THE GAME</button>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">The no-jump pattern</div>
-        Reserve line height always. Toggle <code>visibility</code> not <code>display</code>.<br>
-        Feedback text: 12px bold, rgba(255,255,255,0.85) — slightly dimmer than primary labels.<br>
-        Left: hidden (button sits at its natural position). Right: visible — button stays in place.
+        Left: hidden — button at natural position. Right: visible — button stays in place.<br>
+        Feedback text: 12px bold, rgba(255,255,255,0.85).<br>
+        This pattern applies anywhere transient text appears above or below an interactive element.
       </div>
     </div>
+  </section>
 
-    <h3 class="sg-subsection-title">Carousel — <code>.track-carousel</code></h3>
-    <p class="sg-note" style="margin-bottom:12px">Used for track selection in settings and arena selection in lobbies. Chevron buttons are utility style with 44×44px minimum touch target. Title is center-fixed width with overflow ellipsis.</p>
-    <div class="sg-row center">
-      <div class="sg-card dark" style="padding:16px 24px">
-        <div class="demo-carousel">
-          <button class="demo-carousel-btn">◀</button>
-          <span class="demo-carousel-title">El Tropical</span>
-          <button class="demo-carousel-btn">▶</button>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Usage</div>
-        Chevrons: <code>.btn-utility</code> style, min 44×44px touch target<br>
-        Title: Roboto Mono 14px bold, white, 160px fixed width, ellipsis overflow<br>
-        Gap between chevron and title: 4px<br>
-        Used in: settings panel (track), both lobby screens (arena picker)
-      </div>
-    </div>
+  <!-- ===== TEMPLATES: Lobby ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Lobby</h2>
+    <p class="sg-note" style="margin-bottom:20px">Composed of: lobby title, two Lobby Player Row molecules flanking a VS divider, optional Glass Card (private room invite), arena Carousel, and a Lobby Hint. SP Lobby adds the Difficulty Selector molecule.</p>
 
-    <h3 class="sg-subsection-title">Difficulty Selector — <code>.sp-diff-btn</code></h3>
-    <p class="sg-note" style="margin-bottom:12px">Row of small secondary buttons where inactive options are dimmed to 55% opacity. The selected button restores to full opacity — no other visual indicator needed.</p>
-    <div class="sg-row center">
-      <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
-        <div class="demo-diff-group">
-          <div class="demo-diff-label">Difficulty</div>
-          <div class="demo-diff-btns">
-            <button class="btn btn-sm btn-secondary sp-diff-btn">EASY</button>
-            <button class="btn btn-sm btn-secondary sp-diff-btn selected">MEDIUM</button>
-            <button class="btn btn-sm btn-secondary sp-diff-btn">HARD</button>
+    <h3 class="sg-subsection-title">Assembly</h3>
+    <div class="sg-card arena" style="padding:24px 32px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div class="demo-lobby-title">MATCHMAKING</div>
+        <div style="display:flex;align-items:center;gap:24px;margin-top:8px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--p1-color);text-shadow:3px 3px 0 #fff">YOU</div>
+            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">Xiao Long</div>
+            <span class="status-pill active">READY</span>
+          </div>
+          <div class="demo-lobby-vs">VS</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">PLAYER 2</div>
+            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">---</div>
+            <span class="status-pill inactive">WAITING...</span>
           </div>
         </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Pattern</div>
-        Base: <code>.btn.btn-sm.btn-secondary</code> at opacity 0.55<br>
-        Selected: opacity 1.0 — full white surface, no extra outline<br>
-        The opacity differential (0.55 → 1.0) is the only selection signal needed at this size. An outline was previously tried and removed — it conflicted with the button's own box-shadow.
+        <div class="demo-share-code" style="margin-top:8px">AB12CD</div>
       </div>
     </div>
 
-    <h3 class="sg-subsection-title">Lobby Hint — pulsing status text</h3>
-    <p class="sg-note" style="margin-bottom:12px">Used for "Waiting for opponent…" and similar transient states. Pulse draws attention without urgency.</p>
+    <h3 class="sg-subsection-title" style="margin-top:24px">Lobby Hint — pulsing status</h3>
     <div class="sg-row center">
       <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
         <p class="demo-lobby-hint">Waiting for opponent...</p>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
         Roboto Mono 14px, white, purple shadow 1px 2px 0<br>
-        Animation: <code>fade-pulse</code> 1.4s ease-in-out infinite (opacity 1.0 → 0.4)
+        Animation: <code>fade-pulse</code> 1.4s ease-in-out infinite (opacity 1.0 → 0.4)<br>
+        Use for any "waiting for..." transient state.
       </div>
     </div>
+  </section>
 
-    <h3 class="sg-subsection-title">Combo Counter</h3>
-    <p class="sg-note" style="margin-bottom:12px">Lives in the HUD sub-row alongside the score. Reserves its line height even when empty so the score doesn't shift when a combo appears.</p>
-    <div class="sg-row center">
-      <div class="sg-card dark" style="padding:16px 24px;display:flex;gap:24px;align-items:center">
-        <div>
-          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">No combo</div>
-          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark);min-height:1em;display:block">&nbsp;</span>
-        </div>
-        <div>
-          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">Active combo</div>
-          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark)">×3 COMBO!</span>
-        </div>
-        <div>
-          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">P2 combo</div>
-          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p2-mid-dark)">×5 COMBO!</span>
-        </div>
+  <!-- ===== TEMPLATES: Gameplay Screen ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Gameplay Screen</h2>
+    <p class="sg-note" style="margin-bottom:16px">No unique visual atoms at this level. Composed entirely of organisms and molecules:</p>
+    <div class="sg-row">
+      <div class="sg-card" style="flex:1;line-height:2">
+        <div class="sg-card-label">Layer stack (back to front)</div>
+        Arena background image<br>
+        Sun + midground graphics (palms, buildings)<br>
+        Fight stage — character sprites (P1 left, P2 right flipped)<br>
+        <strong>HUD organism</strong> — health bars, names, timer, scores, combo<br>
+        <strong>Sudoku Grid organism</strong> × 2 — P1 left panel, P2 right panel<br>
+        <strong>Mobile Numpad molecule</strong> — touch devices only<br>
+        <strong>Game Overlay organism</strong> — FIGHT!/KO/VICTORY/DEFEAT (conditional)<br>
+        <strong>Contextual Menu organism</strong> — triggered by settings icon<br>
+        Attack flash — full-screen inset shadow effect
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
-        18px bold white, player-colored shadow (mid-dark)<br>
-        <code>min-height: 1em</code> — always reserves space so score doesn't jump<br>
-        P1: shadow <code>p1-mid-dark</code> — P2: shadow <code>p2-mid-dark</code>
+        <div class="sg-card-label">Notes</div>
+        Arena background is set by JS from the selected arena config.<br>
+        Surrender button lives in the action bar row at top-right, uses <code>.btn-utility</code>.<br>
+        Numpad is hidden on desktop via <code>@media (pointer: fine)</code>.<br>
+        Overlay visibility is toggled by JS — never <code>display:none</code> mid-game to avoid reflow.
       </div>
     </div>
+  </section>
 
-    <h3 class="sg-subsection-title">Match-End Screen Elements</h3>
+  <!-- ===== TEMPLATES: Match-End Screen ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Match-End Screen</h2>
+    <p class="sg-note" style="margin-bottom:20px">Composed of: result title (VICTORY/DEFEAT), winner Lobby Player Row molecule, a divider, and action buttons. Title animates in with a pop-in scale.</p>
     <div class="sg-row">
       <div class="sg-card" style="display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;padding:32px">
         <div class="demo-match-title">VICTORY</div>
         <div class="demo-match-title defeat">DEFEAT</div>
         <div style="height:1px;background:var(--border);width:100%;margin:8px 0"></div>
-        <div class="demo-match-winner-img">🥊</div>
+        <div class="demo-match-winner-img"><img src="/characters/fighter1/portrait.png" alt="Xiao Long" style="width:80px;height:80px;object-fit:cover;image-rendering:pixelated;border-radius:12px" /></div>
         <div class="demo-match-winner-name">Xiao Long</div>
+        <div style="display:flex;gap:12px;margin-top:8px">
+          <button class="btn">PLAY AGAIN</button>
+          <button class="btn btn-danger">LEAVE</button>
+        </div>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Typography</div>
         <strong>Title:</strong> Barlow Condensed 66px w900<br>
-        Victory: <code>accent</code> color, <code>3px 4px 0 #ffffff</code> shadow<br>
-        Defeat: <code>danger-color</code> color, same shadow<br>
+        Victory: <code>accent</code>, shadow <code>3px 4px 0 #ffffff</code><br>
+        Defeat: <code>danger-color</code>, same shadow<br>
         Animation: <code>pop-in</code> scale 0.55→1<br><br>
-        <strong>Winner name:</strong> Roboto Mono 26px w800, accent color, <code>2px 3px 0 #ffffff</code><br><br>
-        <strong>Character portrait:</strong> 120×120px, radius-md (12px), pixelated rendering
+        <strong>Winner name:</strong> Roboto Mono 26px w800, accent, <code>2px 3px 0 #ffffff</code><br>
+        <strong>Portrait:</strong> 120×120px, radius-md, pixelated rendering<br>
+        <strong>Actions:</strong> PLAY AGAIN (<code>.btn</code>) + LEAVE (<code>.btn.btn-danger</code>)
       </div>
     </div>
-
-    <h3 class="sg-subsection-title">Start Screen Divider</h3>
-    <div class="sg-row center">
-      <div class="sg-card arena" style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px">
-        <span style="font-size:var(--text-sm);color:#fff;opacity:0.5">Section above</span>
-        <div class="demo-start-divider"></div>
-        <span style="font-size:var(--text-sm);color:#fff;opacity:0.5">Section below</span>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
-        240px wide, 1px, <code>rgba(255,255,255,0.25)</code><br>
-        Matches the fixed width of the start screen CTAs. Used between 2 PLAYER and SINGLE PLAYER sections.
-      </div>
-    </div>
-
-  </section>
-
-
-  <!-- ===== 7. TEXT COLOR & SHADOW PAIRING LOGIC ===== -->
-  <section class="sg-section">
-    <h2 class="sg-section-title">Text Color &amp; Shadow Pairing Logic</h2>
-
-    <p class="sg-note" style="margin-bottom:24px">The game renders UI over complex, colorful arena backgrounds. All readable text therefore uses white or high-chroma colors with hard pixel shadows that ensure contrast regardless of what's behind.</p>
-
-    <table class="shadow-table">
-      <thead><tr><th>Context</th><th>Text color</th><th>Shadow color</th><th>Offset</th><th>Reason</th></tr></thead>
-      <tbody>
-        <tr><td>Generic white text over arena</td><td>#ffffff</td><td>accent #8B49FF</td><td>2px 2px 0</td><td>Purple provides contrast on any bg</td></tr>
-        <tr><td>P1 player name (HUD)</td><td>#ffffff</td><td>p1-mid-dark #0A8FBB</td><td>2px 2px 0</td><td>Cyan shadow reinforces P1 identity</td></tr>
-        <tr><td>P2 player name (HUD)</td><td>#ffffff</td><td>p2-mid-dark #BC0074</td><td>2px 2px 0</td><td>Magenta shadow reinforces P2 identity</td></tr>
-        <tr><td>P1 player label (lobby, selected)</td><td>p1-color #17B9EF</td><td>#ffffff</td><td>3px 3px 0</td><td>Player-color on dark bg; white grounds it</td></tr>
-        <tr><td>P2 player label (lobby, selected)</td><td>p2-color #F31299</td><td>#ffffff</td><td>3px 3px 0</td><td>Same logic, magenta</td></tr>
-        <tr><td>Round timer (normal)</td><td>#ffffff</td><td>accent #8B49FF</td><td>3px 3px 0</td><td>Large text, offset scales up</td></tr>
-        <tr><td>Round timer (urgent ≤10s)</td><td>danger-color #F00013</td><td>orange #FF8B16</td><td>2px 3px 0</td><td>Red with warm orange shadow — high alarm</td></tr>
-        <tr><td>Main overlay (FIGHT! / VICTORY)</td><td>accent #8B49FF</td><td>#ffffff</td><td>4px 5px 0</td><td>Biggest text; needs widest shadow</td></tr>
-        <tr><td>Main overlay (DEFEAT)</td><td>danger-color #F00013</td><td>#ffffff</td><td>4px 5px 0</td><td>Red as danger signal</td></tr>
-        <tr><td>Overlay sub-text</td><td>yellow #FFCA00</td><td>accent #8B49FF</td><td>1px 2px 0</td><td>Yellow is legible on both light and dark arenas</td></tr>
-        <tr><td>Primary btn text</td><td>#ffffff</td><td>n/a (box-shadow on element)</td><td>—</td><td>Button surface carries the shadow</td></tr>
-        <tr><td>Secondary btn text</td><td>accent #8B49FF</td><td>n/a</td><td>—</td><td>White surface, no text shadow needed</td></tr>
-      </tbody>
-    </table>
-
-    <div class="sg-divider"></div>
-
-    <h3 class="sg-subsection-title">The Mid-Dark Rule</h3>
-    <p class="sg-note">When white text appears with a player-color shadow, use the <strong>mid-dark</strong> variant (<code>p1-mid-dark</code>, <code>p2-mid-dark</code>), not the primary color. The primary cyan and magenta are too bright for a shadow — they'd feel garish. The mid-dark is dark enough to read as a grounding shadow while still being clearly player-colored.</p>
-
-  </section>
-
-
-  <!-- ===== 8. PROPOSED / FUTURE COMPONENTS ===== -->
-  <section class="sg-section">
-    <h2 class="sg-section-title">Proposed Components</h2>
-    <p class="sg-note" style="margin-bottom:32px">These components do not yet exist in the game but are consistent with the design language and likely needed as the game adds features. Specs are proposals — refine before shipping.</p>
-
-    <h3 class="sg-subsection-title">Badge / Tag</h3>
-    <p class="sg-note" style="margin-bottom:12px">Small pill labels for surfacing state, novelty, or counts. Uses <code>--radius-pill</code>. Variants keyed to semantic meaning, not visual preference.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1;padding:20px">
-        <span class="sg-badge badge-new">NEW</span>
-        <span class="sg-badge badge-beta">BETA</span>
-        <span class="sg-badge badge-count">3</span>
-        <span class="sg-badge badge-p1">P1</span>
-        <span class="sg-badge badge-p2">P2</span>
-        <span class="sg-badge badge-neutral">OFFLINE</span>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Variants</div>
-        <code>.badge-new</code> — accent purple: new feature/content<br>
-        <code>.badge-beta</code> — orange: experimental/unreleased<br>
-        <code>.badge-count</code> — danger red: notification count<br>
-        <code>.badge-p1/p2</code> — player identity colors<br>
-        <code>.badge-neutral</code> — grey: inactive/offline state<br><br>
-        Font: 10px bold uppercase, letter-spacing 0.08em
-      </div>
-    </div>
-
-    <h3 class="sg-subsection-title">Toast Notification</h3>
-    <p class="sg-note" style="margin-bottom:12px">Ephemeral feedback that appears over gameplay or between screens. Bottom-anchored, auto-dismisses. Uses a left accent border rather than full background color to keep it readable over any arena. Would need a JS show/hide with a slide-up + fade animation.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="display:flex;flex-direction:column;gap:10px;flex:1;padding:20px">
-        <div class="sg-toast toast-success">
-          <span class="sg-toast-icon">✓</span>
-          <span>Match saved to history</span>
-        </div>
-        <div class="sg-toast toast-error">
-          <span class="sg-toast-icon">✕</span>
-          <span>Connection lost — reconnecting</span>
-        </div>
-        <div class="sg-toast toast-info">
-          <span class="sg-toast-icon">i</span>
-          <span>Opponent is typing...</span>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Structure</div>
-        White surface card, 4px left border in semantic color<br>
-        Success: <code>accent</code> border<br>
-        Error: <code>danger-color</code> border<br>
-        Info: <code>grid-box-border</code> (#888) border<br><br>
-        Shadow: <code>--shadow-md</code><br>
-        Font: 12px bold, text-primary<br>
-        Proposed animation: slide up 8px + fade in over 0.2s, auto-dismiss at 3s
-      </div>
-    </div>
-
-    <h3 class="sg-subsection-title">Modal / Confirmation Dialog</h3>
-    <p class="sg-note" style="margin-bottom:12px">Blocks interaction for destructive confirmations (e.g., "Surrender — are you sure?"). Backdrop at 65% black. Panel on white surface. Actions use the existing button system — confirm uses <code>.btn-danger</code>, cancel uses <code>.btn-secondary</code>.</p>
-    <div class="sg-modal-backdrop">
-      <div class="sg-modal">
-        <div class="sg-modal-title">Surrender match?</div>
-        <div class="sg-modal-body">You'll forfeit the current round. This can't be undone.</div>
-        <div class="sg-modal-actions">
-          <button class="btn-secondary" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">CANCEL</button>
-          <button class="btn btn-danger" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">SURRENDER</button>
-        </div>
-      </div>
-    </div>
-    <div class="sg-note" style="margin-top:10px">
-      Backdrop: <code>rgba(0,0,0,0.65)</code>. Panel: white surface, radius-md, heavy box-shadow.<br>
-      Title: Roboto Mono 18px bold, text-primary. Body: 12px, text-secondary, line-height 1.6.<br>
-      Actions right-aligned. Cancel left of destructive — follows platform conventions.
-    </div>
-
-    <h3 class="sg-subsection-title">Tooltip</h3>
-    <p class="sg-note" style="margin-bottom:12px">Contextual info on hover. Useful for explaining game mechanics (e.g., what "combo" means, difficulty differences). Uses the same dark panel as the settings menu, with a hard pixel shadow in accent to stay on-brand.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="padding:40px 24px;display:flex;justify-content:center">
-        <div class="sg-tooltip-wrap">
-          <span class="sg-tooltip-target">COMBO</span>
-          <div class="sg-tooltip-bubble">3+ correct cells in a row</div>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
-        Bubble: <code>#1a1a2e</code> near-black, white text, 10px bold<br>
-        Shadow: <code>2px 2px 0 accent</code> — keeps it on-brand<br>
-        Arrow: CSS border-trick, matches bubble color<br>
-        Trigger: dashed underline on the term being explained<br>
-        Show/hide: CSS <code>:hover</code> on parent, or JS for touch
-      </div>
-    </div>
-
-    <h3 class="sg-subsection-title">Dropdown / Select</h3>
-    <p class="sg-note" style="margin-bottom:12px">Styled <code>&lt;select&gt;</code> for settings that have more than 2–3 options (e.g., language, region, control scheme). Uses custom chevron SVG via background-image to replace the native arrow.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1;padding:20px">
-        <select class="demo-select">
-          <option>English</option>
-          <option>日本語</option>
-          <option>Español</option>
-        </select>
-        <select class="demo-select" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)">
-          <option>Focused state</option>
-        </select>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Style</div>
-        Same base as standalone input: 2px border, radius-sm, Roboto Mono 12px bold<br>
-        Custom chevron via <code>background-image</code> SVG<br>
-        <code>appearance: none</code> removes native chrome<br>
-        Focus: accent border + accent-light glow (same as input)
-      </div>
-    </div>
-
-    <h3 class="sg-subsection-title">Loading States — Skeleton &amp; Spinner</h3>
-    <p class="sg-note" style="margin-bottom:12px">For async waits: character portrait loading, matchmaking, network reconnect. Skeleton uses a shimmer gradient. Spinner uses accent color on top of grey track.</p>
-    <div class="sg-row center">
-      <div class="sg-card" style="display:flex;flex-direction:column;gap:16px;flex:1;padding:20px">
-        <div style="display:flex;gap:12px;align-items:center">
-          <div class="sg-skeleton" style="width:64px;height:64px;border-radius:var(--radius-xs)"></div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div class="sg-skeleton" style="width:120px;height:14px"></div>
-            <div class="sg-skeleton" style="width:80px;height:10px"></div>
-          </div>
-        </div>
-        <div style="display:flex;gap:16px;align-items:center">
-          <div class="sg-spinner"></div>
-          <div class="sg-spinner sm"></div>
-          <span style="font-size:var(--text-sm);color:var(--text-tertiary)">Connecting...</span>
-        </div>
-      </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
-        <div class="sg-card-label">Skeleton</div>
-        Shimmer: linear-gradient 90° cycling over <code>--border</code> / <code>--bg</code><br>
-        800px background-size, 1.4s infinite — smooth left-to-right sweep<br><br>
-        <div class="sg-card-label" style="margin-top:8px">Spinner</div>
-        24×24px (or 16×16px small), 3px border<br>
-        Track: <code>--border</code> grey. Active arc: <code>--accent</code> purple<br>
-        0.7s linear rotation
-      </div>
-    </div>
-
   </section>
 
 </div>

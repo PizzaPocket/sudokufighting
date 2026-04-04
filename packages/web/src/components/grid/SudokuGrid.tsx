@@ -120,9 +120,10 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
         // Optimistic wrong-guess damage animation
         if (st.mySolution && st.mySolution[row][col] !== num) {
           const nonce = Date.now();
-          const key = st.mySeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
-          useGameStore.setState({ [key]: { state: 'damage_light', nonce }, attackFlashType: 'self' });
-          st.setSelfDamagePredicted();
+          const animKey = st.mySeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
+          const mistakeKey = st.mySeat === 0 ? 'p1MistakeSignal' : 'p2MistakeSignal';
+          useGameStore.setState({ [animKey]: { state: 'damage_heavy', nonce }, [mistakeKey]: { nonce }, attackFlashType: 'self' });
+          setTimeout(() => useGameStore.getState().setSelfDamagePredicted(), 300);
         }
         if (st.gameMode === 'singleplayer') {
           vsAiPlayerMove?.(row, col, num);
@@ -143,6 +144,14 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
 
   const handlePointerDown = useCallback((row: number, col: number) => {
     if (!isMe) return;
+    const st = useGameStore.getState();
+    // Tap already-selected non-given cell to clear it
+    if (st.selectedCell?.row === row && st.selectedCell?.col === col) {
+      if (st.myPuzzle?.[row]?.[col] === null && st.myGrid?.[row]?.[col] != null) {
+        st.setLocalCellValue(row, col, null);
+        return;
+      }
+    }
     selectCell(row, col);
     send('cursor_move', { row, col });
   }, [isMe, selectCell]);
