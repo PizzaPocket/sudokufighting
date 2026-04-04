@@ -1107,7 +1107,7 @@ html, body {
 }
 
 /* --- Midground graphics (arena overlays that sit just above the ground) ---
-   Examples: palm_trees (El Tropical), buildings (Derelict).
+   Examples: palm_trees (El Tropical), buildings (Sky City).
    On desktop these are absolute within the arena container.
    On real mobile browsers 100vh > window.innerHeight (address bar not accounted
    for), so the containing block extends below the visible fold. The mobile media

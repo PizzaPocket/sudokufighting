@@ -22,7 +22,7 @@ export const ARENAS = [
   },
   {
     id: 'bg_3',
-    name: 'Derelict',
+    name: 'Sky City',
     background: '/assets/arenas/derelict/bg.svg',
     ground: '/assets/arenas/derelict/ground.svg',
     overlays: [

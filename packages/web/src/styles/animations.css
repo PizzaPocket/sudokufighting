@@ -1,0 +1,87 @@
+/* =========================================================
+   Keyframe animations — verbatim port from frontend/css/style.css
+   ========================================================= */
+
+@keyframes slam-from-top {
+  0%   { transform: translateY(-140%) scale(2.2); opacity: 0; }
+  55%  { transform: translateY(5%) scale(0.96); opacity: 1; }
+  78%  { transform: translateY(-2%) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes slam-from-bottom {
+  0%   { transform: translateY(140%) scale(2.2); opacity: 0; }
+  55%  { transform: translateY(-5%) scale(0.96); opacity: 1; }
+  78%  { transform: translateY(2%) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes card-appear {
+  from { opacity: 0; transform: translateY(22px) scale(0.84); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.55); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+@keyframes timer-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+@keyframes hp-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+@keyframes cell-wipe {
+  0%  { background: var(--surface); }
+  30% { background: var(--wipe-color); }
+  100%{ background: var(--surface); }
+}
+
+@keyframes completion-flash {
+  0%   { opacity: 0; }
+  40%  { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes flash-text-white {
+  0%   { color: inherit; }
+  35%  { color: #ffffff; }
+  65%  { color: #ffffff; }
+  100% { color: inherit; }
+}
+
+@keyframes float-up {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1.15); }
+  20%  { opacity: 1; transform: translateX(-50%) translateY(-6px)  scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-36px) scale(0.9); }
+}
+
+@keyframes punch-flash {
+  0%   { box-shadow: inset 0 0 80px rgba(240,0,19,0.22); }
+  100% { box-shadow: none; }
+}
+@keyframes heavy-flash {
+  0%   { box-shadow: inset 0 0 120px rgba(255,139,22,0.32); }
+  60%  { box-shadow: inset 0 0 60px rgba(240,0,19,0.18); }
+  100% { box-shadow: none; }
+}
+@keyframes self-flash {
+  0%   { box-shadow: inset 0 0 60px rgba(240,0,19,0.2); }
+  100% { box-shadow: none; }
+}
+
+/* Logo slam animations on start screen */
+.start-logo-top    { animation: slam-from-top    0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.start-logo-bottom { animation: slam-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.27s both; }
+
+/* If animations are disabled (prefers-reduced-motion or system setting), the
+   fill-mode:both would lock the logos at opacity:0 forever. Force them visible. */
+@media (prefers-reduced-motion: reduce) {
+  .start-logo-top, .start-logo-bottom { animation: none; opacity: 1; transform: none; }
+}
+
+.card-intro {
+  animation: card-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}

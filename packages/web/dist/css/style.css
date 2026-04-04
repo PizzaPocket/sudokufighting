@@ -1,0 +1,1492 @@
+/* =========================================================
+   Sudoku Street Fight — Stylesheet
+   ========================================================= */
+
+:root {
+  /* Neutral greyscale — all channels equal */
+  --bg:             #f2f2f2;  /* page background */
+  --surface:        #ffffff;  /* cards, panels */
+  --border:         #e5e5e5;  /* general borders */
+  --text-primary:   #111111;  /* main text */
+  --text-secondary: #333333;  /* secondary text */
+  --text-tertiary:  #555555;  /* muted / toggle-off */
+  --grid-border:    #d5d5d5;  /* thin sudoku lines */
+  --grid-box-border:#888888;  /* thick 3×3 box lines */
+  --cell-given-bg:  var(--bg);/* given cells blend with page bg */
+
+  /* Brand accent — purple between P1 cyan and P2 magenta */
+  --accent:       #8B49FF;
+  --accent-light: #EDE0FF;
+  --accent-hover: #7235e0;
+
+  /* Shared layout */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --radius-xs:   5px;   /* small buttons */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-pill: 999px; /* status pills, infinite-radius */
+  /* Typography */
+  --font:         'Roboto Mono', monospace;
+  --font-display: 'Barlow Condensed', sans-serif; /* weight 900 only — FIGHT! KO VICTORY etc */
+
+  /* Type scale */
+  --text-xs:   10px;  /* fine print */
+  --text-btn:  15px;  /* buttons — intentionally between base and md */
+  --text-sm:   12px;  /* settings labels, status text */
+  --text-base: 14px;  /* body, HUD info */
+  --text-md:   18px;  /* player names, round label, lobby labels */
+  --text-lg:   22px;  /* start prompt, carousel btns */
+  --text-xl:   26px;  /* screen titles, timer */
+  --text-2xl:  28px;  /* KO block, lobby VS */
+  --text-3xl:  66px;  /* match end title */
+  --text-4xl:  96px;  /* main overlay (FIGHT! KO VICTORY) */
+
+  /* Weight scale */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   700;
+  --weight-heavy:  800;
+  --weight-black:  900;
+
+  /* Player 1 — blue-cyan ramp */
+  --p1-color:    #17B9EF;
+  --p1-mid-dark: #0A8FBB;  /* between main and dark — use for white-text shadows */
+  --p1-dark:     #006B8F;
+  --p1-bg-light: #E5F7FD;
+  --p1-bg-mid:   #B8ECFB;
+
+  /* Player 2 — magenta ramp */
+  --p2-color:    #F31299;
+  --p2-mid-dark: #BC0074;  /* between main and dark — use for white-text shadows */
+  --p2-dark:     #880055;
+  --p2-bg-light: #FFEBF8;
+  --p2-bg-mid:   #FFD0EF;
+
+  /* Danger — red ramp */
+  --danger-color:    #F00013;
+  --danger-dark:     #A8000F;
+  --danger-bg-light: #FFEBEC;
+  --danger-bg-mid:   #FFCED1;
+
+  /* Shared action colours */
+  --orange:       #FF8B16;
+  --orange-hover: #E07500;  /* .btn-alt hover */
+  --orange-dark:  #C06200;  /* .btn-alt active */
+  --yellow: #FFCA00;
+
+  /*
+   * Hard text-shadow offset scale (offset grows with type size):
+   *   10–12px  → 1px 1px
+   *   13–15px  → 1px 2px
+   *   16–20px  → 2px 2px
+   *   22–26px  → 2px 3px
+   *   28–34px  → 3px 3px
+   *   40–60px  → 3px 4px
+   *   70px+    → 4px 5px
+   */
+  --text-layer-shadow: 2px 2px 0 var(--accent);
+
+  /* Header */
+  --header-h: 48px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  touch-action: manipulation; /* disable double-tap zoom globally */
+}
+
+/* =========================================================
+   Persistent Header
+   ========================================================= */
+
+.app-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  z-index: 900;
+  pointer-events: none;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: all;
+}
+
+
+/* Utility button — semi-transparent dark pill for unemphasised functional actions
+   (settings icon, carousel chevrons, etc.) */
+.btn-utility {
+  font-weight: var(--weight-bold);
+  background: rgba(0,0,0,0.35);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-weight: var(--weight-bold);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-utility:hover { background: rgba(0,0,0,0.55); }
+
+
+/* Icon button shape — pair with .btn-utility for the full style */
+.header-icon-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   Settings Panel
+   ========================================================= */
+
+.settings-panel {
+  position: fixed;
+  top: calc(var(--header-h) + 4px);
+  right: 12px;
+  background: rgba(20,20,20,0.96);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 901;
+  min-width: 220px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.settings-panel.hidden { display: none; }
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-item.track-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.settings-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  text-shadow: var(--text-layer-shadow);
+}
+
+.settings-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 2px 0;
+}
+
+/* Track carousel */
+.track-carousel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.carousel-btn {
+  font-family: var(--font);
+  line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-align: center;
+  width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--text-tertiary);
+  border-radius: 24px;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* =========================================================
+   Screens
+   ========================================================= */
+
+.screen {
+  display: none;
+  width: 100vw; height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0; left: 0;
+}
+.screen.active { display: flex; }
+
+#screen-start,
+#screen-character-select,
+#screen-lobby,
+#screen-sp-lobby {
+  background-image: url(/assets/ui/bg_0.svg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* SELECT button no longer needed — character click proceeds directly */
+#btn-select-char { display: none; }
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.btn {
+  font-family: var(--font);
+  font-size: var(--text-btn);
+  font-weight: 700;
+  padding: 12px 32px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 0 #ffffff;
+}
+.btn:hover { background: var(--accent-hover); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+.btn:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Small button variant — same colour/shape, reduced size */
+.btn.btn-sm {
+  font-size: var(--text-sm);
+  padding: 5px 14px;
+  box-shadow: 2px 2px 0 #ffffff;
+  border-radius: var(--radius-xs);
+}
+.btn.btn-sm:hover { box-shadow: 3px 3px 0 #ffffff; }
+.btn.btn-sm:active { box-shadow: 1px 1px 0 #ffffff; }
+
+/* When .btn-secondary is combined with .btn or .btn.btn-sm, purple shadow must win
+   (.btn.btn-sm specificity 0,2,0 would otherwise beat .btn-secondary 0,1,0) */
+.btn.btn-secondary {
+  background: #ffffff;
+  color: var(--accent);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.btn.btn-secondary:hover  { background: var(--accent-light); box-shadow: 5px 6px 0 var(--accent); }
+.btn.btn-secondary:active { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary         { box-shadow: 2px 2px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:hover   { box-shadow: 3px 3px 0 var(--accent); }
+.btn.btn-sm.btn-secondary:active  { box-shadow: 1px 1px 0 var(--accent); }
+
+/* Secondary button — white background, brand accent text, purple shadow */
+.btn-secondary {
+  font-family: var(--font);
+  font-size: var(--text-btn);
+  font-weight: 700;
+  padding: 12px 32px;
+  background: #ffffff;
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.btn-secondary:hover { background: var(--accent-light); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+.btn-secondary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
+.btn-secondary:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* =========================================================
+   Character Select
+   ========================================================= */
+
+/* On desktop the scroll wrapper is invisible — just passes through flex layout */
+.char-select-scroll {
+  display: contents;
+}
+
+@keyframes slam-from-top {
+  0%   { transform: translateY(-140%) scale(2.2); opacity: 0; }
+  55%  { transform: translateY(5%) scale(0.96); opacity: 1; }
+  78%  { transform: translateY(-2%) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes slam-from-bottom {
+  0%   { transform: translateY(140%) scale(2.2); opacity: 0; }
+  55%  { transform: translateY(-5%) scale(0.96); opacity: 1; }
+  78%  { transform: translateY(2%) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* =========================================================
+   Start Screen
+   ========================================================= */
+
+/* Logo fires immediately on page load — no class trigger needed */
+.start-logo-top    { animation: slam-from-top    0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.start-logo-bottom { animation: slam-from-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.27s both; }
+
+.start-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.start-logo-top,
+.start-logo-bottom {
+  max-width: 380px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.start-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.start-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.start-section-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  text-shadow: 1px 1px 0 var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Fixed width shared by all start-screen CTAs */
+#screen-start .btn,
+#screen-start .join-combo { width: 240px; box-sizing: border-box; }
+#screen-start .join-combo { margin-top: 8px; }
+
+.start-divider {
+  width: 240px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin: 4px 0;
+}
+
+/* Join combo — input + secondary button fused into one fixed-width pill */
+.join-combo {
+  display: flex;
+  border: 2px solid #ffffff;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.join-combo .join-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  border: none;
+  padding: 12px 14px;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  outline: none;
+}
+.join-combo .join-input::placeholder {
+  color: var(--text-tertiary);
+  font-weight: var(--weight-normal);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.join-combo #btn-join-room {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  background: #ffffff;
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.join-combo #btn-join-room:hover  { background: var(--accent-light); }
+.join-combo #btn-join-room:active { background: var(--accent); color: #ffffff; }
+
+.start-error {
+  font-size: var(--text-sm);
+  color: var(--danger-color);
+  font-weight: var(--weight-bold);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  margin: 0;
+}
+.start-error.hidden { display: none; }
+
+/* Character select — cards hidden until .cards-ready is added by JS */
+#screen-character-select:not(.cards-ready) .character-card,
+#screen-character-select:not(.cards-ready) .subtitle { opacity: 0; pointer-events: none; }
+
+@keyframes card-appear {
+  from { opacity: 0; transform: translateY(22px) scale(0.84); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.card-intro {
+  animation: card-appear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.subtitle {
+  font-size: var(--text-base);
+  color: #ffffff;
+  margin-bottom: 32px;
+  font-weight: var(--weight-bold);
+  text-shadow: 1px 1px 0 var(--accent);
+  opacity: 0;
+}
+
+#character-grid {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 20px;
+  justify-content: center;
+}
+
+.character-card {
+  width: auto;
+  background: var(--surface);
+  border-radius: 0;
+  cursor: pointer;
+  padding: 6px 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.character-card:hover { transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+.character-card.selected { background: var(--accent); box-shadow: 4px 4px 0 #ffffff; }
+.character-card.selected .char-name { color: #ffffff; }
+.character-card img { width: 165px; height: 165px; object-fit: cover; object-position: 50% 12%; border-radius: 0; display: block; transform: scaleX(-1); }
+.char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary); transition: color 0.15s; }
+
+/* =========================================================
+   Lobby
+   ========================================================= */
+
+.screen-title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-heavy);
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.7px;
+}
+
+.lobby-players { display: flex; align-items: center; gap: 40px; margin: 16px 0 0; }
+
+.lobby-player {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.lobby-player-label {
+  font-size: var(--text-md); font-weight: var(--weight-bold); letter-spacing: 0.12em;
+  color: #ffffff; text-transform: uppercase;
+  text-shadow: var(--text-layer-shadow);
+}
+.lobby-player img { width: 225px; height: 225px; object-fit: cover; object-position: 50% 12%; image-rendering: pixelated; display: block; border: 4px solid transparent; box-sizing: border-box; }
+#lobby-p2-portrait { transform: scaleX(-1); }
+.lobby-player > span:first-of-type {
+  font-size: var(--text-md); font-weight: var(--weight-bold); color: #ffffff;
+  text-shadow: var(--text-layer-shadow);
+}
+
+/* Local player highlight */
+#lobby-p1.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p1-color); text-shadow: 3px 3px 0 #ffffff; }
+#lobby-p1.is-me img { border: 8px solid var(--p1-color); }
+#lobby-p2.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p2-color); text-shadow: 3px 3px 0 #ffffff; }
+#lobby-p2.is-me img { border: 8px solid var(--p2-color); }
+
+/* SP lobby player highlights */
+#sp-lobby-p1.is-me .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p1-color); text-shadow: 3px 3px 0 #ffffff; }
+#sp-lobby-p1.is-me img { border: 8px solid var(--p1-color); }
+#sp-lobby-p2 .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p2-color); text-shadow: 3px 3px 0 #ffffff; }
+#sp-lobby-p2 img { border: 8px solid var(--p2-color); }
+
+/* Own sudoku grid — override outer border only via custom properties */
+#p1-grid.is-me { --_grid-outline-color: var(--p1-color); --_grid-outline-width: 3px; }
+#p2-grid.is-me { --_grid-outline-color: var(--p2-color); --_grid-outline-width: 3px; }
+
+
+.lobby-vs { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: #ffffff; letter-spacing: 0; text-shadow: 2px 3px 0 var(--accent); }
+
+.lobby-status {
+  font-size: var(--text-sm); font-weight: var(--weight-bold); padding: 3px 10px;
+  border-radius: var(--radius-pill); letter-spacing: 0.04em;
+}
+.lobby-status.ready { color: #ffffff; background: var(--accent); }
+.lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
+
+.lobby-hint { font-size: var(--text-base); color: #ffffff; text-shadow: 1px 2px 0 var(--accent); animation: fade-pulse 1.4s ease-in-out infinite; margin-top: 10px; }
+
+/* Lobby title */
+.lobby-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 var(--accent);
+  margin: 0;
+}
+
+/* Quick Play share — bare (no card) */
+.lobby-promo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 12px 0 0;
+}
+.lobby-promo.hidden { display: none; }
+/* Reserve space so the button never jumps when feedback appears */
+.lobby-promo-feedback {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+  visibility: hidden;
+}
+.lobby-promo-feedback.visible { visibility: visible; }
+
+/* Private Room invite — card */
+.lobby-share {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.lobby-share.hidden { display: none; }
+.lobby-share-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lobby-invite-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lobby-share-code {
+  font-family: var(--font);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.35em;
+  text-shadow: 2px 2px 0 var(--accent);
+  min-width: 8ch;
+  text-align: center;
+}
+.lobby-share-loading {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.05em;
+}
+.lobby-copy-confirm {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+}
+.lobby-copy-confirm.hidden { display: none; }
+
+.lobby-arena-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+@keyframes fade-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* =========================================================
+   Gameplay screen
+   ========================================================= */
+
+#screen-gameplay {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  gap: 0;
+  background: var(--bg);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#btn-surrender {
+  width: auto;
+  padding: 0 10px;
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: #fff;
+}
+
+/* Action bar — horizontal toolbar of utility actions (surrender, settings, etc.)
+   Buttons get uniform horizontal breathing room via gap; no individual margins needed. */
+.action-bar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 0;
+  position: relative;
+  z-index: 901;
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   HUD
+   ========================================================= */
+
+#hud {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+  padding: 8px 12px 4px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.hud-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.hud-name {
+  font-size: var(--text-md);
+  font-weight: var(--weight-heavy);
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: var(--text-layer-shadow);
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+.hud-name.right { text-align: right; }
+#p1-name { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
+#p2-name { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
+
+.round-label {
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  text-shadow: 2px 2px 0 var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.round-timer {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -1px;
+  text-align: center;
+  text-shadow: 3px 3px 0 var(--accent);
+  flex-shrink: 0;
+}
+.round-timer.urgent { color: var(--danger-color); text-shadow: 2px 3px 0 var(--orange); animation: timer-blink 0.5s step-end infinite; }
+@keyframes timer-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.hud-bar-row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 40px;
+}
+
+.ko-block {
+  background: var(--accent);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-black);
+  padding: 0 16px;
+  letter-spacing: 3px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Health bar track — danger red revealed as HP drops */
+.hud-bar-track {
+  flex: 1;
+  height: 100%;
+  background: var(--danger-color);
+  overflow: hidden;
+  position: relative;
+}
+.hud-bar-track.left {
+  border-radius: 6px 0 0 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+.hud-bar-track.right {
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Yellow fill, shrinks to reveal danger red as HP drops */
+.hud-bar {
+  height: 100%;
+  background: var(--yellow);
+  transition: width 0.35s cubic-bezier(0.4,0,0.2,1), background 0.4s;
+  width: 100%;
+}
+.hud-bar-track.left .hud-bar { border-radius: 6px 0 0 6px; }
+.hud-bar-track.right .hud-bar { border-radius: 0 6px 6px 0; }
+.hud-bar.mid { background: var(--orange); }
+.hud-bar.low { background: var(--yellow); animation: hp-pulse 0.45s step-end infinite; }
+@keyframes hp-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+.hud-sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.hud-sub-left { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
+.hud-sub-right { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; overflow: hidden; }
+
+.hud-score {
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  text-shadow: var(--text-layer-shadow);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.combo-counter {
+  font-size: var(--text-md); font-weight: var(--weight-bold); color: #ffffff;
+  white-space: nowrap;
+  min-height: 1em; /* reserved space so appearing text never shifts layout */
+}
+
+#p1-score, #p1-combo { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
+#p2-score, #p2-combo { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
+
+/* =========================================================
+   Arena
+   ========================================================= */
+
+#arena {
+  display: grid;
+  grid-template-columns: 1fr clamp(0px, calc(100vw - 700px), 300px) 1fr;
+  position: relative;
+  z-index: 1;
+  gap: 8px;
+  margin-top: clamp(12px, calc((100vh - 600px) * 0.3), 120px);
+  width: 100%;
+  max-width: 1200px;
+  flex: 1;
+  align-items: flex-start;
+  padding: 4px 12px 8px;
+  min-height: 0;
+}
+
+.player-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* --- Sudoku Grid --- */
+.sudoku-grid {
+  --_grid-outline-color: var(--grid-box-border);
+  --_grid-outline-width: 2px;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 0;
+  background: transparent;
+  border: var(--_grid-outline-width) solid var(--_grid-outline-color);
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.cell {
+  aspect-ratio: 1;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(11px, calc(4vw - 9px), 19px); font-weight: var(--weight-medium);
+  cursor: pointer; user-select: none;
+  color: var(--text-primary);
+  transition: background 0.1s;
+  border-right: 1px solid var(--grid-border);
+  border-bottom: 1px solid var(--grid-border);
+  position: relative;
+}
+
+/* ── Cell background system ─────────────────────────────────────────────────
+   Single lever: opacity on a pure-white base.
+   • Active  (own grid — all cells, opponent filled): 92% — solid, readable
+   • Disabled (opponent empty): 25% — clearly ghosted, signals "not yours"
+   Text colour distinguishes given vs player-filled numbers; no bg distinction needed.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.sudoku-grid.is-me .cell {
+  background: rgba(255,255,255,0.88);
+}
+
+.sudoku-grid:not(.is-me) .cell {
+  background: rgba(255,255,255,0.25); /* disabled — not the player's puzzle */
+}
+.sudoku-grid:not(.is-me) .cell.given,
+.sudoku-grid:not(.is-me) .cell.opponent-given,
+.sudoku-grid:not(.is-me) .cell.correct,
+.sudoku-grid:not(.is-me) .cell.opponent-filled {
+  background: rgba(255,255,255,0.9); /* active — filled cells match own grid */
+}
+
+/* Cell text wrapper — always above pseudo-elements */
+.cell > span { position: relative; z-index: 1; }
+
+.cell.given          { color: var(--text-secondary); font-weight: 700; cursor: pointer; }
+.cell.readonly       { cursor: default; }
+.cell.opponent-given { color: var(--text-secondary); font-weight: 700; cursor: default; }
+
+/* --- Danger state — text + diagonal X only (background set per-grid below) --- */
+.cell.danger {
+  color: var(--danger-dark);
+  font-weight: 600;
+}
+.cell.danger::before,
+.cell.danger::after {
+  content: '';
+  position: absolute;
+  /* Inset ~18% from each edge so the X doesn't reach the corners */
+  inset: 18%;
+  pointer-events: none;
+  z-index: 0;
+  /* A thin bar rotated to form each diagonal */
+  width: auto; height: 1.5px;
+  top: 50%; left: 18%; right: 18%;
+  border-radius: 2px;
+  background: var(--danger-color);
+}
+.cell.danger::before {
+  transform: translateY(-50%) rotate(45deg);
+  transform-origin: center;
+}
+.cell.danger::after {
+  transform: translateY(-50%) rotate(-45deg);
+  transform-origin: center;
+}
+
+/* --- P1 grid — set inherited colour tokens, then cell rules --- */
+#p1-grid {
+  --completion-flash-color: var(--p1-color);
+  --wipe-color: var(--p1-bg-mid);
+}
+#p1-grid .cell.correct,
+#p1-grid .cell.opponent-filled  { color: var(--p1-dark); font-weight: 600; }
+#p1-grid .cell.highlight        { background: var(--p1-bg-light); }
+#p1-grid .cell.same-number      { background: var(--p1-bg-mid); }
+
+/* --- P2 grid — set inherited colour tokens, then cell rules --- */
+#p2-grid {
+  --completion-flash-color: var(--p2-color);
+  --wipe-color: var(--p2-bg-mid);
+}
+#p2-grid .cell.correct,
+#p2-grid .cell.opponent-filled  { color: var(--p2-dark); font-weight: 600; }
+#p2-grid .cell.highlight        { background: var(--p2-bg-light); }
+#p2-grid .cell.same-number      { background: var(--p2-bg-mid); }
+
+/* Selected — inset border shows cursor position */
+#p1-grid .cell.selected         { background: var(--p1-bg-light); box-shadow: inset 0 0 0 2px var(--p1-color); }
+#p2-grid .cell.selected         { background: var(--p2-bg-light); box-shadow: inset 0 0 0 2px var(--p2-color); }
+
+/* Danger background — declared last so it beats highlight, same-number, and selected */
+#p1-grid .cell.danger,
+#p2-grid .cell.danger           { background: var(--danger-bg-light); }
+
+/* Opponent cursor (uses !important so it wins regardless of order) */
+#p1-grid .cell.opponent-cursor  { outline: 3px solid var(--p1-color); outline-offset: -3px; background-color: var(--p1-bg-light) !important; }
+#p2-grid .cell.opponent-cursor  { outline: 3px solid var(--p2-color); outline-offset: -3px; background-color: var(--p2-bg-light) !important; }
+
+/* Box dividers */
+.cell.box-top        { border-top:    2px solid var(--grid-box-border); }
+.cell.box-left       { border-left:   2px solid var(--grid-box-border); }
+.cell.pre-box-right  { border-right:  none; }
+.cell.pre-box-bottom { border-bottom: none; }
+.sudoku-grid .cell:nth-child(9n)        { border-right:  none; }
+.sudoku-grid .cell:nth-last-child(-n+9) { border-bottom: none; }
+
+.cell.wiping { animation: cell-wipe 0.4s ease-out forwards; }
+@keyframes cell-wipe {
+  0%  { background: var(--surface); }
+  30% { background: var(--wipe-color); }
+  100%{ background: var(--surface); }
+}
+
+/* Completion ripple flash — colour inherited from grid via --completion-flash-color */
+.cell.completion-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--completion-flash-color);
+  pointer-events: none;
+  animation: completion-flash 350ms ease-in-out forwards;
+}
+@keyframes completion-flash {
+  0%   { opacity: 0; }
+  40%  { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.cell.completion-flash > span {
+  animation: flash-text-white 350ms ease-in-out forwards;
+}
+@keyframes flash-text-white {
+  0%   { color: inherit; }
+  35%  { color: #ffffff; }
+  65%  { color: #ffffff; }
+  100% { color: inherit; }
+}
+
+/* Floating score pop */
+.floating-points {
+  position: fixed;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: float-up 0.75s ease-out forwards;
+  z-index: 500;
+  white-space: nowrap;
+}
+@keyframes float-up {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1.15); }
+  20%  { opacity: 1; transform: translateX(-50%) translateY(-6px)  scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-36px) scale(0.9); }
+}
+
+/* --- Sunset fade overlay (arena bg layer that fades out over match duration) --- */
+#arena-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  opacity: 1;
+  pointer-events: none;
+  display: none;
+}
+#arena-bg-overlay.active { display: block; }
+
+/* --- Arena Sun layers (bg_1 El Tropical) --- */
+.arena-sun {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+}
+.arena-sun.active { display: block; }
+
+/* --- Fight Ground --- */
+#fight-ground {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+}
+
+/* --- Midground graphics (arena overlays that sit just above the ground) ---
+   Examples: palm_trees (El Tropical), buildings (Derelict).
+   On desktop these are absolute within the arena container.
+   On real mobile browsers 100vh > window.innerHeight (address bar not accounted
+   for), so the containing block extends below the visible fold. The mobile media
+   query below switches midground graphics to position:fixed so they are always
+   anchored to the actual visual viewport, matching the fight-ground treatment. */
+.midground-graphic {
+  display: none;
+  position: absolute;
+  bottom: 9vw;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Palm Trees (arena bg_1 only) --- */
+#palm-trees {
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 100px); /* 50px overflow each side */
+  max-width: 2100px;         /* = 2000px content + 100px overflow */
+}
+
+/* --- Buildings (arena bg_3 only) --- */
+#buildings {
+  left: 0;
+  width: 100%;
+}
+
+/* --- Fight Stage --- */
+#fight-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  padding-bottom: 16px;
+}
+
+.fight-characters {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  gap: 0;
+}
+
+.character-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  z-index: 1;
+}
+.character-wrap:first-child { margin-right: -25px; }
+.character-wrap:last-child  { margin-left:  -25px; }
+.character-wrap.flipped { transform: scaleX(-1); }
+.character-wrap.attacking { z-index: 3; }
+
+.character-sprite { width: 150px; height: 150px; image-rendering: pixelated; }
+
+/* Attack flash */
+.attack-flash { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+.attack-flash.hidden { display: none; }
+.attack-flash.punch-flash { animation: punch-flash 0.25s ease-out forwards; }
+.attack-flash.heavy-flash { animation: heavy-flash 0.35s ease-out forwards; }
+.attack-flash.self-flash  { animation: self-flash  0.2s  ease-out forwards; }
+
+@keyframes punch-flash {
+  0%   { box-shadow: inset 0 0 80px rgba(240,0,19,0.22); }
+  100% { box-shadow: none; }
+}
+@keyframes heavy-flash {
+  0%   { box-shadow: inset 0 0 120px rgba(255,139,22,0.32); }
+  60%  { box-shadow: inset 0 0 60px rgba(240,0,19,0.18); }
+  100% { box-shadow: none; }
+}
+@keyframes self-flash {
+  0%   { box-shadow: inset 0 0 60px rgba(240,0,19,0.2); }
+  100% { box-shadow: none; }
+}
+
+/* =========================================================
+   Game overlay (Round X / FIGHT! / KO / VICTORY)
+   ========================================================= */
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: none;
+  z-index: 200;
+  pointer-events: none;
+}
+.game-overlay.hidden { display: none; }
+.overlay-btn-row { display: flex; gap: 16px; margin-top: 12px; pointer-events: all; }
+.overlay-btn-row.hidden { display: none; }
+.btn-danger { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
+.btn-danger:hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+.btn-danger:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+
+.overlay-main {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-black);
+  color: var(--accent);
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+  animation: pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  text-shadow: 4px 5px 0 #ffffff;
+}
+
+.overlay-sub {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--yellow); /* never white — sub-text can appear over bright/white arena backgrounds */
+  letter-spacing: -0.3px;
+  text-shadow: 1px 2px 0 var(--accent);
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.55); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* =========================================================
+   Match End
+   ========================================================= */
+
+#screen-match-end {
+  background: var(--surface);
+  background-size: cover;
+  background-position: center;
+}
+.match-end-bg { display: none; }
+.match-end-content { display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 1; }
+.match-end-title {
+  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: var(--weight-black); color: var(--accent); letter-spacing: 0;
+  animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  text-shadow: 3px 4px 0 #ffffff;
+}
+.match-end-title.defeat { color: var(--danger-color); }
+.match-winner-name { font-size: var(--text-xl); font-weight: var(--weight-heavy); color: var(--accent); letter-spacing: -0.5px;
+  text-shadow: 2px 3px 0 #ffffff; }
+.match-winner-char img { width: 120px; height: 120px; object-fit: cover; object-position: 50% 12%; border-radius: 12px; image-rendering: pixelated; }
+
+/* =========================================================
+   Number pad — hidden by default, shown for coarse-pointer (touch) devices
+   ========================================================= */
+
+#mobile-numpad {
+  display: none;
+}
+
+/* =========================================================
+   Mobile
+   ========================================================= */
+
+@media (max-width: 500px) {
+  :root {
+    --text-xl:  18px;  /* timer + share code (was 26px) */
+    --text-3xl: 44px;  /* match-end title (was 66px) */
+    --text-4xl: 56px;  /* main overlay: FIGHT! KO VICTORY (was 96px) */
+  }
+
+  /* Lobby — hide READY/WAITING pill on narrow screens */
+  .lobby-status { display: none; }
+
+  /* Character select — mobile layout */
+
+  /* Background stays on screen; only inner wrapper scrolls */
+  #screen-character-select {
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .char-select-scroll {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: calc(var(--header-h) + 20px);
+    padding-bottom: 40px;
+    width: 100%;
+  }
+
+  .start-logo-top,
+  .start-logo-bottom { max-width: 200px; }
+
+  #character-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .character-card { width: 100%; }
+  .character-card img { width: 100%; height: auto; object-position: 50% 12%; }
+
+  /* Lobby — show only own player */
+  .lobby-player:not(.is-me) { display: none; }
+  .lobby-vs { display: none; }
+  /* SP lobby — hide AI slot on mobile */
+  #screen-sp-lobby #sp-lobby-p2 { display: none; }
+  #screen-sp-lobby .lobby-vs { display: none; }
+
+  #arena {
+    grid-template-columns: 1fr;
+    margin-top: 8px;
+    flex: 0 0 auto;
+  }
+  /* HUD — compact on mobile: slim 4px bar, purple center pip instead of KO text */
+  #hud { flex-wrap: nowrap; padding: 4px 12px 2px; }
+  .hud-score, .combo-counter { font-size: var(--text-sm); }
+  .ko-block {
+    /* Keep the block but shrink to a narrow purple pip — no text */
+    font-size: 0;
+    padding: 0;
+    width: 6px;
+    flex-shrink: 0;
+    border-radius: 0;
+  }
+  .hud-bar-row { height: 4px; }
+  .hud-bar-track.left  { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right { border-radius: 0 2px 2px 0; }
+  .hud-bar-track.left  .hud-bar { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
+
+  /* Halve all gaps between the stacked gameplay elements */
+  .action-bar { padding: 3px 12px 0; }
+  #arena { margin-top: 4px; }
+  #mobile-numpad { padding: 1px 12px 4px; }
+
+  /* Hide opponent panel, show only own grid */
+  .player-panel { display: none; }
+  .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
+  .player-panel.is-me .cell { font-size: 19px; }
+
+  /* Fighter stage — slim strip pinned to bottom */
+  #fight-stage {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 110px;
+    padding-bottom: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  /* Ground pinned to visual viewport bottom — avoids 100vh chrome issue */
+  #fight-ground {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+  }
+
+  /* Midground graphics also pinned to visual viewport — same reason as fight-ground */
+  .midground-graphic {
+    position: fixed;
+  }
+
+  /* Sprites flush to the stage bottom — no extra breathing room */
+  #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
+
+}
+
+/* =========================================================
+   Touch input — numpad (coarse pointer = no physical keyboard assumed)
+   ========================================================= */
+
+@media (pointer: coarse) {
+  #mobile-numpad {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 4px;
+    width: 100%;
+    max-width: 480px;
+    padding: 2px 12px 8px;
+    margin-top: 0;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  .numpad-btn {
+    font-family: var(--font);
+    font-size: 19px;
+    font-weight: var(--weight-bold);
+    background: rgba(255,255,255,0.85);
+    border: 2px solid rgba(0,0,0,0.15);
+    border-radius: 6px;
+    color: var(--text-primary);
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s, transform 0.08s;
+    text-shadow: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  .numpad-btn:active {
+    background: rgba(255,255,255,1);
+    transform: scale(0.93);
+  }
+
+
+}
+
+/* ===========================================================================
+   Single-Player mode — start screen + SP lobby
+   =========================================================================== */
+
+/* Section mode labels (2 PLAYER / SINGLE PLAYER) */
+.start-mode-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-shadow: 2px 2px 0 var(--accent);
+  margin: 4px 0 2px;
+  text-align: center;
+}
+
+/* Alternate primary — orange, used when a second primary-weight CTA needs contrast on the same page */
+.btn-alt {
+  background: var(--orange);
+  box-shadow: 4px 4px 0 #ffffff;
+}
+.btn-alt:hover  { background: var(--orange-hover); box-shadow: 5px 6px 0 #ffffff; }
+.btn-alt:active { background: var(--orange-dark);  box-shadow: 2px 2px 0 #ffffff; }
+
+/* AI portrait faces left (same as P2 in multiplayer) */
+#sp-lobby-p2-portrait { transform: scaleX(-1); }
+
+/* Difficulty selector */
+.sp-difficulty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+.sp-difficulty-label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 var(--accent);
+}
+.sp-difficulty-btns {
+  display: flex;
+  gap: 10px;
+}
+.sp-diff-btn {
+  min-width: 76px;
+  opacity: 0.55;
+}
+.sp-diff-btn.selected {
+  opacity: 1;
+}
+
+/* SP start button — layout specifics only; colour comes from .btn-alt */
+#btn-sp-start {
+  margin-top: 18px;
+  min-width: 160px;
+}
+
+.hidden { display: none !important; }

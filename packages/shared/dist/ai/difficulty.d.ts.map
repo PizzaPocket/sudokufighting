@@ -1,0 +1,1 @@
+{"version":3,"file":"difficulty.d.ts","sourceRoot":"","sources":["../../src/ai/difficulty.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,kBAAkB,CAAC;AAEnD,MAAM,WAAW,gBAAgB;IAC/B,KAAK,EAAE,MAAM,CAAC;IACd,QAAQ,EAAE,MAAM,CAAC;IACjB,SAAS,EAAE,MAAM,CAAC;IAClB,YAAY,EAAE,MAAM,CAAC;CACtB;AAED,eAAO,MAAM,iBAAiB,EAAE,MAAM,CAAC,UAAU,EAAE,gBAAgB,CAIlE,CAAC"}

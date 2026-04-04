@@ -1,0 +1,54 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M190 50H150V60H190V50Z" fill="#DFD09A"/>
+<path d="M190 60H160V70H190V60Z" fill="#DFD09A"/>
+<path d="M160 60H140V70H160V60Z" fill="#DFD09A"/>
+<path d="M150 40H140V50H150V40Z" fill="#636363"/>
+<path d="M150 50H140V60H150V50Z" fill="#636363"/>
+<path d="M160 40H150V50H160V40Z" fill="#636363"/>
+<path d="M170 40H160V50H170V40Z" fill="#636363"/>
+<path d="M160 30H150V40H160V30Z" fill="#636363"/>
+<path d="M170 30H160V40H170V30Z" fill="#636363"/>
+<path d="M180 30H170V40H180V30Z" fill="#636363"/>
+<path d="M190 40H180V50H190V40Z" fill="#636363"/>
+<path d="M180 40H170V50H180V40Z" fill="#636363"/>
+<path d="M140 60H130V70H140V60Z" fill="#DFD09A"/>
+<path d="M200 70H190V90H200V70Z" fill="#EEE418"/>
+<path d="M210 80H200V120H210V80Z" fill="#EEE418"/>
+<path d="M200 90H190V110H200V90Z" fill="#EEE418"/>
+<path d="M220 80H210V120H220V80Z" fill="#EEE418"/>
+<path d="M230 90H220V120H230V90Z" fill="#EEE418"/>
+<path d="M240 90H220V110H240V90Z" fill="#DFD09A"/>
+<path d="M190 120H180V170H190V120Z" fill="#EEE418"/>
+<path d="M230 260H80V270H230V260Z" fill="black" fill-opacity="0.05"/>
+<path d="M190 70H110V120H190V70Z" fill="#EEE418"/>
+<rect x="120" y="80" width="10" height="10" fill="#5A5A5A"/>
+<rect x="120" y="70" width="10" height="10" fill="#5A5A5A"/>
+<rect x="120" y="90" width="10" height="10" fill="#5A5A5A"/>
+<rect x="130" y="100" width="30" height="10" fill="#5A5A5A"/>
+<path d="M180 120H120V170H180V120Z" fill="#EEE418"/>
+<path d="M200 170H160V190H200V170Z" fill="#EEE418"/>
+<path d="M210 190H170V200H210V190Z" fill="#EEE418"/>
+<path d="M150 170H120V180H150V170Z" fill="#EEE418"/>
+<path d="M150 180H120V190H150V180Z" fill="#EEE418"/>
+<path d="M140 190H110V200H140V190Z" fill="#EEE418"/>
+<path d="M140 200H110V210H140V200Z" fill="#EEE418"/>
+<path d="M130 210H100V220H130V210Z" fill="#EEE418"/>
+<path d="M120 220H90V230H120V220Z" fill="#EEE418"/>
+<path d="M120 230H90V240H120V230Z" fill="#EEE418"/>
+<path d="M210 200H180V210H210V200Z" fill="#EEE418"/>
+<path d="M210 210H180V220H210V210Z" fill="#EEE418"/>
+<path d="M200 220H170V230H200V220Z" fill="#EEE418"/>
+<path d="M200 230H170V240H200V230Z" fill="#EEE418"/>
+<path d="M200 240H180V250H200V240Z" fill="#EEE418"/>
+<path d="M210 250H190V260H210V250Z" fill="#EEE418"/>
+<path d="M110 240H90V250H110V240Z" fill="#EEE418"/>
+<path d="M110 250H90V260H110V250Z" fill="#EEE418"/>
+<path d="M170 80H160V100H170V80Z" fill="#DFD09A"/>
+<path d="M180 80H170V100H180V80Z" fill="#DFD09A"/>
+<path d="M180 70H150V80H180V70Z" fill="#DFD09A"/>
+<path d="M140 120H130V160H140V120Z" fill="#5A5A5A"/>
+<path d="M130 160H120V190H130V160Z" fill="#5A5A5A"/>
+<path d="M120 190H110V210H120V190Z" fill="#5A5A5A"/>
+<path d="M110 210H100V220H110V210Z" fill="#5A5A5A"/>
+<path d="M100 220H90V240H100V220Z" fill="#5A5A5A"/>
+</svg>

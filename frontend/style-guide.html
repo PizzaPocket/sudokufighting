@@ -7,70 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet" />
+  <!-- Tokens imported from the canonical source — packages/web/src/styles/tokens.css,
+       symlinked to frontend/css/tokens.css so this file never drifts from the app. -->
+  <link rel="stylesheet" href="/css/tokens.css" />
   <style>
-    /* ── Variables (mirrored from style.css) ─────────────────────────── */
-    :root {
-      --bg:             #f2f2f2;
-      --surface:        #ffffff;
-      --border:         #e5e5e5;
-      --text-primary:   #111111;
-      --text-secondary: #333333;
-      --text-tertiary:  #555555;
-      --grid-border:    #d5d5d5;
-      --grid-box-border:#888888;
-
-      --accent:       #8B49FF;
-      --accent-light: #EDE0FF;
-      --accent-hover: #7235e0;
-
-      --p1-color:    #17B9EF;
-      --p1-mid-dark: #0A8FBB;
-      --p1-dark:     #006B8F;
-      --p1-bg-light: #E5F7FD;
-      --p1-bg-mid:   #B8ECFB;
-
-      --p2-color:    #F31299;
-      --p2-mid-dark: #BC0074;
-      --p2-dark:     #880055;
-      --p2-bg-light: #FFEBF8;
-      --p2-bg-mid:   #FFD0EF;
-
-      --danger-color:    #F00013;
-      --danger-dark:     #A8000F;
-      --danger-bg-light: #FFEBEC;
-      --danger-bg-mid:   #FFCED1;
-
-      --orange:       #FF8B16;
-      --orange-hover: #E07500;
-      --orange-dark:  #C06200;
-      --yellow: #FFCA00;
-
-      --radius-xs:   5px;
-      --radius-sm:   8px;
-      --radius-md:   12px;
-      --radius-lg:   16px;
-      --radius-pill: 999px;
-
-      --font:         'Roboto Mono', monospace;
-      --font-display: 'Barlow Condensed', sans-serif;
-
-      --text-xs:   10px;
-      --text-btn:  15px;
-      --text-sm:   12px;
-      --text-base: 14px;
-      --text-md:   18px;
-      --text-lg:   22px;
-      --text-xl:   26px;
-      --text-2xl:  28px;
-      --text-3xl:  66px;
-      --text-4xl:  96px;
-
-      --weight-normal: 400;
-      --weight-medium: 500;
-      --weight-bold:   700;
-      --weight-heavy:  800;
-      --weight-black:  900;
-    }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -717,7 +657,7 @@
     .demo-match-title.defeat { color: var(--danger-color); }
 
     /* ── Join combo ──────────────────────────────────────────────────── */
-    .demo-join-combo {
+    .demo-combo-input {
       display: flex;
       border: 2px solid #ffffff;
       border-radius: var(--radius-sm);
@@ -725,7 +665,7 @@
       box-shadow: 4px 4px 0 var(--accent);
       width: 240px;
     }
-    .demo-join-input {
+    .demo-combo-text {
       flex: 1; min-width: 0;
       background: var(--bg);
       border: none;
@@ -738,7 +678,7 @@
       text-transform: uppercase;
       outline: none;
     }
-    .demo-join-input::placeholder {
+    .demo-combo-text::placeholder {
       color: var(--text-tertiary);
       font-weight: var(--weight-normal);
       letter-spacing: 0.01em;
@@ -1139,6 +1079,30 @@
   <p class="sg-subtitle">Sudoku Fighting — visual design reference &amp; component inventory</p>
   <p class="sg-note" style="margin-bottom:0;max-width:640px;line-height:1.8">Organized by Atomic Design: <strong>Foundations → Atoms → Molecules → Organisms → Templates.</strong> Each level builds on the previous and introduces no new visual primitives. React migration path: foundations → theme/token files; atoms/molecules/organisms → component files; templates → screen layout files.</p>
 
+  <section class="sg-section" style="margin-top:32px">
+    <h2 class="sg-section-title">Naming Principle</h2>
+    <p class="sg-note" style="max-width:680px;line-height:1.8">
+      <strong>Components are named for the pattern, not the use case.</strong>
+      A component should start with its most abstract, reusable identity. The current instance — where it appears, what it contains — lives in the consuming screen or its props, not in the component's own name or class.
+    </p>
+    <div class="sg-row" style="margin-top:16px;gap:16px">
+      <div class="sg-card" style="flex:1;min-width:220px">
+        <div class="sg-card-label">Wrong — named for use case</div>
+        <code>SettingsPanel</code> → only makes sense as a settings menu<br>
+        <code>.join-combo</code> → implies room-joining, can't be reused<br>
+        <code>.lobby-status</code> → tied to lobby screen context
+      </div>
+      <div class="sg-card" style="flex:1;min-width:220px">
+        <div class="sg-card-label">Right — named for pattern</div>
+        <code>ContextualMenu</code> → any dark floating control panel<br>
+        <code>.combo-input</code> → any fused input + action button<br>
+        <code>.status-pill</code> → any semantic state label
+      </div>
+    </div>
+    <p class="sg-note" style="margin-top:12px;max-width:680px;line-height:1.8">
+      When you find yourself naming a component after where it lives (<em>Lobby</em>Header, <em>Game</em>Button, <em>Settings</em>Panel), stop and ask: what is the <em>shape</em> of this thing? Name that instead. The specific context belongs to the parent.
+    </p>
+  </section>
 
   <!-- ===== FOUNDATIONS LEVEL ===== -->
   <div class="sg-level">
@@ -1564,9 +1528,9 @@
     <h3 class="sg-subsection-title">Utility — <code>.btn-utility</code></h3>
     <div class="sg-row center">
       <div class="sg-card arena" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <button class="btn-utility" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px">⚙</button>
-        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">◀</button>
-        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">SURRENDER</button>
+        <button class="btn-utility" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px"><img src="/assets/ui/icon-settings.svg" style="width:20px;height:20px;filter:brightness(0) invert(1)" alt="Settings" /></button>
+        <button class="btn-utility" style="display:flex;align-items:center;gap:5px;padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em"><img src="/assets/ui/chevron-left.svg" style="width:16px;height:16px;filter:brightness(0) invert(1)" alt="" />BACK</button>
+        <button class="btn-utility" style="padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em">SURRENDER</button>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
@@ -1770,18 +1734,18 @@
     </div>
   </section>
 
-  <!-- ===== MOLECULES: Join Combo ===== -->
+  <!-- ===== MOLECULES: Combo Input ===== -->
   <section class="sg-section">
-    <h2 class="sg-section-title">Join Combo — <code>.join-combo</code></h2>
-    <p class="sg-note" style="margin-bottom:12px">Input and action button fused into a single bordered unit. White outer border, purple box-shadow. The inner button acts as a secondary action (white bg, accent text) with no border-radius.</p>
+    <h2 class="sg-section-title">Combo Input — <code>.combo-input</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Input and action button fused into a single bordered unit. Named generically — usable in any code/value entry context, not just room joining. White outer border, purple box-shadow. The inner button acts as a secondary action (white bg, accent text) with no border-radius.</p>
     <div class="sg-row center">
       <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px">
-        <div class="demo-join-combo">
-          <input class="demo-join-input" placeholder="Enter room code..." />
+        <div class="demo-combo-input">
+          <input class="demo-combo-text" placeholder="Enter room code..." />
           <button class="demo-join-btn">JOIN</button>
         </div>
-        <div class="demo-join-combo">
-          <input class="demo-join-input" value="AB12CD" />
+        <div class="demo-combo-input">
+          <input class="demo-combo-text" value="AB12CD" />
           <button class="demo-join-btn">JOIN</button>
         </div>
       </div>
@@ -2271,7 +2235,7 @@
         <strong>Mode labels:</strong> Barlow Condensed 26px w900, white + purple shadow (2px 2px), letter-spacing 0.12em<br>
         <strong>Section sub-labels:</strong> Roboto Mono 12px w700, white + purple shadow (1px 1px), uppercase<br>
         <strong>Divider:</strong> 240px wide, 1px, rgba(255,255,255,0.25) — matches CTA width<br>
-        Molecules used: Join Combo, Buttons
+        Molecules used: Combo Input, Buttons
       </div>
     </div>
 

@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Fighting — Style Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Variables (mirrored from style.css) ─────────────────────────── */
+    :root {
+      --bg:             #f2f2f2;
+      --surface:        #ffffff;
+      --border:         #e5e5e5;
+      --text-primary:   #111111;
+      --text-secondary: #333333;
+      --text-tertiary:  #555555;
+      --grid-border:    #d5d5d5;
+      --grid-box-border:#888888;
+
+      --accent:       #8B49FF;
+      --accent-light: #EDE0FF;
+      --accent-hover: #7235e0;
+
+      --p1-color:    #17B9EF;
+      --p1-mid-dark: #0A8FBB;
+      --p1-dark:     #006B8F;
+      --p1-bg-light: #E5F7FD;
+      --p1-bg-mid:   #B8ECFB;
+
+      --p2-color:    #F31299;
+      --p2-mid-dark: #BC0074;
+      --p2-dark:     #880055;
+      --p2-bg-light: #FFEBF8;
+      --p2-bg-mid:   #FFD0EF;
+
+      --danger-color:    #F00013;
+      --danger-dark:     #A8000F;
+      --danger-bg-light: #FFEBEC;
+      --danger-bg-mid:   #FFCED1;
+
+      --orange:       #FF8B16;
+      --orange-hover: #E07500;
+      --orange-dark:  #C06200;
+      --yellow: #FFCA00;
+
+      --radius-xs:   5px;
+      --radius-sm:   8px;
+      --radius-md:   12px;
+      --radius-lg:   16px;
+      --radius-pill: 999px;
+
+      --font:         'Roboto Mono', monospace;
+      --font-display: 'Barlow Condensed', sans-serif;
+
+      --text-xs:   10px;
+      --text-btn:  15px;
+      --text-sm:   12px;
+      --text-base: 14px;
+      --text-md:   18px;
+      --text-lg:   22px;
+      --text-xl:   26px;
+      --text-2xl:  28px;
+      --text-3xl:  66px;
+      --text-4xl:  96px;
+
+      --weight-normal: 400;
+      --weight-medium: 500;
+      --weight-bold:   700;
+      --weight-heavy:  800;
+      --weight-black:  900;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: var(--text-base);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ── Page layout ─────────────────────────────────────────────────── */
+    .sg-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .sg-title {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: var(--weight-black);
+      color: var(--accent);
+      text-shadow: 4px 5px 0 #ffffff;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .sg-subtitle {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    /* ── Section structure ───────────────────────────────────────────── */
+    .sg-section {
+      margin-bottom: 64px;
+    }
+    .sg-section-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: var(--weight-black);
+      color: var(--accent);
+      text-shadow: 2px 2px 0 #ffffff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 8px;
+      margin-bottom: 32px;
+    }
+    .sg-subsection-title {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 32px 0 12px;
+    }
+    .sg-note {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .sg-note strong {
+      color: var(--text-secondary);
+    }
+
+    /* ── Row / grid containers ───────────────────────────────────────── */
+    .sg-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .sg-row.center { align-items: center; }
+    .sg-row.baseline { align-items: baseline; }
+    .sg-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Specimen card ───────────────────────────────────────────────── */
+    .sg-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .sg-card.dark {
+      background: #1a1a2e;
+    }
+    .sg-card.arena {
+      background-image: url(/assets/ui/bg_0.svg);
+      background-size: cover;
+      background-position: center;
+    }
+    .sg-card-label {
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 14px;
+    }
+    .sg-card.dark .sg-card-label { color: rgba(255,255,255,0.35); }
+
+    /* ── Color swatches ──────────────────────────────────────────────── */
+    .sg-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .sg-swatch {
+      display: flex;
+      flex-direction: column;
+      width: 100px;
+    }
+    .sg-swatch-color {
+      height: 64px;
+    }
+    .sg-swatch-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    .sg-swatch-name {
+      font-weight: var(--weight-bold);
+      display: block;
+    }
+    .sg-swatch-hex {
+      color: var(--text-tertiary);
+      display: block;
+      font-family: var(--font);
+    }
+
+    /* ── Typography specimens ────────────────────────────────────────── */
+    .sg-type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sg-type-row:first-child { border-top: 1px solid var(--border); }
+    .sg-type-meta {
+      flex-shrink: 0;
+      width: 200px;
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .sg-type-meta strong {
+      display: block;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: 2px;
+    }
+    .sg-type-specimen { flex: 1; overflow: hidden; }
+
+    /* ── Button specimens ────────────────────────────────────────────── */
+    .btn {
+      font-family: var(--font);
+      font-size: var(--text-btn);
+      font-weight: 700;
+      padding: 12px 32px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 4px 4px 0 #ffffff;
+      display: inline-block;
+    }
+    .btn:hover { background: var(--accent-hover); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+    .btn:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn.btn-sm {
+      font-size: var(--text-sm);
+      padding: 5px 14px;
+      box-shadow: 2px 2px 0 #ffffff;
+      border-radius: var(--radius-xs);
+    }
+    .btn.btn-sm:hover { box-shadow: 3px 3px 0 #ffffff; }
+    .btn.btn-sm:active { box-shadow: 1px 1px 0 #ffffff; }
+
+    .btn-secondary {
+      font-family: var(--font);
+      font-size: var(--text-btn);
+      font-weight: 700;
+      padding: 12px 32px;
+      background: #ffffff;
+      color: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 4px 4px 0 var(--accent);
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: var(--accent-light); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+    .btn-secondary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
+
+    .btn.btn-secondary {
+      background: #ffffff;
+      color: var(--accent);
+      box-shadow: 4px 4px 0 var(--accent);
+    }
+    .btn.btn-secondary:hover  { background: var(--accent-light); box-shadow: 5px 6px 0 var(--accent); }
+    .btn.btn-secondary:active { box-shadow: 2px 2px 0 var(--accent); }
+    .btn.btn-sm.btn-secondary         { box-shadow: 2px 2px 0 var(--accent); }
+    .btn.btn-sm.btn-secondary:hover   { box-shadow: 3px 3px 0 var(--accent); }
+    .btn.btn-sm.btn-secondary:active  { box-shadow: 1px 1px 0 var(--accent); }
+
+    .btn-alt {
+      background: var(--orange);
+      box-shadow: 4px 4px 0 #ffffff;
+    }
+    .btn-alt:hover  { background: var(--orange-hover); box-shadow: 5px 6px 0 #ffffff; }
+    .btn-alt:active { background: var(--orange-dark);  box-shadow: 2px 2px 0 #ffffff; }
+
+    .btn-utility {
+      font-family: var(--font);
+      font-weight: var(--weight-bold);
+      font-size: var(--text-sm);
+      background: rgba(0,0,0,0.35);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #ffffff;
+      cursor: pointer;
+      padding: 8px 14px;
+      transition: background 0.15s;
+      display: inline-block;
+    }
+    .btn-utility:hover { background: rgba(0,0,0,0.55); }
+
+    .btn-danger {
+      background: var(--danger-color);
+      box-shadow: 4px 4px 0 #ffffff;
+    }
+    .btn-danger:hover  { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
+    .btn-danger:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+
+    /* ── Button table ────────────────────────────────────────────────── */
+    .sg-btn-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .sg-btn-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--bg);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      border-bottom: 2px solid var(--border);
+    }
+    .sg-btn-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .sg-btn-table td code {
+      font-family: var(--font);
+      font-size: 11px;
+      background: var(--bg);
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    .sg-btn-table td:last-child { color: var(--text-tertiary); font-size: var(--text-xs); line-height: 1.5; }
+
+    /* ── Sudoku grid demo ────────────────────────────────────────────── */
+    .demo-grid-wrap {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .demo-grid-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .demo-grid-block .sg-card-label { margin-bottom: 0; }
+
+    .mini-grid {
+      /* Mirrors the game's CSS custom property approach — .is-me overrides BOTH
+         color and width on the same single border declaration */
+      --_grid-outline-color: var(--grid-box-border);
+      --_grid-outline-width: 2px;
+      display: grid;
+      grid-template-columns: repeat(9, 28px);
+      grid-template-rows: repeat(9, 28px);
+      border: var(--_grid-outline-width) solid var(--_grid-outline-color);
+      overflow: hidden;
+    }
+    /* .is-me: replaces the neutral border entirely via custom properties */
+    .mini-grid.p1-grid { --_grid-outline-color: var(--p1-color); --_grid-outline-width: 3px; }
+    .mini-grid.p2-grid { --_grid-outline-color: var(--p2-color); --_grid-outline-width: 3px; }
+
+    .mini-cell {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500;
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.88);
+      border-right: 1px solid var(--grid-border);
+      border-bottom: 1px solid var(--grid-border);
+      position: relative;
+      cursor: default;
+    }
+    .mini-cell:nth-child(9n)        { border-right: none; }
+    .mini-cell:nth-last-child(-n+9) { border-bottom: none; }
+    .mini-cell.box-top    { border-top:  2px solid var(--grid-box-border); }
+    .mini-cell.box-left   { border-left: 2px solid var(--grid-box-border); }
+    .mini-cell.pre-box-right  { border-right:  none; }
+    .mini-cell.pre-box-bottom { border-bottom: none; }
+
+    /* Cell state demos */
+    .mini-cell.given        { color: var(--text-secondary); font-weight: 700; }
+    .mini-cell.empty        { background: rgba(255,255,255,0.88); }
+    .mini-cell.ghost        { background: rgba(255,255,255,0.25); }
+    .mini-cell.p1-correct   { color: var(--p1-dark); font-weight: 600; background: rgba(255,255,255,0.88); }
+    .mini-cell.p2-correct   { color: var(--p2-dark); font-weight: 600; background: rgba(255,255,255,0.88); }
+    .mini-cell.p1-highlight { background: var(--p1-bg-light); }
+    .mini-cell.p2-highlight { background: var(--p2-bg-light); }
+    .mini-cell.p1-same      { background: var(--p1-bg-mid); }
+    .mini-cell.p2-same      { background: var(--p2-bg-mid); }
+    .mini-cell.p1-selected  { background: var(--p1-bg-light); box-shadow: inset 0 0 0 2px var(--p1-color); }
+    .mini-cell.p2-selected  { background: var(--p2-bg-light); box-shadow: inset 0 0 0 2px var(--p2-color); }
+    .mini-cell.danger-cell  { color: var(--danger-dark); background: var(--danger-bg-light); font-weight: 600; }
+    .mini-cell.p1-opp-cursor { outline: 3px solid var(--p1-color); outline-offset: -3px; background: var(--p1-bg-light) !important; }
+    .mini-cell.p2-opp-cursor { outline: 3px solid var(--p2-color); outline-offset: -3px; background: var(--p2-bg-light) !important; }
+
+    .mini-cell.danger-cell::before,
+    .mini-cell.danger-cell::after {
+      content: '';
+      position: absolute;
+      width: auto; height: 1.5px;
+      top: 50%; left: 18%; right: 18%;
+      border-radius: 2px;
+      background: var(--danger-color);
+    }
+    .mini-cell.danger-cell::before { transform: translateY(-50%) rotate(45deg); }
+    .mini-cell.danger-cell::after  { transform: translateY(-50%) rotate(-45deg); }
+
+    /* ── HUD specimen ────────────────────────────────────────────────── */
+    .demo-hud {
+      background: rgba(255,255,255,0.05);
+      padding: 12px 16px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .demo-hud-names {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .demo-hud-name {
+      font-size: var(--text-md);
+      font-weight: var(--weight-heavy);
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+    .demo-hud-name.p1 { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
+    .demo-hud-name.p2 { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
+    .demo-round { font-size: var(--text-md); font-weight: var(--weight-bold); color: #fff; text-shadow: 2px 2px 0 var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .demo-hud-bars {
+      display: flex;
+      height: 36px;
+      align-items: stretch;
+    }
+    .demo-bar-track {
+      flex: 1;
+      background: var(--danger-color);
+      overflow: hidden;
+      position: relative;
+    }
+    .demo-bar-track.left  { border-radius: 6px 0 0 6px; display: flex; justify-content: flex-end; }
+    .demo-bar-track.right { border-radius: 0 6px 6px 0; display: flex; justify-content: flex-start; }
+    .demo-ko {
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-black);
+      padding: 0 14px;
+      letter-spacing: 3px;
+      display: flex; align-items: center;
+    }
+    .demo-bar {
+      height: 100%;
+      transition: width 0.35s;
+    }
+    .demo-bar.full  { background: var(--yellow); }
+    .demo-bar.mid   { background: var(--orange); }
+    .demo-bar.low   { background: var(--yellow); }
+
+    .demo-timer {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      text-shadow: 3px 3px 0 var(--accent);
+      text-align: center;
+      letter-spacing: -1px;
+    }
+    .demo-timer.urgent { color: var(--danger-color); text-shadow: 2px 3px 0 var(--orange); }
+
+    /* ── Overlay specimen ────────────────────────────────────────────── */
+    .demo-overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 32px 24px;
+    }
+    .demo-overlay-main {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: var(--weight-black);
+      color: var(--accent);
+      text-shadow: 4px 5px 0 #ffffff;
+      line-height: 1;
+      text-align: center;
+    }
+    .demo-overlay-main.defeat { color: var(--danger-color); }
+    .demo-overlay-sub {
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      color: var(--yellow);
+      text-shadow: 1px 2px 0 var(--accent);
+    }
+
+    /* ── Lobby status ────────────────────────────────────────────────── */
+    .lobby-status {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      display: inline-block;
+    }
+    .lobby-status.ready   { color: #ffffff; background: var(--accent); }
+    .lobby-status.waiting { color: var(--text-secondary); background: var(--border); }
+
+    /* ── Toggle ──────────────────────────────────────────────────────── */
+    .toggle-switch {
+      position: relative; width: 44px; height: 24px; flex-shrink: 0; cursor: pointer; display: inline-block;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--text-tertiary);
+      border-radius: 24px; transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 18px; height: 18px; left: 3px; top: 3px;
+      background: #ffffff; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* ── Character card ──────────────────────────────────────────────── */
+    .character-card {
+      background: var(--surface);
+      border-radius: 0;
+      cursor: pointer;
+      padding: 6px 6px 8px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      box-shadow: 4px 4px 0 var(--accent);
+    }
+    .character-card:hover { transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+    .character-card.selected { background: var(--accent); box-shadow: 4px 4px 0 #ffffff; }
+    .character-card.selected .char-name { color: #ffffff; }
+    .char-portrait {
+      width: 80px; height: 80px;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+    .char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary); transition: color 0.15s; }
+
+    /* ── Settings panel specimen ─────────────────────────────────────── */
+    .demo-settings {
+      background: rgba(20,20,20,0.96);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 220px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .settings-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .settings-label {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.1em;
+      color: #ffffff;
+    }
+    .settings-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0; }
+
+    /* ── Shadow scale table ──────────────────────────────────────────── */
+    .shadow-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .shadow-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--bg);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      border-bottom: 2px solid var(--border);
+    }
+    .shadow-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .shadow-table td:last-child { font-family: var(--font); font-size: 11px; color: var(--text-tertiary); }
+
+    /* ── Lobby VS specimen ───────────────────────────────────────────── */
+    .demo-lobby-vs {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-black);
+      color: #ffffff;
+      text-shadow: 2px 3px 0 var(--accent);
+    }
+    .demo-lobby-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-black);
+      color: #ffffff;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 0 var(--accent);
+    }
+    .demo-share-code {
+      font-family: var(--font);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-black);
+      color: #ffffff;
+      letter-spacing: 0.35em;
+      text-shadow: 2px 2px 0 var(--accent);
+    }
+    .demo-start-label {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-black);
+      color: #ffffff;
+      letter-spacing: 0.12em;
+      text-shadow: 2px 2px 0 var(--accent);
+    }
+    .demo-section-label {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      text-shadow: 1px 1px 0 var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Divider ─────────────────────────────────────────────────────── */
+    .sg-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    /* ── Inline code ─────────────────────────────────────────────────── */
+    code {
+      font-family: var(--font);
+      font-size: 11px;
+      background: var(--bg);
+      padding: 2px 5px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Numpad btn ──────────────────────────────────────────────────── */
+    .numpad-btn-demo {
+      font-family: var(--font);
+      font-size: 19px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.85);
+      border: 2px solid rgba(0,0,0,0.15);
+      border-radius: 6px;
+      color: var(--text-primary);
+      height: 44px;
+      width: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Match-end demo ──────────────────────────────────────────────── */
+    .demo-match-title {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: var(--weight-black);
+      color: var(--accent);
+      text-shadow: 3px 4px 0 #ffffff;
+      letter-spacing: 0;
+    }
+    .demo-match-title.defeat { color: var(--danger-color); }
+
+    /* ── Join combo ──────────────────────────────────────────────────── */
+    .demo-join-combo {
+      display: flex;
+      border: 2px solid #ffffff;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 4px 4px 0 var(--accent);
+      width: 240px;
+    }
+    .demo-join-input {
+      flex: 1; min-width: 0;
+      background: var(--bg);
+      border: none;
+      padding: 12px 14px;
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      outline: none;
+    }
+    .demo-join-input::placeholder {
+      color: var(--text-tertiary);
+      font-weight: var(--weight-normal);
+      letter-spacing: 0.01em;
+      text-transform: none;
+    }
+    .demo-join-btn {
+      flex-shrink: 0;
+      padding: 12px 20px;
+      background: #ffffff;
+      color: var(--accent);
+      font-family: var(--font);
+      font-size: var(--text-btn);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.05em;
+      border: none;
+      border-left: 1px solid var(--border);
+      border-radius: 0;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .demo-join-btn:hover  { background: var(--accent-light); }
+    .demo-join-btn:active { background: var(--accent); color: #ffffff; }
+
+    /* ── Inline error / inline success ──────────────────────────────── */
+    .demo-inline-error {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--danger-color);
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+    }
+    .demo-inline-success {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--accent);
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.6);
+    }
+
+    /* ── Standalone input ────────────────────────────────────────────── */
+    .demo-input {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--text-primary);
+      outline: none;
+      letter-spacing: 0.04em;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      width: 220px;
+    }
+    .demo-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    .demo-input::placeholder { color: var(--text-tertiary); font-weight: var(--weight-normal); }
+    .demo-input.error { border-color: var(--danger-color); box-shadow: 0 0 0 3px var(--danger-bg-light); }
+    .demo-input:disabled { background: var(--bg); color: var(--text-tertiary); cursor: not-allowed; }
+
+    /* ── Lobby invite / glass card ───────────────────────────────────── */
+    .demo-glass-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.12);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .demo-glass-label {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── Lobby hint (pulsing) ────────────────────────────────────────── */
+    .demo-lobby-hint {
+      font-family: var(--font);
+      font-size: var(--text-base);
+      color: #ffffff;
+      text-shadow: 1px 2px 0 var(--accent);
+      animation: fade-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes fade-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ── Combo counter ───────────────────────────────────────────────── */
+    .demo-combo {
+      font-family: var(--font);
+      font-size: var(--text-md);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    /* ── Match-end screen ────────────────────────────────────────────── */
+    .demo-match-winner-name {
+      font-family: var(--font);
+      font-size: var(--text-xl);
+      font-weight: var(--weight-heavy);
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      text-shadow: 2px 3px 0 #ffffff;
+    }
+    .demo-match-winner-img {
+      width: 80px; height: 80px;
+      background: var(--accent-light);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      image-rendering: pixelated;
+    }
+
+    /* ── Difficulty selector ─────────────────────────────────────────── */
+    .demo-diff-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-diff-label {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 0 var(--accent);
+    }
+    .demo-diff-btns { display: flex; gap: 10px; }
+    .sp-diff-btn { min-width: 76px; opacity: 0.55; }
+    .sp-diff-btn.selected { opacity: 1; }
+
+    /* ── Carousel ────────────────────────────────────────────────────── */
+    .demo-carousel {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .demo-carousel-title {
+      font-family: var(--font);
+      font-size: var(--text-base);
+      font-weight: var(--weight-bold);
+      color: #ffffff;
+      letter-spacing: 0.04em;
+      text-align: center;
+      width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .demo-carousel-btn {
+      font-family: var(--font);
+      min-width: 44px; min-height: 44px;
+      padding: 0 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.35);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #ffffff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .demo-carousel-btn:hover { background: rgba(0,0,0,0.55); }
+
+    /* ── Section divider (start screen) ─────────────────────────────── */
+    .demo-start-divider {
+      width: 240px;
+      height: 1px;
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ── Badge / tag ─────────────────────────────────────────────────── */
+    .sg-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+    .sg-badge.badge-new      { background: var(--accent); color: #ffffff; }
+    .sg-badge.badge-beta     { background: var(--orange); color: #ffffff; }
+    .sg-badge.badge-count    { background: var(--danger-color); color: #ffffff; min-width: 20px; justify-content: center; padding: 2px 5px; }
+    .sg-badge.badge-p1       { background: var(--p1-color); color: #ffffff; }
+    .sg-badge.badge-p2       { background: var(--p2-color); color: #ffffff; }
+    .sg-badge.badge-neutral  { background: var(--border); color: var(--text-secondary); }
+
+    /* ── Toast ───────────────────────────────────────────────────────── */
+    .sg-toast {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.04em;
+      box-shadow: var(--shadow-md);
+      min-width: 200px;
+    }
+    .sg-toast.toast-success { background: var(--surface); border-left: 4px solid var(--accent); color: var(--text-primary); }
+    .sg-toast.toast-error   { background: var(--surface); border-left: 4px solid var(--danger-color); color: var(--text-primary); }
+    .sg-toast.toast-info    { background: var(--surface); border-left: 4px solid var(--grid-box-border); color: var(--text-primary); }
+    .sg-toast-icon { font-size: 16px; flex-shrink: 0; }
+
+    /* ── Modal ───────────────────────────────────────────────────────── */
+    .sg-modal-backdrop {
+      position: relative;
+      background: rgba(0,0,0,0.65);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sg-modal {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    }
+    .sg-modal-title {
+      font-family: var(--font);
+      font-size: var(--text-md);
+      font-weight: var(--weight-bold);
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .sg-modal-body {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .sg-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* ── Tooltip ─────────────────────────────────────────────────────── */
+    .sg-tooltip-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+    .sg-tooltip-target {
+      background: var(--border);
+      border-radius: var(--radius-xs);
+      padding: 4px 8px;
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: var(--text-secondary);
+      cursor: default;
+      border-bottom: 1px dashed var(--text-tertiary);
+    }
+    .sg-tooltip-bubble {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2e;
+      color: #ffffff;
+      font-family: var(--font);
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+      letter-spacing: 0.04em;
+      padding: 5px 10px;
+      border-radius: var(--radius-xs);
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 2px 2px 0 var(--accent);
+    }
+    .sg-tooltip-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1a1a2e;
+    }
+
+    /* ── Standalone dropdown ─────────────────────────────────────────── */
+    .demo-select {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 36px 10px 14px;
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555555' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color 0.15s;
+    }
+    .demo-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+    /* ── Loading / skeleton ──────────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .sg-skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: var(--radius-xs);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sg-spinner {
+      width: 24px; height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    .sg-spinner.sm { width: 16px; height: 16px; border-width: 2px; }
+
+    /* ── Promo feedback (visibility-based) ───────────────────────────── */
+    .demo-promo-feedback {
+      font-family: var(--font);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-bold);
+      color: rgba(255,255,255,0.85);
+      visibility: hidden;
+    }
+    .demo-promo-feedback.visible { visibility: visible; }
+
+  </style>
+</head>
+<body>
+<div class="sg-page">
+
+  <!-- ===== HEADER ===== -->
+  <h1 class="sg-title">STYLE GUIDE</h1>
+  <p class="sg-subtitle">Sudoku Fighting — visual design reference &amp; component inventory</p>
+
+
+  <!-- ===== 1. COLORS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Colors</h2>
+
+    <h3 class="sg-subsection-title">Brand Accent — Purple</h3>
+    <p class="sg-note">Primary action color. Used on primary buttons, shadows on white text, character card shadows, toggle on-state, KO block fill, overlay text. Never used as background behind white text unless a contrasting shadow offsets it.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#EDE0FF"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">accent-light</span><span class="sg-swatch-hex">#EDE0FF</span><span class="sg-swatch-hex">Hover bg on secondary btn</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#8B49FF"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">accent</span><span class="sg-swatch-hex">#8B49FF</span><span class="sg-swatch-hex">Primary color</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#7235e0"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">accent-hover</span><span class="sg-swatch-hex">#7235E0</span><span class="sg-swatch-hex">Btn hover state</span></div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Player 1 — Cyan</h3>
+    <p class="sg-note">All P1 UI: grid border, selected cells, name shadow, HUD score/combo shadow. Never used on P2 elements.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#E5F7FD"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p1-bg-light</span><span class="sg-swatch-hex">#E5F7FD</span><span class="sg-swatch-hex">Cell highlight, selected bg</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#B8ECFB"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p1-bg-mid</span><span class="sg-swatch-hex">#B8ECFB</span><span class="sg-swatch-hex">Same-number cells</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#17B9EF"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p1-color</span><span class="sg-swatch-hex">#17B9EF</span><span class="sg-swatch-hex">Grid border, cursor outline</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#0A8FBB"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p1-mid-dark</span><span class="sg-swatch-hex">#0A8FBB</span><span class="sg-swatch-hex">Text shadow on white</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#006B8F"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p1-dark</span><span class="sg-swatch-hex">#006B8F</span><span class="sg-swatch-hex">Correct cell text</span></div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Player 2 — Magenta</h3>
+    <p class="sg-note">Mirrors P1 semantics exactly, shifted to magenta. Grid border, selected cells, name shadow. Never mixed with P1 colors on the same element.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FFEBF8"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p2-bg-light</span><span class="sg-swatch-hex">#FFEBF8</span><span class="sg-swatch-hex">Cell highlight, selected bg</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FFD0EF"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p2-bg-mid</span><span class="sg-swatch-hex">#FFD0EF</span><span class="sg-swatch-hex">Same-number cells</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#F31299"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p2-color</span><span class="sg-swatch-hex">#F31299</span><span class="sg-swatch-hex">Grid border, cursor outline</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#BC0074"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p2-mid-dark</span><span class="sg-swatch-hex">#BC0074</span><span class="sg-swatch-hex">Text shadow on white</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#880055"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">p2-dark</span><span class="sg-swatch-hex">#880055</span><span class="sg-swatch-hex">Correct cell text</span></div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Danger — Red</h3>
+    <p class="sg-note">Error states, conflicts, and low-HP. The track of the health bar is always the danger red, revealed as health drops. Also used for the timer at &lt;10s, wrong-move cell backgrounds, and the Leave/Surrender button.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FFEBEC"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">danger-bg-light</span><span class="sg-swatch-hex">#FFEBEC</span><span class="sg-swatch-hex">Danger cell bg</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FFCED1"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">danger-bg-mid</span><span class="sg-swatch-hex">#FFCED1</span><span class="sg-swatch-hex">(reserved)</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#F00013"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">danger-color</span><span class="sg-swatch-hex">#F00013</span><span class="sg-swatch-hex">HP track, timer urgent</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#A8000F"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">danger-dark</span><span class="sg-swatch-hex">#A8000F</span><span class="sg-swatch-hex">Danger cell text, Leave btn hover</span></div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Action Colors — Orange &amp; Yellow</h3>
+    <p class="sg-note"><strong>Orange</strong> is the VS AI / single-player signal color. It also appears on the HP bar at ~50% health, and in the heavy-hit screen flash. <strong>Yellow</strong> is the HP bar fill at full health, and the overlay subtitle text (always on dark or colored backgrounds).</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FF8B16"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">orange</span><span class="sg-swatch-hex">#FF8B16</span><span class="sg-swatch-hex">VS AI btn, mid HP bar, heavy flash</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#FFCA00"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">yellow</span><span class="sg-swatch-hex">#FFCA00</span><span class="sg-swatch-hex">Full HP bar, overlay sub-text</span></div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Greyscale &amp; Neutrals</h3>
+    <p class="sg-note">Used for backgrounds, surfaces, borders, and body text. All neutral values have equal R/G/B channels — no color cast.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#f2f2f2;border:1px solid #e5e5e5"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">bg</span><span class="sg-swatch-hex">#F2F2F2</span><span class="sg-swatch-hex">Page background</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#ffffff;border:1px solid #e5e5e5"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">surface</span><span class="sg-swatch-hex">#FFFFFF</span><span class="sg-swatch-hex">Cards, panels</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#e5e5e5"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">border</span><span class="sg-swatch-hex">#E5E5E5</span><span class="sg-swatch-hex">General borders</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#d5d5d5"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">grid-border</span><span class="sg-swatch-hex">#D5D5D5</span><span class="sg-swatch-hex">Thin sudoku cell lines</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#888888"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">grid-box-border</span><span class="sg-swatch-hex">#888888</span><span class="sg-swatch-hex">Thick 3×3 box lines</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#555555"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">text-tertiary</span><span class="sg-swatch-hex">#555555</span><span class="sg-swatch-hex">Muted / toggle-off</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#333333"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">text-secondary</span><span class="sg-swatch-hex">#333333</span><span class="sg-swatch-hex">Given cell numbers</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#111111"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">text-primary</span><span class="sg-swatch-hex">#111111</span><span class="sg-swatch-hex">Main text</span></div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ===== 2. TYPOGRAPHY ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Typography</h2>
+
+    <h3 class="sg-subsection-title">Typefaces</h3>
+    <div class="sg-row">
+      <div class="sg-card" style="flex:1">
+        <div class="sg-card-label">Body &amp; UI — Roboto Mono</div>
+        <p style="font-family:'Roboto Mono',monospace;font-size:22px;font-weight:400;margin-bottom:8px">Aa Bb Cc 0–9</p>
+        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--text-secondary)">Weights used: 400 (normal), 500 (medium), 700 (bold), 800 (heavy), 900 (black).<br>Used for all body text, buttons, HUD labels, number input, settings, lobby UI.</p>
+      </div>
+      <div class="sg-card" style="flex:1">
+        <div class="sg-card-label">Display — Barlow Condensed</div>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;line-height:1;margin-bottom:8px">FIGHT!</p>
+        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--text-secondary)">Weight 900 only. Reserved exclusively for impactful game moments: FIGHT!, KO, VICTORY/DEFEAT, VS, lobby titles, section labels, match-end screen, start-screen mode headers.</p>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Type Scale with Text Shadow Offset Scale</h3>
+    <p class="sg-note" style="margin-bottom:16px">Hard pixel text shadows (offset, no blur) are used throughout. Shadow offset grows with type size so it remains proportionally punchy at every scale. Shadows pair with the background context — purple shadows over white UI, colored shadows over dark/arena backgrounds.</p>
+
+    <table class="shadow-table">
+      <thead>
+        <tr>
+          <th>Token</th><th>Size</th><th>Shadow offset rule</th><th>Common shadow pairings</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>--text-xs</code></td>    <td>10px</td><td>1px 1px 0</td><td>—</td></tr>
+        <tr><td><code>--text-sm</code></td>    <td>12px</td><td>1px 1px 0</td><td>White text → <code>accent</code>; Settings labels</td></tr>
+        <tr><td><code>--text-base</code></td>  <td>14px</td><td>1px 2px 0</td><td>White text → <code>accent</code>; Body copy</td></tr>
+        <tr><td><code>--text-md</code></td>    <td>18px</td><td>2px 2px 0</td><td>P1 white name → <code>p1-mid-dark</code>; P2 white name → <code>p2-mid-dark</code>; Generic white → <code>accent</code></td></tr>
+        <tr><td><code>--text-lg</code></td>    <td>22px</td><td>1px 2px 0</td><td>Yellow overlay sub-text → <code>accent</code></td></tr>
+        <tr><td><code>--text-xl</code></td>    <td>26px</td><td>2px 3px 0</td><td>White timer → <code>accent</code>; Share code white → <code>accent</code></td></tr>
+        <tr><td><code>--text-2xl</code></td>   <td>28px</td><td>2px 3px 0</td><td>White VS / lobby title → <code>accent</code>; Player label → <code>white</code></td></tr>
+        <tr><td><code>--text-3xl</code></td>   <td>66px</td><td>3px 4px 0</td><td>Match-end title <code>accent</code> → semi-white; <code>danger</code> defeat variant</td></tr>
+        <tr><td><code>--text-4xl</code></td>   <td>96px</td><td>4px 5px 0</td><td>Main overlay (<code>accent</code> text) → <code>white</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sg-subsection-title">Live Specimens</h3>
+
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-xs / 10px</strong>weight-bold<br>Used for fine print labels</div>
+      <div class="sg-type-specimen"><span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase">STYLE GUIDE</span></div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-sm / 12px</strong>weight-bold<br>Settings labels, status text, small button text</div>
+      <div class="sg-type-specimen"><span style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">SOUND EFFECTS</span></div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-base / 14px</strong>weight-medium<br>Body text, HUD sub-info, char names on cards</div>
+      <div class="sg-type-specimen"><span style="font-size:14px;font-weight:500">Character name</span></div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-md / 18px</strong>weight-heavy<br>Player names in HUD, round label, lobby labels, scores</div>
+      <div class="sg-type-specimen">
+        <span style="font-size:18px;font-weight:800;color:#fff;text-shadow:2px 2px 0 var(--p1-mid-dark);background:#555;padding:2px 8px;display:inline-block">PLAYER 1</span>
+        &nbsp;
+        <span style="font-size:18px;font-weight:800;color:#fff;text-shadow:2px 2px 0 var(--p2-mid-dark);background:#555;padding:2px 8px;display:inline-block">PLAYER 2</span>
+        &nbsp;
+        <span style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent);background:#555;padding:2px 8px;display:inline-block">ROUND 1</span>
+      </div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-lg / 22px</strong>weight-bold<br>Overlay sub-text (yellow on dark)</div>
+      <div class="sg-type-specimen"><span style="font-size:22px;font-weight:700;color:var(--yellow);text-shadow:1px 2px 0 var(--accent);background:#333;padding:2px 12px;display:inline-block">Best 2 of 3</span></div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-xl / 26px</strong>weight-bold (Roboto Mono) or weight-black (Barlow)<br>Round timer, lobby title, share code</div>
+      <div class="sg-type-specimen">
+        <span style="font-size:26px;font-weight:700;color:#fff;text-shadow:3px 3px 0 var(--accent);background:#555;padding:2px 12px;display:inline-block;letter-spacing:-1px">42</span>
+        &nbsp;
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;text-shadow:2px 2px 0 var(--accent);background:#555;padding:2px 12px;display:inline-block;letter-spacing:0.12em;text-transform:uppercase">MATCHMAKING</span>
+      </div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-2xl / 28px</strong>Barlow Condensed weight-black<br>Lobby VS, KO block, player highlight labels</div>
+      <div class="sg-type-specimen">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:#fff;text-shadow:2px 3px 0 var(--accent);background:#555;padding:2px 12px;display:inline-block">VS</span>
+        &nbsp;
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--p1-color);text-shadow:3px 3px 0 #fff;background:#555;padding:2px 12px;display:inline-block">YOU</span>
+      </div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-3xl / 66px</strong>Barlow Condensed weight-black<br>Match-end screen title</div>
+      <div class="sg-type-specimen">
+        <span class="demo-match-title">VICTORY</span>
+        &nbsp;
+        <span class="demo-match-title defeat">DEFEAT</span>
+      </div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>--text-4xl / 96px</strong>Barlow Condensed weight-black<br>Main game overlay: FIGHT!, KO, VICTORY</div>
+      <div class="sg-type-specimen" style="overflow:visible">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:96px;font-weight:900;color:var(--accent);text-shadow:4px 5px 0 #ffffff;line-height:1;display:inline-block">FIGHT!</span>
+      </div>
+    </div>
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>Mobile overrides</strong><br>On ≤500px viewports, three sizes scale down</div>
+      <div class="sg-type-specimen" style="font-size:var(--text-sm);color:var(--text-tertiary);line-height:1.8">
+        <code>--text-xl</code> 26px → 18px<br>
+        <code>--text-3xl</code> 66px → 44px<br>
+        <code>--text-4xl</code> 96px → 56px
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ===== 3. BUTTONS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Buttons</h2>
+
+    <p class="sg-note" style="margin-bottom:24px">All buttons use Roboto Mono, 700 weight. Press interaction: translate +2px/+2px with shadow shrink. Release: translate -1px/-2px with shadow grow. Shadow is a hard pixel offset (no blur) — the direction and color are the meaningful signals.</p>
+
+    <h3 class="sg-subsection-title">Primary — <code>.btn</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <button class="btn">QUICK PLAY</button>
+        <button class="btn" disabled>DISABLED</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Primary action on each screen: Quick Play, Create Room, Select character, Play Again.<br><br>
+        <strong>Background:</strong> <code>accent</code> #8B49FF<br>
+        <strong>Text:</strong> white<br>
+        <strong>Shadow:</strong> <code>4px 4px 0 #ffffff</code><br>
+        <strong>Hover shadow:</strong> <code>5px 6px 0 #ffffff</code>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Primary Small — <code>.btn.btn-sm</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-sm">BACK</button>
+        <button class="btn btn-sm">COPY INVITE</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        In-context small actions: Back navigation, Copy Invite. Sits inline with other elements.<br><br>
+        <strong>Font size:</strong> 12px (–text-sm)<br>
+        <strong>Padding:</strong> 5px 14px<br>
+        <strong>Radius:</strong> 5px (slightly less rounded than full .btn)<br>
+        <strong>Shadow:</strong> <code>2px 2px 0 #ffffff</code>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Secondary — <code>.btn-secondary</code> or <code>.btn.btn-secondary</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <button class="btn-secondary">SHARE THE GAME</button>
+        <button class="btn btn-sm btn-secondary">EASY</button>
+        <button class="btn btn-sm btn-secondary">MEDIUM</button>
+        <button class="btn btn-sm btn-secondary" style="opacity:0.55">HARD</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Secondary/alternative actions: Share, difficulty selector. Lower visual weight than primary.<br><br>
+        <strong>Background:</strong> white<br>
+        <strong>Text:</strong> <code>accent</code> #8B49FF<br>
+        <strong>Shadow:</strong> <code>4px 4px 0 accent</code> (purple)<br>
+        <strong>Note:</strong> When combined with <code>.btn.btn-sm</code>, a specificity override ensures purple shadow wins over the default white.
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Alternate Primary — <code>.btn.btn-alt</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-alt">VS AI</button>
+        <button class="btn btn-alt">START!</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        A second primary-weight CTA that needs to contrast with <code>.btn</code> (purple) on the same page. Currently: VS AI on the start screen, START! in the SP lobby. Not tied to any specific screen — use any time you have two primary CTAs and need visual separation.<br><br>
+        <strong>Background:</strong> <code>--orange</code> #FF8B16<br>
+        <strong>Text:</strong> white<br>
+        <strong>Shadow:</strong> <code>4px 4px 0 #ffffff</code>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Destructive — <code>.btn.btn-danger</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-danger">LEAVE</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Any action that destroys or irreversibly exits. Currently: Leave at game-over overlay. Semantic contract: if it deletes, exits, or can't be undone, use this class.<br><br>
+        <strong>Background:</strong> <code>--danger-color</code> #F00013<br>
+        <strong>Text:</strong> white<br>
+        <strong>Shadow:</strong> <code>4px 4px 0 #ffffff</code>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Utility — <code>.btn-utility</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <button class="btn-utility" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px">⚙</button>
+        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">◀</button>
+        <button class="btn-utility" style="padding:8px 10px;border-radius:8px">SURRENDER</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Low-priority functional actions that always appear over colored/arena backgrounds: settings icon, track carousel chevrons, surrender. No shadow — dark semi-transparent pill recedes visually.<br><br>
+        <strong>Background:</strong> <code>rgba(0,0,0,0.35)</code><br>
+        <strong>Text:</strong> white<br>
+        <strong>Shadow:</strong> none
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Button System — Weight × Intent</h3>
+    <p class="sg-note" style="margin-bottom:16px"><code>.btn-sm</code> composes orthogonally with any intent modifier. e.g. <code>.btn.btn-sm.btn-danger</code> = small destructive button.</p>
+    <table class="sg-btn-table">
+      <thead>
+        <tr><th>Class(es)</th><th>Preview</th><th>Background</th><th>Shadow</th><th>Semantic role</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>.btn</code></td>
+          <td><button class="btn" style="margin:0">ACTION</button></td>
+          <td>accent #8B49FF</td>
+          <td>4px 4px white</td>
+          <td>Primary CTA — default intent.</td>
+        </tr>
+        <tr>
+          <td><code>.btn.btn-alt</code></td>
+          <td><button class="btn btn-alt" style="margin:0">VS AI</button></td>
+          <td>orange #FF8B16</td>
+          <td>4px 4px white</td>
+          <td>Alternate primary — contrast with .btn on same page.</td>
+        </tr>
+        <tr>
+          <td><code>.btn.btn-danger</code></td>
+          <td><button class="btn btn-danger" style="margin:0">LEAVE</button></td>
+          <td>danger #F00013</td>
+          <td>4px 4px white</td>
+          <td>Destructive / irreversible action.</td>
+        </tr>
+        <tr>
+          <td><code>.btn-secondary</code></td>
+          <td><button class="btn-secondary" style="margin:0">SECONDARY</button></td>
+          <td>white #FFFFFF</td>
+          <td>4px 4px accent</td>
+          <td>Secondary weight — alternative action.</td>
+        </tr>
+        <tr>
+          <td><code>.btn.btn-sm</code></td>
+          <td><button class="btn btn-sm">SMALL</button></td>
+          <td>accent #8B49FF</td>
+          <td>2px 2px white</td>
+          <td>Small primary. radius-xs (5px).</td>
+        </tr>
+        <tr>
+          <td><code>.btn.btn-sm.btn-secondary</code></td>
+          <td><button class="btn btn-sm btn-secondary">EASY</button></td>
+          <td>white #FFFFFF</td>
+          <td>2px 2px accent</td>
+          <td>Small secondary. opacity 0.55 when inactive.</td>
+        </tr>
+        <tr>
+          <td><code>.btn-utility</code></td>
+          <td><button class="btn-utility">SETTINGS</button></td>
+          <td>rgba(0,0,0,0.35)</td>
+          <td>none</td>
+          <td>Minimal weight — icons &amp; low-priority actions.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+
+  <!-- ===== 4. SUDOKU GRID ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Sudoku Grid &amp; Cell States</h2>
+
+    <p class="sg-note" style="margin-bottom:20px">The grid renders over an arena background. Cell backgrounds use white at varying opacity so the arena art shows through on ghosted cells. <strong>Own grid</strong> uses 88% opacity white for clarity. <strong>Opponent empty cells</strong> use 25% — visibly ghosted to signal "not yours". <strong>Opponent filled cells</strong> match own-grid opacity (90%) to show progress legibly.</p>
+
+    <h3 class="sg-subsection-title">Grid Identity &amp; Borders</h3>
+    <div class="sg-row">
+      <div class="demo-grid-block">
+        <div class="sg-card-label">Default (neutral, spectator)</div>
+        <div class="mini-grid">
+          <!-- just a few cells for demo -->
+          <div class="mini-cell box-left box-top given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">4</div><div class="mini-cell box-top box-left">6</div><div class="mini-cell box-top">7</div><div class="mini-cell box-top pre-box-right">8</div><div class="mini-cell box-top box-left given">9</div><div class="mini-cell box-top given">1</div><div class="mini-cell box-top given">2</div>
+          <div class="mini-cell box-left given">6</div><div class="mini-cell given">7</div><div class="mini-cell pre-box-right given">2</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">9</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">3</div><div class="mini-cell given">4</div><div class="mini-cell given">8</div>
+          <div class="mini-cell box-left pre-box-bottom">1</div><div class="mini-cell pre-box-bottom">9</div><div class="mini-cell pre-box-right pre-box-bottom">8</div><div class="mini-cell box-left pre-box-bottom">3</div><div class="mini-cell pre-box-bottom">4</div><div class="mini-cell pre-box-right pre-box-bottom">2</div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">5</div><div class="mini-cell pre-box-bottom given">7</div>
+          <div class="mini-cell box-left box-top">8</div><div class="mini-cell box-top given">5</div><div class="mini-cell box-top pre-box-right"></div><div class="mini-cell box-top box-left"></div><div class="mini-cell box-top"></div><div class="mini-cell box-top pre-box-right given">3</div><div class="mini-cell box-top box-left given">4</div><div class="mini-cell box-top given">2</div><div class="mini-cell box-top given">6</div>
+          <div class="mini-cell box-left given">4</div><div class="mini-cell given">2</div><div class="mini-cell pre-box-right given">6</div><div class="mini-cell box-left given">8</div><div class="mini-cell given">5</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">3</div><div class="mini-cell given">9</div><div class="mini-cell given">1</div>
+          <div class="mini-cell box-left pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">1</div><div class="mini-cell pre-box-right pre-box-bottom given">9</div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">2</div><div class="mini-cell pre-box-right pre-box-bottom given">4</div><div class="mini-cell box-left pre-box-bottom given">8</div><div class="mini-cell pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">5</div>
+          <div class="mini-cell box-left box-top given">9</div><div class="mini-cell box-top given">6</div><div class="mini-cell box-top pre-box-right given">1</div><div class="mini-cell box-top box-left given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">7</div><div class="mini-cell box-top box-left given">2</div><div class="mini-cell box-top given">8</div><div class="mini-cell box-top given">4</div>
+          <div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">4</div><div class="mini-cell given">1</div><div class="mini-cell pre-box-right given">9</div><div class="mini-cell box-left given">6</div><div class="mini-cell given">3</div><div class="mini-cell given">5</div>
+          <div class="mini-cell box-left given">3</div><div class="mini-cell given">4</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right given">6</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">7</div><div class="mini-cell given">9</div>
+        </div>
+        <div class="sg-note">Default: 2px <code>#888888</code> — spectator/neutral</div>
+      </div>
+      <div class="demo-grid-block">
+        <div class="sg-card-label">P1 (is-me — own grid)</div>
+        <div class="mini-grid p1-grid">
+          <div class="mini-cell box-left box-top given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">4</div><div class="mini-cell box-top box-left">6</div><div class="mini-cell box-top">7</div><div class="mini-cell box-top pre-box-right">8</div><div class="mini-cell box-top box-left given">9</div><div class="mini-cell box-top given">1</div><div class="mini-cell box-top given">2</div>
+          <div class="mini-cell box-left given">6</div><div class="mini-cell given">7</div><div class="mini-cell pre-box-right given">2</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">9</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">3</div><div class="mini-cell p1-correct">4</div><div class="mini-cell given">8</div>
+          <div class="mini-cell box-left pre-box-bottom p1-highlight"></div><div class="mini-cell pre-box-bottom p1-highlight"></div><div class="mini-cell pre-box-right pre-box-bottom p1-highlight"></div><div class="mini-cell box-left pre-box-bottom p1-highlight"></div><div class="mini-cell pre-box-bottom p1-selected">8</div><div class="mini-cell pre-box-right pre-box-bottom p1-highlight"></div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">5</div><div class="mini-cell pre-box-bottom given">7</div>
+          <div class="mini-cell box-left box-top">8</div><div class="mini-cell box-top given p1-same">5</div><div class="mini-cell box-top pre-box-right"></div><div class="mini-cell box-top box-left"></div><div class="mini-cell box-top p1-same">5</div><div class="mini-cell box-top pre-box-right given">3</div><div class="mini-cell box-top box-left given">4</div><div class="mini-cell box-top given">2</div><div class="mini-cell box-top given">6</div>
+          <div class="mini-cell box-left given">4</div><div class="mini-cell given">2</div><div class="mini-cell pre-box-right given">6</div><div class="mini-cell box-left given">8</div><div class="mini-cell given">5</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">3</div><div class="mini-cell given">9</div><div class="mini-cell given">1</div>
+          <div class="mini-cell box-left pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">1</div><div class="mini-cell pre-box-right pre-box-bottom danger-cell">9</div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">2</div><div class="mini-cell pre-box-right pre-box-bottom given">4</div><div class="mini-cell box-left pre-box-bottom given">8</div><div class="mini-cell pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">5</div>
+          <div class="mini-cell box-left box-top given">9</div><div class="mini-cell box-top given">6</div><div class="mini-cell box-top pre-box-right given">1</div><div class="mini-cell box-top box-left given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">7</div><div class="mini-cell box-top box-left given">2</div><div class="mini-cell box-top given">8</div><div class="mini-cell box-top given">4</div>
+          <div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">4</div><div class="mini-cell given">1</div><div class="mini-cell pre-box-right given">9</div><div class="mini-cell box-left given">6</div><div class="mini-cell given">3</div><div class="mini-cell given">5</div>
+          <div class="mini-cell box-left given">3</div><div class="mini-cell given">4</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right p1-opp-cursor">6</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">7</div><div class="mini-cell given">9</div>
+        </div>
+        <div class="sg-note">is-me: 3px <code>p1-color</code> — replaces neutral</div>
+      </div>
+      <div class="demo-grid-block">
+        <div class="sg-card-label">P2 (is-me — own grid)</div>
+        <div class="mini-grid p2-grid">
+          <div class="mini-cell box-left box-top given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">4</div><div class="mini-cell box-top box-left">6</div><div class="mini-cell box-top">7</div><div class="mini-cell box-top pre-box-right">8</div><div class="mini-cell box-top box-left given">9</div><div class="mini-cell box-top given">1</div><div class="mini-cell box-top given">2</div>
+          <div class="mini-cell box-left given">6</div><div class="mini-cell given">7</div><div class="mini-cell pre-box-right given">2</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">9</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">3</div><div class="mini-cell p2-correct">4</div><div class="mini-cell given">8</div>
+          <div class="mini-cell box-left pre-box-bottom p2-highlight"></div><div class="mini-cell pre-box-bottom p2-highlight"></div><div class="mini-cell pre-box-right pre-box-bottom p2-highlight"></div><div class="mini-cell box-left pre-box-bottom p2-highlight"></div><div class="mini-cell pre-box-bottom p2-selected">8</div><div class="mini-cell pre-box-right pre-box-bottom p2-highlight"></div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">5</div><div class="mini-cell pre-box-bottom given">7</div>
+          <div class="mini-cell box-left box-top">8</div><div class="mini-cell box-top given p2-same">5</div><div class="mini-cell box-top pre-box-right"></div><div class="mini-cell box-top box-left"></div><div class="mini-cell box-top p2-same">5</div><div class="mini-cell box-top pre-box-right given">3</div><div class="mini-cell box-top box-left given">4</div><div class="mini-cell box-top given">2</div><div class="mini-cell box-top given">6</div>
+          <div class="mini-cell box-left given">4</div><div class="mini-cell given">2</div><div class="mini-cell pre-box-right given">6</div><div class="mini-cell box-left given">8</div><div class="mini-cell given">5</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">3</div><div class="mini-cell given">9</div><div class="mini-cell given">1</div>
+          <div class="mini-cell box-left pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">1</div><div class="mini-cell pre-box-right pre-box-bottom danger-cell">9</div><div class="mini-cell box-left pre-box-bottom given">6</div><div class="mini-cell pre-box-bottom given">2</div><div class="mini-cell pre-box-right pre-box-bottom given">4</div><div class="mini-cell box-left pre-box-bottom given">8</div><div class="mini-cell pre-box-bottom given">7</div><div class="mini-cell pre-box-bottom given">5</div>
+          <div class="mini-cell box-left box-top given">9</div><div class="mini-cell box-top given">6</div><div class="mini-cell box-top pre-box-right given">1</div><div class="mini-cell box-top box-left given">5</div><div class="mini-cell box-top given">3</div><div class="mini-cell box-top pre-box-right given">7</div><div class="mini-cell box-top box-left given">2</div><div class="mini-cell box-top given">8</div><div class="mini-cell box-top given">4</div>
+          <div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right given">7</div><div class="mini-cell box-left given">4</div><div class="mini-cell given">1</div><div class="mini-cell pre-box-right given">9</div><div class="mini-cell box-left given">6</div><div class="mini-cell given">3</div><div class="mini-cell given">5</div>
+          <div class="mini-cell box-left given">3</div><div class="mini-cell given">4</div><div class="mini-cell pre-box-right given">5</div><div class="mini-cell box-left given">2</div><div class="mini-cell given">8</div><div class="mini-cell pre-box-right p2-opp-cursor">6</div><div class="mini-cell box-left given">1</div><div class="mini-cell given">7</div><div class="mini-cell given">9</div>
+        </div>
+        <div class="sg-note">is-me: 3px <code>p2-color</code> — replaces neutral</div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Cell States Reference</h3>
+    <table class="shadow-table">
+      <thead><tr><th>State</th><th>Class(es)</th><th>Background</th><th>Text color / weight</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Empty (own)</td><td><code>.is-me .cell</code></td><td>rgba(255,255,255,0.88)</td><td>—</td><td>Active puzzle cells</td></tr>
+        <tr><td>Empty (opponent)</td><td><code>.cell</code> (not is-me)</td><td>rgba(255,255,255,0.25)</td><td>—</td><td>Ghosted — not interactive</td></tr>
+        <tr><td>Given number</td><td><code>.cell.given</code></td><td>inherits</td><td>text-secondary #333, w700</td><td>Pre-filled clue cells. Still clickable.</td></tr>
+        <tr><td>Correctly filled</td><td><code>.cell.correct</code></td><td>rgba(255,255,255,0.88)</td><td>p1-dark/p2-dark, w600</td><td>Color keyed to grid owner</td></tr>
+        <tr><td>Highlighted row/col</td><td><code>.cell.highlight</code></td><td>p1/p2-bg-light</td><td>—</td><td>Same row/col as cursor</td></tr>
+        <tr><td>Same number</td><td><code>.cell.same-number</code></td><td>p1/p2-bg-mid</td><td>—</td><td>All cells matching entered digit</td></tr>
+        <tr><td>Selected cursor</td><td><code>.cell.selected</code></td><td>p1/p2-bg-light</td><td>—</td><td>Inset box-shadow: 2px solid p1/p2-color</td></tr>
+        <tr><td>Invalid entry</td><td><code>.cell.danger</code></td><td>danger-bg-light #FFEBEC</td><td>danger-dark #A8000F, w600</td><td>Red diagonal X overlay via ::before/::after</td></tr>
+        <tr><td>Opponent cursor</td><td><code>.cell.opponent-cursor</code></td><td>p1/p2-bg-light</td><td>—</td><td>3px inset outline in p1/p2 color</td></tr>
+        <tr><td>Opponent filled</td><td><code>.cell.opponent-filled</code></td><td>rgba(255,255,255,0.9)</td><td>p1/p2-dark, w600</td><td>Matches own-grid opacity to show legibly</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sg-subsection-title">Grid Borders &amp; Box Dividers</h3>
+    <p class="sg-note">Thin cell lines: 1px <code>#D5D5D5</code>. Thick 3×3 box dividers: 2px <code>#888888</code>. The outer border uses CSS custom properties (<code>--_grid-outline-color</code>, <code>--_grid-outline-width</code>) so that <code>.is-me</code> overrides both color and width on the same single <code>border</code> declaration — it fully replaces the neutral border rather than layering on top of it. Default: 2px <code>grid-box-border</code>. Own grid: 3px in the player's identity color. Right and bottom borders of cells adjacent to box lines are suppressed to prevent double-border artifacts.</p>
+
+    <h3 class="sg-subsection-title">Mobile Numpad</h3>
+    <div class="sg-row center" style="margin-top:12px">
+      <div class="sg-card dark" style="flex:0 0 auto;padding:16px">
+        <div class="sg-row center" style="gap:4px;margin:0">
+          <div class="numpad-btn-demo">1</div><div class="numpad-btn-demo">2</div><div class="numpad-btn-demo">3</div><div class="numpad-btn-demo">4</div><div class="numpad-btn-demo">5</div><div class="numpad-btn-demo">6</div><div class="numpad-btn-demo">7</div><div class="numpad-btn-demo">8</div><div class="numpad-btn-demo">9</div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Shown only on touch (coarse pointer) devices. One tap = number entry.<br><br>
+        <strong>Background:</strong> rgba(255,255,255,0.85)<br>
+        <strong>Border:</strong> 2px rgba(0,0,0,0.15)<br>
+        <strong>Radius:</strong> 6px<br>
+        <strong>Font:</strong> 19px, w700, Roboto Mono<br>
+        <strong>Active:</strong> scale(0.93) + fully opaque white
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 5. HUD & GAMEPLAY ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">HUD &amp; Gameplay UI</h2>
+
+    <h3 class="sg-subsection-title">Health Bar System</h3>
+    <p class="sg-note" style="margin-bottom:16px">The bar track is always danger red — the red is the "low HP" signal already baked in. The fill bar covers it: yellow at full, orange at ~50%, then pulsing yellow at low HP.</p>
+    <div class="sg-row" style="gap:16px;margin-bottom:16px">
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+        <div class="sg-card-label">Full HP (yellow)</div>
+        <div style="height:36px;background:var(--danger-color);border-radius:6px 0 0 6px;overflow:hidden;display:flex;justify-content:flex-end">
+          <div style="height:100%;width:100%;background:var(--yellow);border-radius:6px 0 0 6px"></div>
+        </div>
+        <div class="sg-note">Fill: <code>yellow</code> #FFCA00</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+        <div class="sg-card-label">Mid HP (orange)</div>
+        <div style="height:36px;background:var(--danger-color);border-radius:6px 0 0 6px;overflow:hidden;display:flex;justify-content:flex-end">
+          <div style="height:100%;width:55%;background:var(--orange);border-radius:6px 0 0 6px"></div>
+        </div>
+        <div class="sg-note">Fill: <code>orange</code> #FF8B16</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+        <div class="sg-card-label">Low HP (pulsing yellow)</div>
+        <div style="height:36px;background:var(--danger-color);border-radius:6px 0 0 6px;overflow:hidden;display:flex;justify-content:flex-end">
+          <div style="height:100%;width:20%;background:var(--yellow);border-radius:6px 0 0 6px"></div>
+        </div>
+        <div class="sg-note">Fill: <code>yellow</code> pulsing (opacity blink)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+        <div class="sg-card-label">KO (empty HP)</div>
+        <div style="height:36px;background:var(--danger-color);border-radius:6px 0 0 6px;overflow:hidden"></div>
+        <div class="sg-note">Track: <code>danger-color</code> fully visible</div>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Full HUD</h3>
+    <div class="sg-card dark" style="padding:12px 16px">
+      <div class="demo-hud">
+        <div class="demo-hud-names">
+          <span class="demo-hud-name p1">PLAYER ONE</span>
+          <span class="demo-round">ROUND 2</span>
+          <span class="demo-hud-name p2" style="text-align:right">PLAYER TWO</span>
+        </div>
+        <div class="demo-hud-bars">
+          <div class="demo-bar-track left"><div class="demo-bar full" style="width:75%"></div></div>
+          <div class="demo-ko">KO</div>
+          <div class="demo-bar-track right"><div class="demo-bar mid" style="width:45%"></div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span style="font-size:var(--text-md);font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--p1-mid-dark)">1240 PTS</span>
+          <span class="demo-timer">42</span>
+          <span style="font-size:var(--text-md);font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--p2-mid-dark)">870 PTS</span>
+        </div>
+      </div>
+    </div>
+    <div class="sg-note" style="margin-top:10px">Timer at &lt;=10s: color switches to <code>danger-color</code>, shadow to <code>orange</code>, blinks. KO block: Barlow Condensed 28px, accent purple fill, white text.</div>
+
+    <h3 class="sg-subsection-title">Game Overlay</h3>
+    <div class="sg-row">
+      <div class="sg-card arena" style="flex:1">
+        <div class="demo-overlay">
+          <div class="demo-overlay-main">FIGHT!</div>
+          <div class="demo-overlay-sub">Round 1</div>
+        </div>
+      </div>
+      <div class="sg-card arena" style="flex:1">
+        <div class="demo-overlay">
+          <div class="demo-overlay-main">VICTORY</div>
+          <div class="demo-overlay-sub">You win! 2–1</div>
+        </div>
+      </div>
+      <div class="sg-card arena" style="flex:1">
+        <div class="demo-overlay">
+          <div class="demo-overlay-main defeat">DEFEAT</div>
+          <div class="demo-overlay-sub">Opponent wins</div>
+        </div>
+      </div>
+    </div>
+    <div class="sg-note">Main text: Barlow Condensed 96px w900. Normal state: <code>accent</code> purple + white shadow. Defeat: <code>danger-color</code> red. Sub-text: Roboto Mono 22px w700, yellow + purple shadow (never white — legible on any arena bg).</div>
+
+    <h3 class="sg-subsection-title">Floating Score Pop</h3>
+    <p class="sg-note">Appears near the cell where a correct number is entered. 13px, w800, <code>accent</code> purple. Floats up 36px and fades out over 0.75s.</p>
+
+    <h3 class="sg-subsection-title">Attack Flash</h3>
+    <p class="sg-note">Full-screen inset box-shadow flashes on hit, keyed to attack type:
+      <br>• Punch: <code>rgba(240,0,19,0.22)</code> — subtle red, 0.25s
+      <br>• Heavy: <code>rgba(255,139,22,0.32)</code> → red — orange then red, 0.35s
+      <br>• Self-hit: <code>rgba(240,0,19,0.20)</code> — 0.2s
+    </p>
+  </section>
+
+
+  <!-- ===== 6. LOBBY & SCREENS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Lobby &amp; Screen Components</h2>
+
+    <h3 class="sg-subsection-title">Lobby Text Hierarchy</h3>
+    <div class="sg-card arena" style="padding:24px 32px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div class="demo-lobby-title">MATCHMAKING</div>
+        <div style="display:flex;align-items:center;gap:24px;margin-top:8px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--p1-color);text-shadow:3px 3px 0 #fff">YOU</div>
+            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">Xiao Long</div>
+            <span class="lobby-status ready">READY</span>
+          </div>
+          <div class="demo-lobby-vs">VS</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">PLAYER 2</div>
+            <div style="font-size:18px;font-weight:700;color:#fff;text-shadow:2px 2px 0 var(--accent)">---</div>
+            <span class="lobby-status waiting">WAITING...</span>
+          </div>
+        </div>
+        <div class="demo-share-code" style="margin-top:8px">AB12CD</div>
+      </div>
+    </div>
+    <div class="sg-note" style="margin-top:10px">
+      Lobby title: Barlow Condensed 26px w900, white + purple shadow (2px 2px).<br>
+      VS: Barlow Condensed 28px w900, white + purple shadow (2px 3px).<br>
+      Own player label: Barlow Condensed 28px w900, player color + white shadow (3px 3px).<br>
+      Other player label: Barlow Condensed / Roboto Mono 18px w700, white + purple shadow.<br>
+      Player name: Roboto Mono 18px w700, white + purple shadow.<br>
+      Share code: Roboto Mono 26px w900, white + purple shadow, letter-spacing 0.35em.<br>
+      Status pills: 12px w700, radius 20px — Ready: white text on accent; Waiting: text-secondary on border.
+    </div>
+
+    <h3 class="sg-subsection-title">Start Screen Labels</h3>
+    <div class="sg-card arena" style="padding:24px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div class="demo-start-label">2 PLAYER</div>
+        <div class="demo-section-label">Join matchmaking queue</div>
+        <button class="btn" style="width:240px">QUICK PLAY</button>
+        <div class="demo-start-label" style="margin-top:12px">SINGLE PLAYER</div>
+        <button class="btn btn-alt" style="width:240px">VS AI</button>
+      </div>
+    </div>
+    <div class="sg-note" style="margin-top:10px">
+      Mode labels: Barlow Condensed 26px w900, white + purple shadow (2px 2px), letter-spacing 0.12em.<br>
+      Section labels: Roboto Mono 12px w700, white + purple shadow (1px 1px), letter-spacing 0.08em, uppercase.
+    </div>
+
+    <h3 class="sg-subsection-title">Character Card</h3>
+    <div class="sg-card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:16px">
+        <div>
+          <div class="character-card">
+            <div class="char-portrait">🥊</div>
+            <div class="char-name">Xiao Long</div>
+          </div>
+          <div class="sg-note" style="margin-top:6px">Default</div>
+        </div>
+        <div>
+          <div class="character-card selected">
+            <div class="char-portrait" style="background:var(--accent-hover)">🥊</div>
+            <div class="char-name">Xiao Long</div>
+          </div>
+          <div class="sg-note" style="margin-top:6px">Selected</div>
+        </div>
+      </div>
+      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
+        White surface card, radius 0, purple shadow (4px 4px).<br>
+        Selected: accent purple fill, white shadow (4px 4px), name turns white.<br>
+        Hover: translate(-1px, -2px) + shadow grows to 5px 6px.
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Settings Panel</h3>
+    <div class="sg-card" style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div class="demo-settings">
+        <div class="settings-item">
+          <span class="settings-label">MUSIC</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="settings-item" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <span class="settings-label">TRACK</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px">◀</button>
+            <span style="font-size:14px;font-weight:700;color:#fff;width:160px;text-align:center">Track Title</span>
+            <button class="btn-utility" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:8px">▶</button>
+          </div>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="settings-item">
+          <span class="settings-label">SOUND EFFECTS</span>
+          <label class="toggle-switch">
+            <input type="checkbox" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
+        Panel: rgba(20,20,20,0.96) near-black with subtle white border. Fixed to top-right.<br>
+        Labels: 12px w700 white, letter-spacing 0.1em, uppercase.<br>
+        Toggle on: accent purple. Toggle off: text-tertiary grey.<br>
+        Carousel chevrons: utility buttons (44×44px minimum touch target).
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 6b. SCREEN & FORM COMPONENTS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Screen &amp; Form Components</h2>
+
+    <h3 class="sg-subsection-title">Join Combo — <code>.join-combo</code></h3>
+    <p class="sg-note" style="margin-bottom:12px">Input and action button fused into a single bordered unit. Currently appears once on the start screen for room code entry. White outer border, purple box-shadow. The inner button acts as a secondary action (white bg, accent text) with no border-radius.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px">
+        <div class="demo-join-combo">
+          <input class="demo-join-input" placeholder="Enter room code..." />
+          <button class="demo-join-btn">JOIN</button>
+        </div>
+        <div class="demo-join-combo">
+          <input class="demo-join-input" value="AB12CD" />
+          <button class="demo-join-btn">JOIN</button>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Anatomy</div>
+        <strong>Container:</strong> 2px white border, radius-sm, purple box-shadow (4px 4px), overflow:hidden<br>
+        <strong>Input:</strong> bg surface, 12px bold uppercase, letter-spacing 0.1em<br>
+        <strong>Placeholder:</strong> tertiary color, normal weight, no letter-spacing<br>
+        <strong>Button:</strong> white bg, accent text, 15px bold, left-border 1px<br>
+        <strong>Button hover:</strong> accent-light bg<br>
+        <strong>Button active:</strong> accent bg, white text (inverts)
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Standalone Input</h3>
+    <p class="sg-note" style="margin-bottom:12px">Proposed for future forms (player name entry, search, etc.). Not currently used standalone in the game. Focus ring uses accent-light at 3px spread — soft glow rather than hard pixel, since this is a white-bg form context not an arena overlay.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1">
+        <input class="demo-input" placeholder="Default state" />
+        <input class="demo-input" value="Focused state" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)" />
+        <input class="demo-input error" value="Error state" />
+        <input class="demo-input" value="Disabled state" disabled />
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">States</div>
+        <strong>Default:</strong> 2px border #E5E5E5, radius-sm<br>
+        <strong>Focus:</strong> border accent, 3px soft glow accent-light<br>
+        <strong>Error:</strong> border danger-color, glow danger-bg-light<br>
+        <strong>Disabled:</strong> bg surface (#F2F2F2), tertiary text, not-allowed cursor<br><br>
+        Font: Roboto Mono 12px bold. Inherits game aesthetic but softens the focus ring compared to hard-pixel shadows (appropriate for form UI on white background).
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Inline Messages — Error &amp; Success</h3>
+    <p class="sg-note" style="margin-bottom:12px">Inline feedback text beneath form elements. Rendered in-place using <code>visibility: hidden</code> / <code>visibility: visible</code> — never <code>display: none</code> — so layout does not shift when they appear.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;gap:16px;align-items:flex-start;padding:24px">
+        <p class="demo-inline-error">Room not found. Check the code and try again.</p>
+        <p class="demo-inline-success">Copied to clipboard!</p>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        <strong>Error:</strong> danger-color, 1px 1px dark shadow (improves legibility over arena)<br>
+        <strong>Success:</strong> accent color, 1px 1px white shadow<br>
+        Always reserve the line height even when empty. Use <code>visibility</code> not <code>display</code> to toggle.
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Glass Card — <code>.lobby-share</code></h3>
+    <p class="sg-note" style="margin-bottom:12px">Semi-transparent frosted panel used for the private room invite code. Sits over the arena background. Used sparingly — only when content needs grouping against a complex background.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:32px;display:flex;justify-content:center">
+        <div class="demo-glass-card">
+          <div class="demo-glass-label">Invite a Friend</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="demo-share-code">AB12CD</div>
+            <button class="btn btn-sm">COPY</button>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Background: <code>rgba(255,255,255,0.12)</code><br>
+        Border: 1px <code>rgba(255,255,255,0.25)</code><br>
+        Radius: radius-md (12px)<br><br>
+        Inner label: 12px bold white, uppercase, letter-spacing 0.08em<br>
+        Share code: Roboto Mono 26px w900, white, letter-spacing 0.35em, purple shadow
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Lobby Promo — visibility-based feedback</h3>
+    <p class="sg-note" style="margin-bottom:12px">Quick Play share row. The feedback text ("Copied to clipboard") always occupies its line height via <code>visibility: hidden/visible</code> — this prevents the button from jumping down when feedback appears.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:24px">
+        <p class="demo-promo-feedback">Copied to clipboard</p>
+        <button class="btn btn-sm btn-secondary">SHARE THE GAME</button>
+      </div>
+      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:24px">
+        <p class="demo-promo-feedback visible">Copied to clipboard</p>
+        <button class="btn btn-sm btn-secondary">SHARE THE GAME</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">The no-jump pattern</div>
+        Reserve line height always. Toggle <code>visibility</code> not <code>display</code>.<br>
+        Feedback text: 12px bold, rgba(255,255,255,0.85) — slightly dimmer than primary labels.<br>
+        Left: hidden (button sits at its natural position). Right: visible — button stays in place.
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Carousel — <code>.track-carousel</code></h3>
+    <p class="sg-note" style="margin-bottom:12px">Used for track selection in settings and arena selection in lobbies. Chevron buttons are utility style with 44×44px minimum touch target. Title is center-fixed width with overflow ellipsis.</p>
+    <div class="sg-row center">
+      <div class="sg-card dark" style="padding:16px 24px">
+        <div class="demo-carousel">
+          <button class="demo-carousel-btn">◀</button>
+          <span class="demo-carousel-title">El Tropical</span>
+          <button class="demo-carousel-btn">▶</button>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        Chevrons: <code>.btn-utility</code> style, min 44×44px touch target<br>
+        Title: Roboto Mono 14px bold, white, 160px fixed width, ellipsis overflow<br>
+        Gap between chevron and title: 4px<br>
+        Used in: settings panel (track), both lobby screens (arena picker)
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Difficulty Selector — <code>.sp-diff-btn</code></h3>
+    <p class="sg-note" style="margin-bottom:12px">Row of small secondary buttons where inactive options are dimmed to 55% opacity. The selected button restores to full opacity — no other visual indicator needed.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
+        <div class="demo-diff-group">
+          <div class="demo-diff-label">Difficulty</div>
+          <div class="demo-diff-btns">
+            <button class="btn btn-sm btn-secondary sp-diff-btn">EASY</button>
+            <button class="btn btn-sm btn-secondary sp-diff-btn selected">MEDIUM</button>
+            <button class="btn btn-sm btn-secondary sp-diff-btn">HARD</button>
+          </div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Pattern</div>
+        Base: <code>.btn.btn-sm.btn-secondary</code> at opacity 0.55<br>
+        Selected: opacity 1.0 — full white surface, no extra outline<br>
+        The opacity differential (0.55 → 1.0) is the only selection signal needed at this size. An outline was previously tried and removed — it conflicted with the button's own box-shadow.
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Lobby Hint — pulsing status text</h3>
+    <p class="sg-note" style="margin-bottom:12px">Used for "Waiting for opponent…" and similar transient states. Pulse draws attention without urgency.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
+        <p class="demo-lobby-hint">Waiting for opponent...</p>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Roboto Mono 14px, white, purple shadow 1px 2px 0<br>
+        Animation: <code>fade-pulse</code> 1.4s ease-in-out infinite (opacity 1.0 → 0.4)
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Combo Counter</h3>
+    <p class="sg-note" style="margin-bottom:12px">Lives in the HUD sub-row alongside the score. Reserves its line height even when empty so the score doesn't shift when a combo appears.</p>
+    <div class="sg-row center">
+      <div class="sg-card dark" style="padding:16px 24px;display:flex;gap:24px;align-items:center">
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">No combo</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark);min-height:1em;display:block">&nbsp;</span>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">Active combo</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p1-mid-dark)">×3 COMBO!</span>
+        </div>
+        <div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.35);margin-bottom:4px">P2 combo</div>
+          <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p2-mid-dark)">×5 COMBO!</span>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        18px bold white, player-colored shadow (mid-dark)<br>
+        <code>min-height: 1em</code> — always reserves space so score doesn't jump<br>
+        P1: shadow <code>p1-mid-dark</code> — P2: shadow <code>p2-mid-dark</code>
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Match-End Screen Elements</h3>
+    <div class="sg-row">
+      <div class="sg-card" style="display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;padding:32px">
+        <div class="demo-match-title">VICTORY</div>
+        <div class="demo-match-title defeat">DEFEAT</div>
+        <div style="height:1px;background:var(--border);width:100%;margin:8px 0"></div>
+        <div class="demo-match-winner-img">🥊</div>
+        <div class="demo-match-winner-name">Xiao Long</div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Typography</div>
+        <strong>Title:</strong> Barlow Condensed 66px w900<br>
+        Victory: <code>accent</code> color, <code>3px 4px 0 #ffffff</code> shadow<br>
+        Defeat: <code>danger-color</code> color, same shadow<br>
+        Animation: <code>pop-in</code> scale 0.55→1<br><br>
+        <strong>Winner name:</strong> Roboto Mono 26px w800, accent color, <code>2px 3px 0 #ffffff</code><br><br>
+        <strong>Character portrait:</strong> 120×120px, radius-md (12px), pixelated rendering
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Start Screen Divider</h3>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px">
+        <span style="font-size:var(--text-sm);color:#fff;opacity:0.5">Section above</span>
+        <div class="demo-start-divider"></div>
+        <span style="font-size:var(--text-sm);color:#fff;opacity:0.5">Section below</span>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        240px wide, 1px, <code>rgba(255,255,255,0.25)</code><br>
+        Matches the fixed width of the start screen CTAs. Used between 2 PLAYER and SINGLE PLAYER sections.
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ===== 7. TEXT COLOR & SHADOW PAIRING LOGIC ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Text Color &amp; Shadow Pairing Logic</h2>
+
+    <p class="sg-note" style="margin-bottom:24px">The game renders UI over complex, colorful arena backgrounds. All readable text therefore uses white or high-chroma colors with hard pixel shadows that ensure contrast regardless of what's behind.</p>
+
+    <table class="shadow-table">
+      <thead><tr><th>Context</th><th>Text color</th><th>Shadow color</th><th>Offset</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Generic white text over arena</td><td>#ffffff</td><td>accent #8B49FF</td><td>2px 2px 0</td><td>Purple provides contrast on any bg</td></tr>
+        <tr><td>P1 player name (HUD)</td><td>#ffffff</td><td>p1-mid-dark #0A8FBB</td><td>2px 2px 0</td><td>Cyan shadow reinforces P1 identity</td></tr>
+        <tr><td>P2 player name (HUD)</td><td>#ffffff</td><td>p2-mid-dark #BC0074</td><td>2px 2px 0</td><td>Magenta shadow reinforces P2 identity</td></tr>
+        <tr><td>P1 player label (lobby, selected)</td><td>p1-color #17B9EF</td><td>#ffffff</td><td>3px 3px 0</td><td>Player-color on dark bg; white grounds it</td></tr>
+        <tr><td>P2 player label (lobby, selected)</td><td>p2-color #F31299</td><td>#ffffff</td><td>3px 3px 0</td><td>Same logic, magenta</td></tr>
+        <tr><td>Round timer (normal)</td><td>#ffffff</td><td>accent #8B49FF</td><td>3px 3px 0</td><td>Large text, offset scales up</td></tr>
+        <tr><td>Round timer (urgent ≤10s)</td><td>danger-color #F00013</td><td>orange #FF8B16</td><td>2px 3px 0</td><td>Red with warm orange shadow — high alarm</td></tr>
+        <tr><td>Main overlay (FIGHT! / VICTORY)</td><td>accent #8B49FF</td><td>#ffffff</td><td>4px 5px 0</td><td>Biggest text; needs widest shadow</td></tr>
+        <tr><td>Main overlay (DEFEAT)</td><td>danger-color #F00013</td><td>#ffffff</td><td>4px 5px 0</td><td>Red as danger signal</td></tr>
+        <tr><td>Overlay sub-text</td><td>yellow #FFCA00</td><td>accent #8B49FF</td><td>1px 2px 0</td><td>Yellow is legible on both light and dark arenas</td></tr>
+        <tr><td>Primary btn text</td><td>#ffffff</td><td>n/a (box-shadow on element)</td><td>—</td><td>Button surface carries the shadow</td></tr>
+        <tr><td>Secondary btn text</td><td>accent #8B49FF</td><td>n/a</td><td>—</td><td>White surface, no text shadow needed</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sg-divider"></div>
+
+    <h3 class="sg-subsection-title">The Mid-Dark Rule</h3>
+    <p class="sg-note">When white text appears with a player-color shadow, use the <strong>mid-dark</strong> variant (<code>p1-mid-dark</code>, <code>p2-mid-dark</code>), not the primary color. The primary cyan and magenta are too bright for a shadow — they'd feel garish. The mid-dark is dark enough to read as a grounding shadow while still being clearly player-colored.</p>
+
+  </section>
+
+
+  <!-- ===== 8. PROPOSED / FUTURE COMPONENTS ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Proposed Components</h2>
+    <p class="sg-note" style="margin-bottom:32px">These components do not yet exist in the game but are consistent with the design language and likely needed as the game adds features. Specs are proposals — refine before shipping.</p>
+
+    <h3 class="sg-subsection-title">Badge / Tag</h3>
+    <p class="sg-note" style="margin-bottom:12px">Small pill labels for surfacing state, novelty, or counts. Uses <code>--radius-pill</code>. Variants keyed to semantic meaning, not visual preference.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1;padding:20px">
+        <span class="sg-badge badge-new">NEW</span>
+        <span class="sg-badge badge-beta">BETA</span>
+        <span class="sg-badge badge-count">3</span>
+        <span class="sg-badge badge-p1">P1</span>
+        <span class="sg-badge badge-p2">P2</span>
+        <span class="sg-badge badge-neutral">OFFLINE</span>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Variants</div>
+        <code>.badge-new</code> — accent purple: new feature/content<br>
+        <code>.badge-beta</code> — orange: experimental/unreleased<br>
+        <code>.badge-count</code> — danger red: notification count<br>
+        <code>.badge-p1/p2</code> — player identity colors<br>
+        <code>.badge-neutral</code> — grey: inactive/offline state<br><br>
+        Font: 10px bold uppercase, letter-spacing 0.08em
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Toast Notification</h3>
+    <p class="sg-note" style="margin-bottom:12px">Ephemeral feedback that appears over gameplay or between screens. Bottom-anchored, auto-dismisses. Uses a left accent border rather than full background color to keep it readable over any arena. Would need a JS show/hide with a slide-up + fade animation.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:10px;flex:1;padding:20px">
+        <div class="sg-toast toast-success">
+          <span class="sg-toast-icon">✓</span>
+          <span>Match saved to history</span>
+        </div>
+        <div class="sg-toast toast-error">
+          <span class="sg-toast-icon">✕</span>
+          <span>Connection lost — reconnecting</span>
+        </div>
+        <div class="sg-toast toast-info">
+          <span class="sg-toast-icon">i</span>
+          <span>Opponent is typing...</span>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Structure</div>
+        White surface card, 4px left border in semantic color<br>
+        Success: <code>accent</code> border<br>
+        Error: <code>danger-color</code> border<br>
+        Info: <code>grid-box-border</code> (#888) border<br><br>
+        Shadow: <code>--shadow-md</code><br>
+        Font: 12px bold, text-primary<br>
+        Proposed animation: slide up 8px + fade in over 0.2s, auto-dismiss at 3s
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Modal / Confirmation Dialog</h3>
+    <p class="sg-note" style="margin-bottom:12px">Blocks interaction for destructive confirmations (e.g., "Surrender — are you sure?"). Backdrop at 65% black. Panel on white surface. Actions use the existing button system — confirm uses <code>.btn-danger</code>, cancel uses <code>.btn-secondary</code>.</p>
+    <div class="sg-modal-backdrop">
+      <div class="sg-modal">
+        <div class="sg-modal-title">Surrender match?</div>
+        <div class="sg-modal-body">You'll forfeit the current round. This can't be undone.</div>
+        <div class="sg-modal-actions">
+          <button class="btn-secondary" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">CANCEL</button>
+          <button class="btn btn-danger" style="margin:0;padding:8px 20px;font-size:var(--text-sm)">SURRENDER</button>
+        </div>
+      </div>
+    </div>
+    <div class="sg-note" style="margin-top:10px">
+      Backdrop: <code>rgba(0,0,0,0.65)</code>. Panel: white surface, radius-md, heavy box-shadow.<br>
+      Title: Roboto Mono 18px bold, text-primary. Body: 12px, text-secondary, line-height 1.6.<br>
+      Actions right-aligned. Cancel left of destructive — follows platform conventions.
+    </div>
+
+    <h3 class="sg-subsection-title">Tooltip</h3>
+    <p class="sg-note" style="margin-bottom:12px">Contextual info on hover. Useful for explaining game mechanics (e.g., what "combo" means, difficulty differences). Uses the same dark panel as the settings menu, with a hard pixel shadow in accent to stay on-brand.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="padding:40px 24px;display:flex;justify-content:center">
+        <div class="sg-tooltip-wrap">
+          <span class="sg-tooltip-target">COMBO</span>
+          <div class="sg-tooltip-bubble">3+ correct cells in a row</div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Bubble: <code>#1a1a2e</code> near-black, white text, 10px bold<br>
+        Shadow: <code>2px 2px 0 accent</code> — keeps it on-brand<br>
+        Arrow: CSS border-trick, matches bubble color<br>
+        Trigger: dashed underline on the term being explained<br>
+        Show/hide: CSS <code>:hover</code> on parent, or JS for touch
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Dropdown / Select</h3>
+    <p class="sg-note" style="margin-bottom:12px">Styled <code>&lt;select&gt;</code> for settings that have more than 2–3 options (e.g., language, region, control scheme). Uses custom chevron SVG via background-image to replace the native arrow.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:12px;flex:1;padding:20px">
+        <select class="demo-select">
+          <option>English</option>
+          <option>日本語</option>
+          <option>Español</option>
+        </select>
+        <select class="demo-select" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)">
+          <option>Focused state</option>
+        </select>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Same base as standalone input: 2px border, radius-sm, Roboto Mono 12px bold<br>
+        Custom chevron via <code>background-image</code> SVG<br>
+        <code>appearance: none</code> removes native chrome<br>
+        Focus: accent border + accent-light glow (same as input)
+      </div>
+    </div>
+
+    <h3 class="sg-subsection-title">Loading States — Skeleton &amp; Spinner</h3>
+    <p class="sg-note" style="margin-bottom:12px">For async waits: character portrait loading, matchmaking, network reconnect. Skeleton uses a shimmer gradient. Spinner uses accent color on top of grey track.</p>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;flex-direction:column;gap:16px;flex:1;padding:20px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="sg-skeleton" style="width:64px;height:64px;border-radius:var(--radius-xs)"></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="sg-skeleton" style="width:120px;height:14px"></div>
+            <div class="sg-skeleton" style="width:80px;height:10px"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div class="sg-spinner"></div>
+          <div class="sg-spinner sm"></div>
+          <span style="font-size:var(--text-sm);color:var(--text-tertiary)">Connecting...</span>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Skeleton</div>
+        Shimmer: linear-gradient 90° cycling over <code>--border</code> / <code>--bg</code><br>
+        800px background-size, 1.4s infinite — smooth left-to-right sweep<br><br>
+        <div class="sg-card-label" style="margin-top:8px">Spinner</div>
+        24×24px (or 16×16px small), 3px border<br>
+        Track: <code>--border</code> grey. Active arc: <code>--accent</code> purple<br>
+        0.7s linear rotation
+      </div>
+    </div>
+
+  </section>
+
+</div>
+</body>
+</html>
