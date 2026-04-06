@@ -23,6 +23,7 @@ interface Props {
   isPreBoxRight?: boolean;
   isPreBoxBottom?: boolean;
   isReadonly?: boolean;
+  isPaused?: boolean;
   onPointerDown?: (row: number, col: number) => void;
 }
 
@@ -32,7 +33,7 @@ export default function SudokuCell({
   isWiping, isCompletionFlash,
   isOpponentGiven, isOpponentFilled, isOpponentCursor,
   isBoxTop, isBoxLeft, isPreBoxRight, isPreBoxBottom,
-  isReadonly, onPointerDown,
+  isReadonly, isPaused, onPointerDown,
 }: Props) {
   const classes = ['cell'];
   if (isGiven) classes.push('given');
@@ -59,7 +60,7 @@ export default function SudokuCell({
       data-col={col}
       onPointerDown={onPointerDown ? () => onPointerDown(row, col) : undefined}
     >
-      {value != null ? <span>{value}</span> : null}
+      {value != null && !isPaused ? <span>{value}</span> : null}
     </div>
   );
 }

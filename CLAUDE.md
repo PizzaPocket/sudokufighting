@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Real-time competitive puzzle-fighting game. Two players solve Sudoku grids; correct inputs deal damage, wipes punish mistakes. Built as a pnpm monorepo with a React/TypeScript frontend rewrite underway on the `react-rewrite` branch.
+Real-time competitive puzzle-fighting game. Two players solve Sudoku grids; correct inputs deal damage, wipes punish mistakes. Built as a pnpm monorepo.
 
 ## Repository Layout
 
@@ -10,14 +10,14 @@ Real-time competitive puzzle-fighting game. Two players solve Sudoku grids; corr
 sudoku-fighting/
 ├── packages/
 │   ├── shared/      # Pure TS — game logic, puzzle gen, AI, combat engine, types
-│   └── web/         # React/TypeScript frontend (Vite)
-├── backend/         # Node.js/WS server — DO NOT MODIFY
-├── frontend/        # Vanilla JS frontend (production) — DO NOT MODIFY
+│   └── web/         # React/TypeScript frontend (Vite) — the active frontend
+├── backend/         # Node.js/WS server
+├── frontend/        # Legacy vanilla JS frontend — DO NOT MODIFY
 │                    # Also serves as Vite publicDir for static assets
 └── CLAUDE.md        # This file
 ```
 
-**Never touch `backend/` or `frontend/` source files** (except `frontend/style-guide.html` and `frontend/css/tokens.css`).
+**Never touch `frontend/` JS/HTML source files** — that is the legacy vanilla frontend and is no longer actively developed. The active frontend is `packages/web/`. Exception: `frontend/style-guide.html` and `frontend/css/tokens.css` may be edited.
 
 ## Running the App
 

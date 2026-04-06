@@ -6,7 +6,7 @@ import {
   playRoundAnnouncer, playFightAnnouncer,
   playKOAnnouncer, playTKOAnnouncer,
   playVictoryAnnouncer, playDevastationAnnouncer,
-  startFightMusic,
+  startFightMusic, fadeOutMusic,
 } from '../../audio/audioManager';
 
 interface OverlayContent {
@@ -46,6 +46,10 @@ export default function GameOverlay() {
   function addTimer(fn: () => void, ms: number) {
     timers.current.push(setTimeout(fn, ms));
   }
+
+  // Cancel pending timers on unmount so stale startVsAIRound calls
+  // from a previous fight don't fire into the next fight's state.
+  useEffect(() => () => clearTimers(), []);
 
   function showOverlay(content: OverlayContent) {
     setOverlay(content);
@@ -114,7 +118,7 @@ export default function GameOverlay() {
         if (useGameStore.getState().matchOver) return;
         hideOverlay();
         const cur = useGameStore.getState();
-        if (cur.gameMode === 'singleplayer') {
+        if (cur.gameMode === 'practice' || cur.gameMode === 'campaign') {
           startVsAIRound(cur.roundNumber + 1);
         } else {
           send('next_round', {});
@@ -164,6 +168,16 @@ export default function GameOverlay() {
           nonce: Date.now(),
         });
       }
+      // Campaign: show CONTINUE button on win, auto-hide on loss (useCampaign shows game over)
+      if (useGameStore.getState().gameMode === 'campaign') {
+        if (isWinner) {
+          setShowButtons(true); // CONTINUE rendered below
+        } else {
+          addTimer(() => hideOverlay(), 2000);
+        }
+        return;
+      }
+
       setShowButtons(true);
     }, 400);
   }, [matchOver]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -187,7 +201,22 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
-          {gameMode === 'singleplayer' && (
+          {gameMode === 'campaign' && (
+            <button
+              className="btn"
+              onClick={() => {
+                setShowButtons(false);
+                setHidden(true);
+                fadeOutMusic(600);
+                setTimeout(() => {
+                  useGameStore.setState({ currentScreen: 'campaign-dialogue' } as never);
+                }, 600);
+              }}
+            >
+              CONTINUE
+            </button>
+          )}
+          {gameMode === 'practice' && (
             <button
               className="btn btn-alt"
               onClick={() => {
@@ -200,12 +229,14 @@ export default function GameOverlay() {
               PLAY AGAIN
             </button>
           )}
-          <button
-            className="btn btn-secondary"
-            onClick={() => resetAll()}
-          >
-            LEAVE
-          </button>
+          {gameMode !== 'campaign' && (
+            <button
+              className="btn btn-secondary"
+              onClick={() => resetAll()}
+            >
+              LEAVE
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
-import { ARENAS } from '../frontend/js/arenas.js';
+import { ARENAS } from '../packages/shared/dist/arenas.js';
 import {
   enqueue, dequeue, tryMatch, setQueuedArenaPreference,
   findRoomByPlayer, getRoom, deleteRoom, getRoomCount,
@@ -324,6 +324,9 @@ wss.on('connection', (ws) => {
         const { arenaId } = payload;
         if (ARENAS.find(a => a.id === arenaId)) {
           setQueuedArenaPreference(playerId, arenaId);
+          // Also update a private room while the host is waiting for an opponent
+          const room = findRoomByPlayer(playerId);
+          if (room && room.state === 'waiting_private') room.preferredArenaId = arenaId;
         }
         break;
       }

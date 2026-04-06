@@ -13,4 +13,8 @@ export { wipeRow, wipeCol, wipeBox } from './combat/wipe.js';
 export { handleCellInput, applyDamageFromAttack, applyCounterDamage } from './combat/engine.js';
 export { buildCellQueue, sortForCompletions, scheduleNext, DIFFICULTY_CONFIG } from './ai/index.js';
 export type { BotCell, BotSession, DifficultyConfig } from './ai/index.js';
+export { CAMPAIGN_FIGHTS, getCampaignFightConfig, resolveNextFight } from './campaign.js';
+export type { CampaignFight, ResolvedFight } from './campaign.js';
+export { MASTER_CHOW_INTRO, MATCH_DIALOGUE, getMatchDialogue } from './dialogue.js';
+export type { DialogueEntry } from './dialogue.js';
 //# sourceMappingURL=index.d.ts.map

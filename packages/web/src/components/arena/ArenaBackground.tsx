@@ -15,13 +15,14 @@ export default function ArenaBackground() {
   const sunEndRef = useRef<HTMLImageElement>(null);
   const sunStartRef = useRef<HTMLImageElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const matchPausedMs = useRef<number>(0);   // accumulated paused ms for this match
+  const pausedAt = useRef<number | null>(null); // when current pause began
 
   const arena = backgroundId ? getArena(backgroundId) : null;
 
   // Initialize sun position when arena loads
   useEffect(() => {
     if (!arena?.sunEnd || !sunEndRef.current) return;
-    // Position sun at vertical centre before fade starts
     if (sunInitialY.current === null) {
       const rect = sunEndRef.current.getBoundingClientRect();
       const y = (window.innerHeight - rect.height) / 2;
@@ -35,32 +36,61 @@ export default function ArenaBackground() {
   useEffect(() => {
     if (!preRoundNonce) return;
     const st = useGameStore.getState();
-    if (st.roundNumber !== 1) return; // only start on round 1
+    if (st.roundNumber !== 1) return;
 
-    if (!matchStartTime.current) matchStartTime.current = Date.now();
-    if (fadeInterval.current) return; // already running
+    if (!matchStartTime.current) {
+      matchStartTime.current = Date.now();
+      matchPausedMs.current = 0;
+    }
+    if (fadeInterval.current) return;
 
-    fadeInterval.current = setInterval(() => {
-      const elapsed = Date.now() - (matchStartTime.current ?? Date.now());
+    function startFadeInterval() {
+      fadeInterval.current = setInterval(() => {
+        const elapsed = Date.now() - (matchStartTime.current ?? Date.now()) - matchPausedMs.current;
 
-      if (overlayRef.current) {
-        overlayRef.current.style.opacity = String(Math.max(0, 1 - elapsed / MATCH_FADE_DURATION_MS));
-      }
-
-      const sunEnd = sunEndRef.current;
-      const sunStart = sunStartRef.current;
-      if (sunEnd && sunInitialY.current !== null) {
-        const sinkPx = Math.floor(elapsed / 1000);
-        const y = sunInitialY.current + sinkPx;
-        sunEnd.style.top = `${y}px`;
-        if (sunStart) {
-          sunStart.style.top = `${y}px`;
-          sunStart.style.opacity = String(Math.max(0, 1 - elapsed / MATCH_FADE_DURATION_MS));
+        if (overlayRef.current) {
+          overlayRef.current.style.opacity = String(Math.max(0, 1 - elapsed / MATCH_FADE_DURATION_MS));
         }
+
+        const sunEnd = sunEndRef.current;
+        const sunStart = sunStartRef.current;
+        if (sunEnd && sunInitialY.current !== null) {
+          const sinkPx = Math.floor(elapsed / 1000);
+          const y = sunInitialY.current + sinkPx;
+          sunEnd.style.top = `${y}px`;
+          if (sunStart) {
+            sunStart.style.top = `${y}px`;
+            sunStart.style.opacity = String(Math.max(0, 1 - elapsed / MATCH_FADE_DURATION_MS));
+          }
+        }
+      }, 250);
+    }
+
+    startFadeInterval();
+
+    // Subscribe to pause state and pause/resume the fade interval
+    let prevPaused = useGameStore.getState().isPaused;
+    const unsub = useGameStore.subscribe((s) => {
+      const isPaused = s.isPaused;
+      if (isPaused === prevPaused) return;
+      prevPaused = isPaused;
+      if (isPaused) {
+        if (fadeInterval.current) {
+          clearInterval(fadeInterval.current);
+          fadeInterval.current = null;
+        }
+        pausedAt.current = Date.now();
+      } else {
+        if (pausedAt.current != null) {
+          matchPausedMs.current += Date.now() - pausedAt.current;
+          pausedAt.current = null;
+        }
+        startFadeInterval();
       }
-    }, 250);
+    });
 
     return () => {
+      unsub();
       if (fadeInterval.current) {
         clearInterval(fadeInterval.current);
         fadeInterval.current = null;

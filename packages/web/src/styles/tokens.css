@@ -2,28 +2,47 @@
    Design Tokens — single source of truth for all visual values.
    Symlinked as frontend/css/tokens.css for the style guide.
 
-   RULE: Never hardcode a color, size, or radius anywhere else.
+   RULE: Never hardcode a color, font size, or radius anywhere else.
          Add new tokens here if the right one doesn't exist.
+
+   CONTEXT MODEL — this app has two distinct surfaces:
+     • Dark canvas  — arena, screens, lobbies, header, dialogs.
+                      The primary register. All --canvas-* tokens.
+     • Light puzzle — the sudoku grid and character cards.
+                      An island of light inside the dark canvas.
+                      All --puzzle-* and grid/cell tokens.
    ========================================================= */
 
 :root {
-  /* Neutral greyscale */
-  --bg:             #f2f2f2;
-  --surface:        #ffffff;
-  --border:         #e5e5e5;
-  --text-primary:   #111111;
-  --text-secondary: #333333;
-  --text-tertiary:  #555555;
-  --grid-border:    #d5d5d5;
-  --grid-box-border:#888888;
-  --cell-given-bg:  var(--bg);
+  /* ── Dark canvas context ────────────────────────────────
+     Use these for any surface rendered over or within the arena:
+     text, dialogs, overlays, panels, contextual menus.        */
+  --canvas-text:         #ffffff;                    /* primary text on dark */
+  --canvas-text-dim:     rgba(255,255,255,0.65);     /* secondary text on dark */
+  --canvas-text-muted:   rgba(255,255,255,0.45);     /* tertiary / placeholder on dark */
+  --surface-raised:      #1c1c1e;                    /* elevated dialog / modal surface */
+  --surface-raised-edge: rgba(255,255,255,0.14);     /* border on raised surface */
+  --surface-frosted:     rgba(255,255,255,0.12);     /* frosted-glass panel fill */
+  --surface-frosted-edge:rgba(255,255,255,0.25);     /* frosted-glass panel border */
 
-  /* Brand accent */
+  /* ── Light puzzle context ───────────────────────────────
+     Use only within the sudoku grid and character cards.      */
+  --puzzle-bg:           #f2f2f2;                    /* cell-given background, grid fill */
+  --puzzle-surface:      #ffffff;                    /* cell background, card fill */
+  --muted:               #e5e5e5;                    /* neutral muted fill — disabled buttons, inactive pills, dividers */
+  --puzzle-text:         #111111;                    /* cell numbers */
+  --puzzle-text-dim:     #333333;                    /* given numbers */
+  --puzzle-text-muted:   #555555;                    /* placeholder / tertiary on light */
+  --grid-border:         #d5d5d5;                    /* thin cell dividers */
+  --grid-box-border:     #888888;                    /* thick 3×3 box borders */
+  --cell-given-bg:       var(--puzzle-bg);
+
+  /* ── Brand accent ────────────────────────────────────── */
   --accent:       #8B49FF;
   --accent-light: #EDE0FF;
   --accent-hover: #7235e0;
 
-  /* Shadows / radii */
+  /* ── Shadows / radii ─────────────────────────────────── */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
   --radius-xs:   5px;
@@ -32,7 +51,7 @@
   --radius-lg:   16px;
   --radius-pill: 999px;
 
-  /* Typography */
+  /* ── Typography ──────────────────────────────────────── */
   --font:         'Roboto Mono', monospace;
   --font-display: 'Barlow Condensed', sans-serif;
 
@@ -55,31 +74,33 @@
   --weight-heavy:  800;
   --weight-black:  900;
 
-  /* Player 1 — blue-cyan ramp */
+  /* ── Player ramps ────────────────────────────────────── */
+
+  /* Player 1 — blue-cyan */
   --p1-color:    #17B9EF;
   --p1-mid-dark: #0A8FBB;
   --p1-dark:     #006B8F;
   --p1-bg-light: #E5F7FD;
   --p1-bg-mid:   #B8ECFB;
 
-  /* Player 2 — magenta ramp */
+  /* Player 2 — magenta */
   --p2-color:    #F31299;
   --p2-mid-dark: #BC0074;
   --p2-dark:     #880055;
   --p2-bg-light: #FFEBF8;
   --p2-bg-mid:   #FFD0EF;
 
-  /* Danger — red ramp */
+  /* Danger — red */
   --danger-color:    #F00013;
   --danger-dark:     #A8000F;
   --danger-bg-light: #FFEBEC;
   --danger-bg-mid:   #FFCED1;
 
-  /* Shared action colours */
+  /* ── Shared action colours ───────────────────────────── */
   --orange:       #FF8B16;
   --orange-hover: #E07500;
   --orange-dark:  #C06200;
-  --yellow: #FFCA00;
+  --yellow:       #FFCA00;
 
   --text-layer-shadow: 2px 2px 0 var(--accent);
 

@@ -24,7 +24,7 @@ export type ClientMessage = {
     payload: {
         characterId: string;
         name: string;
-        difficulty: 'easy' | 'medium' | 'hard';
+        difficulty: 'easy' | 'normal' | 'extreme';
         aiCharacterId: string;
         aiName: string;
         preferredArenaId: string | null;

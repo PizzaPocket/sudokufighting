@@ -5,7 +5,16 @@
     "altId": "fighter1_alt",
     "altName": "Brace",
     "portraitPath": "/characters/fighter1/portrait.png",
-    "altPortraitPath": "/characters/fighter1_alt/portrait.png"
+    "altPortraitPath": "/characters/fighter1_alt/portrait.png",
+    "origin": "Chinese heritage",
+    "personality": "Focused, disciplined, quietly intense",
+    "themeRole": "Protagonist archetype",
+    "appearance": "White gi, black belt, black hair",
+    "altAppearance": "Retro white tracksuit with yellow stripes",
+    "homeStage": "El Tropical",
+    "weapon": "Bow staff (hidden technique)",
+    "backstory": "Orphaned at a young age, Xiao Long was taken in by Master Chow after demonstrating an unusual ability to \"see patterns\" in both combat and numbers. Raised within the discipline of Sudoku Fighting, he trained relentlessly to master both mind and body. Though outwardly calm, he carries a deep internal drive to prove his worth—not just as a fighter, but as someone who overcame nothingness.",
+    "altIdentity": "A freer, more expressive version of Xiao Long. Represents instinct over discipline."
   },
   {
     "id": "fighter2",
@@ -13,22 +22,97 @@
     "altId": "fighter2_alt",
     "altName": "Nun",
     "portraitPath": "/characters/fighter2/portrait.png",
-    "altPortraitPath": "/characters/fighter2_alt/portrait.png"
+    "altPortraitPath": "/characters/fighter2_alt/portrait.png",
+    "origin": "American",
+    "personality": "Jovial, playful, teasing",
+    "appearance": "Blue gi, blonde hair, blue eyes",
+    "altAppearance": "Grey uniform, muted palette, calmer demeanor",
+    "homeStage": "Paradiso",
+    "weapon": "Nunchucks",
+    "backstory": "Chuck trained seriously in Sudoku Fighting but never lost his love for fun. He treats every battle like a beach day—relaxed, unpredictable, and surprisingly sharp. His humor masks a deeply competitive edge and a strong sense of loyalty to fellow fighters.",
+    "altIdentity": "A quieter, more introspective version—less jokes, more precision."
   },
   {
     "id": "fighter3",
     "name": "Jonathan",
     "altId": "fighter3_alt",
-    "altName": "John",
+    "altName": "Johan",
     "portraitPath": "/characters/fighter3/portrait.png",
-    "altPortraitPath": "/characters/fighter3_alt/portrait.png"
+    "altPortraitPath": "/characters/fighter3_alt/portrait.png",
+    "origin": "Malay, raised in Sky City",
+    "personality": "Confident, stylish, ambitious",
+    "appearance": "Orange gi, brown hair with green streak",
+    "altAppearance": "Dark palette version",
+    "homeStage": "Sky City",
+    "weapon": "Massive hammer",
+    "backstory": "Raised in the high-tech skyline of Sky City, Jonathan blends modern ambition with traditional discipline. He sees Sudoku Fighting as both art and performance. His confidence borders on arrogance, but he backs it up with raw skill.",
+    "altIdentity": "The \"ideal champion\" persona—focused, slightly more serious, self-aware."
   },
   {
     "id": "fighter4",
     "name": "Senna",
     "altId": "fighter4_alt",
-    "altName": "Ninja",
+    "altName": "Ninja S",
     "portraitPath": "/characters/fighter4/portrait.png",
-    "altPortraitPath": "/characters/fighter4_alt/portrait.png"
+    "altPortraitPath": "/characters/fighter4_alt/portrait.png",
+    "origin": "Shinobi Alley",
+    "personality": "Street-smart, rebellious, sharp-tongued",
+    "appearance": "Beanie, pigtails, army jacket, baggy pants",
+    "altAppearance": "Full ninja attire",
+    "homeStage": "Shinobi Alley",
+    "weapon": "Shurikens",
+    "backstory": "Senna grew up surviving on instinct in the rough streets of Shinobi Alley. Unknown to many, she was secretly trained in ninja arts. She blends street fighting, breakdance movement, and stealth techniques into a chaotic but effective style.",
+    "altIdentity": "Her true disciplined self—focused, silent, deadly."
+  },
+  {
+    "id": "fighter5",
+    "name": "Boombox",
+    "altId": "fighter5_alt",
+    "altName": "Icebox",
+    "unlockable": true,
+    "portraitPath": "/characters/fighter5/portrait.png",
+    "altPortraitPath": "/characters/fighter5_alt/portrait.png",
+    "origin": "Australia (genetically modified)",
+    "personality": "Confident, slightly aggressive, blunt humor",
+    "appearance": "Kangaroo, red boxing gear",
+    "altAppearance": "Blue, cold-themed variant",
+    "homeStage": "The Big Time",
+    "weapon": "Boomerang + boxing",
+    "specialTrait": "Joey assist attack",
+    "backstory": "Created through underground military experiments, Boombox was trained as a living weapon. She broke free from control and now fights on her own terms. Despite her engineered origin, she has a strong sense of independence—and a surprisingly playful side.",
+    "altIdentity": "A colder, more calculated version—less emotion, more efficiency."
+  },
+  {
+    "id": "master_chow",
+    "name": "Master Chow",
+    "role": "mentor",
+    "portraitPath": "/characters/portrait_master_chow.png",
+    "personality": "Wise, calm, purposeful",
+    "backstory": "A lifelong master of Sudoku Fighting, he believes true strength lies in balance between logic and instinct. He trains fighters not just to win—but to become forces of good in a chaotic world."
+  },
+  {
+    "id": "fighter1_alt",
+    "name": "Brace",
+    "portraitPath": "/characters/fighter1_alt/portrait.png"
+  },
+  {
+    "id": "fighter2_alt",
+    "name": "Nun",
+    "portraitPath": "/characters/fighter2_alt/portrait.png"
+  },
+  {
+    "id": "fighter3_alt",
+    "name": "Johan",
+    "portraitPath": "/characters/fighter3_alt/portrait.png"
+  },
+  {
+    "id": "fighter4_alt",
+    "name": "Ninja S",
+    "portraitPath": "/characters/fighter4_alt/portrait.png"
+  },
+  {
+    "id": "fighter5_alt",
+    "name": "Icebox",
+    "portraitPath": "/characters/fighter5_alt/portrait.png"
   }
 ]

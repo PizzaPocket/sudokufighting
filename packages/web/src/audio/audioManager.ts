@@ -3,10 +3,11 @@ import { getArena } from '@sudoku-fighting/shared';
 import type { AttackType } from '@sudoku-fighting/shared';
 
 export const TRACKS = [
-  { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.mp3' },
-  { title: 'Sudoku Fighting',  src: '/sounds/Sudoku_Fighting.mp3' },
-  { title: 'Action Go',        src: '/sounds/Action_Go.mp3'       },
-  { title: 'Haunted (Remix)',  src: '/sounds/Haunted_Remix.mp3'   },
+  { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.mp3'    },
+  { title: 'Sudoku Fighting',  src: '/sounds/Sudoku_Fighting.mp3'    },
+  { title: 'Action Go',        src: '/sounds/Action_Go.mp3'          },
+  { title: 'Haunted (Remix)',  src: '/sounds/Haunted_Remix.mp3'      },
+  { title: 'Jocular Jamnation', src: '/sounds/Jocular_Jamnation.mp3' },
 ];
 
 const SELECT_TRACK_INDEX = 1;
@@ -96,6 +97,17 @@ export function switchToSelectMusic() {
     selectedTrackIndex = SELECT_TRACK_INDEX;
     startFightMusic();
   }, delay + 50);
+}
+
+export function stopMusicNow() {
+  if (!currentSource) return;
+  if (gainNode && audioCtx) {
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+  }
+  try { currentSource.stop(); } catch { /* already stopped */ }
+  currentSource = null;
+  currentSrc = null;
 }
 
 export function fadeOutMusic(durationMs = 500) {

@@ -18,6 +18,9 @@ export default function LobbyScreen({ active }: Props) {
   const shareCode = useGameStore(s => s.shareCode);
   const gameMode = useGameStore(s => s.gameMode);
   const setPreferredArena = useGameStore(s => s.setPreferredArena);
+  const lobbyCountdown = useGameStore(s => s.lobbyCountdown);
+  const setLobbyCountdown = useGameStore(s => s.setLobbyCountdown);
+  const backgroundId = useGameStore(s => s.backgroundId);
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [arenaIndex, setArenaIndex] = useState(0);
@@ -37,7 +40,7 @@ export default function LobbyScreen({ active }: Props) {
     const charId = myCharacter ?? 'fighter1';
 
     if (gameMode === 'quick') {
-      send('find_match', { characterId: charId, name: storedName, preferredArenaId: null });
+      send('find_match', { characterId: charId, name: storedName, preferredArenaId: useGameStore.getState().preferredArenaId });
     } else if (gameMode === 'friend') {
       // Check if we have a pending join code
       const st = useGameStore.getState() as never as { pendingJoinCode?: string };
@@ -47,6 +50,8 @@ export default function LobbyScreen({ active }: Props) {
         send('join_room', { shareCode: pending, characterId: charId, name: storedName });
       } else {
         send('create_room', { characterId: charId, name: storedName });
+        // Send initial arena preference so the server has it before P2 joins
+        send('set_arena_preference', { arenaId: ARENAS[arenaIndex].id });
       }
     }
   }, [active]);
@@ -55,6 +60,35 @@ export default function LobbyScreen({ active }: Props) {
   useEffect(() => {
     if (!active) hasSentJoin.current = false;
   }, [active]);
+
+  // Sync arena carousel to the server-chosen arena when countdown starts
+  useEffect(() => {
+    if (lobbyCountdown === 3 && backgroundId) {
+      const idx = ARENAS.findIndex(a => a.id === backgroundId);
+      if (idx !== -1) setArenaIndex(idx);
+    }
+  }, [lobbyCountdown, backgroundId]);
+
+  // Tick the countdown down each second
+  useEffect(() => {
+    if (lobbyCountdown === null || lobbyCountdown <= 0) return;
+    const timer = setTimeout(() => setLobbyCountdown(lobbyCountdown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [lobbyCountdown]);
+
+  // When countdown hits 0, switch to gameplay and fire the pre-round signal
+  useEffect(() => {
+    if (lobbyCountdown === 0) {
+      setLobbyCountdown(null);
+      const { roundNumber, backgroundId: bgId } = useGameStore.getState();
+      useGameStore.setState({
+        currentScreen: 'gameplay',
+        preRoundSignal: bgId
+          ? { roundNumber: roundNumber ?? 1, backgroundId: bgId, nonce: Date.now() }
+          : null,
+      });
+    }
+  }, [lobbyCountdown]);
 
   function handleCopyLink() {
     const url = `${window.location.origin}?room=${shareCode}`;
@@ -138,8 +172,15 @@ export default function LobbyScreen({ active }: Props) {
       <ArenaCarousel
         arenaIndex={arenaIndex}
         onIndexChange={(i) => { setArenaIndex(i); setPreferredArena(ARENAS[i].id); }}
-        sendToServer={gameMode === 'quick'}
+        sendToServer={gameMode === 'quick' || gameMode === 'friend'}
+        disabled={lobbyCountdown !== null}
       />
+
+      {lobbyCountdown !== null && lobbyCountdown > 0 && (
+        <div className="lobby-countdown">
+          <span className="lobby-countdown-number">{lobbyCountdown}</span>
+        </div>
+      )}
     </div>
   );
 }

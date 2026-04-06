@@ -16,6 +16,7 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
   const controllerRef = useRef<AnimationController | null>(null);
 
   const signal = useGameStore(s => seat === 0 ? s.p1AnimSignal : s.p2AnimSignal) as AnimSignal | null;
+  const isPaused = useGameStore(s => s.isPaused);
 
   // Derive characterId from mySeat + myCharacter / opponentCharacter
   const mySeat = useGameStore(s => s.mySeat);
@@ -49,6 +50,16 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
     }
     controllerRef.current.reset(seat === 1 ? 3 : 1);
   }, [resolvedCharId]);
+
+  // Pause/resume animation controller with game pause state
+  useEffect(() => {
+    if (!controllerRef.current) return;
+    if (isPaused) {
+      controllerRef.current.pause();
+    } else {
+      controllerRef.current.resume();
+    }
+  }, [isPaused]);
 
   // Respond to animation signals; null signal resets to idle (e.g. between rounds)
   useEffect(() => {

@@ -14,5 +14,6 @@ export interface Arena {
     hasClouds?: boolean;
     overlays: ArenaOverlay[];
     trackIndex: number;
+    dialogueBg?: string;
 }
 //# sourceMappingURL=arena.d.ts.map

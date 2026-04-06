@@ -8,9 +8,10 @@ export const ARENAS = [
         sunStart: '/assets/arenas/el-tropical/sun_start.svg',
         ground: '/assets/arenas/el-tropical/ground.svg',
         overlays: [
-            { id: 'palm-trees', src: '/assets/arenas/el-tropical/palm_trees.svg' },
+            { id: 'palm-trees', src: '/assets/arenas/el-tropical/palm_trees_wide.svg' },
         ],
         trackIndex: 0,
+        dialogueBg: '/assets/arenas/el-tropical/sunset_start.svg',
     },
     {
         id: 'bg_2',
@@ -21,16 +22,38 @@ export const ARENAS = [
         hasClouds: true,
         overlays: [],
         trackIndex: 2,
+        dialogueBg: '/assets/arenas/paradiso/bg.svg',
     },
     {
         id: 'bg_3',
-        name: 'Derelict',
+        name: 'Sky City',
         background: '/assets/arenas/derelict/bg.svg',
         ground: '/assets/arenas/derelict/ground.svg',
         overlays: [
             { id: 'buildings', src: '/assets/arenas/derelict/buildings.svg' },
         ],
         trackIndex: 3,
+        dialogueBg: '/assets/arenas/derelict/bg.svg',
+    },
+    {
+        id: 'bg_4',
+        name: 'Shinobi Alley',
+        background: '/assets/arenas/shinobi-alley/bg.svg',
+        ground: '/assets/arenas/shinobi-alley/ground.svg',
+        overlays: [
+            { id: 'alley', src: '/assets/arenas/shinobi-alley/alley_wide.svg' },
+        ],
+        trackIndex: 1,
+        dialogueBg: '/assets/arenas/shinobi-alley/bg.svg',
+    },
+    {
+        id: 'bg_5',
+        name: 'The Big Time',
+        background: '/assets/arenas/the-big-time/bg.svg',
+        ground: '/assets/arenas/the-big-time/ground.svg',
+        overlays: [],
+        trackIndex: 4,
+        dialogueBg: '/assets/arenas/the-big-time/bg.svg',
     },
 ];
 export function getArena(id) {

@@ -8,7 +8,7 @@ import type { ServerMessage } from '../types/socket-events.js';
  *   2. For attack_incoming events: schedule a setTimeout(ATTACK_DELAY_MS) that
  *      calls applyDamageFromAttack() and dispatches the resulting events.
  */
-export declare function handleCellInput(round: RoundState, attackerSeat: 0 | 1, row: number, col: number, value: number): ServerMessage[];
+export declare function handleCellInput(round: RoundState, attackerSeat: 0 | 1, row: number, col: number, value: number, wrongGuessDamage?: number): ServerMessage[];
 export declare function applyDamageFromAttack(round: RoundState, attackId: string): {
     events: ServerMessage[];
     attackType: AttackType;

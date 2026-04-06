@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useGameStore } from '../../store/gameStore';
 
 const CLOUD_WIDTHS = [820, 586, 550, 496, 316, 356];
 const MIN_WIDTH = Math.min(...CLOUD_WIDTHS);
@@ -67,6 +68,11 @@ export default function Clouds({ containerRef }: Props) {
 
     function tick(ts: number) {
       if (!running) return;
+      if (useGameStore.getState().isPaused) {
+        lastTs = null; // discard elapsed time while paused
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
       if (lastTs === null) lastTs = ts;
       const dt = Math.min(ts - lastTs, 100);
       lastTs = ts;

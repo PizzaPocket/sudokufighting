@@ -91,9 +91,8 @@ export function tryMatch() {
   const roomId = createRoom();
   addPlayerToRoom(roomId, p1.playerId, p1.ws, p1.characterId, p1.name);
   addPlayerToRoom(roomId, p2.playerId, p2.ws, p2.characterId, p2.name);
-  // Collect non-null arena preferences from both players
-  const prefs = [p1.preferredArenaId, p2.preferredArenaId].filter(Boolean);
-  const preferredArenaId = prefs.length ? prefs[Math.floor(Math.random() * prefs.length)] : null;
+  // P1 (first in queue = seat 0) is authoritative for arena selection
+  const preferredArenaId = p1.preferredArenaId || p2.preferredArenaId || null;
   return { roomId, p1, p2, preferredArenaId };
 }
 

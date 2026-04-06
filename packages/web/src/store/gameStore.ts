@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import type {
-  ServerMessage, AttackType, AnimationState, Character, Difficulty,
+  ServerMessage, AttackType, AnimationState, Character, Difficulty, DialogueEntry,
 } from '@sudoku-fighting/shared';
 import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY } from '@sudoku-fighting/shared';
 import { playAttackSFX } from '../audio/audioManager';
+import { BASE_UNLOCKED } from '../progression/progressionService';
 
-export type Screen = 'start' | 'character-select' | 'lobby' | 'sp-lobby' | 'gameplay';
-export type GameMode = 'quick' | 'friend' | 'singleplayer' | null;
+export type Screen = 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
+export type GameMode = 'quick' | 'friend' | 'practice' | 'campaign' | null;
 
 export interface AnimSignal {
   state: AnimationState;
@@ -49,6 +50,7 @@ interface GameStore {
   preferredArenaId: string | null;
   lobbyOpponentReady: boolean;
   lobbyJoinError: string | null;
+  lobbyCountdown: number | null;
 
   // ── Single-player ─────────────────────────────────────────────────────────
   spDifficulty: Difficulty;
@@ -96,11 +98,27 @@ interface GameStore {
   // ── Characters data ───────────────────────────────────────────────────────
   characters: Character[];
 
+  // ── Campaign ──────────────────────────────────────────────────────────────
+  campaignFightIndex: number;
+  campaignResult: 'gameover' | 'victory' | 'continue' | null;
+  campaignDialogueQueue: DialogueEntry[];
+
+  // ── Progression ───────────────────────────────────────────────────────────
+  unlockedCharacterIds: string[];
+  pendingUnlockIds: string[];
+  campaignClearCount: number;
+
+  // ── Pause ─────────────────────────────────────────────────────────────────
+  isPaused: boolean;
+  totalPausedMs: number;    // accumulated ms paused this round (reset per round)
+  pauseStartTime: number | null; // Date.now() when current pause began
+
   // ── Settings ──────────────────────────────────────────────────────────────
   musicEnabled: boolean;
   sfxEnabled: boolean;
   selectedTrackIndex: number;
   settingsOpen: boolean;
+  testCreditsOpen: boolean;
 
   // ── Actions ───────────────────────────────────────────────────────────────
   setScreen: (screen: Screen) => void;
@@ -111,6 +129,7 @@ interface GameStore {
   setSpDifficulty: (d: Difficulty) => void;
   setSpArenaIndex: (i: number) => void;
   setPreferredArena: (arenaId: string) => void;
+  setLobbyCountdown: (n: number | null) => void;
   setCharacters: (chars: Character[]) => void;
   setSelfDamagePredicted: () => void;
   selectCell: (row: number, col: number) => void;
@@ -127,6 +146,13 @@ interface GameStore {
   setSettingsOpen: (open: boolean) => void;
   clearAttackFlash: () => void;
   removeFloatingPoints: (id: number) => void;
+  setIsPaused: (v: boolean) => void;
+  setCampaignFightIndex: (i: number) => void;
+  setCampaignResult: (r: 'gameover' | 'victory' | 'continue' | null) => void;
+  setCampaignDialogueQueue: (q: DialogueEntry[]) => void;
+  addUnlockedCharacters: (ids: string[]) => void;
+  setPendingUnlockIds: (ids: string[]) => void;
+  incrementCampaignClearCount: () => void;
   applyServerMessage: (msg: ServerMessage) => void;
 }
 
@@ -158,6 +184,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   preferredArenaId: null,
   lobbyOpponentReady: false,
   lobbyJoinError: null,
+  lobbyCountdown: null,
 
   spDifficulty: 'normal',
   spArenaIndex: 0,
@@ -199,10 +226,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   characters: [],
 
+  campaignFightIndex: 0,
+  campaignResult: null,
+  campaignDialogueQueue: [],
+  unlockedCharacterIds: [...BASE_UNLOCKED],
+  pendingUnlockIds: [],
+  campaignClearCount: 0,
+
+  isPaused: false,
+  totalPausedMs: 0,
+  pauseStartTime: null,
+
   musicEnabled: true,
   sfxEnabled: true,
   selectedTrackIndex: 0,
   settingsOpen: false,
+  testCreditsOpen: false,
 
   // ── Simple setters ────────────────────────────────────────────────────────
   setScreen: (currentScreen) => set({ currentScreen }),
@@ -213,6 +252,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSpDifficulty: (spDifficulty) => set({ spDifficulty }),
   setSpArenaIndex: (spArenaIndex) => set({ spArenaIndex }),
   setPreferredArena: (preferredArenaId) => set({ preferredArenaId }),
+  setLobbyCountdown: (lobbyCountdown) => set({ lobbyCountdown }),
   setCharacters: (characters) => set({ characters }),
   setMusicEnabled: (musicEnabled) => set({ musicEnabled }),
   setSfxEnabled: (sfxEnabled) => set({ sfxEnabled }),
@@ -220,6 +260,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   clearAttackFlash: () => set({ attackFlashType: null }),
   removeFloatingPoints: (id) => set(s => ({ floatingPoints: s.floatingPoints.filter(fp => fp.id !== id) })),
+  setIsPaused: (isPaused) => {
+    if (isPaused) {
+      set({ isPaused: true, pauseStartTime: Date.now() });
+    } else {
+      const s = get();
+      const extra = s.pauseStartTime != null ? Date.now() - s.pauseStartTime : 0;
+      set({ isPaused: false, pauseStartTime: null, totalPausedMs: s.totalPausedMs + extra });
+    }
+  },
+  setCampaignFightIndex: (campaignFightIndex) => set({ campaignFightIndex }),
+  setCampaignResult: (campaignResult) => set({ campaignResult }),
+  setCampaignDialogueQueue: (campaignDialogueQueue) => set({ campaignDialogueQueue }),
+  addUnlockedCharacters: (ids) => set(s => ({ unlockedCharacterIds: [...new Set([...s.unlockedCharacterIds, ...ids])] })),
+  setPendingUnlockIds: (pendingUnlockIds) => set({ pendingUnlockIds }),
+  incrementCampaignClearCount: () => set(s => ({ campaignClearCount: s.campaignClearCount + 1 })),
 
   addWipingCells: (cells) => set(s => ({ wipingCells: [...s.wipingCells, ...cells] })),
   removeWipingCells: (cells) => set(s => {
@@ -278,15 +333,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     roundOver: false, roundWinnerSeat: null, p1AnimSignal: null, p2AnimSignal: null,
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
+    totalPausedMs: 0, pauseStartTime: null,
   })),
 
-  resetAll: () => set({
+  resetAll: () => set(s => ({
     currentScreen: 'start',
     gameMode: null,
     myPlayerId: null, mySeat: null, myCharacter: null, myName: null, myUseAlt: false,
     opponentName: null, opponentCharacter: null, opponentUseAlt: false,
     shareCode: null, friendCreating: false, preferredArenaId: null,
-    lobbyOpponentReady: false, lobbyJoinError: null,
+    lobbyOpponentReady: false, lobbyJoinError: null, lobbyCountdown: null,
     roundNumber: 1, roundWins: [0, 0],
     myPuzzle: null, mySolution: null, myGrid: null,
     opponentGivens: null, opponentGrid: null,
@@ -300,7 +356,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
     settingsOpen: false,
-  }),
+    isPaused: false,
+    totalPausedMs: 0,
+    pauseStartTime: null,
+    campaignFightIndex: 0,
+    campaignResult: null,
+    campaignDialogueQueue: [],
+    pendingUnlockIds: [],
+    // unlockedCharacterIds and campaignClearCount persist across resets
+  })),
 
   // ── Central server event handler ──────────────────────────────────────────
   applyServerMessage: (msg: ServerMessage) => {
@@ -354,6 +418,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       case 'game_start': {
         const p = msg.payload;
         const myGrid = p.puzzle.map(r => r.map(v => v));
+        const isMultiplayer = s.gameMode === 'quick' || s.gameMode === 'friend';
         set({
           roundNumber: p.roundNumber,
           mySeat: p.mySeat,
@@ -370,13 +435,27 @@ export const useGameStore = create<GameStore>((set, get) => ({
           combo: [0, 0], score: [0, 0],
           counterWindowActive: false, selfDamagePredicted: false,
           roundOver: false,
+          matchOver: false,
+          matchWinnerSeat: null,
+          matchWinnerName: null,
           backgroundId: p.backgroundId,
           roundStartTime: p.roundStartTime,
           selectedCell: null, opponentCursorPos: null,
           p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null, attackFlashType: null,
           floatingPoints: [],
-          currentScreen: 'gameplay',
-          preRoundSignal: { roundNumber: p.roundNumber, backgroundId: p.backgroundId, nonce: ++_nonce },
+          // Multiplayer: stay on lobby screen for the countdown; gameplay transition
+          // happens in LobbyScreen after lobbyCountdown ticks to 0.
+          // Single-player / VS-AI: switch immediately (useVsAI dispatches game_start
+          // only after currentScreen is already 'gameplay').
+          currentScreen: isMultiplayer ? s.currentScreen : 'gameplay',
+          lobbyCountdown: isMultiplayer ? 3 : null,
+          preRoundSignal: isMultiplayer
+            ? null
+            : { roundNumber: p.roundNumber, backgroundId: p.backgroundId, nonce: ++_nonce },
+          isPaused: false,
+          totalPausedMs: 0,
+          pauseStartTime: null,
+          campaignResult: null,
         });
         break;
       }

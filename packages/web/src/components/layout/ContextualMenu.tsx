@@ -21,7 +21,7 @@ export default function ContextualMenu() {
     function handleMouseDown(e: MouseEvent) {
       const target = e.target as Node;
       if (panelRef.current && !panelRef.current.contains(target)) {
-        const settingsBtn = document.querySelector('.header-icon-btn');
+        const settingsBtn = document.querySelector('.header-settings-btn');
         if (settingsBtn && settingsBtn.contains(target)) return;
         setSettingsOpen(false);
       }
@@ -88,6 +88,7 @@ export default function ContextualMenu() {
           <span className="toggle-slider" />
         </label>
       </div>
+
     </div>
   );
 }

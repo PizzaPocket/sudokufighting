@@ -14,7 +14,11 @@ export default function MistakeEffect({ seat }: Props) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!signal) return;
+    if (!signal) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setFrame(null);
+      return;
+    }
     if (timerRef.current) clearTimeout(timerRef.current);
 
     setFrame(1);

@@ -25,6 +25,8 @@ export class AnimationController {
   private frameTimer: ReturnType<typeof setTimeout> | null = null;
   private queued: AnimationState | null = null;
   private _lastSrc: string | null = null;
+  private _paused = false;
+  private _pendingResumeMs: number | null = null; // ms remaining on current frame when paused
 
   constructor(characterId: string, imgElement: HTMLImageElement | null) {
     this.characterId = characterId;
@@ -58,13 +60,16 @@ export class AnimationController {
     this.queued = state;
   }
 
-  private _step() {
+  private _step(overrideDuration?: number) {
     this._updateSrc();
     const cfg = this.currentState ? ANIMATION_CONFIG[this.currentState] : null;
     if (!cfg || !this.currentState) return;
-    const state = this.currentState;
+
+    const duration = overrideDuration ?? cfg.frameDuration;
+    const startedAt = Date.now();
 
     this.frameTimer = setTimeout(() => {
+      if (this._paused) return; // timer fired while paused — _resume() will re-schedule
       this.currentFrame++;
       if (this.currentFrame > cfg.frames) {
         if (cfg.loop) {
@@ -82,7 +87,31 @@ export class AnimationController {
         return;
       }
       this._step();
-    }, cfg.frameDuration);
+    }, duration);
+
+    // Store when we started so pause() can calculate remaining time
+    (this as any)._frameStartedAt = startedAt;
+    (this as any)._frameDuration = duration;
+  }
+
+  pause() {
+    if (this._paused) return;
+    this._paused = true;
+    if (this.frameTimer) {
+      clearTimeout(this.frameTimer);
+      this.frameTimer = null;
+      const elapsed = Date.now() - ((this as any)._frameStartedAt ?? Date.now());
+      const remaining = Math.max(0, ((this as any)._frameDuration ?? 0) - elapsed);
+      this._pendingResumeMs = remaining;
+    }
+  }
+
+  resume() {
+    if (!this._paused) return;
+    this._paused = false;
+    const remaining = this._pendingResumeMs ?? 0;
+    this._pendingResumeMs = null;
+    this._step(remaining);
   }
 
   private _updateSrc() {

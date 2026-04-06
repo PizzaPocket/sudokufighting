@@ -1,4 +1,4 @@
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = 'easy' | 'normal' | 'extreme';
 export type Grid = (number | null)[][];
 export type SolutionGrid = number[][];
 export interface PuzzleState {

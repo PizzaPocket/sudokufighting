@@ -18,7 +18,7 @@ function nextAttackId() {
  *   2. For attack_incoming events: schedule a setTimeout(ATTACK_DELAY_MS) that
  *      calls applyDamageFromAttack() and dispatches the resulting events.
  */
-export function handleCellInput(round, attackerSeat, row, col, value) {
+export function handleCellInput(round, attackerSeat, row, col, value, wrongGuessDamage = WRONG_GUESS_DAMAGE) {
     const defenderSeat = (1 - attackerSeat);
     const puzz = round.puzzles[attackerSeat];
     // Validate: given cells blocked unless wiped (playerGrid === null)
@@ -37,8 +37,8 @@ export function handleCellInput(round, attackerSeat, row, col, value) {
     if (!correct) {
         round.consecutiveCorrect[attackerSeat] = 0;
         round.combo[attackerSeat] = 0;
-        round.health[attackerSeat] = Math.max(0, round.health[attackerSeat] - WRONG_GUESS_DAMAGE);
-        events.push({ type: 'self_damage', payload: { seat: attackerSeat, damage: WRONG_GUESS_DAMAGE } });
+        round.health[attackerSeat] = Math.max(0, round.health[attackerSeat] - wrongGuessDamage);
+        events.push({ type: 'self_damage', payload: { seat: attackerSeat, damage: wrongGuessDamage } });
         events.push({ type: 'health_update', payload: { health: [...round.health] } });
         events.push({ type: 'combo_update', payload: { seat: attackerSeat, combo: 0 } });
         return events;

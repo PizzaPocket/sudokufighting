@@ -22,7 +22,7 @@ export default function StartScreen({ active }: Props) {
 
   const errorMsg = localError ?? lobbyJoinError;
 
-  function goToCharacterSelect(mode: 'quick' | 'friend' | 'singleplayer') {
+  function goToCharacterSelect(mode: 'quick' | 'friend' | 'practice' | 'campaign') {
     setGameMode(mode);
     useGameStore.setState({ lobbyJoinError: null });
     setLocalError(null);
@@ -57,10 +57,12 @@ export default function StartScreen({ active }: Props) {
 
       <div className="start-actions">
         <div className="start-section">
-          <span className="start-mode-label">2 PLAYER</span>
+          <span className="start-mode-label">2 PLAYER ONLINE</span>
+          <span className="start-action-hint">Enter matchmaking queue</span>
           <button className="btn" onClick={() => goToCharacterSelect('quick')}>
             QUICK PLAY
           </button>
+          <span className="start-action-hint">Play with a friend</span>
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('friend')}>
             CREATE ROOM
           </button>
@@ -81,8 +83,11 @@ export default function StartScreen({ active }: Props) {
 
         <div className="start-section">
           <span className="start-mode-label">SINGLE PLAYER</span>
-          <button className="btn btn-alt" onClick={() => goToCharacterSelect('singleplayer')}>
-            VS AI
+          <button className="btn btn-alt" onClick={() => goToCharacterSelect('campaign')}>
+            CAMPAIGN
+          </button>
+          <button className="btn btn-secondary" onClick={() => goToCharacterSelect('practice')}>
+            PRACTICE
           </button>
         </div>
 

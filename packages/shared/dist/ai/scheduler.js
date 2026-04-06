@@ -44,13 +44,15 @@ export function sortForCompletions(cells) {
 }
 export function scheduleNext(queue, session, difficulty, makeBotMove, 
 /** Optional: called each tick to replenish wiped cells */
-replenish) {
+replenish, 
+/** Optional: override timing/error config (e.g. campaign per-fight scaling) */
+cfgOverride) {
     if (session.stopped || queue.length === 0)
         return;
-    const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium;
+    const cfg = cfgOverride ?? DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.normal;
     if (replenish)
         replenish(queue);
-    if (difficulty === 'hard' && queue.length > 1) {
+    if (difficulty === 'extreme' && queue.length > 1) {
         const reordered = sortForCompletions(queue);
         queue.length = 0;
         queue.push(...reordered);
@@ -72,13 +74,13 @@ replenish) {
                 if (session.stopped)
                     return;
                 makeBotMove(cell.row, cell.col, cell.value);
-                scheduleNext(queue, session, difficulty, makeBotMove, replenish);
+                scheduleNext(queue, session, difficulty, makeBotMove, replenish, cfgOverride);
             }, cfg.errorDelayMs);
             session.timeouts.add(fixHandle);
         }
         else {
             makeBotMove(cell.row, cell.col, cell.value);
-            scheduleNext(queue, session, difficulty, makeBotMove, replenish);
+            scheduleNext(queue, session, difficulty, makeBotMove, replenish, cfgOverride);
         }
     }, delay);
     session.timeouts.add(handle);

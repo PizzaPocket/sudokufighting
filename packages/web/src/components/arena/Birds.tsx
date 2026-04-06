@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useGameStore } from '../../store/gameStore';
 
 const FRAMES = 4;
 const FRAME_MS = 180;
@@ -73,6 +74,11 @@ export default function Birds({ containerRef }: Props) {
 
     function tick(ts: number) {
       if (!running.current) return;
+      if (useGameStore.getState().isPaused) {
+        lastTs.current = null; // discard elapsed time while paused
+        rafId.current = requestAnimationFrame(tick);
+        return;
+      }
       if (lastTs.current === null) lastTs.current = ts;
       const dt = Math.min(ts - lastTs.current, 100);
       lastTs.current = ts;

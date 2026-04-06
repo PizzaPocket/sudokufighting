@@ -8,22 +8,29 @@ import {
   handleCellInput, applyDamageFromAttack,
   buildCellQueue, scheduleNext,
   STARTING_HEALTH, ATTACK_DELAY_MS, DIFFICULTY_CONFIG,
+  CAMPAIGN_FIGHTS, getCampaignFightConfig,
+  ROUND_DURATION_MS,
 } from '@sudoku-fighting/shared';
-import type { RoundState, Difficulty, BotCell, BotSession } from '@sudoku-fighting/shared';
+import type { RoundState, Difficulty, BotCell, BotSession, DifficultyConfig } from '@sudoku-fighting/shared';
 import { injectServerMessage } from '../hooks/useGameSocket';
 import { useGameStore } from '../store/gameStore';
 
 // ---------------------------------------------------------------------------
-// Module-level callback — SudokuGrid calls this instead of send() in SP mode
+// Module-level callbacks
 // ---------------------------------------------------------------------------
 
 export let vsAiPlayerMove: ((row: number, col: number, value: number) => void) | null = null;
 
-// Called by SpLobbyScreen once, then again each round from startVsAIRound
 let _startRoundCallback: ((roundNumber: number) => void) | null = null;
 
 export function startVsAIRound(roundNumber: number) {
   _startRoundCallback?.(roundNumber);
+}
+
+let _startCampaignFightCallback: (() => void) | null = null;
+
+export function startCampaignNextFight() {
+  _startCampaignFightCallback?.();
 }
 
 // ---------------------------------------------------------------------------
@@ -62,6 +69,8 @@ export function useVsAI() {
   const botQueue = useRef<BotCell[]>([]);
   const botSession = useRef<BotSession>({ stopped: true, timeouts: new Set() });
   const localRoundWins = useRef<[number, number]>([0, 0]);
+  const replenishRef = useRef<((q: BotCell[]) => void) | null>(null);
+  const campaignCfgRef = useRef<DifficultyConfig | null>(null);
 
   function clearAllTimers() {
     for (const t of attackTimers.current.values()) clearTimeout(t);
@@ -122,7 +131,6 @@ export function useVsAI() {
         scheduleAttack(ev.payload.attackId, ev.payload.delayMs);
       }
       if (ev.type === 'puzzle_complete') {
-        // Winner is the one who completed their puzzle
         setTimeout(() => dispatchRoundEnd(seat as 0 | 1), 200);
       }
     }
@@ -135,7 +143,6 @@ export function useVsAI() {
     const playerPuz = generatePuzzle();
     const aiPuz = generatePuzzle();
 
-    // Build round state
     const rs = makeEmptyRoundState();
     rs.puzzles[0] = {
       given: playerPuz.puzzle.map(r => [...r]),
@@ -151,14 +158,22 @@ export function useVsAI() {
     };
     roundState.current = rs;
 
-    const difficulty = useGameStore.getState().spDifficulty as Difficulty;
-    const arenaId = useGameStore.getState().backgroundId ?? 'bg_1';
-    const myChar = useGameStore.getState().myCharacter ?? 'fighter1';
-    const aiChar = useGameStore.getState().opponentCharacter ?? 'fighter2';
-    const myName = useGameStore.getState().myName ?? 'Player';
-    const aiName = useGameStore.getState().opponentName ?? 'CPU';
+    const st = useGameStore.getState();
+    const difficulty = st.spDifficulty as Difficulty;
+    const gMode = st.gameMode;
+    const arenaId = st.backgroundId ?? 'bg_1';
+    const myChar = st.myCharacter ?? 'fighter1';
+    const aiChar = st.opponentCharacter ?? 'fighter2';
+    const myName = st.myName ?? 'Player';
+    const aiName = st.opponentName ?? 'CPU';
+    const opponentUseAlt = st.opponentUseAlt ?? false;
 
-    // Dispatch synthetic game_start
+    // Per-fight config in campaign mode
+    const cfg = (gMode === 'campaign')
+      ? getCampaignFightConfig(difficulty, st.campaignFightIndex)
+      : null;
+    campaignCfgRef.current = cfg;
+
     injectServerMessage({
       type: 'game_start',
       payload: {
@@ -170,18 +185,16 @@ export function useVsAI() {
         opponentCharacter: aiChar,
         mySeat: 0,
         myUseAlt: false,
-        opponentUseAlt: false,
-        roundStartTime: Date.now() + 3000, // ROUND X (2s) + FIGHT! (1s)
+        opponentUseAlt,
+        roundStartTime: Date.now() + 3000,
         backgroundId: arenaId,
       },
     });
 
-    // Start bot
     botSession.current = { stopped: false, timeouts: new Set() };
     botQueue.current = buildCellQueue(rs.puzzles[1], difficulty);
 
     function replenish(queue: BotCell[]) {
-      // Re-add wiped cells (playerGrid changed to null) that aren't in queue yet
       const inQueue = new Set(queue.map(c => `${c.row}-${c.col}`));
       for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -196,38 +209,68 @@ export function useVsAI() {
       }
     }
 
-    // Delay bot start to match the ROUND X → FIGHT! sequence timing (3s)
+    replenishRef.current = replenish;
+
     const startDelay = 3000;
     const startTimer = setTimeout(() => {
       botSession.current.timeouts.delete(startTimer as unknown as number);
       scheduleNext(botQueue.current, botSession.current, difficulty, (r, c, v) => {
         processMove(1, r, c, v);
-      }, replenish);
+      }, replenish, campaignCfgRef.current ?? undefined);
     }, startDelay);
     botSession.current.timeouts.add(startTimer as unknown as number);
+
+    const roundTimer = setTimeout(() => {
+      botSession.current.timeouts.delete(roundTimer as unknown as number);
+      const h = roundState.current.health;
+      const winner: 0 | 1 | -1 = h[0] > h[1] ? 0 : h[1] > h[0] ? 1 : -1;
+      dispatchRoundEnd(winner);
+    }, startDelay + ROUND_DURATION_MS);
+    botSession.current.timeouts.add(roundTimer as unknown as number);
   }
 
   useEffect(() => {
-    if (gameMode !== 'singleplayer' || currentScreen !== 'gameplay') return;
+    if ((gameMode !== 'practice' && gameMode !== 'campaign') || currentScreen !== 'gameplay') return;
 
-    // Register player move handler
     vsAiPlayerMove = (row, col, value) => processMove(0, row, col, value);
-
-    // Register next-round trigger
     _startRoundCallback = startRound;
+    _startCampaignFightCallback = () => {
+      localRoundWins.current = [0, 0];
+      clearAllTimers();
+      startRound(1);
+    };
 
-    // Start round 1
     localRoundWins.current = [0, 0];
     startRound(1);
 
     return () => {
       vsAiPlayerMove = null;
       _startRoundCallback = null;
+      _startCampaignFightCallback = null;
       clearAllTimers();
     };
   }, [gameMode, currentScreen]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When a new round starts (roundOver → false from resetForNextRound triggered by game_start),
-  // useVsAI handles the next round via the GameOverlay's send('next_round') interception.
-  // Nothing else needed here — startVsAIRound() is called from GameOverlay in SP mode.
+  // Subscribe to isPaused — pause/resume bot
+  useEffect(() => {
+    if ((gameMode !== 'practice' && gameMode !== 'campaign') || currentScreen !== 'gameplay') return;
+
+    let prevPaused = useGameStore.getState().isPaused;
+    const unsub = useGameStore.subscribe((s) => {
+      const isPaused = s.isPaused;
+      if (isPaused === prevPaused) return;
+      prevPaused = isPaused;
+      if (isPaused) {
+        clearAllTimers();
+        botSession.current.stopped = true;
+      } else {
+        botSession.current = { stopped: false, timeouts: new Set() };
+        const difficulty = useGameStore.getState().spDifficulty as Difficulty;
+        scheduleNext(botQueue.current, botSession.current, difficulty, (r, c, v) => {
+          processMove(1, r, c, v);
+        }, replenishRef.current ?? undefined, campaignCfgRef.current ?? undefined);
+      }
+    });
+    return unsub;
+  }, [gameMode, currentScreen]); // eslint-disable-line react-hooks/exhaustive-deps
 }

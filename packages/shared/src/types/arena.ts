@@ -15,4 +15,5 @@ export interface Arena {
   hasClouds?: boolean;
   overlays: ArenaOverlay[];
   trackIndex: number;
+  dialogueBg?: string; // background used in dialogue cutscene (overrides `background`)
 }

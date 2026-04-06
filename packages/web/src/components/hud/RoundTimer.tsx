@@ -5,21 +5,24 @@ import { useGameStore } from '../../store/gameStore';
 export default function RoundTimer() {
   const roundStartTime = useGameStore(s => s.roundStartTime);
   const roundOver = useGameStore(s => s.roundOver);
+  const isPaused = useGameStore(s => s.isPaused);
+  const totalPausedMs = useGameStore(s => s.totalPausedMs);
   const [seconds, setSeconds] = useState(99);
 
   useEffect(() => {
-    if (!roundStartTime || roundOver) return;
+    if (!roundStartTime || roundOver || isPaused) return;
 
+    const pausedMs = totalPausedMs; // capture at effect start; stable during this interval
     const interval = setInterval(() => {
-      const elapsed = Date.now() - roundStartTime;
+      const elapsed = Date.now() - roundStartTime - pausedMs;
       const remaining = Math.max(0, Math.ceil((ROUND_DURATION_MS - elapsed) / 1000));
       setSeconds(remaining);
     }, 250);
 
     return () => clearInterval(interval);
-  }, [roundStartTime, roundOver]);
+  }, [roundStartTime, roundOver, isPaused, totalPausedMs]);
 
-  // Reset on new round
+  // Reset display on new round
   useEffect(() => {
     if (roundStartTime) setSeconds(99);
   }, [roundStartTime]);

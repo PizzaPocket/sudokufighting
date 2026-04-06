@@ -55,7 +55,7 @@ export default function SpLobbyScreen({ active }: Props) {
   }
 
   return (
-    <div id="screen-sp-lobby" className={`screen${active ? ' active' : ''}`}>
+    <div id="screen-practice-lobby" className={`screen${active ? ' active' : ''}`}>
       <div className="lobby-players">
         <div id="sp-lobby-p1" className="lobby-player is-me">
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />

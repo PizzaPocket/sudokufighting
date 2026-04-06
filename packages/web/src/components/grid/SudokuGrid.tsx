@@ -22,6 +22,7 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
   const selectedCell = useGameStore(s => s.selectedCell);
   const opponentCursorPos = useGameStore(s => s.opponentCursorPos);
   const roundOver = useGameStore(s => s.roundOver);
+  const isPaused = useGameStore(s => s.isPaused);
   const wipingCells = useGameStore(s => s.wipingCells);
   const lastCorrectCell = useGameStore(s => s.lastCorrectCell);
   const lastCorrectNonce = lastCorrectCell?.nonce;
@@ -112,6 +113,8 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
       if (!st.selectedCell || st.roundOver) return;
       const { row, col } = st.selectedCell;
 
+      if (st.isPaused) return;
+
       const num = parseInt(e.key);
       if (num >= 1 && num <= 9) {
         if (st.myPuzzle?.[row]?.[col] !== null) return;
@@ -125,7 +128,7 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
           useGameStore.setState({ [animKey]: { state: 'damage_heavy', nonce }, [mistakeKey]: { nonce }, attackFlashType: 'self' });
           setTimeout(() => useGameStore.getState().setSelfDamagePredicted(), 300);
         }
-        if (st.gameMode === 'singleplayer') {
+        if (st.gameMode === 'practice' || st.gameMode === 'campaign') {
           vsAiPlayerMove?.(row, col, num);
         } else {
           send('cell_input', { row, col, value: num });
@@ -218,6 +221,7 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
           isPreBoxRight={c === 2 || c === 5}
           isPreBoxBottom={r === 2 || r === 5}
           isReadonly={!isMe}
+          isPaused={isPaused}
           onPointerDown={isMe ? handlePointerDown : undefined}
         />
       );

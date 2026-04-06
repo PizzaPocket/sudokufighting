@@ -24,3 +24,11 @@ export { handleCellInput, applyDamageFromAttack, applyCounterDamage } from './co
 // AI
 export { buildCellQueue, sortForCompletions, scheduleNext, DIFFICULTY_CONFIG } from './ai/index.js';
 export type { BotCell, BotSession, DifficultyConfig } from './ai/index.js';
+
+// Campaign
+export { CAMPAIGN_FIGHTS, getCampaignFightConfig, resolveNextFight } from './campaign.js';
+export type { CampaignFight, ResolvedFight } from './campaign.js';
+
+// Dialogue
+export { MASTER_CHOW_INTRO, MATCH_DIALOGUE, getMatchDialogue } from './dialogue.js';
+export type { DialogueEntry } from './dialogue.js';

@@ -15,8 +15,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--bg);
-      color: var(--text-primary);
+      background: var(--puzzle-bg);
+      color: var(--puzzle-text);
       font-family: var(--font);
       font-size: var(--text-base);
       -webkit-font-smoothing: antialiased;
@@ -42,7 +42,7 @@
     }
     .sg-subtitle {
       font-size: var(--text-sm);
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 48px;
@@ -69,17 +69,17 @@
       font-weight: var(--weight-bold);
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       margin: 32px 0 12px;
     }
     .sg-note {
       font-size: var(--text-sm);
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       margin-top: 8px;
       line-height: 1.5;
     }
     .sg-note strong {
-      color: var(--text-secondary);
+      color: var(--puzzle-text-dim);
     }
 
     /* ── Row / grid containers ───────────────────────────────────────── */
@@ -100,8 +100,8 @@
 
     /* ── Specimen card ───────────────────────────────────────────────── */
     .sg-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--puzzle-surface);
+      border: 1px solid var(--muted);
       border-radius: var(--radius-md);
       padding: 20px 24px;
       flex: 1;
@@ -120,7 +120,7 @@
       font-weight: var(--weight-bold);
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       margin-bottom: 14px;
     }
     .sg-card.dark .sg-card-label { color: rgba(255,255,255,0.35); }
@@ -140,8 +140,8 @@
       height: 64px;
     }
     .sg-swatch-info {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--puzzle-surface);
+      border: 1px solid var(--muted);
       padding: 6px 8px;
       font-size: 10px;
       line-height: 1.5;
@@ -151,7 +151,7 @@
       display: block;
     }
     .sg-swatch-hex {
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       display: block;
       font-family: var(--font);
     }
@@ -162,20 +162,20 @@
       align-items: baseline;
       gap: 24px;
       padding: 16px 0;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--muted);
     }
-    .sg-type-row:first-child { border-top: 1px solid var(--border); }
+    .sg-type-row:first-child { border-top: 1px solid var(--muted); }
     .sg-type-meta {
       flex-shrink: 0;
       width: 200px;
       font-size: var(--text-xs);
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       line-height: 1.6;
     }
     .sg-type-meta strong {
       display: block;
       font-size: var(--text-sm);
-      color: var(--text-secondary);
+      color: var(--puzzle-text-dim);
       margin-bottom: 2px;
     }
     .sg-type-specimen { flex: 1; overflow: hidden; }
@@ -198,7 +198,7 @@
     }
     .btn:hover { background: var(--accent-hover); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
     .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
-    .btn:disabled { background: var(--border); color: var(--text-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn:disabled { background: var(--muted); color: var(--puzzle-text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
 
     .btn.btn-sm {
       font-size: var(--text-sm);
@@ -252,7 +252,7 @@
       background: rgba(0,0,0,0.35);
       border: none;
       border-radius: var(--radius-sm);
-      color: #ffffff;
+      color: var(--canvas-text);
       cursor: pointer;
       padding: 8px 14px;
       transition: background 0.15s;
@@ -276,28 +276,28 @@
     .sg-btn-table th {
       text-align: left;
       padding: 8px 12px;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       font-weight: var(--weight-bold);
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-size: var(--text-xs);
-      color: var(--text-tertiary);
-      border-bottom: 2px solid var(--border);
+      color: var(--puzzle-text-muted);
+      border-bottom: 2px solid var(--muted);
     }
     .sg-btn-table td {
       padding: 16px 12px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--muted);
       vertical-align: middle;
     }
     .sg-btn-table td code {
       font-family: var(--font);
       font-size: 11px;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       padding: 2px 5px;
       border-radius: 3px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--muted);
     }
-    .sg-btn-table td:last-child { color: var(--text-tertiary); font-size: var(--text-xs); line-height: 1.5; }
+    .sg-btn-table td:last-child { color: var(--puzzle-text-muted); font-size: var(--text-xs); line-height: 1.5; }
 
     /* ── Sudoku grid demo ────────────────────────────────────────────── */
     .demo-grid-wrap {
@@ -331,7 +331,7 @@
       width: 28px; height: 28px;
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 500;
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       background: rgba(255,255,255,0.88);
       border-right: 1px solid var(--grid-border);
       border-bottom: 1px solid var(--grid-border);
@@ -346,9 +346,9 @@
     .mini-cell.pre-box-bottom { border-bottom: none; }
 
     /* Cell state demos */
-    .mini-cell.given        { color: var(--text-secondary); font-weight: 700; }
+    .mini-cell.given        { color: var(--puzzle-text-dim); font-weight: 700; }
     .mini-cell.empty        { background: rgba(255,255,255,0.88); }
-    .mini-cell.ghost        { background: rgba(255,255,255,0.25); }
+    .mini-cell.ghost        { background: var(--surface-frosted-edge); }
     .mini-cell.p1-correct   { color: var(--p1-dark); font-weight: 600; background: rgba(255,255,255,0.88); }
     .mini-cell.p2-correct   { color: var(--p2-dark); font-weight: 600; background: rgba(255,255,255,0.88); }
     .mini-cell.p1-highlight { background: var(--p1-bg-light); }
@@ -388,7 +388,7 @@
     .demo-hud-name {
       font-size: var(--text-md);
       font-weight: var(--weight-heavy);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-transform: uppercase;
     }
     .demo-hud-name.p1 { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
@@ -429,7 +429,7 @@
     .demo-timer {
       font-size: var(--text-xl);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 3px 3px 0 var(--accent);
       text-align: center;
       letter-spacing: -1px;
@@ -474,7 +474,7 @@
     }
     /* Intent states */
     .status-pill.active   { color: #ffffff; background: var(--accent); }
-    .status-pill.inactive { color: var(--text-secondary); background: var(--border); }
+    .status-pill.inactive { color: var(--puzzle-text-dim); background: var(--muted); }
     .status-pill.alert    { color: #ffffff; background: var(--danger-color); }
     /* Player identity */
     .status-pill.p1       { color: #ffffff; background: var(--p1-color); }
@@ -489,7 +489,7 @@
     .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
     .toggle-slider {
       position: absolute; inset: 0;
-      background: var(--text-tertiary);
+      background: var(--puzzle-text-muted);
       border-radius: 24px; transition: background 0.2s;
     }
     .toggle-slider::before {
@@ -502,7 +502,7 @@
 
     /* ── Character card ──────────────────────────────────────────────── */
     .character-card {
-      background: var(--surface);
+      background: var(--puzzle-surface);
       border-radius: 0;
       cursor: pointer;
       padding: 6px 6px 8px;
@@ -518,16 +518,16 @@
     .character-card.selected .char-name { color: #ffffff; }
     .char-portrait {
       width: 80px; height: 80px;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       display: flex; align-items: center; justify-content: center;
       font-size: 36px;
     }
-    .char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--text-primary); transition: color 0.15s; }
+    .char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--puzzle-text); transition: color 0.15s; }
 
     /* ── Contextual Menu specimen ────────────────────────────────────── */
     .demo-ctx-menu {
       background: rgba(20,20,20,0.96);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--surface-raised-edge);
       border-radius: 10px;
       padding: 12px 16px;
       display: flex;
@@ -545,7 +545,7 @@
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
       letter-spacing: 0.1em;
-      color: #ffffff;
+      color: var(--canvas-text);
     }
     .ctx-menu-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 2px 0; }
 
@@ -558,30 +558,30 @@
     .shadow-table th {
       text-align: left;
       padding: 8px 12px;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       font-weight: var(--weight-bold);
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-size: var(--text-xs);
-      color: var(--text-tertiary);
-      border-bottom: 2px solid var(--border);
+      color: var(--puzzle-text-muted);
+      border-bottom: 2px solid var(--muted);
     }
-    .shadow-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    .shadow-table td:last-child { font-family: var(--font); font-size: 11px; color: var(--text-tertiary); }
+    .shadow-table td { padding: 10px 12px; border-bottom: 1px solid var(--muted); vertical-align: middle; }
+    .shadow-table td:last-child { font-family: var(--font); font-size: 11px; color: var(--puzzle-text-muted); }
 
     /* ── Lobby VS specimen ───────────────────────────────────────────── */
     .demo-lobby-vs {
       font-family: var(--font-display);
       font-size: var(--text-2xl);
       font-weight: var(--weight-black);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 2px 3px 0 var(--accent);
     }
     .demo-lobby-title {
       font-family: var(--font-display);
       font-size: var(--text-xl);
       font-weight: var(--weight-black);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       text-shadow: 2px 2px 0 var(--accent);
@@ -590,7 +590,7 @@
       font-family: var(--font);
       font-size: var(--text-xl);
       font-weight: var(--weight-black);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.35em;
       text-shadow: 2px 2px 0 var(--accent);
     }
@@ -598,14 +598,14 @@
       font-family: var(--font-display);
       font-size: var(--text-xl);
       font-weight: var(--weight-black);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.12em;
       text-shadow: 2px 2px 0 var(--accent);
     }
     .demo-section-label {
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 1px 1px 0 var(--accent);
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -614,7 +614,7 @@
     /* ── Divider ─────────────────────────────────────────────────────── */
     .sg-divider {
       height: 1px;
-      background: var(--border);
+      background: var(--muted);
       margin: 32px 0;
     }
 
@@ -622,10 +622,10 @@
     code {
       font-family: var(--font);
       font-size: 11px;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       padding: 2px 5px;
       border-radius: 3px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--muted);
     }
 
     /* ── Numpad btn ──────────────────────────────────────────────────── */
@@ -636,7 +636,7 @@
       background: rgba(255,255,255,0.85);
       border: 2px solid rgba(0,0,0,0.15);
       border-radius: 6px;
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       height: 44px;
       width: 44px;
       cursor: pointer;
@@ -667,19 +667,19 @@
     }
     .demo-combo-text {
       flex: 1; min-width: 0;
-      background: var(--bg);
+      background: var(--puzzle-bg);
       border: none;
       padding: 12px 14px;
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       outline: none;
     }
     .demo-combo-text::placeholder {
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       font-weight: var(--weight-normal);
       letter-spacing: 0.01em;
       text-transform: none;
@@ -694,7 +694,7 @@
       font-weight: var(--weight-bold);
       letter-spacing: 0.05em;
       border: none;
-      border-left: 1px solid var(--border);
+      border-left: 1px solid var(--muted);
       border-radius: 0;
       cursor: pointer;
       transition: background 0.12s;
@@ -723,11 +723,11 @@
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      background: var(--surface);
-      border: 2px solid var(--border);
+      background: var(--puzzle-surface);
+      border: 2px solid var(--muted);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       outline: none;
       letter-spacing: 0.04em;
       transition: border-color 0.15s, box-shadow 0.15s;
@@ -737,9 +737,9 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-light);
     }
-    .demo-input::placeholder { color: var(--text-tertiary); font-weight: var(--weight-normal); }
+    .demo-input::placeholder { color: var(--puzzle-text-muted); font-weight: var(--weight-normal); }
     .demo-input.error { border-color: var(--danger-color); box-shadow: 0 0 0 3px var(--danger-bg-light); }
-    .demo-input:disabled { background: var(--bg); color: var(--text-tertiary); cursor: not-allowed; }
+    .demo-input:disabled { background: var(--puzzle-bg); color: var(--puzzle-text-muted); cursor: not-allowed; }
 
     /* ── Lobby invite / glass card ───────────────────────────────────── */
     .demo-glass-card {
@@ -748,15 +748,15 @@
       align-items: center;
       gap: 8px;
       padding: 12px 20px;
-      background: rgba(255,255,255,0.12);
+      background: var(--surface-frosted);
       border-radius: var(--radius-md);
-      border: 1px solid rgba(255,255,255,0.25);
+      border: 1px solid var(--surface-frosted-edge);
     }
     .demo-glass-label {
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
@@ -765,7 +765,7 @@
     .demo-lobby-hint {
       font-family: var(--font);
       font-size: var(--text-base);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 1px 2px 0 var(--accent);
       animation: fade-pulse 1.4s ease-in-out infinite;
     }
@@ -776,7 +776,7 @@
       font-family: var(--font);
       font-size: var(--text-md);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       white-space: nowrap;
     }
 
@@ -809,7 +809,7 @@
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-shadow: 1px 1px 0 var(--accent);
@@ -828,7 +828,7 @@
       font-family: var(--font);
       font-size: var(--text-base);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       letter-spacing: 0.04em;
       text-align: center;
       width: 160px;
@@ -844,7 +844,7 @@
       background: rgba(0,0,0,0.35);
       border: none;
       border-radius: var(--radius-sm);
-      color: #ffffff;
+      color: var(--canvas-text);
       cursor: pointer;
       transition: background 0.15s;
     }
@@ -854,7 +854,7 @@
     .demo-start-divider {
       width: 240px;
       height: 1px;
-      background: rgba(255,255,255,0.25);
+      background: var(--surface-frosted-edge);
     }
 
     /* ── Toast (dark mode) ───────────────────────────────────────────── */
@@ -872,7 +872,7 @@
       min-width: 220px;
       background: rgba(20,20,20,0.96);
       border: 1px solid rgba(255,255,255,0.08);
-      color: #ffffff;
+      color: var(--canvas-text);
     }
     .sg-toast.toast-success { border-left: 4px solid var(--accent); }
     .sg-toast.toast-error   { border-left: 4px solid var(--danger-color); }
@@ -897,7 +897,7 @@
     }
     .sg-modal {
       background: rgba(20,20,20,0.96);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--surface-raised-edge);
       border-radius: var(--radius-md);
       padding: 24px 28px;
       max-width: 360px;
@@ -908,14 +908,14 @@
       font-family: var(--font);
       font-size: var(--text-md);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
       margin-bottom: 8px;
     }
     .sg-modal-body {
       font-family: var(--font);
       font-size: var(--text-sm);
-      color: rgba(255,255,255,0.65);
+      color: var(--canvas-text-dim);
       line-height: 1.6;
       margin-bottom: 20px;
     }
@@ -935,11 +935,11 @@
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      background: var(--surface);
-      border: 2px solid var(--border);
+      background: var(--puzzle-surface);
+      border: 2px solid var(--muted);
       border-radius: var(--radius-sm);
       padding: 10px 36px 10px 14px;
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       outline: none;
       cursor: pointer;
       appearance: none;
@@ -956,7 +956,7 @@
       100% { background-position: 400px 0; }
     }
     .sg-skeleton {
-      background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+      background: linear-gradient(90deg, var(--muted) 25%, var(--puzzle-bg) 50%, var(--muted) 75%);
       background-size: 800px 100%;
       animation: shimmer 1.4s infinite linear;
       border-radius: var(--radius-xs);
@@ -964,7 +964,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .sg-spinner {
       width: 24px; height: 24px;
-      border: 3px solid var(--border);
+      border: 3px solid var(--muted);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
@@ -994,7 +994,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
+      color: var(--canvas-text);
     }
     .sg-icon-preview img, .sg-icon-preview svg {
       width: 20px;
@@ -1002,7 +1002,7 @@
     }
     .sg-icon-name {
       font-size: var(--text-xs);
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       text-align: center;
       font-weight: var(--weight-bold);
       letter-spacing: 0.06em;
@@ -1012,7 +1012,7 @@
     .sg-level {
       margin: 80px 0 48px;
       padding-top: 24px;
-      border-top: 3px solid var(--text-primary);
+      border-top: 3px solid var(--puzzle-text);
     }
     .sg-level-title {
       font-family: var(--font-display);
@@ -1020,12 +1020,12 @@
       font-weight: var(--weight-black);
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--text-primary);
+      color: var(--puzzle-text);
       margin-bottom: 6px;
     }
     .sg-level-desc {
       font-size: var(--text-sm);
-      color: var(--text-tertiary);
+      color: var(--puzzle-text-muted);
       line-height: 1.6;
       max-width: 640px;
       margin-bottom: 0;
@@ -1056,7 +1056,7 @@
     .demo-player-name {
       font-size: var(--text-md);
       font-weight: var(--weight-bold);
-      color: #ffffff;
+      color: var(--canvas-text);
       text-shadow: 2px 2px 0 var(--accent);
     }
 
@@ -1065,7 +1065,7 @@
       font-family: var(--font);
       font-size: var(--text-sm);
       font-weight: var(--weight-bold);
-      color: rgba(255,255,255,0.85);
+      color: var(--canvas-text);
       visibility: hidden;
     }
     .demo-promo-feedback.visible { visibility: visible; }
@@ -1201,6 +1201,39 @@
       </div>
     </div>
 
+    <h3 class="sg-subsection-title">Dark Canvas Context</h3>
+    <p class="sg-note"><strong>Use these for everything in the arena, screens, header, and dialogs.</strong> The primary visual register of the app. The puzzle island is the exception; everywhere else is dark canvas.</p>
+    <div class="sg-swatches" style="margin-top:12px">
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#ffffff"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">canvas-text</span><span class="sg-swatch-hex">#FFFFFF</span><span class="sg-swatch-hex">Primary text on dark</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:rgba(255,255,255,0.65);background-color:#a6a6a6"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">canvas-text-dim</span><span class="sg-swatch-hex">rgba(fff,0.65)</span><span class="sg-swatch-hex">Secondary text, dialog body</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background-color:#737373"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">canvas-text-muted</span><span class="sg-swatch-hex">rgba(fff,0.45)</span><span class="sg-swatch-hex">Tertiary, loading states</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background:#1c1c1e;border:1px solid #333"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">surface-raised</span><span class="sg-swatch-hex">#1C1C1E</span><span class="sg-swatch-hex">Dialogs, modals, pause overlay</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background-color:#404040;border:1px solid #555"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">surface-raised-edge</span><span class="sg-swatch-hex">rgba(fff,0.14)</span><span class="sg-swatch-hex">Border on raised dialog</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background-color:#1f1f1f;border:1px solid #444"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">surface-frosted</span><span class="sg-swatch-hex">rgba(fff,0.12)</span><span class="sg-swatch-hex">Glass panels, share cards</span></div>
+      </div>
+      <div class="sg-swatch">
+        <div class="sg-swatch-color" style="background-color:#404040"></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">surface-frosted-edge</span><span class="sg-swatch-hex">rgba(fff,0.25)</span><span class="sg-swatch-hex">Glass panel borders, dividers</span></div>
+      </div>
+    </div>
+
     <h3 class="sg-subsection-title">Action Colors — Orange &amp; Yellow</h3>
     <p class="sg-note"><strong>Orange</strong> is the VS AI / single-player signal color. It also appears on the HP bar at ~50% health, and in the heavy-hit screen flash. <strong>Yellow</strong> is the HP bar fill at full health, and the overlay subtitle text (always on dark or colored backgrounds).</p>
     <div class="sg-swatches" style="margin-top:12px">
@@ -1215,19 +1248,19 @@
     </div>
 
     <h3 class="sg-subsection-title">Greyscale &amp; Neutrals</h3>
-    <p class="sg-note">Used for backgrounds, surfaces, borders, and body text. All neutral values have equal R/G/B channels — no color cast.</p>
+    <p class="sg-note"><strong>Light puzzle context</strong> — used only within sudoku cells and character cards. For text and surfaces in the dark arena context, use <code>--canvas-*</code> and <code>--surface-raised</code> / <code>--surface-frosted</code> tokens instead.</p>
     <div class="sg-swatches" style="margin-top:12px">
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#f2f2f2;border:1px solid #e5e5e5"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">bg</span><span class="sg-swatch-hex">#F2F2F2</span><span class="sg-swatch-hex">Page background</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">puzzle-bg</span><span class="sg-swatch-hex">#F2F2F2</span><span class="sg-swatch-hex">Puzzle cell given bg, grid fill</span></div>
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#ffffff;border:1px solid #e5e5e5"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">surface</span><span class="sg-swatch-hex">#FFFFFF</span><span class="sg-swatch-hex">Cards, panels</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">puzzle-surface</span><span class="sg-swatch-hex">#FFFFFF</span><span class="sg-swatch-hex">Puzzle cell bg, character cards</span></div>
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#e5e5e5"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">border</span><span class="sg-swatch-hex">#E5E5E5</span><span class="sg-swatch-hex">General borders</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">muted</span><span class="sg-swatch-hex">#E5E5E5</span><span class="sg-swatch-hex">Disabled fills, inactive pills, dividers</span></div>
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#d5d5d5"></div>
@@ -1239,15 +1272,15 @@
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#555555"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">text-tertiary</span><span class="sg-swatch-hex">#555555</span><span class="sg-swatch-hex">Muted / toggle-off</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">puzzle-text-muted</span><span class="sg-swatch-hex">#555555</span><span class="sg-swatch-hex">Toggle-off, placeholder on light</span></div>
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#333333"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">text-secondary</span><span class="sg-swatch-hex">#333333</span><span class="sg-swatch-hex">Given cell numbers</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">puzzle-text-dim</span><span class="sg-swatch-hex">#333333</span><span class="sg-swatch-hex">Given cell numbers</span></div>
       </div>
       <div class="sg-swatch">
         <div class="sg-swatch-color" style="background:#111111"></div>
-        <div class="sg-swatch-info"><span class="sg-swatch-name">text-primary</span><span class="sg-swatch-hex">#111111</span><span class="sg-swatch-hex">Main text</span></div>
+        <div class="sg-swatch-info"><span class="sg-swatch-name">puzzle-text</span><span class="sg-swatch-hex">#111111</span><span class="sg-swatch-hex">Cell numbers, card labels</span></div>
       </div>
     </div>
 
@@ -1265,12 +1298,12 @@
       <div class="sg-card" style="flex:1">
         <div class="sg-card-label">Body &amp; UI — Roboto Mono</div>
         <p style="font-family:'Roboto Mono',monospace;font-size:22px;font-weight:400;margin-bottom:8px">Aa Bb Cc 0–9</p>
-        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--text-secondary)">Weights used: 400 (normal), 500 (medium), 700 (bold), 800 (heavy), 900 (black).<br>Used for all body text, buttons, HUD labels, number input, settings, lobby UI.</p>
+        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--puzzle-text-dim)">Weights used: 400 (normal), 500 (medium), 700 (bold), 800 (heavy), 900 (black).<br>Used for all body text, buttons, HUD labels, number input, settings, lobby UI.</p>
       </div>
       <div class="sg-card" style="flex:1">
         <div class="sg-card-label">Display — Barlow Condensed</div>
         <p style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;line-height:1;margin-bottom:8px">FIGHT!</p>
-        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--text-secondary)">Weight 900 only. Reserved exclusively for impactful game moments: FIGHT!, KO, VICTORY/DEFEAT, VS, lobby titles, section labels, match-end screen, start-screen mode headers.</p>
+        <p style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.7;color:var(--puzzle-text-dim)">Weight 900 only. Reserved exclusively for impactful game moments: FIGHT!, KO, VICTORY/DEFEAT, VS, lobby titles, section labels, match-end screen, start-screen mode headers.</p>
       </div>
     </div>
 
@@ -1356,7 +1389,7 @@
     </div>
     <div class="sg-type-row">
       <div class="sg-type-meta"><strong>Mobile overrides</strong><br>On ≤500px viewports, three sizes scale down</div>
-      <div class="sg-type-specimen" style="font-size:var(--text-sm);color:var(--text-tertiary);line-height:1.8">
+      <div class="sg-type-specimen" style="font-size:var(--text-sm);color:var(--puzzle-text-muted);line-height:1.8">
         <code>--text-xl</code> 26px → 18px<br>
         <code>--text-3xl</code> 66px → 44px<br>
         <code>--text-4xl</code> 96px → 56px
@@ -1422,7 +1455,7 @@
           </div>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         <strong>Chevrons:</strong> <code>/assets/ui/chevron-left.svg</code>, <code>chevron-right.svg</code> — stroke-based with <code>currentColor</code>. Must be inlined as <code>&lt;svg&gt;</code> (not <code>&lt;img&gt;</code>) to inherit the parent element's color — <code>&lt;img&gt;</code> isolates the SVG's rendering context and breaks <code>currentColor</code>.<br><br>
         <strong>Settings gear:</strong> inline SVG in HTML (no separate file yet). Fill-based.<br><br>
@@ -1452,7 +1485,7 @@
         <button class="btn">QUICK PLAY</button>
         <button class="btn" disabled>DISABLED</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         Primary action on each screen: Quick Play, Create Room, Select character, Play Again.<br><br>
         <strong>Background:</strong> <code>accent</code> #8B49FF<br>
@@ -1468,7 +1501,7 @@
         <button class="btn btn-sm">BACK</button>
         <button class="btn btn-sm">COPY INVITE</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         In-context small actions: Back navigation, Copy Invite. Sits inline with other elements.<br><br>
         <strong>Font size:</strong> 12px (–text-sm)<br>
@@ -1486,7 +1519,7 @@
         <button class="btn btn-sm btn-secondary">MEDIUM</button>
         <button class="btn btn-sm btn-secondary" style="opacity:0.55">HARD</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         Secondary/alternative actions: Share, difficulty selector. Lower visual weight than primary.<br><br>
         <strong>Background:</strong> white<br>
@@ -1502,7 +1535,7 @@
         <button class="btn btn-alt">VS AI</button>
         <button class="btn btn-alt">START!</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         A second primary-weight CTA that needs to contrast with <code>.btn</code> (purple) on the same page. Currently: VS AI on the start screen, START! in the SP lobby. Not tied to any specific screen — use any time you have two primary CTAs and need visual separation.<br><br>
         <strong>Background:</strong> <code>--orange</code> #FF8B16<br>
@@ -1516,7 +1549,7 @@
       <div class="sg-card arena" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
         <button class="btn btn-danger">LEAVE</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         Any action that destroys or irreversibly exits. Currently: Leave at game-over overlay. Semantic contract: if it deletes, exits, or can't be undone, use this class.<br><br>
         <strong>Background:</strong> <code>--danger-color</code> #F00013<br>
@@ -1532,7 +1565,7 @@
         <button class="btn-utility" style="display:flex;align-items:center;gap:5px;padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em"><img src="/assets/ui/chevron-left.svg" style="width:16px;height:16px;filter:brightness(0) invert(1)" alt="" />BACK</button>
         <button class="btn-utility" style="padding:0 12px;height:36px;border-radius:8px;font-size:10px;letter-spacing:0.06em">SURRENDER</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Usage</div>
         Low-priority functional actions that always appear over colored/arena backgrounds: settings icon, track carousel chevrons, surrender. No shadow — dark semi-transparent pill recedes visually.<br><br>
         <strong>Background:</strong> <code>rgba(0,0,0,0.35)</code><br>
@@ -1612,7 +1645,7 @@
         <label class="toggle-switch"><input type="checkbox" /><span class="toggle-slider"></span></label>
         <label class="toggle-switch"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">States</div>
         <strong>Off:</strong> text-tertiary grey track<br>
         <strong>On:</strong> accent purple track<br>
@@ -1635,7 +1668,7 @@
         <span class="status-pill p2">P2</span>
         <span class="status-pill count">3</span>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">States</div>
         <code>.active</code> — accent: on/ready/live<br>
         <code>.inactive</code> — neutral grey: off/waiting<br>
@@ -1656,9 +1689,9 @@
       <div class="sg-card" style="display:flex;gap:16px;align-items:center;padding:20px;flex:0 0 auto">
         <div class="sg-spinner"></div>
         <div class="sg-spinner sm"></div>
-        <span style="font-size:var(--text-sm);color:var(--text-tertiary)">Connecting...</span>
+        <span style="font-size:var(--text-sm);color:var(--puzzle-text-muted)">Connecting...</span>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Sizes</div>
         Default: 24×24px, 3px border<br>
         Small (<code>.sm</code>): 16×16px, 2px border<br>
@@ -1695,7 +1728,7 @@
           <div class="sg-note" style="margin-top:6px">Selected</div>
         </div>
       </div>
-      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
+      <div style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:200px">
         White surface, radius 0, 4px 4px purple shadow.<br>
         Selected: accent fill, white shadow (4px 4px), name turns white.<br>
         Hover: translate(-1px,-2px), shadow grows to 5px 6px.<br><br>
@@ -1724,7 +1757,7 @@
           <span class="status-pill inactive">WAITING...</span>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Anatomy</div>
         <strong>Player label:</strong> Barlow Condensed 28px w900, player-color, white shadow (3px 3px)<br>
         <strong>Portrait:</strong> 80px, object-fit:cover, image-rendering:pixelated. Use <code>placeholder_fighter.svg</code> until assigned.<br>
@@ -1749,7 +1782,7 @@
           <button class="demo-join-btn">JOIN</button>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Anatomy</div>
         <strong>Container:</strong> 2px white border, radius-sm, purple shadow (4px 4px), overflow hidden<br>
         <strong>Input:</strong> bg surface, 12px bold uppercase, letter-spacing 0.1em<br>
@@ -1771,7 +1804,7 @@
         <input class="demo-input error" value="Error state" />
         <input class="demo-input" value="Disabled state" disabled />
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">States</div>
         <strong>Default:</strong> 2px border #E5E5E5, radius-sm<br>
         <strong>Focus:</strong> accent border, 3px soft accent-light glow<br>
@@ -1793,7 +1826,7 @@
           <button class="demo-carousel-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 15 12 9 19"/></svg></button>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Anatomy</div>
         Chevrons: <code>.btn-utility</code> style, min 44×44px<br>
         Title: Roboto Mono 14px bold, white, 160px fixed width, ellipsis
@@ -1810,7 +1843,7 @@
         <p class="demo-inline-error">Room not found. Check the code and try again.</p>
         <p class="demo-inline-success">Copied to clipboard!</p>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Variants</div>
         <strong>Error:</strong> danger-color, 1px 1px dark shadow<br>
         <strong>Success:</strong> accent, 1px 1px white shadow<br>
@@ -1833,7 +1866,7 @@
           </div>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Style</div>
         Background: <code>rgba(255,255,255,0.12)</code><br>
         Border: 1px <code>rgba(255,255,255,0.25)</code><br>
@@ -1857,7 +1890,7 @@
           </div>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Pattern</div>
         Base: <code>.btn.btn-sm.btn-secondary</code> at opacity 0.55<br>
         Selected: opacity 1.0 — no outline (conflicts with box-shadow)
@@ -1880,7 +1913,7 @@
           <option>Focused state</option>
         </select>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Style</div>
         Same base as Standalone Input: 2px border, radius-sm, 12px bold<br>
         <code>appearance: none</code> removes native chrome<br>
@@ -1903,7 +1936,7 @@
           </div>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Style</div>
         90° shimmer gradient: <code>--border</code> → <code>--bg</code> → <code>--border</code><br>
         800px background-size, 1.4s infinite sweep
@@ -1921,7 +1954,7 @@
           <div class="numpad-btn-demo">1</div><div class="numpad-btn-demo">2</div><div class="numpad-btn-demo">3</div><div class="numpad-btn-demo">4</div><div class="numpad-btn-demo">5</div><div class="numpad-btn-demo">6</div><div class="numpad-btn-demo">7</div><div class="numpad-btn-demo">8</div><div class="numpad-btn-demo">9</div>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Style</div>
         Background: rgba(255,255,255,0.85) · Border: 2px rgba(0,0,0,0.15) · Radius: 6px<br>
         Font: 19px w700 Roboto Mono · Active: scale(0.93) + fully opaque white
@@ -2086,7 +2119,7 @@
           <span class="demo-combo" style="text-shadow:2px 2px 0 var(--p2-mid-dark)">×5 COMBO!</span>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         18px bold white, player mid-dark shadow. P1: <code>p1-mid-dark</code> · P2: <code>p2-mid-dark</code>
       </div>
     </div>
@@ -2153,7 +2186,7 @@
           <label class="toggle-switch"><input type="checkbox" /><span class="toggle-slider"></span></label>
         </div>
       </div>
-      <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:200px">
+      <div style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:200px">
         <strong>Panel:</strong> rgba(20,20,20,0.96), 1px white border at 10%, fixed anchor<br>
         <strong>Row (<code>.ctx-menu-item</code>):</strong> flex row, space-between<br>
         <strong>Stacked (<code>.stacked</code>):</strong> label above, control below — for Carousel rows<br>
@@ -2174,7 +2207,7 @@
         <div class="sg-toast toast-error"><span class="sg-toast-icon">✕</span><span>Connection lost — reconnecting</span></div>
         <div class="sg-toast toast-info"><span class="sg-toast-icon">i</span><span>Opponent joined the room</span></div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Variants</div>
         <code>toast-success</code> → accent left border<br>
         <code>toast-error</code> → danger left border<br>
@@ -2231,7 +2264,7 @@
           <button class="btn btn-alt" style="width:240px">VS AI</button>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <strong>Mode labels:</strong> Barlow Condensed 26px w900, white + purple shadow (2px 2px), letter-spacing 0.12em<br>
         <strong>Section sub-labels:</strong> Roboto Mono 12px w700, white + purple shadow (1px 1px), uppercase<br>
         <strong>Divider:</strong> 240px wide, 1px, rgba(255,255,255,0.25) — matches CTA width<br>
@@ -2250,7 +2283,7 @@
         <p class="demo-promo-feedback visible">Copied to clipboard</p>
         <button class="btn btn-sm btn-secondary">SHARE THE GAME</button>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         Left: hidden — button at natural position. Right: visible — button stays in place.<br>
         Feedback text: 12px bold, rgba(255,255,255,0.85).<br>
         This pattern applies anywhere transient text appears above or below an interactive element.
@@ -2289,7 +2322,7 @@
       <div class="sg-card arena" style="padding:24px;display:flex;justify-content:center">
         <p class="demo-lobby-hint">Waiting for opponent...</p>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         Roboto Mono 14px, white, purple shadow 1px 2px 0<br>
         Animation: <code>fade-pulse</code> 1.4s ease-in-out infinite (opacity 1.0 → 0.4)<br>
         Use for any "waiting for..." transient state.
@@ -2314,7 +2347,7 @@
         <strong>Contextual Menu organism</strong> — triggered by settings icon<br>
         Attack flash — full-screen inset shadow effect
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Notes</div>
         Arena background is set by JS from the selected arena config.<br>
         Surrender button lives in the action bar row at top-right, uses <code>.btn-utility</code>.<br>
@@ -2332,7 +2365,7 @@
       <div class="sg-card" style="display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;padding:32px">
         <div class="demo-match-title">VICTORY</div>
         <div class="demo-match-title defeat">DEFEAT</div>
-        <div style="height:1px;background:var(--border);width:100%;margin:8px 0"></div>
+        <div style="height:1px;background:var(--muted);width:100%;margin:8px 0"></div>
         <div class="demo-match-winner-img"><img src="/characters/fighter1/portrait.png" alt="Xiao Long" style="width:80px;height:80px;object-fit:cover;image-rendering:pixelated;border-radius:12px" /></div>
         <div class="demo-match-winner-name">Xiao Long</div>
         <div style="display:flex;gap:12px;margin-top:8px">
@@ -2340,7 +2373,7 @@
           <button class="btn btn-danger">LEAVE</button>
         </div>
       </div>
-      <div class="sg-card" style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;flex:1;min-width:220px">
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <strong>Title:</strong> Barlow Condensed 66px w900<br>
         Victory: <code>accent</code>, shadow <code>3px 4px 0 #ffffff</code><br>
         Defeat: <code>danger-color</code>, same shadow<br>

@@ -12,7 +12,7 @@ export default function MobileNumpad() {
     const btn = (e.target as HTMLElement).closest('[data-value]') as HTMLElement | null;
     if (!btn) return;
     const st = useGameStore.getState();
-    if (!st.selectedCell || st.roundOver) return;
+    if (!st.selectedCell || st.roundOver || st.isPaused) return;
     const { row, col } = st.selectedCell;
     const value = parseInt(btn.dataset.value ?? '0');
 
@@ -26,7 +26,7 @@ export default function MobileNumpad() {
       useGameStore.setState({ [animKey]: { state: 'damage_heavy', nonce }, [mistakeKey]: { nonce }, attackFlashType: 'self' });
       setTimeout(() => useGameStore.getState().setSelfDamagePredicted(), 300);
     }
-    if (st.gameMode === 'singleplayer') {
+    if (st.gameMode === 'practice' || st.gameMode === 'campaign') {
       vsAiPlayerMove?.(row, col, value);
     } else {
       send('cell_input', { row, col, value });

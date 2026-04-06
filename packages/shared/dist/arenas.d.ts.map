@@ -1,1 +1,1 @@
-{"version":3,"file":"arenas.d.ts","sourceRoot":"","sources":["../src/arenas.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,kBAAkB,CAAC;AAE9C,eAAO,MAAM,MAAM,EAAE,KAAK,EAkCzB,CAAC;AAEF,wBAAgB,QAAQ,CAAC,EAAE,EAAE,MAAM,GAAG,KAAK,GAAG,SAAS,CAEtD"}
+{"version":3,"file":"arenas.d.ts","sourceRoot":"","sources":["../src/arenas.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,kBAAkB,CAAC;AAE9C,eAAO,MAAM,MAAM,EAAE,KAAK,EAyDzB,CAAC;AAEF,wBAAgB,QAAQ,CAAC,EAAE,EAAE,MAAM,GAAG,KAAK,GAAG,SAAS,CAEtD"}
