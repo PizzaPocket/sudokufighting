@@ -8,8 +8,8 @@ RUN npm install --production
 # Copy backend source
 COPY backend/ .
 
-# arenas.js is shared — backend imports it from ../frontend/js/arenas.js
-COPY frontend/js/arenas.js /frontend/js/arenas.js
+# shared package dist — backend imports ARENAS and other types from here
+COPY packages/shared/dist/ /packages/shared/dist/
 
 EXPOSE 8080
 CMD ["node", "server.js"]
