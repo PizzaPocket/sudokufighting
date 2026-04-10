@@ -50,7 +50,7 @@ export default function GameplayScreen({ active }: Props) {
     <div
       id="screen-gameplay"
       ref={screenRef}
-      className="screen active"
+      className={`screen active${campaignResult === 'gameover' ? ' campaign-gameover-active' : ''}`}
       style={bgStyle}
     >
       {/* Arena background layers (sun, ground, overlays) */}

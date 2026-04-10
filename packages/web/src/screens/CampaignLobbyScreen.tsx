@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { CAMPAIGN_FIGHTS, ARENAS } from '@sudoku-fighting/shared';
+import { fadeOutMusic } from '../audio/audioManager';
 import { setupNextFight } from '../ai/useCampaign';
 import { startCampaignNextFight } from '../ai/useVsAI';
 
@@ -27,6 +28,7 @@ export default function CampaignLobbyScreen({ active }: Props) {
 
   function handleStart() {
     if (!fight) return;
+    fadeOutMusic(800);
     setupNextFight(campaignFightIndex, myCharacter, characters);
     useGameStore.setState({
       mySeat: 0,

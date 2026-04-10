@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import type { Character, Difficulty } from '@sudoku-fighting/shared';
 import { buildCampaignStartQueue } from '../ai/useCampaign';
+import { fadeOutMusic } from '../audio/audioManager';
 
 interface Props { active: boolean; }
 
@@ -52,6 +53,7 @@ export default function CharacterSelectScreen({ active }: Props) {
   function handleContinue() {
     if (!selected) return;
     const queue = buildCampaignStartQueue(selected, characters);
+    fadeOutMusic(800);
     useGameStore.setState({ campaignDialogueQueue: queue } as never);
     setScreen('campaign-dialogue');
   }

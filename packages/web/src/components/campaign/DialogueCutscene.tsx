@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { setupNextFight } from '../../ai/useCampaign';
-import { stopMusicNow } from '../../audio/audioManager';
 
 const TYPEWRITER_INTERVAL_MS = 18;
 const FADE_IN_MS  = 400;
@@ -33,10 +32,9 @@ export default function DialogueCutscene({ active }: Props) {
     if (phaseTimerRef.current) { clearTimeout(phaseTimerRef.current); phaseTimerRef.current = null; }
   }
 
-  // Reset everything when screen activates; guarantee music is silent
+  // Reset everything when screen activates
   useEffect(() => {
     if (!active) { clearTypewriter(); clearPhaseTimer(); return; }
-    stopMusicNow();
     setQueueIndex(0);
     setLineIndex(0);
     setDisplayedText('');
@@ -113,6 +111,7 @@ export default function DialogueCutscene({ active }: Props) {
           myName: myChar?.name ?? 'Player',
           campaignResult: null,
           campaignDialogueQueue: [],
+          preRoundSignal: null,  // clear stale signal so GameOverlay doesn't replay previous round number on mount
           currentScreen: 'gameplay',
         } as never);
       }, FADE_OUT_MS);
@@ -145,22 +144,24 @@ export default function DialogueCutscene({ active }: Props) {
             alt={currentEntry.speakerName}
             draggable={false}
           />
-          {phase === 'active' && (
-            <div className="dialogue-panel" onClick={e => e.stopPropagation()}>
-              <div className="dialogue-speaker">{currentEntry.speakerName}</div>
-              <div className="dialogue-divider" />
-              <p className="dialogue-text">
-                {currentLine.split('').map((char, i) => (
-                  <span key={i} style={i >= displayedText.length ? { color: 'transparent' } : undefined}>{char}</span>
-                ))}
-              </p>
-              <div className="dialogue-footer">
-                <button className="btn btn-sm btn-secondary dialogue-next-btn" onClick={handleNext}>
-                  {nextLabel}
-                </button>
-              </div>
+          <div
+            className="dialogue-panel"
+            style={phase !== 'active' ? { visibility: 'hidden' } : undefined}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="dialogue-speaker">{currentEntry.speakerName}</div>
+            <div className="dialogue-divider" />
+            <p className="dialogue-text">
+              {currentLine.split('').map((char, i) => (
+                <span key={i} style={i >= displayedText.length ? { color: 'transparent' } : undefined}>{char}</span>
+              ))}
+            </p>
+            <div className="dialogue-footer">
+              <button className="btn btn-sm btn-secondary dialogue-next-btn" onClick={handleNext}>
+                {nextLabel}
+              </button>
             </div>
-          )}
+          </div>
         </>
       )}
     </div>

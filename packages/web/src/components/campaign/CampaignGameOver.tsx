@@ -5,8 +5,8 @@ import { fadeOutMusic } from '../../audio/audioManager';
 
 export default function CampaignGameOver() {
   const myCharacter = useGameStore(s => s.myCharacter);
-  const myUseAlt = useGameStore(s => s.myUseAlt);
   const characters = useGameStore(s => s.characters);
+  const p1AnimSignal = useGameStore(s => s.p1AnimSignal);
   const resetAll = useGameStore(s => s.resetAll);
   const [visible, setVisible] = useState(false);
 
@@ -15,14 +15,13 @@ export default function CampaignGameOver() {
     return () => clearTimeout(t);
   }, []);
 
-  function resolveCharId() {
-    if (!myCharacter) return null;
-    if (!myUseAlt) return myCharacter;
-    const char = characters.find(c => c.id === myCharacter);
-    return char?.altId ?? myCharacter;
-  }
-
-  const resolvedCharId = resolveCharId();
+  // If the player wasn't truly KO'd (TKO — health never hit 0), trigger the
+  // KO animation now so they always collapse at game over.
+  useEffect(() => {
+    if (p1AnimSignal?.state !== 'ko') {
+      useGameStore.setState({ p1AnimSignal: { state: 'ko', nonce: Date.now() } } as never);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleTryAgain() {
     if (!myCharacter) return;
@@ -37,23 +36,22 @@ export default function CampaignGameOver() {
   }
 
   return (
-    <div className={`campaign-gameover-overlay${visible ? ' visible' : ''}`}>
-      {resolvedCharId && (
-        <img
-          className="gameover-character"
-          src={`/characters/${resolvedCharId}/ko_frame2.svg`}
-          alt=""
-        />
-      )}
-      <div className="gameover-title">GAME OVER</div>
-      <div className="overlay-btn-row">
-        <button className="btn btn-alt" onClick={handleTryAgain}>
-          TRY AGAIN
-        </button>
-        <button className="btn btn-secondary" onClick={() => resetAll()}>
-          MAIN MENU
-        </button>
+    <>
+      {/* Layer 1 — black backdrop fades to full opacity (z-500) */}
+      <div className={`gameover-backdrop${visible ? ' visible' : ''}`} />
+
+      {/* Layer 3 — title + buttons sit above the sprite (z-700) */}
+      <div className={`gameover-ui${visible ? ' visible' : ''}`}>
+        <div className="gameover-title">GAME OVER</div>
+        <div className="overlay-btn-row">
+          <button className="btn btn-alt" onClick={handleTryAgain}>
+            TRY AGAIN
+          </button>
+          <button className="btn btn-secondary" onClick={() => resetAll()}>
+            MAIN MENU
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

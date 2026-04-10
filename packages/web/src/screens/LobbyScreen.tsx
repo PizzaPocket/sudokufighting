@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { send } from '../hooks/useGameSocket';
 import { ARENAS } from '@sudoku-fighting/shared';
+import { fadeOutMusic } from '../audio/audioManager';
 import ArenaCarousel from '../components/lobby/ArenaCarousel';
 
 interface Props { active: boolean; }
@@ -80,6 +81,7 @@ export default function LobbyScreen({ active }: Props) {
   useEffect(() => {
     if (lobbyCountdown === 0) {
       setLobbyCountdown(null);
+      fadeOutMusic(800);
       const { roundNumber, backgroundId: bgId } = useGameStore.getState();
       useGameStore.setState({
         currentScreen: 'gameplay',

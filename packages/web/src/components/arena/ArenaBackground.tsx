@@ -11,7 +11,6 @@ export default function ArenaBackground() {
 
   const matchStartTime = useRef<number | null>(null);
   const fadeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const sunInitialY = useRef<number | null>(null);
   const sunEndRef = useRef<HTMLImageElement>(null);
   const sunStartRef = useRef<HTMLImageElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -23,25 +22,24 @@ export default function ArenaBackground() {
   // Initialize sun position when arena loads
   useEffect(() => {
     if (!arena?.sunEnd || !sunEndRef.current) return;
-    if (sunInitialY.current === null) {
-      const rect = sunEndRef.current.getBoundingClientRect();
-      const y = (window.innerHeight - rect.height) / 2;
-      sunInitialY.current = y;
-      sunEndRef.current.style.top = `${y}px`;
-      if (sunStartRef.current) sunStartRef.current.style.top = `${y}px`;
-    }
+    const y = (window.innerHeight - sunEndRef.current.offsetHeight) / 2;
+    sunEndRef.current.style.top = `${y}px`;
+    if (sunStartRef.current) sunStartRef.current.style.top = `${y}px`;
   }, [arena?.sunEnd]);
 
-  // Start bg fade when FIGHT! fires (preRoundSignal nonce changes and it's round 1)
+  // Start bg fade when FIGHT! fires; keep running across all rounds for the full match duration
   useEffect(() => {
     if (!preRoundNonce) return;
     const st = useGameStore.getState();
-    if (st.roundNumber !== 1) return;
 
-    if (!matchStartTime.current) {
+    // Set match start time only once, on round 1
+    if (st.roundNumber === 1) {
       matchStartTime.current = Date.now();
       matchPausedMs.current = 0;
     }
+
+    // No match start time means round 1 hasn't fired yet — bail
+    if (!matchStartTime.current) return;
     if (fadeInterval.current) return;
 
     function startFadeInterval() {
@@ -54,9 +52,9 @@ export default function ArenaBackground() {
 
         const sunEnd = sunEndRef.current;
         const sunStart = sunStartRef.current;
-        if (sunEnd && sunInitialY.current !== null) {
+        if (sunEnd) {
           const sinkPx = Math.floor(elapsed / 1000);
-          const y = sunInitialY.current + sinkPx;
+          const y = (window.innerHeight - sunEnd.offsetHeight) / 2 + sinkPx;
           sunEnd.style.top = `${y}px`;
           if (sunStart) {
             sunStart.style.top = `${y}px`;
@@ -117,7 +115,17 @@ export default function ArenaBackground() {
 
   return (
     <>
-      {/* Sun layers (El Tropical) */}
+      {/* Fade overlay (bgFadeOverlay path) — sky layer, fades out to reveal base background */}
+      {arena.bgFadeOverlay && (
+        <div
+          ref={overlayRef}
+          id="arena-bg-overlay"
+          className="active"
+          style={{ backgroundImage: `url(${arena.bgFadeOverlay})` }}
+        />
+      )}
+
+      {/* Sun layers (El Tropical) — above sky overlay; sun_end below sun_start so fade reveals it */}
       {arena.sunEnd && (
         <img
           ref={sunEndRef}
@@ -134,16 +142,6 @@ export default function ArenaBackground() {
           className="arena-sun active"
           src={arena.sunStart}
           alt=""
-        />
-      )}
-
-      {/* Fade overlay (bgFadeOverlay path) */}
-      {arena.bgFadeOverlay && (
-        <div
-          ref={overlayRef}
-          id="arena-bg-overlay"
-          className="active"
-          style={{ backgroundImage: `url(${arena.bgFadeOverlay})` }}
         />
       )}
 

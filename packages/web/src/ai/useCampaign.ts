@@ -3,6 +3,7 @@ import { CAMPAIGN_FIGHTS, ARENAS, resolveNextFight, getMatchDialogue, MASTER_CHO
 import type { Character, DialogueEntry } from '@sudoku-fighting/shared';
 import { useGameStore } from '../store/gameStore';
 import { saveProgression } from '../progression/progressionService';
+import { fadeOutMusic } from '../audio/audioManager';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -118,6 +119,7 @@ export function useCampaign() {
     const fightIndex = st.campaignFightIndex;
 
     if (!playerWon) {
+      fadeOutMusic(1500);
       useGameStore.setState({ campaignResult: 'gameover' } as never);
       return;
     }

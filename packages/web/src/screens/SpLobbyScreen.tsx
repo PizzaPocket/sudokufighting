@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { ARENAS } from '@sudoku-fighting/shared';
+import { fadeOutMusic } from '../audio/audioManager';
 import type { Character, Difficulty } from '@sudoku-fighting/shared';
 import ArenaCarousel from '../components/lobby/ArenaCarousel';
 
@@ -42,6 +43,7 @@ export default function SpLobbyScreen({ active }: Props) {
 
   function handleStart() {
     const arenaId = ARENAS[spArenaIndex % ARENAS.length].id;
+    fadeOutMusic(800);
     // Store opponent identity so useVsAI can read it when constructing game_start
     useGameStore.setState({
       opponentCharacter: aiChar?.id ?? 'fighter2',
