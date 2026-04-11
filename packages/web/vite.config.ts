@@ -22,6 +22,6 @@ export default defineConfig({
     },
   },
   define: {
-    __WS_URL__: JSON.stringify(process.env.VITE_WS_URL ?? null),
+    __WS_URL__: JSON.stringify(process.env.VITE_WS_URL ?? process.env.WS_URL ?? null),
   },
 });
