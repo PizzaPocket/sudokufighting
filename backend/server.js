@@ -221,6 +221,8 @@ wss.on('connection', (ws) => {
     switch (type) {
       case 'find_match': {
         const { characterId = 'fighter1', name = 'Player', preferredArenaId = null } = payload;
+        // Remove any existing queue entry for this player (e.g. re-entering after back-navigate)
+        dequeue(playerId);
         const shareCode = enqueue(playerId, ws, characterId, name, preferredArenaId);
         const matched = tryMatch();
         if (matched) {
@@ -264,6 +266,7 @@ wss.on('connection', (ws) => {
 
       case 'create_room': {
         const { characterId = 'fighter1', name = 'Player' } = payload;
+        dequeue(playerId);
         const { roomId, shareCode: roomShareCode } = createPrivateRoom(playerId, ws, characterId, name);
         send(ws, 'room_created', { roomId, shareCode: roomShareCode });
         break;
@@ -271,6 +274,7 @@ wss.on('connection', (ws) => {
 
       case 'join_room': {
         const { shareCode: joinCode, characterId = 'fighter1', name = 'Player' } = payload;
+        dequeue(playerId);
         if (!joinCode) { send(ws, 'room_not_found', {}); break; }
         const result = joinByShareCode(joinCode.toUpperCase(), playerId, ws, characterId, name);
         if (result.error === 'not_found') { send(ws, 'room_not_found', {}); break; }

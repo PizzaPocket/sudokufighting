@@ -71,9 +71,10 @@ export function send<T extends ClientMessage['type']>(
 export function disconnect() {
   if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
   if (socket) {
-    socket.onclose = null; // prevent reconnect loop
+    // Close the socket so the server's ws.on('close') fires and cleans up rooms/queue.
+    // Do NOT null out onclose — let it fire so wsConnected goes false and reconnect
+    // is scheduled. Future lobby sessions need a live socket.
     socket.close();
-    socket = null;
   }
 }
 
