@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react';
 import {
   generatePuzzle,
-  handleCellInput, applyDamageFromAttack,
+  handleCellInput, applyDamageFromAttack, applyCounterDamage,
   buildCellQueue, scheduleNext,
   STARTING_HEALTH, ATTACK_DELAY_MS, DIFFICULTY_CONFIG,
   CAMPAIGN_FIGHTS, getCampaignFightConfig,
@@ -129,6 +129,12 @@ export function useVsAI() {
       injectServerMessage(ev);
       if (ev.type === 'attack_incoming') {
         scheduleAttack(ev.payload.attackId, ev.payload.delayMs);
+      }
+      if (ev.type === 'auto_counter') {
+        const t = attackTimers.current.get(ev.payload.attackId);
+        if (t) { clearTimeout(t); attackTimers.current.delete(ev.payload.attackId); }
+        const result = applyCounterDamage(roundState.current, ev.payload.attackId);
+        if (result) { for (const counterEv of result.events) injectServerMessage(counterEv); }
       }
       if (ev.type === 'puzzle_complete') {
         setTimeout(() => dispatchRoundEnd(seat as 0 | 1), 200);

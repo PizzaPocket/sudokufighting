@@ -22,6 +22,7 @@ export default function LobbyScreen({ active }: Props) {
   const lobbyCountdown = useGameStore(s => s.lobbyCountdown);
   const setLobbyCountdown = useGameStore(s => s.setLobbyCountdown);
   const backgroundId = useGameStore(s => s.backgroundId);
+  const wsConnected = useGameStore(s => s.wsConnected);
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [arenaIndex, setArenaIndex] = useState(0);
@@ -32,9 +33,11 @@ export default function LobbyScreen({ active }: Props) {
   const myChar = characters.find(c => c.id === myCharacter);
   const oppChar = characters.find(c => c.id === opponentCharacter);
 
-  // Send join/create once when screen becomes active
+  // Send join/create once when screen becomes active AND socket is connected.
+  // Watching both ensures we don't silently drop the message if the socket
+  // connects after the lobby screen activates (e.g. on a slow mobile connection).
   useEffect(() => {
-    if (!active || hasSentJoin.current) return;
+    if (!active || !wsConnected || hasSentJoin.current) return;
     hasSentJoin.current = true;
 
     const storedName = myName ?? 'Player';
@@ -55,7 +58,7 @@ export default function LobbyScreen({ active }: Props) {
         send('set_arena_preference', { arenaId: ARENAS[arenaIndex].id });
       }
     }
-  }, [active]);
+  }, [active, wsConnected]);
 
   // Reset hasSentJoin on deactivation
   useEffect(() => {

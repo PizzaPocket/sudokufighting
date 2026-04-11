@@ -372,6 +372,7 @@ export function applyCounterDamage(roomId, attackId) {
     health: [...round.health],
     defenderSeat: attack.defenderSeat,
     attackerSeat: attack.attackerSeat,
+    attackType: attack.type,
     reducedDamage,
     counterDamage,
   };

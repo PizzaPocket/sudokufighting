@@ -3,14 +3,15 @@ import { getArena } from '@sudoku-fighting/shared';
 import type { AttackType } from '@sudoku-fighting/shared';
 
 export const TRACKS = [
-  { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.mp3'    },
-  { title: 'Sudoku Fighting',  src: '/sounds/Sudoku_Fighting.mp3'    },
-  { title: 'Action Go',        src: '/sounds/Action_Go.mp3'          },
-  { title: 'Haunted (Remix)',  src: '/sounds/Haunted_Remix.mp3'      },
-  { title: 'Jocular Jamnation', src: '/sounds/Jocular_Jamnation.mp3' },
+  { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.m4a'    },
+  { title: 'Sudoku Fighting',  src: '/sounds/Sudoku_Fighting.m4a'    },
+  { title: 'Action Go',        src: '/sounds/Action_Go.m4a'          },
+  { title: 'Haunted (Remix)',  src: '/sounds/Haunted_Remix.m4a'      },
+  { title: 'Jocular Jamnation', src: '/sounds/Jocular_Jamnation.m4a' },
+  { title: 'Shinobi',          src: '/sounds/Shinobi.m4a'            },
 ];
 
-const SELECT_TRACK_INDEX = 1;
+export const SELECT_TRACK_INDEX = 1;
 const SFX_LEAD_MS = 80;
 
 let musicEnabled = true;
@@ -20,9 +21,14 @@ let selectedTrackIndex = 0;
 // Web Audio API — created lazily on first user interaction to satisfy browser policy
 let audioCtx: AudioContext | null = null;
 let gainNode: GainNode | null = null;
-let currentSource: AudioBufferSourceNode | null = null;
+
+// Music playback via HTMLAudioElement + MediaElementSourceNode.
+// Using MediaElementSource (instead of BufferSource) lets the browser start playback
+// synchronously within the gesture handler, which keeps iOS Chrome from re-suspending
+// the AudioContext before a fetch/decode can complete.
+let currentMediaEl: HTMLAudioElement | null = null;
+let currentMediaSource: MediaElementAudioSourceNode | null = null;
 let currentSrc: string | null = null;
-const bufferCache: Record<string, AudioBuffer> = {};
 
 function getCtx(): AudioContext {
   if (!audioCtx) {
@@ -32,15 +38,6 @@ function getCtx(): AudioContext {
     gainNode.connect(audioCtx.destination);
   }
   return audioCtx;
-}
-
-async function loadBuffer(src: string): Promise<AudioBuffer> {
-  if (bufferCache[src]) return bufferCache[src];
-  const response = await fetch(src);
-  const arrayBuffer = await response.arrayBuffer();
-  const decoded = await getCtx().decodeAudioData(arrayBuffer);
-  bufferCache[src] = decoded;
-  return decoded;
 }
 
 export function setMusicEnabled(enabled: boolean) {
@@ -58,9 +55,9 @@ export function getSelectedTrackIndex() { return selectedTrackIndex; }
 
 export function setTrackIndex(index: number) {
   selectedTrackIndex = ((index % TRACKS.length) + TRACKS.length) % TRACKS.length;
-  if (currentSource) {
-    currentSource.stop();
-    currentSource = null;
+  if (currentMediaEl) {
+    currentMediaEl.pause();
+    currentMediaEl = null;
     currentSrc = null;
     startFightMusic();
   }
@@ -71,8 +68,19 @@ export async function startFightMusic(backgroundId?: string) {
   if (arena) selectedTrackIndex = arena.trackIndex;
 
   const src = TRACKS[selectedTrackIndex].src;
-  if (currentSource && currentSrc === src) return;
-  if (currentSource) { currentSource.stop(); currentSource = null; }
+  if (currentSrc === src && currentMediaEl && !currentMediaEl.paused) return;
+
+  // Stop any existing track
+  if (currentMediaEl) {
+    currentMediaEl.pause();
+    currentMediaEl.src = '';
+  }
+  if (currentMediaSource) {
+    currentMediaSource.disconnect();
+    currentMediaSource = null;
+  }
+  currentMediaEl = null;
+  currentSrc = null;
 
   const ctx = getCtx();
   if (ctx.state !== 'running') await ctx.resume();
@@ -80,14 +88,18 @@ export async function startFightMusic(backgroundId?: string) {
   gainNode!.gain.cancelScheduledValues(ctx.currentTime);
   gainNode!.gain.setValueAtTime(musicEnabled ? 0.6 : 0, ctx.currentTime);
 
-  const buffer = await loadBuffer(src);
-  const source = ctx.createBufferSource();
-  source.buffer = buffer;
-  source.loop = true;
-  source.connect(gainNode!);
-  source.start();
-  currentSource = source;
+  const mediaEl = new Audio(src);
+  mediaEl.loop = true;
+
+  // Connect through the Web Audio graph for gain control
+  const mediaSource = ctx.createMediaElementSource(mediaEl);
+  mediaSource.connect(gainNode!);
+
+  currentMediaEl = mediaEl;
+  currentMediaSource = mediaSource;
   currentSrc = src;
+
+  mediaEl.play().catch(() => {});
 }
 
 export function switchToSelectMusic() {
@@ -100,27 +112,35 @@ export function switchToSelectMusic() {
 }
 
 export function stopMusicNow() {
-  if (!currentSource) return;
+  if (!currentMediaEl) return;
   if (gainNode && audioCtx) {
     gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
   }
-  try { currentSource.stop(); } catch { /* already stopped */ }
-  currentSource = null;
+  currentMediaEl.pause();
+  currentMediaEl.src = '';
+  if (currentMediaSource) { currentMediaSource.disconnect(); currentMediaSource = null; }
+  currentMediaEl = null;
   currentSrc = null;
 }
 
 export function fadeOutMusic(durationMs = 500) {
-  if (!currentSource || !gainNode || !audioCtx) return;
+  if (!currentMediaEl || !gainNode || !audioCtx) return;
   const duration = durationMs / 1000;
   gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
   gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
   gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
 
-  const src = currentSource;
+  const el = currentMediaEl;
+  const src = currentMediaSource;
+  currentMediaEl = null;
+  currentMediaSource = null;
+  currentSrc = null;
+
   setTimeout(() => {
-    try { src.stop(); } catch { /* already stopped */ }
-    if (currentSource === src) { currentSource = null; currentSrc = null; }
+    el.pause();
+    el.src = '';
+    if (src) src.disconnect();
     if (gainNode && audioCtx) {
       gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
       gainNode.gain.setValueAtTime(musicEnabled ? 0.6 : 0, audioCtx.currentTime);
@@ -129,13 +149,14 @@ export function fadeOutMusic(durationMs = 500) {
 }
 
 export function preloadAllTracks() {
-  TRACKS.forEach(t => loadBuffer(t.src).catch(() => {}));
+  // With MediaElementSource, preloading is handled by the browser automatically
+  // when play() is called. No-op here.
 }
 
 export function playAudioLogoThenSelectMusic() {
   selectedTrackIndex = SELECT_TRACK_INDEX;
   const ctx = getCtx();
-  // iOS unlock: play silent buffer in gesture handler
+  // iOS unlock: play silent buffer in gesture handler to activate the AudioContext
   const silentBuf = ctx.createBuffer(1, 1, 22050);
   const silent = ctx.createBufferSource();
   silent.buffer = silentBuf;
@@ -177,6 +198,16 @@ export function playKOAnnouncer()    { playClip(fightBellClip); setTimeout(() =>
 export function playTKOAnnouncer()   { playClip(fightBellClip); setTimeout(() => playClip(tkoClip), 600); }
 export function playVictoryAnnouncer()     { playClip(victoryClip); }
 export function playDevastationAnnouncer() { playClip(devastationClip); }
+
+// ── Dialogue text blip ─────────────────────────────────────────────────────
+
+const textBlipEl = new Audio('/sounds/text_blip.wav');
+
+export function playTextBlip() {
+  if (!sfxEnabled) return;
+  textBlipEl.currentTime = 0;
+  textBlipEl.play().catch(() => {});
+}
 
 // ── Attack SFX ─────────────────────────────────────────────────────────────
 

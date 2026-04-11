@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { buildCampaignStartQueue } from '../../ai/useCampaign';
 import { fadeOutMusic } from '../../audio/audioManager';
+import CharacterSprite from '../character/CharacterSprite';
 
 export default function CampaignGameOver() {
   const myCharacter = useGameStore(s => s.myCharacter);
@@ -9,8 +10,14 @@ export default function CampaignGameOver() {
   const p1AnimSignal = useGameStore(s => s.p1AnimSignal);
   const resetAll = useGameStore(s => s.resetAll);
   const [visible, setVisible] = useState(false);
+  const [spriteBottom, setSpriteBottom] = useState(0);
 
   useEffect(() => {
+    const el = document.getElementById('fight-stage');
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setSpriteBottom(window.innerHeight - rect.bottom);
+    }
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
   }, []);
@@ -40,11 +47,21 @@ export default function CampaignGameOver() {
       {/* Layer 1 — black backdrop fades to full opacity (z-500) */}
       <div className={`gameover-backdrop${visible ? ' visible' : ''}`} />
 
-      {/* Layer 3 — title + buttons sit above the sprite (z-700) */}
+      {/* Layer 2 — duplicate of the fight-characters row, fixed above the
+          backdrop. An invisible spacer occupies p2's slot so p1 stays in the
+          same horizontal position it held during the fight. */}
+      <div className="gameover-sprite-layer" style={{ bottom: spriteBottom }}>
+        <div className="fight-characters">
+          <CharacterSprite seat={0} id="p1-char-img-go" wrapId="p1-char-wrap-go" />
+          <CharacterSprite seat={1} flipped id="p2-char-img-go" wrapId="p2-char-wrap-go" />
+        </div>
+      </div>
+
+      {/* Layer 3 — title + buttons above sprite (z-700) */}
       <div className={`gameover-ui${visible ? ' visible' : ''}`}>
         <div className="gameover-title">GAME OVER</div>
         <div className="overlay-btn-row">
-          <button className="btn btn-alt" onClick={handleTryAgain}>
+          <button className="btn" onClick={handleTryAgain}>
             TRY AGAIN
           </button>
           <button className="btn btn-secondary" onClick={() => resetAll()}>

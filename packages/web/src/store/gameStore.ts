@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import type {
   ServerMessage, AttackType, AnimationState, Character, Difficulty, DialogueEntry,
 } from '@sudoku-fighting/shared';
-import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY } from '@sudoku-fighting/shared';
-import { playAttackSFX } from '../audio/audioManager';
+import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY, ANIMATION_CONFIG } from '@sudoku-fighting/shared';
+import { playAttackSFX, SELECT_TRACK_INDEX } from '../audio/audioManager';
 import { BASE_UNLOCKED } from '../progression/progressionService';
 
 export type Screen = 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
@@ -18,6 +18,8 @@ export interface FloatingPointsEvent {
   id: number;
   seat: 0 | 1;
   points: number;
+  row?: number;
+  col?: number;
 }
 
 export interface WipingCell {
@@ -31,6 +33,9 @@ interface GameStore {
   currentScreen: Screen;
   gameMode: GameMode;
   initialInteractionDone: boolean;
+
+  // ── Connection ────────────────────────────────────────────────────────────
+  wsConnected: boolean;
 
   // ── Player ────────────────────────────────────────────────────────────────
   myPlayerId: string | null;
@@ -72,6 +77,9 @@ interface GameStore {
   combo: [number, number];
   score: [number, number];
   counterWindowActive: boolean;
+  counterWindowExpiry: number | null;
+  counterWindowDefenderSeat: 0 | 1 | null;
+  counterLandedNonce: number;
   selfDamagePredicted: boolean;
 
   // ── Round flow ────────────────────────────────────────────────────────────
@@ -169,6 +177,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gameMode: null,
   initialInteractionDone: false,
 
+  wsConnected: false,
+
   myPlayerId: null,
   mySeat: null,
   myCharacter: null,
@@ -203,6 +213,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   combo: [0, 0],
   score: [0, 0],
   counterWindowActive: false,
+  counterWindowExpiry: null,
+  counterWindowDefenderSeat: null,
+  counterLandedNonce: 0,
   selfDamagePredicted: false,
 
   roundOver: false,
@@ -239,7 +252,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   musicEnabled: true,
   sfxEnabled: true,
-  selectedTrackIndex: 0,
+  selectedTrackIndex: SELECT_TRACK_INDEX,
   settingsOpen: false,
   testCreditsOpen: false,
 
@@ -329,7 +342,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     selectedCell: null, opponentCursorPos: null,
     health: [STARTING_HEALTH, STARTING_HEALTH],
     combo: [0, 0], score: [0, 0],
-    counterWindowActive: false, selfDamagePredicted: false,
+    counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
+    selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, p1AnimSignal: null, p2AnimSignal: null,
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
@@ -349,7 +363,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     selectedCell: null, opponentCursorPos: null,
     health: [STARTING_HEALTH, STARTING_HEALTH],
     combo: [0, 0], score: [0, 0],
-    counterWindowActive: false, selfDamagePredicted: false,
+    counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
+    selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
     opponentDisconnected: false, backgroundId: null, roundStartTime: null,
     p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null,
@@ -372,7 +387,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     switch (msg.type) {
 
       case 'connected':
-        set({ myPlayerId: msg.payload.playerId });
+        set({ myPlayerId: msg.payload.playerId, wsConnected: !!msg.payload.playerId });
         break;
 
       case 'waiting_for_opponent':
@@ -433,7 +448,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           opponentGrid: p.opponentGivens.map(r => [...r]),
           health: [STARTING_HEALTH, STARTING_HEALTH],
           combo: [0, 0], score: [0, 0],
-          counterWindowActive: false, selfDamagePredicted: false,
+          counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
+          selfDamagePredicted: false,
           roundOver: false,
           matchOver: false,
           matchWinnerSeat: null,
@@ -483,16 +499,28 @@ export const useGameStore = create<GameStore>((set, get) => ({
         }
         break;
 
-      case 'attack_incoming':
-        set({ counterWindowActive: true });
+      case 'attack_incoming': {
+        const { attackerSeat, delayMs } = msg.payload;
+        set({
+          counterWindowActive: true,
+          counterWindowExpiry: Date.now() + delayMs,
+          counterWindowDefenderSeat: (1 - attackerSeat) as 0 | 1,
+        });
         break;
+      }
 
-      case 'counter_window_active':
-        set({ counterWindowActive: true });
+      case 'counter_window_active': {
+        const { defenderSeat, expiresAt } = msg.payload;
+        set({
+          counterWindowActive: true,
+          counterWindowExpiry: expiresAt,
+          counterWindowDefenderSeat: defenderSeat,
+        });
         break;
+      }
 
       case 'auto_counter':
-        set({ counterWindowActive: false });
+        set({ counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null });
         break;
 
       case 'attack_landed': {
@@ -509,20 +537,36 @@ export const useGameStore = create<GameStore>((set, get) => ({
           [defenderKey]: { state: heavy ? 'damage_heavy' : 'damage_light', nonce: nonce + 1 },
           attackFlashType: flashType,
           counterWindowActive: false,
+          counterWindowExpiry: null,
+          counterWindowDefenderSeat: null,
         });
         break;
       }
 
       case 'counter_landed': {
-        const { counterSeat } = msg.payload;
+        const { counterSeat, attackType } = msg.payload;
         const nonce = ++_nonce;
+        // counterSeat is the defender who countered; attackerKey is the original attacker
         const counterKey = counterSeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
         const attackerKey = counterSeat === 0 ? 'p2AnimSignal' : 'p1AnimSignal';
-        set({
-          [counterKey]: { state: 'punch', nonce },
-          [attackerKey]: { state: 'damage_light', nonce: nonce + 1 },
+        playAttackSFX(attackType);
+        // Phase 1: original attacker plays their attack animation
+        set(st => ({
+          [attackerKey]: { state: attackType, nonce },
           counterWindowActive: false,
-        });
+          counterWindowExpiry: null,
+          counterWindowDefenderSeat: null,
+          counterLandedNonce: st.counterLandedNonce + 1,
+        }));
+        // Phase 2: counter-er's punch starts 2 frames into the original attack
+        const counterDelay = ANIMATION_CONFIG[attackType].frameDuration * 2;
+        setTimeout(() => {
+          const nonce2 = ++_nonce;
+          set({
+            [counterKey]: { state: 'punch', nonce: nonce2 },
+            [attackerKey]: { state: 'damage_light', nonce: nonce2 + 1 },
+          });
+        }, counterDelay);
         break;
       }
 
@@ -556,11 +600,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
         const { seat, score } = msg.payload;
         const prevScore = get().score[seat];
         const delta = score - prevScore;
+        const lastCell = get().lastCorrectCell;
         set(st => {
           const sc: [number, number] = [...st.score] as [number, number];
           sc[seat] = score;
           const fp: FloatingPointsEvent[] = [...st.floatingPoints];
-          if (delta > 0) fp.push({ id: ++_fpId, seat: seat as 0 | 1, points: delta });
+          if (delta > 0) fp.push({
+            id: ++_fpId,
+            seat: seat as 0 | 1,
+            points: delta,
+            row: lastCell?.row,
+            col: lastCell?.col,
+          });
           return { score: sc, floatingPoints: fp };
         });
         break;

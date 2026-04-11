@@ -379,6 +379,25 @@
   z-index: 500; white-space: nowrap;
 }
 
+/* Counter window bar — overlays .fight-characters-inner (position: relative, inline-flex) */
+.counter-bar-wrap {
+  position: absolute; top: 8px; left: 0; right: 0;
+  height: 6px; border-radius: 3px;
+  background: rgba(255, 255, 255, 0.4);
+  overflow: hidden; pointer-events: none; z-index: 20;
+}
+.counter-bar-fill {
+  height: 100%; width: 100%;
+  border-radius: 3px;
+}
+.counter-bubble {
+  position: absolute; top: 20px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px; font-weight: 800; color: var(--accent);
+  pointer-events: none; white-space: nowrap; z-index: 20;
+  animation: float-up 0.75s ease-out forwards;
+}
+
 /* Arena background layers */
 #arena-bg-overlay {
   position: absolute; inset: 0; background-size: cover; background-position: center;
@@ -404,6 +423,7 @@
 /* Fight stage */
 #fight-stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; z-index: 10; padding-bottom: 16px; }
 .fight-characters { display: flex; justify-content: center; align-items: flex-end; width: 100%; gap: 0; }
+.fight-characters-inner { position: relative; display: inline-flex; align-items: flex-end; }
 .character-wrap { display: flex; justify-content: center; align-items: flex-end; position: relative; z-index: 1; }
 .character-wrap:first-child { margin-right: -25px; }
 .character-wrap:last-child  { margin-left:  -25px; }
@@ -485,6 +505,19 @@
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
 }
 
+/* iPad / tablet — compact HUD to keep layout above the fold */
+@media (min-width: 501px) and (max-width: 1024px) and (pointer: coarse) {
+  #hud { padding: 4px 12px 2px; }
+  .hud-score, .combo-counter { font-size: var(--text-sm); }
+  .ko-block { font-size: 0; padding: 0; width: 6px; flex-shrink: 0; border-radius: 0; }
+  .hud-bar-row { height: 4px; }
+  .hud-bar-track.left  { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right { border-radius: 0 2px 2px 0; }
+  .hud-bar-track.left .hud-bar  { border-radius: 2px 0 0 2px; }
+  .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
+}
+
+/* Touch devices (phones + tablets) — numpad */
 @media (pointer: coarse) {
   #mobile-numpad {
     display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px;
@@ -555,15 +588,14 @@
 }
 .gameover-backdrop.visible { background: rgba(0,0,0,1); }
 
-/* Layer 2: pull fight-stage out of #arena's stacking context by making it
-   fixed — this places it in the root stacking context at z-600, above the
-   backdrop (z-500). p2 is hidden so p1 centers naturally. */
-.campaign-gameover-active #fight-stage {
-  position: fixed; bottom: 0; left: 0; right: 0; height: auto;
-  padding-bottom: 16px; z-index: 600; pointer-events: none;
-  justify-content: center;
+/* Layer 2: duplicate sprite layer — fixed above the backdrop, mirrors the
+   fight-characters flex layout so p1 sits in the same horizontal position */
+.gameover-sprite-layer {
+  position: fixed; left: 0; right: 0; z-index: 600;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 16px; pointer-events: none;
 }
-.campaign-gameover-active #p2-char-wrap { display: none; }
+#p2-char-wrap-go { opacity: 0; }
 
 /* Layer 3: title + buttons above the sprite */
 .gameover-ui {

@@ -190,7 +190,7 @@ export function applyCounterDamage(
 
   const counterSeat = attack.defenderSeat;
   const events: ServerMessage[] = [
-    { type: 'counter_landed', payload: { counterSeat, reducedDamage, counterDamage: COUNTER_DAMAGE_TO_ATTACKER } },
+    { type: 'counter_landed', payload: { counterSeat, reducedDamage, counterDamage: COUNTER_DAMAGE_TO_ATTACKER, attackType: attack.type } },
     { type: 'health_update', payload: { health: [...round.health] as [number, number] } },
     { type: 'combo_update', payload: { seat: attack.attackerSeat, combo: 0 } },
   ];

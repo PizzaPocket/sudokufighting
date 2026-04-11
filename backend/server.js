@@ -141,6 +141,7 @@ function processCellEvents(room, events) {
           counterSeat: cResult.defenderSeat,
           reducedDamage: cResult.reducedDamage,
           counterDamage: cResult.counterDamage,
+          attackType: cResult.attackType,
         });
         broadcast(room, 'health_update', { health: cResult.health });
         broadcast(room, 'combo_update', { seat: cResult.attackerSeat, combo: 0 });

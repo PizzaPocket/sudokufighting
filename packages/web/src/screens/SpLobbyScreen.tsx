@@ -9,9 +9,10 @@ interface Props { active: boolean; }
 
 const DIFFICULTIES: Difficulty[] = ['easy', 'normal', 'extreme'];
 
-function pickAICharacter(myCharId: string | null, characters: Character[]): Character | null {
-  const others = characters.filter(c => c.id !== myCharId);
-  const pool = others.length > 0 ? others : characters;
+function pickAICharacter(myCharId: string | null, characters: Character[], unlockedIds: string[]): Character | null {
+  const unlocked = characters.filter(c => unlockedIds.includes(c.id));
+  const others = unlocked.filter(c => c.id !== myCharId);
+  const pool = others.length > 0 ? others : unlocked;
   if (pool.length === 0) return null;
   return pool[Math.floor(Math.random() * pool.length)];
 }
@@ -23,6 +24,7 @@ export default function SpLobbyScreen({ active }: Props) {
   const setSpArenaIndex = useGameStore(s => s.setSpArenaIndex);
   const myCharacter = useGameStore(s => s.myCharacter);
   const characters = useGameStore(s => s.characters);
+  const unlockedCharacterIds = useGameStore(s => s.unlockedCharacterIds);
 
   const myChar = characters.find(c => c.id === myCharacter) ?? null;
 
@@ -30,13 +32,13 @@ export default function SpLobbyScreen({ active }: Props) {
   // (SpLobbyScreen is always mounted but hidden; characters are loaded before it activates)
   const [aiChar, setAiChar] = useState<Character | null>(() => {
     const st = useGameStore.getState();
-    return pickAICharacter(st.myCharacter, st.characters);
+    return pickAICharacter(st.myCharacter, st.characters, st.unlockedCharacterIds);
   });
 
   const prevActiveRef = useRef(false);
   useEffect(() => {
     if (active && !prevActiveRef.current && characters.length > 0) {
-      setAiChar(pickAICharacter(myCharacter, characters));
+      setAiChar(pickAICharacter(myCharacter, characters, unlockedCharacterIds));
     }
     prevActiveRef.current = active;
   }, [active, myCharacter, characters]);

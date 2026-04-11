@@ -49,6 +49,7 @@ function connect() {
   ws.onclose = () => {
     isConnecting = false;
     socket = null;
+    useGameStore.setState({ wsConnected: false });
     // Exponential backoff reconnect, cap at 16s
     if (reconnectTimer) clearTimeout(reconnectTimer);
     reconnectTimer = setTimeout(() => {

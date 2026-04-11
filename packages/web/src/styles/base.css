@@ -141,6 +141,19 @@ html, body {
   background-position: center;
 }
 
+/* Start and lobby screens scroll when content is taller than the viewport.
+   "safe center" centers content when it fits, but falls back to flex-start
+   (scrollable from top) when it overflows — no content clipping. */
+#screen-start,
+#screen-lobby,
+#screen-practice-lobby,
+#screen-campaign-lobby {
+  overflow-y: auto;
+  justify-content: safe center;
+  padding-top: var(--header-h);
+  padding-bottom: 24px;
+}
+
 #btn-select-char { display: none; }
 
 .hidden { display: none !important; }

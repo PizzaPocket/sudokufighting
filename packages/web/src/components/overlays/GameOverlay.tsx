@@ -6,7 +6,7 @@ import {
   playRoundAnnouncer, playFightAnnouncer,
   playKOAnnouncer, playTKOAnnouncer,
   playVictoryAnnouncer, playDevastationAnnouncer,
-  startFightMusic, fadeOutMusic,
+  startFightMusic, fadeOutMusic, getSelectedTrackIndex,
 } from '../../audio/audioManager';
 
 interface OverlayContent {
@@ -83,7 +83,10 @@ export default function GameOverlay() {
 
     addTimer(() => {
       playFightAnnouncer();
-      if (roundNumber === 1) startFightMusic(backgroundId);
+      if (roundNumber === 1) {
+        startFightMusic(backgroundId);
+        useGameStore.setState({ selectedTrackIndex: getSelectedTrackIndex() } as never);
+      }
       showOverlay({
         main: 'FIGHT!',
         sub: '',
@@ -218,7 +221,7 @@ export default function GameOverlay() {
           )}
           {gameMode === 'practice' && (
             <button
-              className="btn btn-alt"
+              className="btn"
               onClick={() => {
                 useGameStore.setState({ matchOver: false, matchWinnerSeat: null, roundWins: [0, 0] } as never);
                 startVsAIRound(1);
@@ -231,10 +234,10 @@ export default function GameOverlay() {
           )}
           {gameMode !== 'campaign' && (
             <button
-              className="btn btn-secondary"
+              className={gameMode === 'practice' ? 'btn btn-secondary' : 'btn'}
               onClick={() => resetAll()}
             >
-              LEAVE
+              {gameMode === 'practice' ? 'LEAVE' : 'BACK TO MENU'}
             </button>
           )}
         </div>

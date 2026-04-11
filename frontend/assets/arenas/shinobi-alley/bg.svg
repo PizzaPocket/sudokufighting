@@ -41,6 +41,7 @@
 <path d="M1200 740H0V760H1200V740Z" fill="#320B19"/>
 <path d="M1200 760H0V780H1200V760Z" fill="#230623"/>
 <path d="M1200 780H0V800H1200V780Z" fill="#14022D"/>
+<circle cx="600" cy="280" r="257.4" fill="url(#paint0_linear_4253_103624)"/>
 <path d="M640 20H560V24H640V20Z" fill="#FF00A8"/>
 <path d="M544 24H540V28H544V24Z" fill="#F800A0" fill-opacity="0.565"/>
 <path d="M656 24H544V28H656V24Z" fill="#FF00A8"/>
@@ -7355,6 +7356,11 @@
 <path d="M1196 588H1192V592H1196V588Z" fill="#200038" fill-opacity="0.063"/>
 </g>
 <defs>
+<linearGradient id="paint0_linear_4253_103624" x1="600" y1="22.5996" x2="600" y2="537.4" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF00AA"/>
+<stop offset="0.5" stop-color="#F70101"/>
+<stop offset="1" stop-color="#C875FF"/>
+</linearGradient>
 <clipPath id="clip0_4253_103624">
 <rect width="1200" height="800" fill="white"/>
 </clipPath>

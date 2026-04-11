@@ -31,7 +31,7 @@ export type ServerMessage =
   | { type: 'attack_incoming';        payload: { attackerSeat: 0 | 1; type: AttackType; damage: number; attackId: string; delayMs: number } }
   | { type: 'counter_window_active';  payload: { defenderSeat: 0 | 1; expiresAt: number; attackId: string } }
   | { type: 'attack_landed';          payload: { attackerSeat: 0 | 1; defenderSeat: 0 | 1; type: AttackType; damage: number } }
-  | { type: 'counter_landed';         payload: { counterSeat: 0 | 1; reducedDamage: number; counterDamage: number } }
+  | { type: 'counter_landed';         payload: { counterSeat: 0 | 1; reducedDamage: number; counterDamage: number; attackType: AttackType } }
   | { type: 'auto_counter';           payload: { attackId: string } }
   | { type: 'health_update';          payload: { health: [number, number] } }
   | { type: 'combo_update';           payload: { seat: 0 | 1; combo: number } }

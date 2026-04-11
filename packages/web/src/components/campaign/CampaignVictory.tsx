@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from '../../creditsContent';
-import { playAudioLogoThenSelectMusic } from '../../audio/audioManager';
+import { playAudioLogoThenSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
 
 type Phase = 'credits' | 'unlocks';
 
@@ -63,7 +63,7 @@ export default function CampaignVictory() {
               ))}
             </div>
           )}
-          <button className="btn btn-alt" onClick={() => { playAudioLogoThenSelectMusic(); resetAll(); }}>
+          <button className="btn btn-alt" onClick={() => { playAudioLogoThenSelectMusic(); useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never); resetAll(); }}>
             CONTINUE
           </button>
         </div>

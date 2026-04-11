@@ -82,7 +82,7 @@ export default function ContextualMenu() {
       <div className="ctx-menu-divider" />
 
       <div className="ctx-menu-item">
-        <span className="ctx-label">SFX</span>
+        <span className="ctx-label">SOUND EFFECTS</span>
         <label className="toggle-switch">
           <input type="checkbox" checked={sfxEnabled} onChange={handleSfxToggle} />
           <span className="toggle-slider" />

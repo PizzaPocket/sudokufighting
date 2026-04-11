@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { setupNextFight } from '../../ai/useCampaign';
+import { playTextBlip } from '../../audio/audioManager';
 
 const TYPEWRITER_INTERVAL_MS = 18;
 const FADE_IN_MS  = 400;
@@ -60,6 +61,8 @@ export default function DialogueCutscene({ active }: Props) {
     let i = 0;
     typewriterRef.current = setInterval(() => {
       i++;
+      const char = currentLine[i - 1];
+      if (char && char !== ' ') playTextBlip();
       setDisplayedText(currentLine.slice(0, i));
       if (i >= currentLine.length) {
         clearTypewriter();

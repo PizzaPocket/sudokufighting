@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useGameStore } from './store/gameStore';
 import { useGameSocket } from './hooks/useGameSocket';
-import { playAudioLogoThenSelectMusic } from './audio/audioManager';
+import { playAudioLogoThenSelectMusic, SELECT_TRACK_INDEX } from './audio/audioManager';
 import StartScreen from './screens/StartScreen';
 import CharacterSelectScreen from './screens/CharacterSelectScreen';
 import LobbyScreen from './screens/LobbyScreen';
@@ -28,6 +28,7 @@ export default function App() {
     const handler = () => {
       setInitialInteractionDone();
       playAudioLogoThenSelectMusic();
+      useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
       document.removeEventListener('pointerdown', handler, { capture: true });
     };
     document.addEventListener('pointerdown', handler, { capture: true });
