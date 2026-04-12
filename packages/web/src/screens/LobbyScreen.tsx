@@ -26,6 +26,10 @@ export default function LobbyScreen({ active }: Props) {
 
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [arenaIndex, setArenaIndex] = useState(0);
+  const canNativeShare =
+    typeof navigator !== 'undefined' &&
+    !!navigator.share &&
+    (navigator.maxTouchPoints > 0 || 'ontouchstart' in window);
   const hasSentJoin = useRef(false);
 
   const isPrivate = gameMode === 'friend';
@@ -95,11 +99,30 @@ export default function LobbyScreen({ active }: Props) {
     }
   }, [lobbyCountdown]);
 
-  function handleCopyLink() {
+  async function handleShareInvite() {
     const url = `${window.location.origin}?room=${shareCode}`;
-    navigator.clipboard.writeText(url).catch(() => {});
-    setCopyFeedback(true);
-    setTimeout(() => setCopyFeedback(false), 2000);
+    if (canNativeShare) {
+      try {
+        await navigator.share({ title: 'Sudoku Fighting', text: 'Come fight me in Sudoku Fighting! Join my room:', url });
+      } catch { /* cancelled */ }
+    } else {
+      navigator.clipboard.writeText(url).catch(() => {});
+      setCopyFeedback(true);
+      setTimeout(() => setCopyFeedback(false), 2000);
+    }
+  }
+
+  async function handleShareGame() {
+    const url = window.location.origin;
+    if (canNativeShare) {
+      try {
+        await navigator.share({ title: 'Sudoku Fighting', text: 'Play Sudoku Fighting — real-time competitive puzzle battles. Challenge a friend:', url });
+      } catch { /* cancelled */ }
+    } else {
+      navigator.clipboard.writeText(url).catch(() => {});
+      setCopyFeedback(true);
+      setTimeout(() => setCopyFeedback(false), 2000);
+    }
   }
 
   // Default to P1 while waiting for seat assignment from server (create_room doesn't
@@ -152,21 +175,20 @@ export default function LobbyScreen({ active }: Props) {
 
       {isPrivate && shareCode ? (
         <div className="lobby-share">
-          <span className="lobby-share-label">INVITE CODE</span>
+          <span className="lobby-share-label">
+            {copyFeedback ? 'LINK COPIED!' : 'INVITE CODE'}
+          </span>
           <div className="lobby-invite-row">
             <span className="lobby-share-code">{shareCode}</span>
-            <button className="btn btn-sm btn-secondary" onClick={handleCopyLink}>
-              COPY LINK
+            <button className="btn btn-sm btn-secondary" onClick={handleShareInvite}>
+              {canNativeShare ? 'INVITE' : 'COPY LINK'}
             </button>
           </div>
-          <p className={`lobby-copy-confirm${copyFeedback ? ' visible' : ''}`}>
-            Link copied!
-          </p>
         </div>
       ) : !isPrivate ? (
         <div className="lobby-promo">
-          <button className="btn btn-sm btn-secondary" onClick={handleCopyLink}>
-            SHARE GAME
+          <button className="btn btn-sm btn-secondary" onClick={handleShareGame}>
+            {canNativeShare ? 'SHARE' : 'SHARE GAME'}
           </button>
           <p className={`lobby-promo-feedback${copyFeedback ? ' visible' : ''}`}>
             Link copied!
