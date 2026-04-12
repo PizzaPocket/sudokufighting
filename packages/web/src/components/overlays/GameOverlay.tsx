@@ -7,6 +7,7 @@ import {
   playKOAnnouncer, playTKOAnnouncer,
   playVictoryAnnouncer, playDevastationAnnouncer,
   startFightMusic, fadeOutMusic, getSelectedTrackIndex,
+  switchToSelectMusic, SELECT_TRACK_INDEX,
 } from '../../audio/audioManager';
 
 interface OverlayContent {
@@ -235,7 +236,11 @@ export default function GameOverlay() {
           {gameMode !== 'campaign' && (
             <button
               className={gameMode === 'practice' ? 'btn btn-secondary' : 'btn'}
-              onClick={() => resetAll()}
+              onClick={() => {
+                switchToSelectMusic();
+                useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
+                resetAll();
+              }}
             >
               {gameMode === 'practice' ? 'LEAVE' : 'BACK TO MENU'}
             </button>

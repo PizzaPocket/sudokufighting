@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { buildCampaignStartQueue } from '../../ai/useCampaign';
-import { fadeOutMusic } from '../../audio/audioManager';
+import { fadeOutMusic, switchToSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
 import CharacterSprite from '../character/CharacterSprite';
 
 export default function CampaignGameOver() {
@@ -64,7 +64,11 @@ export default function CampaignGameOver() {
           <button className="btn" onClick={handleTryAgain}>
             TRY AGAIN
           </button>
-          <button className="btn btn-secondary" onClick={() => resetAll()}>
+          <button className="btn btn-secondary" onClick={() => {
+            switchToSelectMusic();
+            useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
+            resetAll();
+          }}>
             MAIN MENU
           </button>
         </div>
