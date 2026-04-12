@@ -320,17 +320,17 @@ function allSFXElements(): HTMLAudioElement[] {
 
 function unlockAllSFX(): void {
   // SFX elements are plain HTMLAudioElements not routed through the Web Audio
-  // graph, so play() would make them audible at full device volume. Mute with
-  // volume=0 before calling play() — the iOS unlock is triggered by the
-  // gesture-scoped play() call itself, not by whether audio is audible.
+  // graph, so play() would make them audible at full device volume. Use
+  // el.muted=true (not el.volume=0 — volume is read-only on iOS Safari) to
+  // silence them during the unlock sequence.
   for (const el of allSFXElements()) {
-    el.volume = 0;
+    el.muted = true;
     el.play().then(() => {
       el.pause();
       el.currentTime = 0;
-      el.volume = 1;
+      el.muted = false;
     }).catch(() => {
-      el.volume = 1;
+      el.muted = false;
     });
   }
 }
