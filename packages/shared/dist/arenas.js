@@ -11,7 +11,7 @@ export const ARENAS = [
             { id: 'palm-trees', src: '/assets/arenas/el-tropical/palm_trees_wide.svg' },
         ],
         trackIndex: 0,
-        dialogueBg: '/assets/arenas/el-tropical/sunset_start.svg',
+        dialogueBg: '/assets/arenas/el-tropical/bg_cutscene.svg',
     },
     {
         id: 'bg_2',
@@ -43,7 +43,7 @@ export const ARENAS = [
         overlays: [
             { id: 'alley', src: '/assets/arenas/shinobi-alley/alley_wide.svg' },
         ],
-        trackIndex: 1,
+        trackIndex: 5,
         dialogueBg: '/assets/arenas/shinobi-alley/bg.svg',
     },
     {

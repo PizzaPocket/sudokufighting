@@ -162,6 +162,7 @@ export type ServerMessage = {
         counterSeat: 0 | 1;
         reducedDamage: number;
         counterDamage: number;
+        attackType: AttackType;
     };
 } | {
     type: 'auto_counter';

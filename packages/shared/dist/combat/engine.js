@@ -153,7 +153,7 @@ export function applyCounterDamage(round, attackId) {
     round.counterWindows[attack.defenderSeat].active = false;
     const counterSeat = attack.defenderSeat;
     const events = [
-        { type: 'counter_landed', payload: { counterSeat, reducedDamage, counterDamage: COUNTER_DAMAGE_TO_ATTACKER } },
+        { type: 'counter_landed', payload: { counterSeat, reducedDamage, counterDamage: COUNTER_DAMAGE_TO_ATTACKER, attackType: attack.type } },
         { type: 'health_update', payload: { health: [...round.health] } },
         { type: 'combo_update', payload: { seat: attack.attackerSeat, combo: 0 } },
     ];
