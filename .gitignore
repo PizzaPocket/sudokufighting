@@ -5,3 +5,7 @@ frontend/js/config.js
 *.log
 .DS_Store
 art/
+# Prevent tsc-emitted JS from shadowing TS source files
+packages/web/src/**/*.js
+packages/web/src/**/*.js.map
+packages/shared/tsconfig.tsbuildinfo
