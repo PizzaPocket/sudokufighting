@@ -236,11 +236,16 @@
 .hud-name {
   font-size: var(--text-md); font-weight: var(--weight-heavy); color: var(--canvas-text);
   text-transform: uppercase; text-shadow: var(--text-layer-shadow);
-  letter-spacing: -0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+  letter-spacing: -0.4px; flex: 1; overflow: hidden;
+  display: flex; align-items: baseline; gap: 5px;
 }
-.hud-name.right { text-align: right; }
+.hud-name.right { justify-content: flex-end; }
+.hud-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hud-me-arrow { flex-shrink: 0; line-height: 1; }
 #p1-name { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
 #p2-name { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
+.hud-me-arrow-p1 { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
+.hud-me-arrow-p2 { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
 
 .round-label { font-size: var(--text-md); font-weight: var(--weight-bold); color: var(--canvas-text); text-shadow: 2px 2px 0 var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
 

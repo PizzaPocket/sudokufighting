@@ -21,9 +21,15 @@ export default function HUD() {
   return (
     <div id="hud">
       <div className="hud-name-row">
-        <span id="p1-name" className="hud-name">{p1Name ?? 'P1'}</span>
+        <span id="p1-name" className="hud-name">
+          <span className="hud-name-text">{p1Name ?? 'P1'}</span>
+          {mySeat === 0 && <span className="hud-me-arrow hud-me-arrow-p1">&#9668;</span>}
+        </span>
         <span id="round-indicator" className="round-label">ROUND {roundNumber}</span>
-        <span id="p2-name" className="hud-name right">{p2Name ?? 'P2'}</span>
+        <span id="p2-name" className="hud-name right">
+          {mySeat === 1 && <span className="hud-me-arrow hud-me-arrow-p2">&#9658;</span>}
+          <span className="hud-name-text">{p2Name ?? 'P2'}</span>
+        </span>
       </div>
 
       <div className="hud-bar-row">

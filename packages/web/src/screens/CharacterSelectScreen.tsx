@@ -13,6 +13,7 @@ export default function CharacterSelectScreen({ active }: Props) {
   const unlockedCharacterIds = useGameStore(s => s.unlockedCharacterIds);
   const setCharacters = useGameStore(s => s.setCharacters);
   const selectCharacter = useGameStore(s => s.selectCharacter);
+  const setMyName = useGameStore(s => s.setMyName);
   const setScreen = useGameStore(s => s.setScreen);
   const gameMode = useGameStore(s => s.gameMode);
   const spDifficulty = useGameStore(s => s.spDifficulty);
@@ -44,6 +45,7 @@ export default function CharacterSelectScreen({ active }: Props) {
   function handleSelectChar(char: Character) {
     setSelected(char.id);
     selectCharacter(char.id);
+    setMyName(char.name);
     if (isCampaign) return; // Wait for Continue button
     const nextScreen =
       gameMode === 'practice' ? 'practice-lobby' : 'lobby';
