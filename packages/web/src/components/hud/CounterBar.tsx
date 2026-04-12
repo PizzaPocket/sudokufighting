@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
 const DURATION = 1500;
+const ICON_RADIUS = 9; // half of 18px circle
 
 export default function CounterBar() {
   const active = useGameStore(s => s.counterWindowActive);
@@ -10,11 +11,12 @@ export default function CounterBar() {
   const counterLandedNonce = useGameStore(s => s.counterLandedNonce);
 
   const fillRef = useRef<HTMLDivElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
   const [showCounter, setShowCounter] = useState(false);
   const prevNonce = useRef(counterLandedNonce);
 
-  // Animate fill bar via rAF
+  // Animate fill bar and icon via rAF
   useEffect(() => {
     if (!active || expiry == null) {
       cancelAnimationFrame(rafRef.current);
@@ -25,13 +27,24 @@ export default function CounterBar() {
     const tick = () => {
       const fraction = Math.max(0, (expiry - Date.now()) / DURATION);
       if (fillRef.current) fillRef.current.style.transform = `scaleX(${fraction})`;
+      if (iconRef.current) {
+        if (defenderSeat === 0) {
+          // tip = right edge of fill, moves left → toward defender on left
+          iconRef.current.style.left = `calc(${fraction * 100}% - ${ICON_RADIUS}px)`;
+          iconRef.current.style.right = '';
+        } else {
+          // tip = left edge of fill, moves right → toward defender on right
+          iconRef.current.style.right = `calc(${fraction * 100}% - ${ICON_RADIUS}px)`;
+          iconRef.current.style.left = '';
+        }
+      }
       if (fraction > 0) {
         rafRef.current = requestAnimationFrame(tick);
       }
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [active, expiry]);
+  }, [active, expiry, defenderSeat]);
 
   // "Counter!" bubble when a counter lands
   useEffect(() => {
@@ -54,13 +67,26 @@ export default function CounterBar() {
   return (
     <>
       {active && (
-        <div className="counter-bar-wrap">
+        <>
+          <div className="counter-bar-wrap">
+            <div
+              ref={fillRef}
+              className="counter-bar-fill"
+              style={{ background: fillColor, transformOrigin }}
+            />
+          </div>
           <div
-            ref={fillRef}
-            className="counter-bar-fill"
-            style={{ background: fillColor, transformOrigin }}
-          />
-        </div>
+            ref={iconRef}
+            className="counter-bar-icon"
+            style={{ background: fillColor }}
+          >
+            <img
+              src="/assets/ui/icon-punch.svg"
+              className="counter-bar-icon-img"
+              style={{ transform: defenderSeat === 0 ? 'scaleX(-1)' : undefined }}
+            />
+          </div>
+        </>
       )}
       {showCounter && (
         <div className="counter-bubble">Counter!</div>

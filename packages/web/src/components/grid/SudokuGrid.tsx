@@ -74,20 +74,24 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
 
     if (flashTargets.length === 0) return;
 
-    // Add flash classes, remove after animation (350ms)
+    // Ripple outward from trigger cell — staggered by Chebyshev distance (120ms/step)
+    // Matches the vanilla frontend's animateCompletionRipple behaviour.
     const unique = [...new Set(flashTargets)];
-    setFlashCells(prev => {
-      const next = new Set(prev);
-      unique.forEach(k => next.add(k));
-      return next;
+    const byDist = new Map<number, string[]>();
+    unique.forEach(key => {
+      const [kr, kc] = key.split('-').map(Number);
+      const dist = Math.max(Math.abs(kr - row), Math.abs(kc - col));
+      if (!byDist.has(dist)) byDist.set(dist, []);
+      byDist.get(dist)!.push(key);
     });
-    setTimeout(() => {
-      setFlashCells(prev => {
-        const next = new Set(prev);
-        unique.forEach(k => next.delete(k));
-        return next;
-      });
-    }, 400);
+    byDist.forEach((keys, dist) => {
+      setTimeout(() => {
+        setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.add(k)); return next; });
+        setTimeout(() => {
+          setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.delete(k)); return next; });
+        }, 400);
+      }, dist * 120);
+    });
   }, [lastCorrectNonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keyboard input — only for own grid

@@ -1,4 +1,4 @@
-// Audio manager — port of frontend/js/audio.js to TypeScript singleton
+// Audio manager — TypeScript singleton
 import { getArena } from '@sudoku-fighting/shared';
 import type { AttackType } from '@sudoku-fighting/shared';
 
@@ -16,7 +16,7 @@ const SFX_LEAD_MS = 80;
 
 let musicEnabled = true;
 let sfxEnabled   = true;
-let selectedTrackIndex = 0;
+let selectedTrackIndex = SELECT_TRACK_INDEX;
 
 // ── Web Audio API ──────────────────────────────────────────────────────────────
 // Created lazily on first user interaction to satisfy browser autoplay policy.
@@ -32,6 +32,79 @@ function getCtx(): AudioContext {
     registerRecoveryListeners(audioCtx);
   }
   return audioCtx;
+}
+
+// ── SFX via AudioBuffer ────────────────────────────────────────────────────────
+// All SFX are pre-fetched as ArrayBuffers on page load (no AudioContext needed).
+// After initAudio() creates the AudioContext, buffers are decoded via
+// decodeAudioData(). Playback uses one-shot AudioBufferSourceNodes — no
+// HTMLAudioElement gesture-unlock ceremony needed on any platform.
+
+const SFX_SRCS: Record<string, string> = {
+  round1:         '/sounds/Round_One.mp3',
+  round2:         '/sounds/Round_Two.mp3',
+  round3:         '/sounds/Round_Three.mp3',
+  fight:          '/sounds/Fight.mp3',
+  victory:        '/sounds/Victory.mp3',
+  devastation:    '/sounds/Devestation.mp3',
+  ko:             '/sounds/KO.mp3',
+  tko:            '/sounds/TKO.mp3',
+  fightBell:      '/sounds/fight_bell.wav',
+  punch:          '/sounds/01_punch.wav',
+  kick:           '/sounds/02_kick.wav',
+  rowSpecial:     '/sounds/03_special1.wav',
+  colSpecial:     '/sounds/04_special2.wav',
+  subgridSpecial: '/sounds/05_special3.wav',
+  blip:           '/sounds/text_blip.wav',
+  logo:           '/sounds/Sudoku_Fighting_Audio_Logo.m4a',
+};
+
+// Raw ArrayBuffers fetched pre-gesture (populates browser HTTP cache)
+const fetchedRaw = new Map<string, ArrayBuffer>();
+// Decoded AudioBuffers (available after initAudio creates the AudioContext)
+const decodedBuffers = new Map<string, AudioBuffer>();
+
+// Fetch all SFX on module load. No AudioContext required — pure HTTP.
+function prefetchAudio(): void {
+  for (const src of Object.values(SFX_SRCS)) {
+    fetch(src)
+      .then(r => r.arrayBuffer())
+      .then(ab => {
+        fetchedRaw.set(src, ab);
+        // Decode immediately if AudioContext already exists
+        if (audioCtx) decodeSingle(src, ab);
+      })
+      .catch(() => {});
+  }
+  // Also warm the browser cache for select music (large file, can't decode in memory)
+  fetch(TRACKS[SELECT_TRACK_INDEX].src).catch(() => {});
+}
+
+function decodeSingle(src: string, ab: ArrayBuffer): void {
+  if (!audioCtx) return;
+  // slice() copies the buffer — decodeAudioData may detach the original
+  audioCtx.decodeAudioData(ab.slice(0), buf => {
+    decodedBuffers.set(src, buf);
+  }, () => {});
+}
+
+// Decode all already-fetched raw buffers. Called from initAudio().
+function decodeAllFetched(): void {
+  for (const [src, ab] of fetchedRaw.entries()) {
+    if (!decodedBuffers.has(src)) decodeSingle(src, ab);
+  }
+}
+
+// Play a decoded SFX buffer, optionally delayed by delayMs.
+// Connects directly to ctx.destination (bypasses gainNode / music volume).
+function playBuf(src: string, delayMs = 0): void {
+  if (!sfxEnabled || !audioCtx) return;
+  const buf = decodedBuffers.get(src);
+  if (!buf) return;
+  const node = audioCtx.createBufferSource();
+  node.buffer = buf;
+  node.connect(audioCtx.destination);
+  node.start(audioCtx.currentTime + delayMs / 1000);
 }
 
 // ── Mobile AudioContext recovery ───────────────────────────────────────────────
@@ -81,11 +154,9 @@ function registerRecoveryListeners(ctx: AudioContext): void {
 //
 // Preload strategy for slow mobile connections:
 //   On iOS, `preload='auto'` is ignored — audio only downloads when play() is
-//   called. Calling play() on all 6 tracks at first-gesture fragments bandwidth
-//   and delays the select music (which needs to play immediately). So we only
-//   trigger the download for the select music + SFX on first gesture. Fight tracks
-//   download on-demand when startFightMusic() fires — there is always a 2+ second
-//   buffer window (round intro overlay) before fight audio is actually needed.
+//   called. Fight tracks download on-demand when startFightMusic() fires — there
+//   is always a 2+ second buffer window (round intro overlay) before fight audio
+//   is actually needed.
 
 interface TrackPoolEntry {
   el: HTMLAudioElement;
@@ -100,7 +171,7 @@ function ensureAllConnected(): void {
     if (trackPool.has(track.src)) continue;
     const el = new Audio(track.src);
     // preload='none': don't speculatively download. Downloads begin when play()
-    // is called. The select track is unlocked (play+paused) in the gesture handler;
+    // is called. The select track starts downloading in playLogoAndSelectMusic();
     // fight tracks start downloading when startFightMusic() calls play().
     el.preload = 'none';
     el.loop = true;
@@ -139,10 +210,7 @@ export function getSelectedTrackIndex() { return selectedTrackIndex; }
 
 export function setTrackIndex(index: number) {
   selectedTrackIndex = ((index % TRACKS.length) + TRACKS.length) % TRACKS.length;
-  if (currentTrackSrc) {
-    // Music is actively playing — switch immediately.
-    startFightMusic();
-  }
+  if (currentTrackSrc) startFightMusic();
 }
 
 export async function startFightMusic(backgroundId?: string) {
@@ -221,23 +289,17 @@ export function fadeOutMusic(durationMs = 500) {
 export function preloadAllTracks() {}
 
 // ── First-gesture audio unlock ─────────────────────────────────────────────────
-// Called synchronously inside the first pointerdown handler (App.tsx).
-//
-// Sequence:
-//   1. Create AudioContext + play silent buffer (activates the context on iOS).
-//   2. Wire all tracks into the graph (no downloads yet).
-//   3. Start select music — the play() call here is the iOS activation gesture
-//      for this element. Do NOT call play() on it again; a second play().then(pause)
-//      would immediately silence the music we just started.
-//   4. Silently unlock all SFX elements (volume=0 so nothing is audible).
-//      SFX are plain HTMLAudioElements not routed through the gainNode, so without
-//      volume=0 they would play at full device volume during the unlock.
-//   5. Fight tracks are not explicitly unlocked here — once the AudioContext is
-//      user-activated, MediaElementSource-connected elements can be played from
-//      non-gesture contexts on modern iOS/Android.
+// initAudio: called once on first user interaction (splash puzzle touch/key, or
+// first start-screen gesture for room-code path). Creates the AudioContext,
+// wires music tracks into the Web Audio graph, and begins decoding all
+// pre-fetched SFX ArrayBuffers. Produces no audible output.
 
-export function playAudioLogoThenSelectMusic() {
-  selectedTrackIndex = SELECT_TRACK_INDEX;
+let audioInited = false;
+
+export function initAudio(): void {
+  if (audioInited) return;
+  audioInited = true;
+
   const ctx = getCtx();
 
   // iOS silent-buffer unlock: activates the AudioContext within the gesture.
@@ -251,8 +313,34 @@ export function playAudioLogoThenSelectMusic() {
   // Wire all tracks into the graph (no downloads yet).
   ensureAllConnected();
 
-  // Start select music. This play() call is itself the iOS activation gesture
-  // for this element — do not follow it with another play().then(pause).
+  // Decode all SFX ArrayBuffers that have already been fetched.
+  // Any that haven't arrived yet will be decoded when their fetch resolves.
+  decodeAllFetched();
+}
+
+// playLogoAndSelectMusic: called on splash Enter press. Plays the audio logo
+// SFX and starts the select music. Requires initAudio() to have been called.
+
+export async function playLogoAndSelectMusic(): Promise<void> {
+  const ctx = getCtx();
+  if (ctx.state !== 'running') await ctx.resume();
+
+  // Play audio logo via decoded buffer (falls back to HTMLAudioElement if not
+  // yet decoded — rare, but possible on very slow connections).
+  if (sfxEnabled) {
+    const logoSrc = SFX_SRCS.logo;
+    const logoBuf = decodedBuffers.get(logoSrc);
+    if (logoBuf) {
+      const node = ctx.createBufferSource();
+      node.buffer = logoBuf;
+      node.connect(ctx.destination);
+      node.start();
+    } else {
+      new Audio(logoSrc).play().catch(() => {});
+    }
+  }
+
+  // Start select music. The track pool was already wired in initAudio().
   const selectEntry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
   if (selectEntry) {
     currentTrackSrc = TRACKS[SELECT_TRACK_INDEX].src;
@@ -260,121 +348,55 @@ export function playAudioLogoThenSelectMusic() {
     resetGain();
     selectEntry.el.play().catch(() => {});
   }
-
-  // Silently unlock all SFX elements within this gesture.
-  unlockAllSFX();
-
-  // Play the audio logo SFX.
-  if (sfxEnabled) {
-    const logo = new Audio('/sounds/Sudoku_Fighting_Audio_Logo.mp3');
-    logo.play().catch(() => {});
-  }
 }
 
-// ── Announcer clips ────────────────────────────────────────────────────────────
-
-const ROUND_CLIPS: Record<number, HTMLAudioElement> = {
-  1: new Audio('/sounds/Round_One.mp3'),
-  2: new Audio('/sounds/Round_Two.mp3'),
-  3: new Audio('/sounds/Round_Three.mp3'),
-};
-const fightClip       = new Audio('/sounds/Fight.mp3');
-const victoryClip     = new Audio('/sounds/Victory.mp3');
-const devastationClip = new Audio('/sounds/Devestation.mp3');
-const koClip          = new Audio('/sounds/KO.mp3');
-const tkoClip         = new Audio('/sounds/TKO.mp3');
-const fightBellClip   = new Audio('/sounds/fight_bell.wav');
-
-// ── Attack SFX ─────────────────────────────────────────────────────────────────
-
-const ATTACK_SFX: Record<string, HTMLAudioElement> = {
-  punch:           new Audio('/sounds/01_punch.wav'),
-  kick:            new Audio('/sounds/02_kick.wav'),
-  row_special:     new Audio('/sounds/03_special1.wav'),
-  column_special:  new Audio('/sounds/04_special2.wav'),
-  subgrid_special: new Audio('/sounds/05_special3.wav'),
-};
-
-// ── Text blip pool ─────────────────────────────────────────────────────────────
-// A single HTMLAudioElement reset+replayed rapidly (as the typewriter effect does)
-// drops most calls on iOS. A round-robin pool of 3 lets blips overlap naturally
-// and survives the rapid-fire cadence without interrupting each other.
-
-const BLIP_POOL_SIZE = 3;
-const blipPool: HTMLAudioElement[] = Array.from(
-  { length: BLIP_POOL_SIZE },
-  () => new Audio('/sounds/text_blip.wav'),
-);
-let blipIndex = 0;
-
-// ── SFX unlock (called once within first gesture) ──────────────────────────────
-// SFX elements are plain HTMLAudioElements (not routed through the Web Audio
-// graph). On iOS they require their own gesture-scope play() to be activated,
-// independent of the AudioContext unlock. Since they're small files, unlocking
-// all of them at first gesture is fine even on slow connections.
-
-function allSFXElements(): HTMLAudioElement[] {
-  return [
-    ...Object.values(ROUND_CLIPS),
-    fightClip, victoryClip, devastationClip, koClip, tkoClip, fightBellClip,
-    ...Object.values(ATTACK_SFX),
-    ...blipPool,
-  ];
-}
-
-function unlockAllSFX(): void {
-  // SFX elements are plain HTMLAudioElements not routed through the Web Audio
-  // graph, so play() would make them audible at full device volume. Use
-  // el.muted=true (not el.volume=0 — volume is read-only on iOS Safari) to
-  // silence them during the unlock sequence.
-  for (const el of allSFXElements()) {
-    el.muted = true;
-    el.play().then(() => {
-      el.pause();
-      el.currentTime = 0;
-      el.muted = false;
-    }).catch(() => {
-      el.muted = false;
-    });
-  }
-}
-
-// ── SFX playback helpers ───────────────────────────────────────────────────────
-
-function playClip(audio: HTMLAudioElement) {
-  if (!sfxEnabled) return;
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
-}
+// ── SFX playback ───────────────────────────────────────────────────────────────
 
 export function playRoundAnnouncer(roundNumber: number) {
-  const clip = ROUND_CLIPS[roundNumber];
-  if (clip) playClip(clip);
+  const src = SFX_SRCS[`round${roundNumber}`];
+  if (src) playBuf(src);
 }
-export function playFightAnnouncer() { playClip(fightClip); }
-export function playKOAnnouncer()    { playClip(fightBellClip); setTimeout(() => playClip(koClip), 600); }
-export function playTKOAnnouncer()   { playClip(fightBellClip); setTimeout(() => playClip(tkoClip), 600); }
-export function playVictoryAnnouncer()     { playClip(victoryClip); }
-export function playDevastationAnnouncer() { playClip(devastationClip); }
+
+export function playFightAnnouncer()       { playBuf(SFX_SRCS.fight); }
+
+export function playKOAnnouncer() {
+  playBuf(SFX_SRCS.fightBell);
+  playBuf(SFX_SRCS.ko, 600);
+}
+
+export function playTKOAnnouncer() {
+  playBuf(SFX_SRCS.fightBell);
+  playBuf(SFX_SRCS.tko, 600);
+}
+
+export function playVictoryAnnouncer()     { playBuf(SFX_SRCS.victory); }
+export function playDevastationAnnouncer() { playBuf(SFX_SRCS.devastation); }
 
 // ── Dialogue text blip ─────────────────────────────────────────────────────────
+// AudioBufferSourceNode is a one-shot node — each call creates a new instance.
+// Rapid-fire blips overlap naturally, no pool needed.
 
 export function playTextBlip() {
-  if (!sfxEnabled) return;
-  const el = blipPool[blipIndex % BLIP_POOL_SIZE];
-  blipIndex++;
-  el.currentTime = 0;
-  el.play().catch(() => {});
+  playBuf(SFX_SRCS.blip);
 }
 
 // ── Attack SFX ─────────────────────────────────────────────────────────────────
+
+const ATTACK_SFX_KEYS: Record<string, string> = {
+  punch:           'punch',
+  kick:            'kick',
+  row_special:     'rowSpecial',
+  column_special:  'colSpecial',
+  subgrid_special: 'subgridSpecial',
+};
 
 export function playAttackSFX(type: AttackType, delay = SFX_LEAD_MS) {
   if (!sfxEnabled) return;
-  const sfx = ATTACK_SFX[type] ?? ATTACK_SFX.punch;
-  setTimeout(() => {
-    if (!sfxEnabled) return;
-    sfx.currentTime = 0;
-    sfx.play().catch(() => {});
-  }, delay);
+  const key = ATTACK_SFX_KEYS[type] ?? 'punch';
+  const src = SFX_SRCS[key];
+  playBuf(src, delay);
 }
+
+// ── Module init ────────────────────────────────────────────────────────────────
+// Start fetching SFX and warming the select music cache immediately.
+prefetchAudio();

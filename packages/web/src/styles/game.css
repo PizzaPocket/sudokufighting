@@ -1,4 +1,100 @@
 /* =========================================================
+   Splash Screen
+   ========================================================= */
+
+/* Splash is positioned absolutely like .screen, but owns its own display rule
+   via ID specificity — no dependency on .screen/.active class toggling. */
+#screen-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: var(--header-h) 16px 24px;
+}
+
+#screen-splash.exiting {
+  animation: splash-exit 0.8s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes splash-exit {
+  to { opacity: 0; }
+}
+
+/* ── Puzzle grid ──────────────────────────────────────── */
+/* Uses the standard .sudoku-grid + .cell classes exactly.
+   Non-cross cells are hidden via .splash-hidden.
+   Selected/correct/danger use the purple ramp, mirroring
+   the p1/p2 grid pattern.                                */
+
+#splash-grid-wrap {
+  width: clamp(270px, 82vw, 380px);
+}
+
+#splash-grid {
+  --completion-flash-color: var(--purple);
+  border: none;  /* outer border removed — cross floats on black */
+}
+
+/* Non-cross cells: invisible but hold their grid position */
+#splash-grid .splash-hidden {
+  visibility: hidden;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+/* Mirror p1/p2 grid pattern with purple ramp */
+#splash-grid .cell.highlight   { background: var(--purple-bg-light); }
+#splash-grid .cell.same-number { background: var(--purple-bg-mid); }
+#splash-grid .cell.selected    { background: var(--purple-bg-light); box-shadow: inset 0 0 0 2px var(--purple); }
+#splash-grid .cell.correct     { color: var(--purple-dark); font-weight: 600; }
+#splash-grid .cell.danger      { background: var(--danger-bg-light); }
+
+/* Enter button — dimmed until answer is correct */
+.splash-enter-btn {
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.splash-enter-btn.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Splash numpad: same as gameplay numpad; show on touch only (handled by @media below) */
+#screen-splash #mobile-numpad { width: clamp(270px, 82vw, 380px); padding: 0; }
+
+/* =========================================================
+   Start Screen — entrance animation
+   ========================================================= */
+
+@keyframes start-bg-enter {
+  from { opacity: 0; background-size: 108% auto; }
+  to   { opacity: 1; background-size: cover; }
+}
+
+#screen-start.entering {
+  animation: start-bg-enter 0.8s ease-out forwards;
+}
+
+/* Logo enters from slight fade + slide */
+@keyframes start-logo-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#screen-start.entering .start-logo-container { animation: start-logo-in 0.5s 0.15s ease-out both; }
+
+/* Start actions stagger in element by element */
+#screen-start.entering .start-section:first-child { animation: start-logo-in 0.4s 0.25s ease-out both; }
+#screen-start.entering .start-divider            { animation: start-logo-in 0.4s 0.33s ease-out both; }
+#screen-start.entering .start-section:last-child  { animation: start-logo-in 0.4s 0.41s ease-out both; }
+
+/* =========================================================
    Start Screen
    ========================================================= */
 
@@ -395,6 +491,19 @@
   height: 100%; width: 100%;
   border-radius: 3px;
 }
+.counter-bar-icon {
+  position: absolute;
+  top: 2px; /* centers 18px circle on the 6px bar at top:8px (bar center = 11px, 11-9=2) */
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; z-index: 21;
+}
+.counter-bar-icon-img {
+  width: 11px; height: 11px;
+  filter: brightness(0) invert(1);
+  display: block;
+}
 .counter-bubble {
   position: absolute; top: 20px; left: 50%;
   transform: translateX(-50%);
@@ -504,6 +613,7 @@
   .player-panel { display: none; }
   .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
   .player-panel.is-me .cell { font-size: 19px; }
+  #splash-grid .cell { font-size: 19px; }
   #fight-stage { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 110px; padding-bottom: 0; z-index: 2; pointer-events: none; overflow: visible; }
   #fight-ground { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; }
   .midground-graphic { position: fixed; }

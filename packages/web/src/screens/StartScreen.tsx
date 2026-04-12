@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 
-interface Props { active: boolean; }
+interface Props { active: boolean; entering?: boolean; }
 
-export default function StartScreen({ active }: Props) {
+export default function StartScreen({ active, entering }: Props) {
   const setScreen = useGameStore(s => s.setScreen);
   const setGameMode = useGameStore(s => s.setGameMode);
   const lobbyJoinError = useGameStore(s => s.lobbyJoinError);
@@ -41,7 +41,7 @@ export default function StartScreen({ active }: Props) {
   }
 
   return (
-    <div id="screen-start" className={`screen${active ? ' active' : ''}`}>
+    <div id="screen-start" className={`screen${active ? ' active' : ''}${entering ? ' entering' : ''}`}>
       <div className="start-logo-container">
         <img
           className="start-logo-top"

@@ -70,13 +70,13 @@
 .track-title {
   font-size: var(--text-base);
   font-weight: var(--weight-bold);
-  color: var(--canvas-text);
+  color: var(--canvas-text-dim);
   letter-spacing: 0.04em;
-  text-align: center;
-  width: 160px;
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 
 /* Toggle switch */

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useGameStore } from '../../store/gameStore';
-import { TRACKS, setMusicEnabled, setSfxEnabled, setTrackIndex } from '../../audio/audioManager';
+import { TRACKS, setMusicEnabled, setSfxEnabled } from '../../audio/audioManager';
 
 // Generic dark floating panel anchored to a trigger — not settings-specific.
 // This instance hosts game settings (music, track, SFX). The pattern (.ctx-menu,
@@ -13,7 +13,6 @@ export default function ContextualMenu() {
   const selectedTrackIndex = useGameStore(s => s.selectedTrackIndex);
   const storeSetMusic = useGameStore(s => s.setMusicEnabled);
   const storeSetSfx = useGameStore(s => s.setSfxEnabled);
-  const storeSetTrack = useGameStore(s => s.setSelectedTrackIndex);
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,18 +41,6 @@ export default function ContextualMenu() {
     setSfxEnabled(next);
   }
 
-  function handleTrackPrev() {
-    const next = ((selectedTrackIndex - 1) + TRACKS.length) % TRACKS.length;
-    storeSetTrack(next);
-    setTrackIndex(next);
-  }
-
-  function handleTrackNext() {
-    const next = (selectedTrackIndex + 1) % TRACKS.length;
-    storeSetTrack(next);
-    setTrackIndex(next);
-  }
-
   return (
     <div ref={panelRef} className={`ctx-menu${settingsOpen ? '' : ' hidden'}`} id="ctx-menu">
       <div className="ctx-menu-item">
@@ -68,15 +55,7 @@ export default function ContextualMenu() {
 
       <div className="ctx-menu-item stacked">
         <span className="ctx-label">TRACK</span>
-        <div className="track-carousel">
-          <button className="btn-utility carousel-btn" onClick={handleTrackPrev}>
-            <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="Previous" />
-          </button>
-          <span className="track-title">{TRACKS[selectedTrackIndex].title}</span>
-          <button className="btn-utility carousel-btn" onClick={handleTrackNext}>
-            <img src="/assets/ui/chevron-right.svg" className="header-icon-img" alt="Next" />
-          </button>
-        </div>
+        <span className="track-title">{TRACKS[selectedTrackIndex].title}</span>
       </div>
 
       <div className="ctx-menu-divider" />

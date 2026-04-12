@@ -96,6 +96,13 @@
   --danger-bg-light: #FFEBEC;
   --danger-bg-mid:   #FFCED1;
 
+  /* ── Purple ramp — splash puzzle theme ──────────────── */
+  --purple:          #8B49FF;  /* = --accent */
+  --purple-dark:     #6930CC;
+  --purple-deep:     #4A1E99;
+  --purple-bg-light: #F3EEFF;  /* given cell background */
+  --purple-bg-mid:   #D4BCFF;  /* selection / accent fill */
+
   /* ── Shared action colours ───────────────────────────── */
   --orange:       #FF8B16;
   --orange-hover: #E07500;

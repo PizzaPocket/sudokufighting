@@ -6,7 +6,16 @@ import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY, 
 import { playAttackSFX, SELECT_TRACK_INDEX } from '../audio/audioManager';
 import { BASE_UNLOCKED } from '../progression/progressionService';
 
-export type Screen = 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
+export type Screen = 'splash' | 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
+
+// Skip splash when the URL contains a ?room= code (user tapped an invite link).
+function getInitialScreen(): Screen {
+  try {
+    return new URLSearchParams(window.location.search).has('room') ? 'start' : 'splash';
+  } catch {
+    return 'splash';
+  }
+}
 export type GameMode = 'quick' | 'friend' | 'practice' | 'campaign' | null;
 
 export interface AnimSignal {
@@ -173,7 +182,7 @@ function isHeavyAttack(type: AttackType) {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   // ── Initial state ──────────────────────────────────────────────────────────
-  currentScreen: 'start',
+  currentScreen: getInitialScreen(),
   gameMode: null,
   initialInteractionDone: false,
 
