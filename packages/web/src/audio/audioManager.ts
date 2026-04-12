@@ -182,6 +182,9 @@ export function switchToSelectMusic() {
   fadeOutMusic(delay);
   setTimeout(() => {
     selectedTrackIndex = SELECT_TRACK_INDEX;
+    // Reset to the beginning so the theme always starts fresh on return to menu.
+    const entry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
+    if (entry) entry.el.currentTime = 0;
     startFightMusic();
   }, delay + 50);
 }
@@ -253,6 +256,7 @@ export function playAudioLogoThenSelectMusic() {
   const selectEntry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
   if (selectEntry) {
     currentTrackSrc = TRACKS[SELECT_TRACK_INDEX].src;
+    selectEntry.el.currentTime = 0;
     resetGain();
     selectEntry.el.play().catch(() => {});
   }
