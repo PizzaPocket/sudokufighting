@@ -58,7 +58,7 @@ html, body {
   color: var(--canvas-text);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  text-shadow: 2px 2px 0 var(--accent);
+  text-shadow: var(--text-shadow-xl);
   white-space: nowrap;
 }
 
