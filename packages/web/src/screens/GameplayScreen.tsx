@@ -87,7 +87,7 @@ export default function GameplayScreen({ active }: Props) {
       {isPaused && (gameMode === 'practice' || gameMode === 'campaign') && (
         <div className="pause-overlay">
           <div className="pause-dialog">
-            <span className="pause-title">PAUSED</span>
+            <span className="dialog-title">PAUSED</span>
             <button className="btn" onClick={() => setIsPaused(false)}>RESUME</button>
           </div>
         </div>

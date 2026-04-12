@@ -555,8 +555,9 @@
   display: flex; flex-direction: column; align-items: center; gap: 16px;
   min-width: 260px; max-width: 340px;
 }
-.confirm-dialog-title {
+.dialog-title {
   font-family: var(--font-display); font-size: var(--text-xl); color: var(--canvas-text);
+  text-shadow: 3px 4px 0 var(--accent);
 }
 .confirm-dialog-body {
   font-family: var(--font); font-size: var(--text-sm); color: var(--canvas-text-dim);
@@ -577,10 +578,6 @@
   border-radius: var(--radius-md); padding: 40px 36px;
   display: flex; flex-direction: column; align-items: center; gap: 24px;
   min-width: 240px;
-}
-.pause-title {
-  font-family: var(--font-display); font-size: var(--text-3xl);
-  color: var(--canvas-text); text-shadow: 3px 4px 0 var(--accent);
 }
 
 /* ── Campaign Game Over ───────────────────────────────────── */

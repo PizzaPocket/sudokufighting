@@ -123,7 +123,7 @@ export default function AppHeader() {
       {confirmOpen && (
         <div className="confirm-overlay">
           <div className="confirm-dialog">
-            <span className="confirm-dialog-title">{confirmTitle}</span>
+            <span className="dialog-title">{confirmTitle}</span>
             <span className="confirm-dialog-body">{confirmBody}</span>
             <div className="confirm-dialog-btns">
               <button className="btn btn-secondary" onClick={() => setConfirmOpen(false)}>

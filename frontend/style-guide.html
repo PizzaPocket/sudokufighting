@@ -2224,7 +2224,7 @@
     <p class="sg-note" style="margin-bottom:12px">Blocks interaction for destructive or important confirmations. Dark mode panel consistent with Contextual Menu and Toast. Cancel always left of destructive.</p>
     <div class="sg-modal-backdrop">
       <div class="sg-modal">
-        <div class="sg-modal-title">Surrender match?</div>
+        <div class="dialog-title">Surrender match?</div>
         <div class="sg-modal-divider"></div>
         <div class="sg-modal-body">You'll forfeit the current round. This can't be undone.</div>
         <div class="sg-modal-actions">
@@ -2234,9 +2234,9 @@
       </div>
     </div>
     <div class="sg-note" style="margin-top:10px">
-      Backdrop: rgba(0,0,0,0.65). Panel: rgba(20,20,20,0.96), 1px white border, radius-md.<br>
-      Title: 18px bold white. Body: 12px rgba(white,0.65). Divider: 1px rgba white 10%.<br>
-      Actions right-aligned. Cancel left of destructive — platform convention.
+      Backdrop: rgba(0,0,0,0.65). Panel: <code>--surface-raised</code>, 2px <code>--surface-raised-edge</code> border, <code>--radius-md</code>.<br>
+      <strong>Title:</strong> <code>.dialog-title</code> — Barlow Condensed <code>--text-xl</code> (26px), <code>--canvas-text</code>, <code>text-shadow: 3px 4px 0 var(--accent)</code>. Used for both pause and confirm dialog headings.<br>
+      Body: <code>--text-sm</code>, <code>--canvas-text-dim</code>. Actions centered. Cancel left of confirm — platform convention.
     </div>
   </section>
 
