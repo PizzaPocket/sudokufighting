@@ -110,14 +110,6 @@ function ensureAllConnected(): void {
   }
 }
 
-// Unlock a single element for iOS within a gesture handler.
-// play() marks the element as user-activated; the .then(pause) immediately stops
-// it so we don't accidentally keep it playing or trigger a download for tracks
-// we don't need yet.
-function unlockElement(el: HTMLAudioElement): void {
-  el.play().then(() => el.pause()).catch(() => {});
-}
-
 function pauseAllTracks(): void {
   for (const { el } of trackPool.values()) {
     if (!el.paused) el.pause();
@@ -228,15 +220,18 @@ export function preloadAllTracks() {}
 // ── First-gesture audio unlock ─────────────────────────────────────────────────
 // Called synchronously inside the first pointerdown handler (App.tsx).
 //
-// Sequence matters here:
+// Sequence:
 //   1. Create AudioContext + play silent buffer (activates the context on iOS).
-//   2. Create all pool entries (AudioNode graph wiring, no downloads yet).
-//   3. Start the select music synchronously (sets currentTrackSrc, triggers download).
-//   4. Unlock the select music element (play+pause within gesture — also triggers
-//      download start on iOS so it begins buffering).
-//   5. Unlock all SFX elements (small files, all needed before first fight).
-//   6. Do NOT unlock the 5 fight tracks here — they download on demand when
-//      startFightMusic() is called, which always has a 2+ second buffer window.
+//   2. Wire all tracks into the graph (no downloads yet).
+//   3. Start select music — the play() call here is the iOS activation gesture
+//      for this element. Do NOT call play() on it again; a second play().then(pause)
+//      would immediately silence the music we just started.
+//   4. Silently unlock all SFX elements (volume=0 so nothing is audible).
+//      SFX are plain HTMLAudioElements not routed through the gainNode, so without
+//      volume=0 they would play at full device volume during the unlock.
+//   5. Fight tracks are not explicitly unlocked here — once the AudioContext is
+//      user-activated, MediaElementSource-connected elements can be played from
+//      non-gesture contexts on modern iOS/Android.
 
 export function playAudioLogoThenSelectMusic() {
   selectedTrackIndex = SELECT_TRACK_INDEX;
@@ -253,7 +248,8 @@ export function playAudioLogoThenSelectMusic() {
   // Wire all tracks into the graph (no downloads yet).
   ensureAllConnected();
 
-  // Start select music first — this sets currentTrackSrc and triggers its download.
+  // Start select music. This play() call is itself the iOS activation gesture
+  // for this element — do not follow it with another play().then(pause).
   const selectEntry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
   if (selectEntry) {
     currentTrackSrc = TRACKS[SELECT_TRACK_INDEX].src;
@@ -261,12 +257,7 @@ export function playAudioLogoThenSelectMusic() {
     selectEntry.el.play().catch(() => {});
   }
 
-  // Unlock the select track element (gesture-scoped play+pause).
-  // Its play() above may already be running, so this is a no-op for the download
-  // but ensures iOS marks it activated for future non-gesture calls.
-  if (selectEntry) unlockElement(selectEntry.el);
-
-  // Unlock all SFX elements within this gesture — they're small and needed soon.
+  // Silently unlock all SFX elements within this gesture.
   unlockAllSFX();
 
   // Play the audio logo SFX.
@@ -274,11 +265,6 @@ export function playAudioLogoThenSelectMusic() {
     const logo = new Audio('/sounds/Sudoku_Fighting_Audio_Logo.mp3');
     logo.play().catch(() => {});
   }
-
-  // Fight tracks (the other 5) are NOT unlocked or downloaded here.
-  // Once the AudioContext is activated, MediaElementSource-connected elements
-  // can be played in non-gesture contexts on modern iOS/Android — they inherit
-  // the context's activation status.
 }
 
 // ── Announcer clips ────────────────────────────────────────────────────────────
@@ -333,11 +319,19 @@ function allSFXElements(): HTMLAudioElement[] {
 }
 
 function unlockAllSFX(): void {
+  // SFX elements are plain HTMLAudioElements not routed through the Web Audio
+  // graph, so play() would make them audible at full device volume. Mute with
+  // volume=0 before calling play() — the iOS unlock is triggered by the
+  // gesture-scoped play() call itself, not by whether audio is audible.
   for (const el of allSFXElements()) {
+    el.volume = 0;
     el.play().then(() => {
-      el.currentTime = 0;
       el.pause();
-    }).catch(() => {});
+      el.currentTime = 0;
+      el.volume = 1;
+    }).catch(() => {
+      el.volume = 1;
+    });
   }
 }
 
