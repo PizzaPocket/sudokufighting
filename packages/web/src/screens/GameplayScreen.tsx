@@ -27,6 +27,7 @@ export default function GameplayScreen({ active }: Props) {
   const campaignResult = useGameStore(s => s.campaignResult);
   const isPaused = useGameStore(s => s.isPaused);
   const setIsPaused = useGameStore(s => s.setIsPaused);
+  const creditsActive = useGameStore(s => s.creditsActive);
 
   const screenRef = useRef<HTMLDivElement>(null);
   useVsAI();
@@ -64,7 +65,7 @@ export default function GameplayScreen({ active }: Props) {
       <HUD />
 
       {/* Arena: two player panels + fight stage */}
-      <div id="arena">
+      <div id="arena" className={creditsActive ? 'credits-active' : undefined}>
         <div id="p1-panel" className={p1PanelClass}>
           <SudokuGrid gridSeat={0} id={p1GridId} />
           {mySeat === 0 && <MobileNumpad />}

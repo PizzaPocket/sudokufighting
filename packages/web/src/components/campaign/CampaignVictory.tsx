@@ -3,17 +3,38 @@ import { useGameStore } from '../../store/gameStore';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from '../../creditsContent';
 import { switchToSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
 
+// win animation: 2 frames × 300ms = 600ms/loop. Let it run ~4 loops before freezing.
+const WIN_LOOPS_BEFORE_FREEZE = 4;
+const WIN_LOOP_DURATION_MS = 2 * 300; // frames × frameDuration
+
 type Phase = 'credits' | 'unlocks';
 
 export default function CampaignVictory() {
   const pendingUnlockIds = useGameStore(s => s.pendingUnlockIds);
   const characters = useGameStore(s => s.characters);
   const resetAll = useGameStore(s => s.resetAll);
+  const mySeat = useGameStore(s => s.mySeat);
+  const setCreditsActive = useGameStore(s => s.setCreditsActive);
   const [phase, setPhase] = useState<Phase>('credits');
 
   useEffect(() => {
-    const t = setTimeout(() => setPhase('unlocks'), CREDITS_SCROLL_DURATION_MS + 500);
-    return () => clearTimeout(t);
+    // Fade out puzzle panels immediately as credits roll
+    setCreditsActive(true);
+
+    // After a few victory loops, freeze the player's character on win frame 2
+    const freezeDelay = WIN_LOOPS_BEFORE_FREEZE * WIN_LOOP_DURATION_MS;
+    const freezeTimer = setTimeout(() => {
+      const animKey = mySeat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
+      useGameStore.setState({ [animKey]: { state: 'win_freeze', nonce: Date.now() } });
+    }, freezeDelay);
+
+    const phaseTimer = setTimeout(() => setPhase('unlocks'), CREDITS_SCROLL_DURATION_MS + 500);
+
+    return () => {
+      clearTimeout(freezeTimer);
+      clearTimeout(phaseTimer);
+      setCreditsActive(false);
+    };
   }, []);
 
   const unlockChars = pendingUnlockIds

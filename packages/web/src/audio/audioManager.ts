@@ -19,7 +19,6 @@ let sfxEnabled   = true;
 let selectedTrackIndex = SELECT_TRACK_INDEX;
 
 // ── Web Audio API ──────────────────────────────────────────────────────────────
-// Created lazily on first user interaction to satisfy browser autoplay policy.
 let audioCtx: AudioContext | null = null;
 let gainNode: GainNode | null = null;
 
@@ -35,11 +34,6 @@ function getCtx(): AudioContext {
 }
 
 // ── SFX via AudioBuffer ────────────────────────────────────────────────────────
-// All SFX are pre-fetched as ArrayBuffers on page load (no AudioContext needed).
-// After initAudio() creates the AudioContext, buffers are decoded via
-// decodeAudioData(). Playback uses one-shot AudioBufferSourceNodes — no
-// HTMLAudioElement gesture-unlock ceremony needed on any platform.
-
 const SFX_SRCS: Record<string, string> = {
   round1:         '/sounds/Round_One.mp3',
   round2:         '/sounds/Round_Two.mp3',
@@ -59,44 +53,38 @@ const SFX_SRCS: Record<string, string> = {
   logo:           '/sounds/Sudoku_Fighting_Audio_Logo.m4a',
 };
 
-// Raw ArrayBuffers fetched pre-gesture (populates browser HTTP cache)
-const fetchedRaw = new Map<string, ArrayBuffer>();
-// Decoded AudioBuffers (available after initAudio creates the AudioContext)
+const fetchedRaw    = new Map<string, ArrayBuffer>();
 const decodedBuffers = new Map<string, AudioBuffer>();
 
-// Fetch all SFX on module load. No AudioContext required — pure HTTP.
 function prefetchAudio(): void {
+  // SFX — fetch to ArrayBuffer; decoded once AudioContext exists
   for (const src of Object.values(SFX_SRCS)) {
     fetch(src)
       .then(r => r.arrayBuffer())
       .then(ab => {
         fetchedRaw.set(src, ab);
-        // Decode immediately if AudioContext already exists
         if (audioCtx) decodeSingle(src, ab);
       })
       .catch(() => {});
   }
-  // Also warm the browser cache for select music (large file, can't decode in memory)
+  // Warm the browser cache for the select music track and the first fight track.
+  // Full decode happens lazily when startFightMusic() is first called.
   fetch(TRACKS[SELECT_TRACK_INDEX].src).catch(() => {});
 }
 
 function decodeSingle(src: string, ab: ArrayBuffer): void {
   if (!audioCtx) return;
-  // slice() copies the buffer — decodeAudioData may detach the original
   audioCtx.decodeAudioData(ab.slice(0), buf => {
     decodedBuffers.set(src, buf);
   }, () => {});
 }
 
-// Decode all already-fetched raw buffers. Called from initAudio().
 function decodeAllFetched(): void {
   for (const [src, ab] of fetchedRaw.entries()) {
     if (!decodedBuffers.has(src)) decodeSingle(src, ab);
   }
 }
 
-// Play a decoded SFX buffer, optionally delayed by delayMs.
-// Connects directly to ctx.destination (bypasses gainNode / music volume).
 function playBuf(src: string, delayMs = 0): void {
   if (!sfxEnabled || !audioCtx) return;
   const buf = decodedBuffers.get(src);
@@ -107,35 +95,85 @@ function playBuf(src: string, delayMs = 0): void {
   node.start(audioCtx.currentTime + delayMs / 1000);
 }
 
-// ── Mobile AudioContext recovery ───────────────────────────────────────────────
-// On mobile, the AudioContext is automatically suspended when the tab is
-// backgrounded, the screen locks, or a phone call arrives. When that happens,
-// HTMLAudioElements connected via MediaElementSourceNode are also paused by the
-// browser and do NOT restart automatically when the context resumes — we must
-// call play() again explicitly.
+// ── Music — AudioBufferSourceNode for gapless looping ─────────────────────────
 //
-// Three recovery signals cover all cases:
-//   1. visibilitychange — fires when the user returns from background/lock screen.
-//   2. ctx.onstatechange — fires when the context itself transitions to 'running'.
-//   3. pointerdown/keydown — any in-game tap/keystroke wakes a suspended context,
-//      which matters most during active gameplay (every digit entry is a gesture).
+// HTMLAudioElement.loop does a real seek-to-0 on each loop, causing an audible
+// gap. AudioBufferSourceNode with loop:true wraps the read pointer at the sample
+// level — the scheduler never leaves the buffer, so looping is truly gapless.
+//
+// Pause/resume: AudioBufferSourceNode cannot be paused. Instead we record the
+// playback offset at pause time and start a new node from that offset on resume.
+// The offset is (ctx.currentTime - startedAt + initialOffset) % duration.
 
-function resumeCurrentTrack(): void {
-  if (!currentTrackSrc || !audioCtx || audioCtx.state !== 'running') return;
-  const entry = trackPool.get(currentTrackSrc);
-  if (entry && entry.el.paused && musicEnabled) {
-    entry.el.play().catch(() => {});
+const musicBuffers  = new Map<string, AudioBuffer>();
+const musicDecoding = new Map<string, Promise<AudioBuffer | null>>();
+
+// Active playback state
+let _musicNode:          AudioBufferSourceNode | null = null;
+let _musicBuffer:        AudioBuffer | null = null;
+let _musicSrc:           string | null = null;
+let _musicStartedAt      = 0;     // ctx.currentTime when current node started
+let _musicInitialOffset  = 0;     // track position the node started from
+let _musicPaused         = false;
+let _musicPauseOffset    = 0;     // track position saved on user-pause
+
+function _fetchAndDecode(src: string): Promise<AudioBuffer | null> {
+  if (musicDecoding.has(src)) return musicDecoding.get(src)!;
+  const p = fetch(src)
+    .then(r => r.arrayBuffer())
+    .then(ab => new Promise<AudioBuffer | null>(resolve => {
+      const ctx = getCtx();
+      ctx.decodeAudioData(ab, buf => {
+        musicBuffers.set(src, buf);
+        resolve(buf);
+      }, () => resolve(null));
+    }))
+    .catch(() => null);
+  musicDecoding.set(src, p);
+  return p;
+}
+
+function _getMusicPosition(): number {
+  if (!_musicBuffer || !audioCtx) return _musicPauseOffset;
+  const elapsed = audioCtx.currentTime - _musicStartedAt;
+  return (_musicInitialOffset + elapsed) % _musicBuffer.duration;
+}
+
+function _stopMusicNode(): void {
+  if (_musicNode) {
+    try { _musicNode.stop(); } catch {}
+    _musicNode.disconnect();
+    _musicNode = null;
   }
 }
 
-function registerRecoveryListeners(ctx: AudioContext): void {
-  ctx.onstatechange = () => {
-    if (ctx.state === 'running') resumeCurrentTrack();
-  };
+function _startNode(src: string, buffer: AudioBuffer, offset = 0): void {
+  _stopMusicNode();
+  const ctx = getCtx();
+  const node = ctx.createBufferSource();
+  node.buffer = buffer;
+  node.loop = true;
+  node.loopStart = 0;
+  node.loopEnd = buffer.duration;
+  node.connect(gainNode!);
+  _musicNode          = node;
+  _musicBuffer        = buffer;
+  _musicSrc           = src;
+  _musicInitialOffset = offset % buffer.duration;
+  _musicStartedAt     = ctx.currentTime;
+  _musicPaused        = false;
+  node.start(0, _musicInitialOffset);
+}
 
+// ── Mobile AudioContext recovery ───────────────────────────────────────────────
+// AudioBufferSourceNode pauses/resumes automatically with the AudioContext,
+// so we only need to resume the context itself. We do NOT restart the music node
+// here — that would reset the loop position and cause a skip.
+
+function registerRecoveryListeners(ctx: AudioContext): void {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      ctx.resume().then(resumeCurrentTrack).catch(() => {});
+      ctx.resume().catch(() => {});
     }
   });
 
@@ -143,54 +181,7 @@ function registerRecoveryListeners(ctx: AudioContext): void {
     if (ctx.state === 'suspended') ctx.resume().catch(() => {});
   };
   document.addEventListener('pointerdown', wakeOnGesture, { passive: true });
-  document.addEventListener('keydown', wakeOnGesture, { passive: true });
-}
-
-// ── Music track pool ───────────────────────────────────────────────────────────
-// All tracks are created once and permanently wired into the Web Audio graph.
-// Only one element plays at a time — switching means pause() one, play() another.
-// This eliminates the "simultaneous playback" bug that arose from orphaned
-// HTMLAudioElements accumulating during fadeOutMusic's async cleanup window.
-//
-// Preload strategy for slow mobile connections:
-//   On iOS, `preload='auto'` is ignored — audio only downloads when play() is
-//   called. Fight tracks download on-demand when startFightMusic() fires — there
-//   is always a 2+ second buffer window (round intro overlay) before fight audio
-//   is actually needed.
-
-interface TrackPoolEntry {
-  el: HTMLAudioElement;
-  node: MediaElementAudioSourceNode;
-}
-const trackPool = new Map<string, TrackPoolEntry>();
-let currentTrackSrc: string | null = null;
-
-function ensureAllConnected(): void {
-  const ctx = getCtx();
-  for (const track of TRACKS) {
-    if (trackPool.has(track.src)) continue;
-    const el = new Audio(track.src);
-    // preload='none': don't speculatively download. Downloads begin when play()
-    // is called. The select track starts downloading in playLogoAndSelectMusic();
-    // fight tracks start downloading when startFightMusic() calls play().
-    el.preload = 'none';
-    el.loop = true;
-    const node = ctx.createMediaElementSource(el);
-    node.connect(gainNode!);
-    trackPool.set(track.src, { el, node });
-  }
-}
-
-function pauseAllTracks(): void {
-  for (const { el } of trackPool.values()) {
-    if (!el.paused) el.pause();
-  }
-}
-
-function resetGain(): void {
-  if (!gainNode || !audioCtx) return;
-  gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-  gainNode.gain.setValueAtTime(musicEnabled ? 0.6 : 0, audioCtx.currentTime);
+  document.addEventListener('keydown',     wakeOnGesture, { passive: true });
 }
 
 // ── Public music API ───────────────────────────────────────────────────────────
@@ -210,7 +201,13 @@ export function getSelectedTrackIndex() { return selectedTrackIndex; }
 
 export function setTrackIndex(index: number) {
   selectedTrackIndex = ((index % TRACKS.length) + TRACKS.length) % TRACKS.length;
-  if (currentTrackSrc) startFightMusic();
+  if (_musicSrc) startFightMusic();
+}
+
+function resetGain(): void {
+  if (!gainNode || !audioCtx) return;
+  gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(musicEnabled ? 0.6 : 0, audioCtx.currentTime);
 }
 
 export async function startFightMusic(backgroundId?: string) {
@@ -218,31 +215,41 @@ export async function startFightMusic(backgroundId?: string) {
   if (arena) selectedTrackIndex = arena.trackIndex;
 
   const src = TRACKS[selectedTrackIndex].src;
-
-  // Pool may not exist yet on desktop (no prior gesture check ran ensureAllConnected).
-  ensureAllConnected();
-
   const ctx = getCtx();
   if (ctx.state !== 'running') await ctx.resume();
 
   resetGain();
 
-  if (currentTrackSrc === src) {
-    // Same track — resume if paused (e.g. after AudioContext suspension recovery).
-    const entry = trackPool.get(src);
-    if (entry && entry.el.paused) entry.el.play().catch(() => {});
+  // Already playing this track — nothing to do
+  if (_musicSrc === src && _musicNode && !_musicPaused) return;
+
+  // Same track but user-paused — resume from saved position
+  if (_musicSrc === src && _musicPaused && _musicBuffer) {
+    _startNode(src, _musicBuffer, _musicPauseOffset);
     return;
   }
 
-  // Pause whatever was playing before.
-  if (currentTrackSrc) {
-    trackPool.get(currentTrackSrc)?.el.pause();
-  }
+  // New track — fetch & decode if needed, then play
+  let buffer = musicBuffers.get(src) ?? null;
+  if (!buffer) buffer = await _fetchAndDecode(src);
+  if (!buffer) return;
 
-  currentTrackSrc = src;
-  // play() initiates the download on iOS if not already cached. On a slow
-  // connection, the 2s round-intro overlay gives the browser time to buffer.
-  trackPool.get(src)?.el.play().catch(() => {});
+  _startNode(src, buffer);
+}
+
+/** Pause music, saving the current playback position. */
+export function pauseMusic(): void {
+  if (_musicPaused || !_musicNode || !_musicBuffer) return;
+  _musicPauseOffset = _getMusicPosition();
+  _musicPaused = true;
+  _stopMusicNode();
+}
+
+/** Resume music from the position it was paused at. */
+export function resumeMusic(): void {
+  if (!_musicPaused || !_musicBuffer || !_musicSrc) return;
+  if (!musicEnabled) { _musicPaused = false; return; }
+  _startNode(_musicSrc, _musicBuffer, _musicPauseOffset);
 }
 
 export function switchToSelectMusic() {
@@ -250,20 +257,19 @@ export function switchToSelectMusic() {
   fadeOutMusic(delay);
   setTimeout(() => {
     selectedTrackIndex = SELECT_TRACK_INDEX;
-    // Reset to the beginning so the theme always starts fresh on return to menu.
-    const entry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
-    if (entry) entry.el.currentTime = 0;
     startFightMusic();
   }, delay + 50);
 }
 
 export function stopMusicNow() {
+  _stopMusicNode();
+  _musicSrc    = null;
+  _musicBuffer = null;
+  _musicPaused = false;
   if (gainNode && audioCtx) {
     gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
   }
-  pauseAllTracks();
-  currentTrackSrc = null;
 }
 
 export function fadeOutMusic(durationMs = 500) {
@@ -273,26 +279,19 @@ export function fadeOutMusic(durationMs = 500) {
   gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
   gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
 
-  const fadingSrc = currentTrackSrc;
-  currentTrackSrc = null;
+  const fadingSrc = _musicSrc;
+  _musicSrc = null;
 
   setTimeout(() => {
-    // Pause only if nothing new has taken over this track's element.
-    if (fadingSrc && currentTrackSrc !== fadingSrc) {
-      trackPool.get(fadingSrc)?.el.pause();
-    }
-    // Gain stays at 0 — startFightMusic/switchToSelectMusic resets it.
+    // Only stop if nothing new started over it
+    if (fadingSrc && _musicSrc !== fadingSrc) _stopMusicNode();
   }, durationMs);
 }
 
-// No-op kept for any call sites that still reference it.
+// No-op — kept for any remaining call sites
 export function preloadAllTracks() {}
 
 // ── First-gesture audio unlock ─────────────────────────────────────────────────
-// initAudio: called once on first user interaction (splash puzzle touch/key, or
-// first start-screen gesture for room-code path). Creates the AudioContext,
-// wires music tracks into the Web Audio graph, and begins decoding all
-// pre-fetched SFX ArrayBuffers. Produces no audible output.
 
 let audioInited = false;
 
@@ -302,7 +301,7 @@ export function initAudio(): void {
 
   const ctx = getCtx();
 
-  // iOS silent-buffer unlock: activates the AudioContext within the gesture.
+  // iOS silent-buffer unlock
   const silentBuf = ctx.createBuffer(1, 1, 22050);
   const silent = ctx.createBufferSource();
   silent.buffer = silentBuf;
@@ -310,23 +309,13 @@ export function initAudio(): void {
   silent.start(0);
   ctx.resume();
 
-  // Wire all tracks into the graph (no downloads yet).
-  ensureAllConnected();
-
-  // Decode all SFX ArrayBuffers that have already been fetched.
-  // Any that haven't arrived yet will be decoded when their fetch resolves.
   decodeAllFetched();
 }
-
-// playLogoAndSelectMusic: called on splash Enter press. Plays the audio logo
-// SFX and starts the select music. Requires initAudio() to have been called.
 
 export async function playLogoAndSelectMusic(): Promise<void> {
   const ctx = getCtx();
   if (ctx.state !== 'running') await ctx.resume();
 
-  // Play audio logo via decoded buffer (falls back to HTMLAudioElement if not
-  // yet decoded — rare, but possible on very slow connections).
   if (sfxEnabled) {
     const logoSrc = SFX_SRCS.logo;
     const logoBuf = decodedBuffers.get(logoSrc);
@@ -340,14 +329,15 @@ export async function playLogoAndSelectMusic(): Promise<void> {
     }
   }
 
-  // Start select music. The track pool was already wired in initAudio().
-  const selectEntry = trackPool.get(TRACKS[SELECT_TRACK_INDEX].src);
-  if (selectEntry) {
-    currentTrackSrc = TRACKS[SELECT_TRACK_INDEX].src;
-    selectEntry.el.currentTime = 0;
-    resetGain();
-    selectEntry.el.play().catch(() => {});
-  }
+  // Start fetching+decoding the select track if not already done
+  const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
+  let buffer = musicBuffers.get(selectSrc) ?? null;
+  if (!buffer) buffer = await _fetchAndDecode(selectSrc);
+  if (!buffer) return;
+
+  _musicSrc = selectSrc;
+  resetGain();
+  _startNode(selectSrc, buffer, 0);
 }
 
 // ── SFX playback ───────────────────────────────────────────────────────────────
@@ -372,15 +362,9 @@ export function playTKOAnnouncer() {
 export function playVictoryAnnouncer()     { playBuf(SFX_SRCS.victory); }
 export function playDevastationAnnouncer() { playBuf(SFX_SRCS.devastation); }
 
-// ── Dialogue text blip ─────────────────────────────────────────────────────────
-// AudioBufferSourceNode is a one-shot node — each call creates a new instance.
-// Rapid-fire blips overlap naturally, no pool needed.
-
 export function playTextBlip() {
   playBuf(SFX_SRCS.blip);
 }
-
-// ── Attack SFX ─────────────────────────────────────────────────────────────────
 
 const ATTACK_SFX_KEYS: Record<string, string> = {
   punch:           'punch',
@@ -398,5 +382,4 @@ export function playAttackSFX(type: AttackType, delay = SFX_LEAD_MS) {
 }
 
 // ── Module init ────────────────────────────────────────────────────────────────
-// Start fetching SFX and warming the select music cache immediately.
 prefetchAudio();

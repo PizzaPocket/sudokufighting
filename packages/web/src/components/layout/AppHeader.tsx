@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { disconnect, send } from '../../hooks/useGameSocket';
+import { stopVsAI } from '../../ai/useVsAI';
 
 function screenTitle(screen: string, gameMode: string | null): string | null {
   switch (screen) {
@@ -51,6 +52,7 @@ export default function AppHeader() {
     setConfirmOpen(false);
     setIsPaused(false);
     if (gameMode === 'practice' || gameMode === 'campaign') {
+      stopVsAI();
       const st = useGameStore.getState();
       const aiSeat = (1 - (st.mySeat ?? 0)) as 0 | 1;
       st.applyServerMessage({

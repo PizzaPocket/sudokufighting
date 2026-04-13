@@ -18,7 +18,8 @@ export type AnimationState =
   | 'damage_heavy'
   | 'block'
   | 'ko'
-  | 'win';
+  | 'win'
+  | 'win_freeze';
 
 export interface AnimationConfig {
   frames: number;
@@ -40,4 +41,5 @@ export const ANIMATION_CONFIG: Record<AnimationState, AnimationConfig> = {
   block:           { frames: 2, frameDuration: 200, loop: true,  priority: 2 },
   ko:              { frames: 2, frameDuration: 400, loop: false, priority: 5, freeze: true },
   win:             { frames: 2, frameDuration: 300, loop: true,  priority: 4 },
+  win_freeze:      { frames: 2, frameDuration: 300, loop: false, priority: 5, freeze: true },
 };

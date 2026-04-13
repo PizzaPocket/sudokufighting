@@ -6,7 +6,7 @@ export interface Character {
     portraitPath: string;
     altPortraitPath?: string;
 }
-export type AnimationState = 'idle' | 'punch' | 'kick' | 'row_special' | 'column_special' | 'subgrid_special' | 'damage_light' | 'damage_heavy' | 'block' | 'ko' | 'win';
+export type AnimationState = 'idle' | 'punch' | 'kick' | 'row_special' | 'column_special' | 'subgrid_special' | 'damage_light' | 'damage_heavy' | 'block' | 'ko' | 'win' | 'win_freeze';
 export interface AnimationConfig {
     frames: number;
     frameDuration: number;

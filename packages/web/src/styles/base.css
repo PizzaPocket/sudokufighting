@@ -127,7 +127,18 @@ html, body {
   position: absolute;
   top: 0; left: 0;
 }
-.screen.active { display: flex; }
+/* On touch devices, briefly block pointer events on screen entry so the
+   lingering hover from the previous tap cannot immediately activate an
+   element at the same position on the new screen. Works for every
+   interactive element automatically — no per-class changes needed. */
+@keyframes screen-enter-pointer {
+  to { pointer-events: auto; }
+}
+.screen.active {
+  display: flex;
+  pointer-events: none;
+  animation: screen-enter-pointer 0s 150ms forwards;
+}
 
 /* Shared background — same fixed+scaled layer as .start-bg so the zoom
    is consistent when navigating between start and lobby screens */

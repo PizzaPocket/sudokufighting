@@ -4,6 +4,7 @@ import type { Character, DialogueEntry } from '@sudoku-fighting/shared';
 import { useGameStore } from '../store/gameStore';
 import { saveProgression } from '../progression/progressionService';
 import { fadeOutMusic } from '../audio/audioManager';
+import { preloadArenaAssets } from '../utils/preloadAssets';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -141,6 +142,8 @@ export function useCampaign() {
       // the victory screen is still showing). setupNextFight is called in
       // DialogueCutscene right before transitioning to gameplay.
       const nextIndex = fightIndex + 1;
+      // Preload next arena's assets while the dialogue cutscene plays
+      preloadArenaAssets(CAMPAIGN_FIGHTS[nextIndex].arenaId);
       const entry = buildOpponentDialogueEntry(nextIndex, st.myCharacter, st.characters);
       const queue: DialogueEntry[] = entry ? [entry] : [];
 

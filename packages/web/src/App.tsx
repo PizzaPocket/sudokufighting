@@ -13,9 +13,11 @@ import GameplayScreen from './screens/GameplayScreen';
 import AppHeader from './components/layout/AppHeader';
 import ContextualMenu from './components/layout/ContextualMenu';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from './creditsContent';
+import { preloadArenaAssets } from './utils/preloadAssets';
 
 export default function App() {
   const currentScreen = useGameStore(s => s.currentScreen);
+  const backgroundId  = useGameStore(s => s.backgroundId);
   const testCreditsOpen = useGameStore(s => s.testCreditsOpen);
   const setInitialInteractionDone = useGameStore(s => s.setInitialInteractionDone);
   const initialInteractionDone = useGameStore(s => s.initialInteractionDone);
@@ -27,6 +29,12 @@ export default function App() {
 
   // Connect WebSocket on mount
   useGameSocket();
+
+  // Preload arena assets as soon as the background is decided (lobby or game_start),
+  // so SVGs are cached before GameplayScreen renders them.
+  useEffect(() => {
+    if (backgroundId) preloadArenaAssets(backgroundId);
+  }, [backgroundId]);
 
   // Detect splash → start transition to trigger entrance animation
   useEffect(() => {

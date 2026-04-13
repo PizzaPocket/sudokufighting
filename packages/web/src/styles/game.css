@@ -427,7 +427,12 @@
   width: 100%; max-width: 1200px; flex: 1; align-items: flex-start; padding: 4px 12px 8px; min-height: 0;
 }
 
-.player-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; }
+.player-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 0; transition: opacity 2s ease; }
+#mobile-numpad { transition: opacity 2s ease; }
+
+/* Credits cinematic: fade out grids + numpad, leaving only the fight stage */
+#arena.credits-active .player-panel,
+#arena.credits-active #mobile-numpad { opacity: 0; pointer-events: none; }
 
 /* --- Sudoku Grid --- */
 .sudoku-grid {

@@ -21,6 +21,13 @@ import { useGameStore } from '../store/gameStore';
 
 export let vsAiPlayerMove: ((row: number, col: number, value: number) => void) | null = null;
 
+let _stopCallback: (() => void) | null = null;
+
+/** Stop the bot immediately — call before dispatching match_end on surrender. */
+export function stopVsAI() {
+  _stopCallback?.();
+}
+
 let _startRoundCallback: ((roundNumber: number) => void) | null = null;
 
 export function startVsAIRound(roundNumber: number) {
@@ -239,6 +246,7 @@ export function useVsAI() {
     if ((gameMode !== 'practice' && gameMode !== 'campaign') || currentScreen !== 'gameplay') return;
 
     vsAiPlayerMove = (row, col, value) => processMove(0, row, col, value);
+    _stopCallback = clearAllTimers;
     _startRoundCallback = startRound;
     _startCampaignFightCallback = () => {
       localRoundWins.current = [0, 0];
@@ -251,6 +259,7 @@ export function useVsAI() {
 
     return () => {
       vsAiPlayerMove = null;
+      _stopCallback = null;
       _startRoundCallback = null;
       _startCampaignFightCallback = null;
       clearAllTimers();

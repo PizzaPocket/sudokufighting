@@ -3,7 +3,7 @@ import type {
   ServerMessage, AttackType, AnimationState, Character, Difficulty, DialogueEntry,
 } from '@sudoku-fighting/shared';
 import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY, ANIMATION_CONFIG } from '@sudoku-fighting/shared';
-import { playAttackSFX, SELECT_TRACK_INDEX } from '../audio/audioManager';
+import { playAttackSFX, pauseMusic, resumeMusic, SELECT_TRACK_INDEX } from '../audio/audioManager';
 import { BASE_UNLOCKED } from '../progression/progressionService';
 
 export type Screen = 'splash' | 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
@@ -125,6 +125,9 @@ interface GameStore {
   pendingUnlockIds: string[];
   campaignClearCount: number;
 
+  // ── Credits cinematic ─────────────────────────────────────────────────────
+  creditsActive: boolean;
+
   // ── Pause ─────────────────────────────────────────────────────────────────
   isPaused: boolean;
   totalPausedMs: number;    // accumulated ms paused this round (reset per round)
@@ -166,6 +169,7 @@ interface GameStore {
   setIsPaused: (v: boolean) => void;
   setCampaignFightIndex: (i: number) => void;
   setCampaignResult: (r: 'gameover' | 'victory' | 'continue' | null) => void;
+  setCreditsActive: (v: boolean) => void;
   setCampaignDialogueQueue: (q: DialogueEntry[]) => void;
   addUnlockedCharacters: (ids: string[]) => void;
   setPendingUnlockIds: (ids: string[]) => void;
@@ -254,6 +258,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   unlockedCharacterIds: [...BASE_UNLOCKED],
   pendingUnlockIds: [],
   campaignClearCount: 0,
+  creditsActive: false,
 
   isPaused: false,
   totalPausedMs: 0,
@@ -285,14 +290,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setIsPaused: (isPaused) => {
     if (isPaused) {
       set({ isPaused: true, pauseStartTime: Date.now() });
+      pauseMusic();
     } else {
       const s = get();
       const extra = s.pauseStartTime != null ? Date.now() - s.pauseStartTime : 0;
       set({ isPaused: false, pauseStartTime: null, totalPausedMs: s.totalPausedMs + extra });
+      resumeMusic();
     }
   },
   setCampaignFightIndex: (campaignFightIndex) => set({ campaignFightIndex }),
   setCampaignResult: (campaignResult) => set({ campaignResult }),
+  setCreditsActive: (creditsActive) => set({ creditsActive }),
   setCampaignDialogueQueue: (campaignDialogueQueue) => set({ campaignDialogueQueue }),
   addUnlockedCharacters: (ids) => set(s => ({ unlockedCharacterIds: [...new Set([...s.unlockedCharacterIds, ...ids])] })),
   setPendingUnlockIds: (pendingUnlockIds) => set({ pendingUnlockIds }),
