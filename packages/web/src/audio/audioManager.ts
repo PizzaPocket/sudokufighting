@@ -413,17 +413,12 @@ export async function playLogoAndSelectMusic(): Promise<void> {
   if (ctx.state !== 'running') await ctx.resume();
 
   if (sfxEnabled) {
-    const logoSrc = SFX_SRCS.logo;
-    const logoBuf = decodedBuffers.get(logoSrc);
-    if (logoBuf) {
-      const node = ctx.createBufferSource();
-      node.buffer = logoBuf;
-      node.connect(ctx.destination);
-      node.start();
-    } else {
-      // Fallback if logo SFX hasn't decoded yet (rare on slow connections)
-      new Audio(logoSrc).play().catch(() => {});
-    }
+    // Always play the logo via HTMLAudioElement. On iOS, HTMLAudioElement.play()
+    // within a gesture switches the audio session to "playback" category, which:
+    //   1. The subsequent AudioContext inherits — so music plays through the speaker.
+    //   2. Bypasses the iOS silent/mute switch (same as Spotify, YouTube, games).
+    // AudioBufferSourceNode alone stays in "ambient" mode — silenced by the switch.
+    new Audio(SFX_SRCS.logo).play().catch(() => {});
   }
 
   const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
