@@ -42,6 +42,7 @@ export default function StartScreen({ active, entering }: Props) {
 
   return (
     <div id="screen-start" className={`screen${active ? ' active' : ''}${entering ? ' entering' : ''}`}>
+      <div className="start-bg" />
       <div className="start-logo-container">
         <img
           className="start-logo-top"

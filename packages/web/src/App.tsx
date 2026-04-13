@@ -32,7 +32,7 @@ export default function App() {
   useEffect(() => {
     if (currentScreen === 'start' && prevScreenRef.current === 'splash') {
       setStartEntering(true);
-      const t = setTimeout(() => setStartEntering(false), 1200);
+      const t = setTimeout(() => setStartEntering(false), 2000);
       return () => clearTimeout(t);
     }
     prevScreenRef.current = currentScreen;

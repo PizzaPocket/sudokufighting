@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
 const DURATION = 1500;
-const ICON_RADIUS = 9; // half of 18px circle
+const ICON_RADIUS = 16; // half of 32px circle
+const BAR_INSET   = 32; // left/right inset of .counter-bar-wrap from its container
 
 export default function CounterBar() {
   const active = useGameStore(s => s.counterWindowActive);
@@ -11,12 +12,11 @@ export default function CounterBar() {
   const counterLandedNonce = useGameStore(s => s.counterLandedNonce);
 
   const fillRef = useRef<HTMLDivElement>(null);
-  const iconRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
   const [showCounter, setShowCounter] = useState(false);
   const prevNonce = useRef(counterLandedNonce);
 
-  // Animate fill bar and icon via rAF
+  // Animate fill bar via rAF
   useEffect(() => {
     if (!active || expiry == null) {
       cancelAnimationFrame(rafRef.current);
@@ -27,17 +27,6 @@ export default function CounterBar() {
     const tick = () => {
       const fraction = Math.max(0, (expiry - Date.now()) / DURATION);
       if (fillRef.current) fillRef.current.style.transform = `scaleX(${fraction})`;
-      if (iconRef.current) {
-        if (defenderSeat === 0) {
-          // tip = right edge of fill, moves left → toward defender on left
-          iconRef.current.style.left = `calc(${fraction * 100}% - ${ICON_RADIUS}px)`;
-          iconRef.current.style.right = '';
-        } else {
-          // tip = left edge of fill, moves right → toward defender on right
-          iconRef.current.style.right = `calc(${fraction * 100}% - ${ICON_RADIUS}px)`;
-          iconRef.current.style.left = '';
-        }
-      }
       if (fraction > 0) {
         rafRef.current = requestAnimationFrame(tick);
       }
@@ -76,9 +65,13 @@ export default function CounterBar() {
             />
           </div>
           <div
-            ref={iconRef}
             className="counter-bar-icon"
-            style={{ background: fillColor }}
+            style={{
+              background: fillColor,
+              // Pin to the defender's end — centered on the bar's inset edge
+              left:  defenderSeat === 0 ? `${BAR_INSET - ICON_RADIUS}px` : undefined,
+              right: defenderSeat === 1 ? `${BAR_INSET - ICON_RADIUS}px` : undefined,
+            }}
           >
             <img
               src="/assets/ui/icon-punch.svg"

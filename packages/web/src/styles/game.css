@@ -1,4 +1,28 @@
 /* =========================================================
+   Capitalisation Policy
+   All UI labels, headings, and action-bar controls → uppercase.
+   Exceptions (mixed case): character names (.lobby-player-name,
+   credits name text), dialogue body (.dialogue-text).
+   ========================================================= */
+.action-bar-title,
+.header-text-btn,
+.header-back-btn,
+.ctx-label,
+.start-section-label,
+.start-mode-label,
+.screen-title,
+.lobby-player-label,
+.lobby-share-label,
+.lobby-title,
+.hud-name,
+.round-label,
+.sp-difficulty-label,
+.dialogue-speaker,
+.dialog-title,
+.gameover-title,
+.unlock-header { text-transform: uppercase; }
+
+/* =========================================================
    Splash Screen
    ========================================================= */
 
@@ -36,9 +60,13 @@
   width: clamp(270px, 82vw, 380px);
 }
 
+/* drop-shadow traces only the visible cross cells (.splash-hidden have
+   visibility:hidden so they contribute no pixels), giving a clean
+   cross-shaped hard shadow with no full-grid bounding-box artefact. */
 #splash-grid {
   --completion-flash-color: var(--purple);
-  border: none;  /* outer border removed — cross floats on black */
+  box-shadow: none;
+  filter: drop-shadow(5px 5px 0 var(--purple));
 }
 
 /* Non-cross cells: invisible but hold their grid position */
@@ -74,25 +102,34 @@
    ========================================================= */
 
 @keyframes start-bg-enter {
-  from { opacity: 0; background-size: 108% auto; }
-  to   { opacity: 1; background-size: cover; }
+  from { opacity: 0; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1.04); }
 }
 
-#screen-start.entering {
+#screen-start.entering .start-bg {
   animation: start-bg-enter 0.8s ease-out forwards;
 }
 
-/* Logo enters from slight fade + slide */
+/* Start actions stagger in element-by-element after logo slam completes (~0.82s).
+   .start-actions children: div.start-section (1), div.start-divider (2),
+   div.start-section (3), p.start-error (4 — not animated, visibility-toggled). */
 @keyframes start-logo-in {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-#screen-start.entering .start-logo-container { animation: start-logo-in 0.5s 0.15s ease-out both; }
-
-/* Start actions stagger in element by element */
-#screen-start.entering .start-section:first-child { animation: start-logo-in 0.4s 0.25s ease-out both; }
-#screen-start.entering .start-divider            { animation: start-logo-in 0.4s 0.33s ease-out both; }
-#screen-start.entering .start-section:last-child  { animation: start-logo-in 0.4s 0.41s ease-out both; }
+/* Section 1 — 6 children */
+#screen-start.entering .start-section:first-child > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
+#screen-start.entering .start-section:first-child > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
+#screen-start.entering .start-section:first-child > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
+#screen-start.entering .start-section:first-child > :nth-child(4) { animation: start-logo-in 0.35s 0.66s ease-out both; }
+#screen-start.entering .start-section:first-child > :nth-child(5) { animation: start-logo-in 0.35s 0.73s ease-out both; }
+#screen-start.entering .start-section:first-child > :nth-child(6) { animation: start-logo-in 0.35s 0.80s ease-out both; }
+/* Divider */
+#screen-start.entering .start-divider                             { animation: start-logo-in 0.35s 0.87s ease-out both; }
+/* Section 2 — 3 children */
+#screen-start.entering .start-actions > :nth-child(3) > :nth-child(1) { animation: start-logo-in 0.35s 0.94s ease-out both; }
+#screen-start.entering .start-actions > :nth-child(3) > :nth-child(2) { animation: start-logo-in 0.35s 1.01s ease-out both; }
+#screen-start.entering .start-actions > :nth-child(3) > :nth-child(3) { animation: start-logo-in 0.35s 1.08s ease-out both; }
 
 /* =========================================================
    Start Screen
@@ -116,7 +153,7 @@
 .start-section  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .start-section-label {
   font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text);
-  text-shadow: var(--text-shadow-sm); letter-spacing: 0.08em; text-transform: uppercase;
+  text-shadow: var(--text-shadow-sm); letter-spacing: 0.08em;
 }
 #screen-start .btn,
 #screen-start .combo-input { width: 240px; box-sizing: border-box; }
@@ -207,14 +244,14 @@
 
 .screen-title {
   font-size: var(--text-xl); font-weight: var(--weight-heavy);
-  color: var(--canvas-text); margin-bottom: 24px; letter-spacing: -0.7px;
+  color: var(--canvas-text); margin-bottom: 24px; letter-spacing: 0.08em;
 }
 
 .lobby-players { display: flex; align-items: center; gap: 40px; margin: 16px 0 0; }
 .lobby-player  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .lobby-player-label {
   font-size: var(--text-md); font-weight: var(--weight-bold); letter-spacing: 0.12em;
-  color: var(--canvas-text); text-transform: uppercase; text-shadow: var(--text-shadow-md);
+  color: var(--canvas-text); text-shadow: var(--text-shadow-md);
 }
 .lobby-player img { width: 225px; height: 225px; object-fit: cover; object-position: 50% 12%; image-rendering: pixelated; display: block; border: 4px solid transparent; box-sizing: border-box; }
 #lobby-p2-portrait,
@@ -232,8 +269,8 @@
 #sp-lobby-p2 .lobby-player-label { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--p2-color); text-shadow: 2px 3px 0 #ffffff; }
 #sp-lobby-p2 img { border: 8px solid var(--p2-color); }
 
-#p1-grid.is-me { --_grid-outline-color: var(--p1-color); --_grid-outline-width: 3px; }
-#p2-grid.is-me { --_grid-outline-color: var(--p2-color); --_grid-outline-width: 3px; }
+#p1-grid.is-me { --_grid-outline-color: var(--p1-color); }
+#p2-grid.is-me { --_grid-outline-color: var(--p2-color); }
 
 .lobby-vs { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--weight-black); color: var(--canvas-text); letter-spacing: 0; text-shadow: var(--text-shadow-xl); }
 
@@ -245,7 +282,7 @@
 
 .lobby-title {
   font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--weight-black);
-  color: var(--canvas-text); letter-spacing: 0.12em; text-transform: uppercase; text-shadow: var(--text-shadow-xl); margin: 0;
+  color: var(--canvas-text); letter-spacing: 0.12em; text-shadow: var(--text-shadow-xl); margin: 0;
 }
 
 .lobby-promo { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 12px 0 0; }
@@ -263,7 +300,7 @@
   border: 1px solid var(--surface-frosted-edge);
 }
 .lobby-share.hidden { display: none; }
-.lobby-share-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; text-transform: uppercase; }
+.lobby-share-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; }
 .lobby-invite-row { display: flex; align-items: center; gap: 8px; }
 .lobby-share-code {
   font-family: var(--font); font-size: var(--text-xl); font-weight: var(--weight-black);
@@ -331,7 +368,7 @@
 
 .hud-name {
   font-size: var(--text-md); font-weight: var(--weight-heavy); color: var(--canvas-text);
-  text-transform: uppercase; text-shadow: var(--text-shadow-md);
+  text-shadow: var(--text-shadow-md);
   letter-spacing: -0.4px; flex: 1; overflow: hidden;
   display: flex; align-items: baseline; gap: 5px;
 }
@@ -343,7 +380,7 @@
 .hud-me-arrow-p1 { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
 .hud-me-arrow-p2 { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
 
-.round-label { font-size: var(--text-md); font-weight: var(--weight-bold); color: var(--canvas-text); text-shadow: var(--text-shadow-md); letter-spacing: 0.1em; text-transform: uppercase; }
+.round-label { font-size: var(--text-md); font-weight: var(--weight-bold); color: var(--canvas-text); text-shadow: var(--text-shadow-md); letter-spacing: 0.1em; }
 
 .round-timer {
   font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--canvas-text); line-height: 1;
@@ -395,13 +432,12 @@
 /* --- Sudoku Grid --- */
 .sudoku-grid {
   --_grid-outline-color: var(--grid-box-border);
-  --_grid-outline-width: 2px;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   gap: 0; background: transparent;
-  border: var(--_grid-outline-width) solid var(--_grid-outline-color);
-  border-radius: 0; overflow: hidden; width: 100%; aspect-ratio: 1;
+  box-shadow: 5px 5px 0 var(--_grid-outline-color);
+  border-radius: 0; overflow: visible; width: 100%; aspect-ratio: 1;
 }
 
 .cell {
@@ -482,7 +518,7 @@
 
 /* Counter window bar — overlays .fight-characters-inner (position: relative, inline-flex) */
 .counter-bar-wrap {
-  position: absolute; top: 8px; left: 0; right: 0;
+  position: absolute; top: 8px; left: 32px; right: 32px;
   height: 6px; border-radius: 3px;
   background: rgba(255, 255, 255, 0.4);
   overflow: hidden; pointer-events: none; z-index: 20;
@@ -493,14 +529,14 @@
 }
 .counter-bar-icon {
   position: absolute;
-  top: 2px; /* centers 18px circle on the 6px bar at top:8px (bar center = 11px, 11-9=2) */
-  width: 18px; height: 18px;
+  top: -5px; /* centers 32px circle on the 6px bar at top:8px (bar center = 11px, 11-16=-5) */
+  width: 32px; height: 32px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   pointer-events: none; z-index: 21;
 }
 .counter-bar-icon-img {
-  width: 11px; height: 11px;
+  width: 24px; height: 24px;
   filter: brightness(0) invert(1);
   display: block;
 }
@@ -572,7 +608,7 @@
 
 /* Single-player */
 .sp-difficulty { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 20px; }
-.sp-difficulty-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; text-transform: uppercase; text-shadow: var(--text-shadow-sm); }
+.sp-difficulty-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; text-shadow: var(--text-shadow-sm); }
 .sp-difficulty-btns  { display: flex; gap: 10px; }
 .sp-diff-btn { min-width: 76px; opacity: 0.55; }
 .sp-diff-btn.selected { opacity: 1; }
@@ -600,7 +636,7 @@
   #screen-practice-lobby #sp-lobby-p2 { display: none; }
   #screen-practice-lobby .lobby-vs { display: none; }
   #arena { grid-template-columns: 1fr; margin-top: 8px; flex: 0 0 auto; }
-  #hud { flex-wrap: nowrap; padding: 4px 12px 2px; }
+  #hud { flex-wrap: nowrap; padding: 2px 12px 2px; }
   .hud-score, .combo-counter { font-size: var(--text-sm); }
   .ko-block { font-size: 0; padding: 0; width: 6px; flex-shrink: 0; border-radius: 0; }
   .hud-bar-row { height: 4px; }
@@ -609,9 +645,9 @@
   .hud-bar-track.left .hud-bar  { border-radius: 2px 0 0 2px; }
   .hud-bar-track.right .hud-bar { border-radius: 0 2px 2px 0; }
   .action-bar { padding: 3px 12px 0; }
-  #arena { margin-top: 4px; }
+  #arena { margin-top: 2px; }
   .player-panel { display: none; }
-  .player-panel.is-me { display: flex; width: 100%; gap: 0; padding-bottom: 0; }
+  .player-panel.is-me { display: flex; width: 100%; gap: 5px; padding-bottom: 0; }
   .player-panel.is-me .cell { font-size: 19px; }
   #splash-grid .cell { font-size: 19px; }
   #fight-stage { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 110px; padding-bottom: 0; z-index: 2; pointer-events: none; overflow: visible; }
@@ -623,6 +659,7 @@
 /* iPad / tablet — compact HUD to keep layout above the fold */
 @media (min-width: 501px) and (max-width: 1024px) and (pointer: coarse) {
   #hud { padding: 4px 12px 2px; }
+  .player-panel.is-me { gap: 5px; }
   .hud-score, .combo-counter { font-size: var(--text-sm); }
   .ko-block { font-size: 0; padding: 0; width: 6px; flex-shrink: 0; border-radius: 0; }
   .hud-bar-row { height: 4px; }
@@ -667,7 +704,7 @@
 }
 .dialog-title {
   font-family: var(--font-display); font-size: var(--text-xl); color: var(--canvas-text);
-  text-shadow: var(--text-shadow-xl);
+  text-shadow: var(--text-shadow-xl); letter-spacing: 0.1em;
 }
 .confirm-dialog-body {
   font-family: var(--font); font-size: var(--text-sm); color: var(--canvas-text-dim);
@@ -722,7 +759,7 @@
 }
 .gameover-title {
   font-family: var(--font-display); font-size: var(--text-4xl);
-  color: #F00013; text-shadow: 4px 5px 0 #FF8B16;
+  color: #F00013; text-shadow: 4px 5px 0 #FF8B16; letter-spacing: 0.06em;
   animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) 1.4s both;
 }
 
@@ -767,6 +804,7 @@
 .unlock-header {
   font-family: var(--font-display); font-size: var(--text-3xl);
   color: var(--accent); text-shadow: 3px 4px 0 #fff;
+  letter-spacing: 0.08em; text-align: center;
   animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) both;
 }
 .unlock-cards {
@@ -827,7 +865,6 @@
   font-weight: var(--weight-heavy);
   color: #fff;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 .dialogue-divider {
   height: 1px; background: var(--surface-raised-edge); margin: 0 -28px;

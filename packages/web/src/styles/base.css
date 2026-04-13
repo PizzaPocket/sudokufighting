@@ -58,7 +58,6 @@ html, body {
   font-weight: var(--weight-black);
   color: var(--canvas-text);
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   text-shadow: var(--text-shadow-xl);
   white-space: nowrap;
 }
@@ -90,7 +89,6 @@ html, body {
 .header-text-btn {
   font-size: var(--text-sm);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
   padding: 0 12px;
   height: 36px;
 }
@@ -104,7 +102,6 @@ html, body {
   height: 36px;
   font-size: var(--text-sm);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 /* SVG icon images inherit white via filter (SVGs use currentColor → black by default in <img>) */
@@ -123,7 +120,7 @@ html, body {
 
 .screen {
   display: none;
-  width: 100vw; height: 100vh;
+  width: 100vw; height: 100vh; height: 100svh;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -132,7 +129,6 @@ html, body {
 }
 .screen.active { display: flex; }
 
-#screen-start,
 #screen-character-select,
 #screen-lobby,
 #screen-practice-lobby,
@@ -140,6 +136,21 @@ html, body {
   background-image: url(/assets/ui/bg_0.svg);
   background-size: cover;
   background-position: center;
+}
+
+/* Separate background layer so we can scale it independently for the enter animation */
+#screen-start {
+  isolation: isolate; /* scopes z-index on .start-bg */
+}
+#screen-start .start-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url(/assets/ui/bg_0.svg);
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+  z-index: -1;           /* always behind content */
+  transform: scale(1.04); /* persistent final state — no snap-back when .entering is cleared */
 }
 
 /* Start and lobby screens scroll when content is taller than the viewport.

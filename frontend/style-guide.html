@@ -1307,6 +1307,11 @@
       </div>
     </div>
 
+    <h3 class="sg-subsection-title">Capitalisation Rule</h3>
+    <p class="sg-note" style="margin-bottom:8px">Capitalisation is declared in <strong>one consolidated rule block</strong> at the top of <code>game.css</code> — not scattered across individual class definitions. Add a class to that block to opt it in; don't add <code>text-transform</code> to the class's own definition.</p>
+    <p class="sg-note" style="margin-bottom:8px"><strong>All caps:</strong> all UI labels, headings, and controls — <code>.action-bar-title</code>, <code>.header-text-btn</code>, <code>.header-back-btn</code>, <code>.ctx-label</code>, <code>.start-section-label</code>, <code>.start-mode-label</code>, <code>.screen-title</code>, <code>.lobby-player-label</code>, <code>.lobby-share-label</code>, <code>.lobby-title</code>, <code>.hud-name</code>, <code>.round-label</code>, <code>.sp-difficulty-label</code>, <code>.dialogue-speaker</code>, <code>.dialog-title</code>, <code>.gameover-title</code>, <code>.unlock-header</code>. Buttons (<code>.btn</code>) are uppercase via their own definition since that is intrinsic to the button pattern.</p>
+    <p class="sg-note" style="margin-bottom:16px"><strong>Mixed case (exceptions):</strong> body/narrative text and proper names — dialogue body (<code>.dialogue-text</code>), credits body, character names (<code>.lobby-player-name</code>, <code>.unlock-card-name</code>, <code>.credits-name</code>), and sub-hints (<code>.start-action-hint</code>). These are intentionally absent from the consolidated block.</p>
+
     <h3 class="sg-subsection-title">Type Scale with Text Shadow Offset Scale</h3>
     <p class="sg-note" style="margin-bottom:16px">Hard pixel text shadows (offset, no blur) are used throughout. Shadow offset grows with type size so it remains proportionally punchy at every scale. Shadows pair with the background context — purple shadows over white UI, colored shadows over dark/arena backgrounds.</p>
 

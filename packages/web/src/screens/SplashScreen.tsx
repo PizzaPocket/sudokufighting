@@ -75,6 +75,7 @@ export default function SplashScreen({ onComplete }: Props) {
 
   const submitDigit = useCallback((digit: number) => {
     if (inputState === 'correct' || exiting) return;
+    if (selectedPos.row !== 4 || selectedPos.col !== 4) return; // only centre cell accepts input
     ensureAudioInited();
 
     if (wrongTimer.current) clearTimeout(wrongTimer.current);
@@ -110,7 +111,7 @@ export default function SplashScreen({ onComplete }: Props) {
         setInputState('idle');
       }, WRONG_CLEAR_MS);
     }
-  }, [puzzle.answer, inputState, exiting, ensureAudioInited]);
+  }, [puzzle.answer, inputState, exiting, ensureAudioInited, selectedPos]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {

@@ -628,15 +628,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       case 'self_damage': {
         const { seat } = msg.payload;
+        const animKey    = seat === 0 ? 'p1AnimSignal'    : 'p2AnimSignal';
+        const mistakeKey = seat === 0 ? 'p1MistakeSignal' : 'p2MistakeSignal';
         if (seat === s.mySeat) {
           if (s.selfDamagePredicted) {
             // Already played animation optimistically
             set({ selfDamagePredicted: false });
           } else {
             const nonce = ++_nonce;
-            const key = seat === 0 ? 'p1AnimSignal' : 'p2AnimSignal';
-            set({ [key]: { state: 'damage_light', nonce }, attackFlashType: 'self' });
+            set({ [animKey]: { state: 'damage_light', nonce }, attackFlashType: 'self' });
           }
+        } else {
+          // Opponent made a mistake — play their damage flinch + error sprite
+          const nonce = ++_nonce;
+          set({ [animKey]: { state: 'damage_light', nonce }, [mistakeKey]: { nonce } });
         }
         break;
       }
