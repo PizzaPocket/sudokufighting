@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameStore } from './store/gameStore';
 import { useGameSocket } from './hooks/useGameSocket';
-import { initAudio, SELECT_TRACK_INDEX } from './audio/audioManager';
+import { initAudio, SELECT_TRACK_INDEX, TRACKS, preloadMusicTrack } from './audio/audioManager';
+import { getArena } from '@sudoku-fighting/shared';
 import SplashScreen from './screens/SplashScreen';
 import StartScreen from './screens/StartScreen';
 import CharacterSelectScreen from './screens/CharacterSelectScreen';
@@ -33,7 +34,10 @@ export default function App() {
   // Preload arena assets as soon as the background is decided (lobby or game_start),
   // so SVGs are cached before GameplayScreen renders them.
   useEffect(() => {
-    if (backgroundId) preloadArenaAssets(backgroundId);
+    if (!backgroundId) return;
+    preloadArenaAssets(backgroundId);
+    const arena = getArena(backgroundId);
+    if (arena) preloadMusicTrack(TRACKS[arena.trackIndex].src);
   }, [backgroundId]);
 
   // Detect splash → start transition to trigger entrance animation

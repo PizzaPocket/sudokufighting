@@ -53,8 +53,12 @@ const SFX_SRCS: Record<string, string> = {
   logo:           '/sounds/Sudoku_Fighting_Audio_Logo.m4a',
 };
 
-const fetchedRaw    = new Map<string, ArrayBuffer>();
+const fetchedRaw     = new Map<string, ArrayBuffer>();
 const decodedBuffers = new Map<string, AudioBuffer>();
+
+// Raw ArrayBuffers for music tracks — fetched early so initAudio can decode
+// synchronously (within gesture) without a network round-trip.
+const musicRaw = new Map<string, ArrayBuffer>();
 
 function prefetchAudio(): void {
   // SFX — fetch to ArrayBuffer; decoded once AudioContext exists
@@ -67,9 +71,14 @@ function prefetchAudio(): void {
       })
       .catch(() => {});
   }
-  // Warm the browser cache for the select music track and the first fight track.
-  // Full decode happens lazily when startFightMusic() is first called.
-  fetch(TRACKS[SELECT_TRACK_INDEX].src).catch(() => {});
+  // Pre-fetch select music track raw buffer.
+  // Stored in musicRaw so initAudio() can decode it immediately (within gesture),
+  // avoiding any network wait in playLogoAndSelectMusic().
+  const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
+  fetch(selectSrc)
+    .then(r => r.arrayBuffer())
+    .then(ab => { musicRaw.set(selectSrc, ab); })
+    .catch(() => {});
 }
 
 function decodeSingle(src: string, ab: ArrayBuffer): void {
@@ -101,33 +110,72 @@ function playBuf(src: string, delayMs = 0): void {
 // gap. AudioBufferSourceNode with loop:true wraps the read pointer at the sample
 // level — the scheduler never leaves the buffer, so looping is truly gapless.
 //
-// Pause/resume: AudioBufferSourceNode cannot be paused. Instead we record the
-// playback offset at pause time and start a new node from that offset on resume.
-// The offset is (ctx.currentTime - startedAt + initialOffset) % duration.
+// Pause/resume: AudioBufferSourceNode cannot be paused. We record the playback
+// offset at pause time and start a new node from that offset on resume.
 
 const musicBuffers  = new Map<string, AudioBuffer>();
 const musicDecoding = new Map<string, Promise<AudioBuffer | null>>();
 
 // Active playback state
-let _musicNode:          AudioBufferSourceNode | null = null;
-let _musicBuffer:        AudioBuffer | null = null;
-let _musicSrc:           string | null = null;
-let _musicStartedAt      = 0;     // ctx.currentTime when current node started
-let _musicInitialOffset  = 0;     // track position the node started from
-let _musicPaused         = false;
-let _musicPauseOffset    = 0;     // track position saved on user-pause
+let _musicNode:         AudioBufferSourceNode | null = null;
+let _musicBuffer:       AudioBuffer | null = null;
+let _musicSrc:          string | null = null;
+let _musicStartedAt     = 0;   // ctx.currentTime when current node started
+let _musicInitialOffset = 0;   // track position the node started from
+let _musicPaused        = false;
+let _musicPauseOffset   = 0;   // track position saved on pause
+
+// ── iOS keepAlive ──────────────────────────────────────────────────────────────
+// A silent looping AudioBufferSourceNode prevents iOS from auto-suspending the
+// AudioContext between audio events (e.g. between initAudio() and the first
+// music node start, or between tracks).
+
+let _keepAliveNode: AudioBufferSourceNode | null = null;
+
+function startKeepAlive(ctx: AudioContext): void {
+  if (_keepAliveNode) return;
+  const silentBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); // 1s silence
+  const node = ctx.createBufferSource();
+  node.buffer = silentBuf;
+  node.loop = true;
+  node.connect(ctx.destination);
+  node.start(0);
+  _keepAliveNode = node;
+}
+
+// ── _fetchAndDecode — uses musicRaw to avoid network fetch when possible ───────
 
 function _fetchAndDecode(src: string): Promise<AudioBuffer | null> {
   if (musicDecoding.has(src)) return musicDecoding.get(src)!;
-  const p = fetch(src)
-    .then(r => r.arrayBuffer())
-    .then(ab => new Promise<AudioBuffer | null>(resolve => {
-      const ctx = getCtx();
-      ctx.decodeAudioData(ab, buf => {
+
+  const ctx = getCtx();
+
+  // Use pre-fetched raw buffer if available — avoids a network round-trip
+  // so the decode starts immediately without an async fetch macrotask.
+  const rawAb = musicRaw.get(src);
+  if (rawAb) {
+    const p = new Promise<AudioBuffer | null>(resolve => {
+      ctx.decodeAudioData(rawAb.slice(0), buf => {
         musicBuffers.set(src, buf);
         resolve(buf);
       }, () => resolve(null));
-    }))
+    });
+    musicDecoding.set(src, p);
+    return p;
+  }
+
+  // Fallback: fetch from network (browser cache hit is fast, but still async)
+  const p = fetch(src)
+    .then(r => r.arrayBuffer())
+    .then(ab => {
+      musicRaw.set(src, ab); // cache raw buffer for future use
+      return new Promise<AudioBuffer | null>(resolve => {
+        ctx.decodeAudioData(ab, buf => {
+          musicBuffers.set(src, buf);
+          resolve(buf);
+        }, () => resolve(null));
+      });
+    })
     .catch(() => null);
   musicDecoding.set(src, p);
   return p;
@@ -166,11 +214,32 @@ function _startNode(src: string, buffer: AudioBuffer, offset = 0): void {
 }
 
 // ── Mobile AudioContext recovery ───────────────────────────────────────────────
-// AudioBufferSourceNode pauses/resumes automatically with the AudioContext,
-// so we only need to resume the context itself. We do NOT restart the music node
-// here — that would reset the loop position and cause a skip.
+// Strategy:
+//   1. keepAlive silent node prevents iOS from suspending an active context.
+//   2. onstatechange detects suspension (page background, phone lock, etc.)
+//      → saves music position, clears stale node refs.
+//   3. On resume (visibilitychange / gesture): context resumes, onstatechange
+//      fires with 'running' → keepAlive and music node are restarted.
 
 function registerRecoveryListeners(ctx: AudioContext): void {
+  ctx.onstatechange = () => {
+    if (ctx.state === 'suspended') {
+      // Save music position before ctx.currentTime freezes.
+      if (_musicBuffer && !_musicPaused) {
+        _musicPauseOffset = _getMusicPosition();
+      }
+      // Nodes are stopped by the suspension; clear refs so restart logic works.
+      _keepAliveNode = null;
+      _musicNode     = null;
+    } else if (ctx.state === 'running') {
+      // Context recovered — restart keepAlive and music (if it was playing).
+      startKeepAlive(ctx);
+      if (_musicBuffer && _musicSrc && !_musicPaused) {
+        _startNode(_musicSrc, _musicBuffer, _musicPauseOffset);
+      }
+    }
+  };
+
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       ctx.resume().catch(() => {});
@@ -229,7 +298,7 @@ export async function startFightMusic(backgroundId?: string) {
     return;
   }
 
-  // New track — fetch & decode if needed, then play
+  // New track — decode if needed (uses musicRaw if pre-fetched), then play
   let buffer = musicBuffers.get(src) ?? null;
   if (!buffer) buffer = await _fetchAndDecode(src);
   if (!buffer) return;
@@ -283,7 +352,6 @@ export function fadeOutMusic(durationMs = 500) {
   _musicSrc = null;
 
   setTimeout(() => {
-    // Only stop if nothing new started over it
     if (fadingSrc && _musicSrc !== fadingSrc) _stopMusicNode();
   }, durationMs);
 }
@@ -291,7 +359,29 @@ export function fadeOutMusic(durationMs = 500) {
 // No-op — kept for any remaining call sites
 export function preloadAllTracks() {}
 
+/**
+ * Pre-fetch a music track's raw bytes and decode it if AudioContext exists.
+ * Call when you know a track will be needed soon (e.g. arena background change)
+ * so the buffer is ready by the time startFightMusic() is called.
+ */
+export function preloadMusicTrack(src: string): void {
+  if (musicRaw.has(src) || musicDecoding.has(src) || musicBuffers.has(src)) return;
+  fetch(src)
+    .then(r => r.arrayBuffer())
+    .then(ab => {
+      musicRaw.set(src, ab);
+      if (audioCtx) _fetchAndDecode(src);
+    })
+    .catch(() => {});
+}
+
 // ── First-gesture audio unlock ─────────────────────────────────────────────────
+// iOS requires AudioContext.resume() AND the first node.start() to happen
+// synchronously within a user gesture handler. initAudio() satisfies this:
+//   • ctx.resume() — synchronous call within gesture
+//   • startKeepAlive() — starts a silent node, keeping the context alive
+//   • _fetchAndDecode(selectSrc) — kicks off decode from musicRaw (no network),
+//     so the buffer is ready (or nearly so) when playLogoAndSelectMusic() runs.
 
 let audioInited = false;
 
@@ -301,15 +391,21 @@ export function initAudio(): void {
 
   const ctx = getCtx();
 
-  // iOS silent-buffer unlock
-  const silentBuf = ctx.createBuffer(1, 1, 22050);
-  const silent = ctx.createBufferSource();
-  silent.buffer = silentBuf;
-  silent.connect(ctx.destination);
-  silent.start(0);
+  // Resume synchronously within the gesture handler
   ctx.resume();
 
+  // keepAlive: prevents iOS from auto-suspending the context between audio events
+  startKeepAlive(ctx);
+
+  // Decode all pre-fetched SFX
   decodeAllFetched();
+
+  // Kick off select music decode from pre-fetched raw bytes (no network wait).
+  // By the time the user finishes the splash puzzle and hits ENTER, this is done.
+  const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
+  if (musicRaw.has(selectSrc) && !musicDecoding.has(selectSrc) && !musicBuffers.has(selectSrc)) {
+    _fetchAndDecode(selectSrc);
+  }
 }
 
 export async function playLogoAndSelectMusic(): Promise<void> {
@@ -325,14 +421,20 @@ export async function playLogoAndSelectMusic(): Promise<void> {
       node.connect(ctx.destination);
       node.start();
     } else {
+      // Fallback if logo SFX hasn't decoded yet (rare on slow connections)
       new Audio(logoSrc).play().catch(() => {});
     }
   }
 
-  // Start fetching+decoding the select track if not already done
   const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
+
+  // Fast path: buffer already decoded — no await needed
   let buffer = musicBuffers.get(selectSrc) ?? null;
-  if (!buffer) buffer = await _fetchAndDecode(selectSrc);
+  if (!buffer) {
+    // Await the decode that was kicked off in initAudio().
+    // keepAlive keeps the context running during this short wait.
+    buffer = await _fetchAndDecode(selectSrc);
+  }
   if (!buffer) return;
 
   _musicSrc = selectSrc;
