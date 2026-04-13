@@ -129,13 +129,26 @@ html, body {
 }
 .screen.active { display: flex; }
 
+/* Shared background — same fixed+scaled layer as .start-bg so the zoom
+   is consistent when navigating between start and lobby screens */
 #screen-character-select,
 #screen-lobby,
 #screen-practice-lobby,
-#screen-campaign-lobby {
+#screen-campaign-lobby { isolation: isolate; }
+
+#screen-character-select::before,
+#screen-lobby::before,
+#screen-practice-lobby::before,
+#screen-campaign-lobby::before {
+  content: '';
+  position: fixed;
+  inset: 0;
   background-image: url(/assets/ui/bg_0.svg);
   background-size: cover;
   background-position: center;
+  transform: scale(1.04);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Separate background layer so we can scale it independently for the enter animation */

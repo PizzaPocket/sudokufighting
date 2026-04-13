@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
-const DURATION = 1500;
-const ICON_RADIUS = 16; // half of 32px circle
-const BAR_INSET   = 32; // left/right inset of .counter-bar-wrap from its container
+const DURATION   = 1500;
+const DOT_RADIUS = 8;  // half of 16px dot
+const BAR_INSET  = 32; // left/right inset of .counter-bar-wrap from its container
 
 export default function CounterBar() {
   const active = useGameStore(s => s.counterWindowActive);
@@ -11,12 +11,14 @@ export default function CounterBar() {
   const defenderSeat = useGameStore(s => s.counterWindowDefenderSeat);
   const counterLandedNonce = useGameStore(s => s.counterLandedNonce);
 
-  const fillRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number>(0);
+  const fillRef    = useRef<HTMLDivElement>(null);
+  const barWrapRef = useRef<HTMLDivElement>(null);
+  const tailDotRef = useRef<HTMLDivElement>(null);
+  const rafRef     = useRef<number>(0);
   const [showCounter, setShowCounter] = useState(false);
   const prevNonce = useRef(counterLandedNonce);
 
-  // Animate fill bar via rAF
+  // Animate fill bar and tail dot via rAF
   useEffect(() => {
     if (!active || expiry == null) {
       cancelAnimationFrame(rafRef.current);
@@ -27,6 +29,17 @@ export default function CounterBar() {
     const tick = () => {
       const fraction = Math.max(0, (expiry - Date.now()) / DURATION);
       if (fillRef.current) fillRef.current.style.transform = `scaleX(${fraction})`;
+      if (tailDotRef.current && barWrapRef.current) {
+        const barW = barWrapRef.current.offsetWidth;
+        const offset = `${BAR_INSET + barW * fraction - DOT_RADIUS}px`;
+        if (defenderSeat === 0) {
+          tailDotRef.current.style.left  = offset;
+          tailDotRef.current.style.right = '';
+        } else {
+          tailDotRef.current.style.right = offset;
+          tailDotRef.current.style.left  = '';
+        }
+      }
       if (fraction > 0) {
         rafRef.current = requestAnimationFrame(tick);
       }
@@ -49,36 +62,30 @@ export default function CounterBar() {
   // Attacker's color fills the bar; bar drains toward the defender's side
   const attackerSeat = defenderSeat != null ? ((1 - defenderSeat) as 0 | 1) : 0;
   const fillColor = attackerSeat === 0 ? 'var(--p1-color)' : 'var(--p2-color)';
-  // Defender on left (seat 0): bar anchored to left, drains rightward → empty grows on right, bar tip on left (defender's side)
-  // Defender on right (seat 1): bar anchored to right, drains leftward → empty grows on left, bar tip on right (defender's side)
   const transformOrigin = defenderSeat === 0 ? 'left' : 'right';
+
+  // Static target dot — pinned at defender's end of bar (the hit point)
+  const targetStyle = {
+    background: fillColor,
+    left:  defenderSeat === 0 ? `${BAR_INSET - DOT_RADIUS}px` : undefined,
+    right: defenderSeat === 1 ? `${BAR_INSET - DOT_RADIUS}px` : undefined,
+  };
 
   return (
     <>
       {active && (
         <>
-          <div className="counter-bar-wrap">
+          <div className="counter-bar-wrap" ref={barWrapRef}>
             <div
               ref={fillRef}
               className="counter-bar-fill"
               style={{ background: fillColor, transformOrigin }}
             />
           </div>
-          <div
-            className="counter-bar-icon"
-            style={{
-              background: fillColor,
-              // Pin to the defender's end — centered on the bar's inset edge
-              left:  defenderSeat === 0 ? `${BAR_INSET - ICON_RADIUS}px` : undefined,
-              right: defenderSeat === 1 ? `${BAR_INSET - ICON_RADIUS}px` : undefined,
-            }}
-          >
-            <img
-              src="/assets/ui/icon-punch.svg"
-              className="counter-bar-icon-img"
-              style={{ transform: defenderSeat === 0 ? 'scaleX(-1)' : undefined }}
-            />
-          </div>
+          {/* Moving dot — tracks the depleting tail end of the bar */}
+          <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
+          {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
+          <div className="counter-dot" style={targetStyle} />
         </>
       )}
       {showCounter && (

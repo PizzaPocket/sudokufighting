@@ -527,18 +527,12 @@
   height: 100%; width: 100%;
   border-radius: 3px;
 }
-.counter-bar-icon {
+.counter-dot {
   position: absolute;
-  top: -5px; /* centers 32px circle on the 6px bar at top:8px (bar center = 11px, 11-16=-5) */
-  width: 32px; height: 32px;
+  /* bar top=8px, height=6px → bar centre=11px; dot radius=8px → top=3px */
+  top: 3px; width: 16px; height: 16px;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
   pointer-events: none; z-index: 21;
-}
-.counter-bar-icon-img {
-  width: 24px; height: 24px;
-  filter: brightness(0) invert(1);
-  display: block;
 }
 .counter-bubble {
   position: absolute; top: 20px; left: 50%;
@@ -654,6 +648,9 @@
   #fight-ground { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; }
   .midground-graphic { position: fixed; }
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
+  /* Counter bar: centre vertically in the 110px fixed fight stage */
+  .counter-bar-wrap { top: 50%; }
+  .counter-dot      { top: calc(50% - 5px); }
 }
 
 /* iPad / tablet — compact HUD to keep layout above the fold */

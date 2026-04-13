@@ -128,12 +128,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let go for once and see what happens.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You take everything a bit too lightly.",
-      "Let's see if you can keep smiling after this.",
+      "No plan, no strategy — just going on vibes, yeah?",
+      "Same approach I use, honestly. But I'm better at it.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "All that quiet discipline, and yet you still feel stuck.",
-      "Maybe you need to break your own rules.",
+      "You move without thinking.",
+      "Speed without direction only leads you in circles.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "Confidence is easy when things go your way.",
@@ -180,8 +180,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Keep up, or fall behind.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
-      "You aim high, but your footing is unstable.",
-      "I will show you the difference.",
+      "Your lack of seriousness is a flaw, not a style.",
+      "I will make sure you understand the difference.",
     ]},
     fighter4: { speaker: 'Senna', lines: [
       "You smile now, but you will not for long.",
@@ -192,12 +192,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "I will correct that.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "You are loud, reckless, and unfocused.",
-      "I will meet you with greater force.",
+      "All that energy and not a worry in the world, eh?",
+      "Try to stay focused long enough to make it interesting.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
-      "You cast aside emotion, but not your flaws.",
-      "That will cost you.",
+      "Emotional, impulsive, unpredictable.",
+      "I have already accounted for each of those variables.",
     ]},
   },
 
@@ -208,36 +208,36 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "You have not yet found stillness.",
     ]},
     fighter1_alt: { speaker: 'Brace', lines: [
-      "You chase freedom without understanding it.",
-      "Control is not your enemy.",
+      "All that stillness, and you call it strength?",
+      "Sometimes you have to move to find the answer.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "Your laughter is constant, but it is empty.",
-      "Be still and listen to yourself.",
+      "You're the quietest person I've ever faced.",
+      "Come on, lighten up! Even a little?",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
-      "Your confidence creates noise within you.",
-      "Silence would serve you better.",
+      "All that stillness and not a word — confident, or just waiting?",
+      "Either way, I don't lose to patience.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
-      "You present yourself as perfection.",
-      "But perfection requires stillness.",
+      "Stillness is not a method.",
+      "Perfection requires constant refinement, not waiting.",
     ]},
     fighter4: { speaker: 'Senna', lines: [
-      "Your chaos is inefficient and unfocused.",
-      "It must be corrected.",
+      "What is with all the quiet?! Just standing there —",
+      "I'll give you something to react to.",
     ]},
     fighter4_alt: { speaker: 'Ninja S', lines: [
-      "You are close to clarity.",
-      "But you have not reached it.",
+      "Your stillness is controlled.",
+      "But stillness without precision is only waiting.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "You rely on force and instinct alone, mate.",
-      "You lack inner calm.",
+      "Blimey, you're quiet. Not even gonna say g'day?",
+      "Fair enough — I'll let the game do the talking.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
-      "You remove emotion, yet something remains.",
-      "You have not fully let go.",
+      "You have found quiet. But quiet is not the same as clarity.",
+      "Something still persists within you.",
     ]},
   },
 
@@ -252,12 +252,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "That will be your downfall.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You rely on charm instead of discipline.",
-      "That will not carry you far here.",
+      "Pretty sure of yourself for someone who hasn't won yet, yeah?",
+      "Let's find out if the confidence is actually earned.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "Silence alone does not make you strong.",
-      "You still need presence.",
+      "Your confidence fills the space before you arrive.",
+      "That noise leaves nowhere for clarity to take root.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
       "You look like me, but sharper somehow.",
@@ -292,12 +292,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "It only reveals your limits.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You are careless where you should be precise.",
-      "That will not suffice.",
+      "Everything about you is so polished and serious.",
+      "Have you ever just... had fun with it?",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "You approach stillness, but do not embody it.",
-      "There is more to achieve.",
+      "You have refined yourself endlessly.",
+      "And yet you are still restless. What are you searching for?",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "You strive to become something greater.",
@@ -332,12 +332,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let's see how far you can push it.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You joke too much for someone in a fight.",
-      "I'll wipe that grin off your face.",
+      "Okay! You fight like you're angry at the whole world.",
+      "I'm just here to have a good time — try not to take it personally?",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "All that quiet focus, but you still feel tense.",
-      "You're not as calm as you think.",
+      "You move like a storm with no direction.",
+      "That energy will exhaust you before it reaches me.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "You look good when everything goes your way.",
@@ -372,12 +372,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "You will fall quickly.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "Your noise and movement are inefficient.",
-      "I will silence both.",
+      "You look like you've never laughed once in your life.",
+      "That seems exhausting. I could teach you, you know.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "You approach control, but lack execution.",
-      "I will surpass you.",
+      "Your discipline is sharp.",
+      "But sharpness that never rests will eventually break.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "Your patterns are visible and exploitable.",
@@ -412,12 +412,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let's see if you can back it up.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You're having a good time, aren't you?",
-      "Let's see if you're still smiling after this.",
+      "Wow, okay — you are really big.",
+      "I'm going to need to be extra charming to get through this one.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "You're quiet, but there's something going on under that.",
-      "I'll dig it out.",
+      "You carry a great deal of force.",
+      "But force without stillness cannot hold its own weight.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "You've got confidence for days.",
@@ -452,12 +452,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "That makes you predictable.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You mask your intent behind humor.",
-      "It will not protect you.",
+      "You are extremely intense right now.",
+      "Ever try smiling? Just once? It's free.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
-      "You pursue stillness and control.",
-      "You are closer than most.",
+      "You have emptied yourself.",
+      "But emptiness is not the same as stillness.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "Your confidence is evident.",
