@@ -125,7 +125,7 @@ let _musicInitialOffset = 0;   // track position the node started from
 let _musicPaused        = false;
 let _musicPauseOffset   = 0;   // track position saved on pause
 
-// ── iOS keepAlive ──────────────────────────────────────────────────────────────
+// ── iOS keepAlive (Web Audio) ──────────────────────────────────────────────────
 // A silent looping AudioBufferSourceNode prevents iOS from auto-suspending the
 // AudioContext between audio events (e.g. between initAudio() and the first
 // music node start, or between tracks).
@@ -141,6 +141,30 @@ function startKeepAlive(ctx: AudioContext): void {
   node.connect(ctx.destination);
   node.start(0);
   _keepAliveNode = node;
+}
+
+// ── iOS session keeper (HTMLAudioElement) ──────────────────────────────────────
+// iOS audio sessions have two relevant categories:
+//   "ambient"  — default for Web Audio API; silenced by the mute switch.
+//   "playback" — used by HTMLAudioElement; bypasses the mute switch (like apps).
+//
+// When HTMLAudioElement.play() is called in a gesture the session upgrades to
+// "playback". However the upgrade reverts when that element finishes playing.
+// Solution: keep a silent looping HTMLAudioElement alive after the first gesture
+// so the session stays in "playback" permanently, even after the logo jingle ends.
+
+let _iosSessionEl: HTMLAudioElement | null = null;
+
+// Smallest valid WAV: 1 sample, mono, 22050 Hz (~44 bytes)
+const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+
+function keepIOSSession(): void {
+  if (_iosSessionEl) return;
+  const el = new Audio(SILENT_WAV);
+  el.loop   = true;
+  el.volume = 0;
+  el.play().catch(() => {});
+  _iosSessionEl = el;
 }
 
 // ── _fetchAndDecode — uses musicRaw to avoid network fetch when possible ───────
@@ -396,6 +420,10 @@ export function initAudio(): void {
 
   // keepAlive: prevents iOS from auto-suspending the context between audio events
   startKeepAlive(ctx);
+
+  // iOS session keeper: locks the audio session to "playback" so the mute switch
+  // is bypassed permanently (not just for the duration of the logo jingle).
+  keepIOSSession();
 
   // Decode all pre-fetched SFX
   decodeAllFetched();
