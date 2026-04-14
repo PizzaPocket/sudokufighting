@@ -195,7 +195,7 @@
   letter-spacing: 0.05em; border: none; border-left: 1px solid var(--muted);
   border-radius: 0; cursor: pointer; transition: background 0.12s;
 }
-.combo-input #btn-join-room:hover  { background: var(--accent-light); }
+@media (hover: hover) { .combo-input #btn-join-room:hover  { background: var(--accent-light); } }
 .combo-input #btn-join-room:active { background: var(--accent); color: var(--canvas-text); }
 
 .start-error {
@@ -232,7 +232,7 @@
   gap: 6px; transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
   box-shadow: 4px 4px 0 var(--accent); outline: none; border: none;
 }
-.character-card:hover { transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); }
+@media (hover: hover) { .character-card:hover { transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--accent); } }
 .character-card.selected { background: var(--accent); box-shadow: 4px 4px 0 #ffffff; }
 .character-card.selected .char-name { color: var(--canvas-text); }
 .character-card img { width: 165px; height: 165px; object-fit: cover; object-position: 50% 12%; border-radius: 0; display: block; transform: scaleX(-1); }

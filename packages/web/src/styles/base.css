@@ -17,7 +17,9 @@ html, body {
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #000;
+  /* Always show the game background so splash/screen transitions never expose
+     raw black — the bg image is always painted underneath everything. */
+  background: #000 url(/assets/ui/bg_0.svg) center/cover no-repeat;
 }
 
 /* =========================================================
@@ -72,9 +74,9 @@ html, body {
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-utility:hover  { background: rgba(0,0,0,0.55); }
+@media (hover: hover) { .btn-utility:hover  { background: rgba(0,0,0,0.55); } }
 .btn-utility:disabled { opacity: 0.3; cursor: not-allowed; }
-.btn-utility:disabled:hover { background: rgba(0,0,0,0.35); }
+@media (hover: hover) { .btn-utility:disabled:hover { background: rgba(0,0,0,0.35); } }
 
 /* Square touch target — icon-only buttons (settings) */
 .header-icon-btn {
