@@ -155,14 +155,15 @@ function startKeepAlive(ctx: AudioContext): void {
 
 let _iosSessionEl: HTMLAudioElement | null = null;
 
-// Smallest valid WAV: 1 sample, mono, 22050 Hz (~44 bytes)
-const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
-
 function keepIOSSession(): void {
   if (_iosSessionEl) return;
-  const el = new Audio(SILENT_WAV);
+  // Use a real pre-fetched audio file at near-zero volume.
+  // iOS does not count silent data-URI audio or volume=0 as maintaining the
+  // "playback" session — it needs actual audio content with non-zero volume.
+  // The blip at 0.001 (~60 dB below unity) is completely inaudible.
+  const el = new Audio(SFX_SRCS.blip);
   el.loop   = true;
-  el.volume = 0;
+  el.volume = 0.001;
   el.play().catch(() => {});
   _iosSessionEl = el;
 }
@@ -421,10 +422,6 @@ export function initAudio(): void {
   // keepAlive: prevents iOS from auto-suspending the context between audio events
   startKeepAlive(ctx);
 
-  // iOS session keeper: locks the audio session to "playback" so the mute switch
-  // is bypassed permanently (not just for the duration of the logo jingle).
-  keepIOSSession();
-
   // Decode all pre-fetched SFX
   decodeAllFetched();
 
@@ -440,14 +437,16 @@ export async function playLogoAndSelectMusic(): Promise<void> {
   const ctx = getCtx();
   if (ctx.state !== 'running') await ctx.resume();
 
+  // Both calls must come before any await — they require synchronous gesture context.
   if (sfxEnabled) {
-    // Always play the logo via HTMLAudioElement. On iOS, HTMLAudioElement.play()
-    // within a gesture switches the audio session to "playback" category, which:
-    //   1. The subsequent AudioContext inherits — so music plays through the speaker.
-    //   2. Bypasses the iOS silent/mute switch (same as Spotify, YouTube, games).
-    // AudioBufferSourceNode alone stays in "ambient" mode — silenced by the switch.
+    // Logo via HTMLAudioElement sets the iOS audio session to "playback", which
+    // bypasses the mute switch and routes audio through the main speaker.
     new Audio(SFX_SRCS.logo).play().catch(() => {});
   }
+  // Session keeper: a real audio file looping at near-zero volume keeps the
+  // "playback" session alive after the logo jingle finishes. iOS does not
+  // maintain the session from silent/data-URI audio or volume=0 elements.
+  keepIOSSession();
 
   const selectSrc = TRACKS[SELECT_TRACK_INDEX].src;
 
