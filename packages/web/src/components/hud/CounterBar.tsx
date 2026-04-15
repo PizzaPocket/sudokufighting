@@ -80,17 +80,18 @@ export default function CounterBar() {
         <>
           {/* Ghost track — background only, no shadow */}
           <div className="counter-bar-wrap" ref={barWrapRef} />
-          {/* Fill + end squares grouped so drop-shadow treats them as one shape */}
+          {/* Fill + end squares — dots render first so the fill paints on top,
+              covering any shadow bleed from the dots onto the bar area. */}
           <div className="counter-bar-layer">
+            {/* Moving dot — tracks the depleting tail end of the bar */}
+            <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
+            {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
+            <div className="counter-dot" style={targetStyle} />
             <div
               ref={fillRef}
               className="counter-bar-fill"
               style={{ background: fillColor, transformOrigin }}
             />
-            {/* Moving dot — tracks the depleting tail end of the bar */}
-            <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
-            {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
-            <div className="counter-dot" style={targetStyle} />
           </div>
         </>
       )}

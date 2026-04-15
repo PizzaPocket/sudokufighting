@@ -528,22 +528,25 @@
   background: rgba(255, 255, 255, 0.4);
   pointer-events: none; z-index: 20;
 }
-/* Grouping layer — fill + end squares share one drop-shadow so the shadow
-   follows the combined outline with no bleed between adjacent pieces. */
+/* Grouping layer — structural only, no filter (filter on the parent of an
+   animating child forces per-frame CPU recomposite; filter per-element lets
+   the GPU apply it as a shader on the already-composited layer). */
 .counter-bar-layer {
   position: absolute; inset: 0;
   pointer-events: none; z-index: 21;
-  filter: drop-shadow(2px 2px 0 #fff);
 }
+/* Fill renders last in DOM (on top) so it covers any dot shadow bleed onto the bar. */
 .counter-bar-fill {
   position: absolute; top: 8px; left: 32px; right: 32px;
   height: 4px;
+  filter: drop-shadow(2px 2px 0 #fff);
 }
 .counter-dot {
   position: absolute;
   /* bar top=8px, height=4px → bar centre=10px; dot half=4px → top=6px */
   top: 6px; width: 8px; height: 8px;
   pointer-events: none;
+  filter: drop-shadow(2px 2px 0 #fff);
 }
 .counter-bubble {
   position: absolute; top: 20px; left: 50%;
