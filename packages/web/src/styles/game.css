@@ -524,20 +524,26 @@
 /* Counter window bar — overlays .fight-characters-inner (position: relative, inline-flex) */
 .counter-bar-wrap {
   position: absolute; top: 8px; left: 32px; right: 32px;
-  height: 6px; border-radius: 3px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.4);
-  overflow: hidden; pointer-events: none; z-index: 20;
+  pointer-events: none; z-index: 20;
+}
+/* Grouping layer — fill + end squares share one drop-shadow so the shadow
+   follows the combined outline with no bleed between adjacent pieces. */
+.counter-bar-layer {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 21;
+  filter: drop-shadow(2px 2px 0 #fff);
 }
 .counter-bar-fill {
-  height: 100%; width: 100%;
-  border-radius: 3px;
+  position: absolute; top: 8px; left: 32px; right: 32px;
+  height: 4px;
 }
 .counter-dot {
   position: absolute;
-  /* bar top=8px, height=6px → bar centre=11px; dot radius=8px → top=3px */
-  top: 3px; width: 16px; height: 16px;
-  border-radius: 50%;
-  pointer-events: none; z-index: 21;
+  /* bar top=8px, height=4px → bar centre=10px; dot half=4px → top=6px */
+  top: 6px; width: 8px; height: 8px;
+  pointer-events: none;
 }
 .counter-bubble {
   position: absolute; top: 20px; left: 50%;
@@ -655,7 +661,8 @@
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
   /* Counter bar: centre vertically in the 110px fixed fight stage */
   .counter-bar-wrap { top: 50%; }
-  .counter-dot      { top: calc(50% - 5px); }
+  .counter-bar-fill { top: 50%; }
+  .counter-dot      { top: calc(50% - 2px); }
 }
 
 /* iPad / tablet — compact HUD to keep layout above the fold */

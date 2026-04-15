@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
 const DURATION   = 1500;
-const DOT_RADIUS = 8;  // half of 16px dot
+const DOT_RADIUS = 4;  // half of 8px dot
 const BAR_INSET  = 32; // left/right inset of .counter-bar-wrap from its container
 
 export default function CounterBar() {
@@ -78,17 +78,20 @@ export default function CounterBar() {
     <>
       {active && (
         <>
-          <div className="counter-bar-wrap" ref={barWrapRef}>
+          {/* Ghost track — background only, no shadow */}
+          <div className="counter-bar-wrap" ref={barWrapRef} />
+          {/* Fill + end squares grouped so drop-shadow treats them as one shape */}
+          <div className="counter-bar-layer">
             <div
               ref={fillRef}
               className="counter-bar-fill"
               style={{ background: fillColor, transformOrigin }}
             />
+            {/* Moving dot — tracks the depleting tail end of the bar */}
+            <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
+            {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
+            <div className="counter-dot" style={targetStyle} />
           </div>
-          {/* Moving dot — tracks the depleting tail end of the bar */}
-          <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
-          {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
-          <div className="counter-dot" style={targetStyle} />
         </>
       )}
       {showCounter && (
