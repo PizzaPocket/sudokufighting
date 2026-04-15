@@ -72,7 +72,8 @@ export function useVsAI() {
   const currentScreen = useGameStore(s => s.currentScreen);
 
   const roundState = useRef<RoundState>(makeEmptyRoundState());
-  const attackTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const attackTimers = useRef<Map<string, { handle: ReturnType<typeof setTimeout>; fireAt: number }>>(new Map());
+  const pausedAttacks = useRef<Map<string, number>>(new Map()); // attackId → remaining ms
   const botQueue = useRef<BotCell[]>([]);
   const botSession = useRef<BotSession>({ stopped: true, timeouts: new Set() });
   const localRoundWins = useRef<[number, number]>([0, 0]);
@@ -80,8 +81,9 @@ export function useVsAI() {
   const campaignCfgRef = useRef<DifficultyConfig | null>(null);
 
   function clearAllTimers() {
-    for (const t of attackTimers.current.values()) clearTimeout(t);
+    for (const { handle } of attackTimers.current.values()) clearTimeout(handle);
     attackTimers.current.clear();
+    pausedAttacks.current.clear();
     for (const t of botSession.current.timeouts) clearTimeout(t);
     botSession.current.stopped = true;
     botSession.current.timeouts.clear();
@@ -118,14 +120,15 @@ export function useVsAI() {
   }
 
   function scheduleAttack(attackId: string, delay: number) {
-    const t = setTimeout(() => {
+    const fireAt = Date.now() + delay;
+    const handle = setTimeout(() => {
       attackTimers.current.delete(attackId);
       const result = applyDamageFromAttack(roundState.current, attackId);
       if (!result) return;
       for (const ev of result.events) injectServerMessage(ev);
       checkRoundEnd();
     }, delay);
-    attackTimers.current.set(attackId, t);
+    attackTimers.current.set(attackId, { handle, fireAt });
   }
 
   function processMove(seat: 0 | 1, row: number, col: number, value: number) {
@@ -139,7 +142,7 @@ export function useVsAI() {
       }
       if (ev.type === 'auto_counter') {
         const t = attackTimers.current.get(ev.payload.attackId);
-        if (t) { clearTimeout(t); attackTimers.current.delete(ev.payload.attackId); }
+        if (t) { clearTimeout(t.handle); attackTimers.current.delete(ev.payload.attackId); }
         const result = applyCounterDamage(roundState.current, ev.payload.attackId);
         if (result) { for (const counterEv of result.events) injectServerMessage(counterEv); }
       }
@@ -276,9 +279,24 @@ export function useVsAI() {
       if (isPaused === prevPaused) return;
       prevPaused = isPaused;
       if (isPaused) {
-        clearAllTimers();
+        // Save remaining time for each in-flight attack so they can be
+        // rescheduled on resume rather than lost entirely.
+        const now = Date.now();
+        for (const [id, { handle, fireAt }] of attackTimers.current) {
+          clearTimeout(handle);
+          pausedAttacks.current.set(id, Math.max(0, fireAt - now));
+        }
+        attackTimers.current.clear();
+        for (const t of botSession.current.timeouts) clearTimeout(t);
         botSession.current.stopped = true;
+        botSession.current.timeouts.clear();
       } else {
+        // Reschedule attacks that were in-flight when paused.
+        for (const [id, remaining] of pausedAttacks.current) {
+          scheduleAttack(id, remaining);
+        }
+        pausedAttacks.current.clear();
+        // Resume bot move generation.
         botSession.current = { stopped: false, timeouts: new Set() };
         const difficulty = useGameStore.getState().spDifficulty as Difficulty;
         scheduleNext(botQueue.current, botSession.current, difficulty, (r, c, v) => {

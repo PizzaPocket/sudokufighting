@@ -9,6 +9,7 @@ export default function CounterBar() {
   const active = useGameStore(s => s.counterWindowActive);
   const expiry = useGameStore(s => s.counterWindowExpiry);
   const defenderSeat = useGameStore(s => s.counterWindowDefenderSeat);
+  const isPaused = useGameStore(s => s.isPaused);
   const counterLandedNonce = useGameStore(s => s.counterLandedNonce);
 
   const fillRef    = useRef<HTMLDivElement>(null);
@@ -18,11 +19,13 @@ export default function CounterBar() {
   const [showCounter, setShowCounter] = useState(false);
   const prevNonce = useRef(counterLandedNonce);
 
-  // Animate fill bar and tail dot via rAF
+  // Animate fill bar and tail dot via rAF.
+  // isPaused: cancels rAF to freeze the visual. On resume the store shifts
+  // counterWindowExpiry forward by the pause duration, so the effect re-runs
+  // with the corrected expiry and the bar picks up exactly where it froze.
   useEffect(() => {
-    if (!active || expiry == null) {
+    if (!active || expiry == null || isPaused) {
       cancelAnimationFrame(rafRef.current);
-      if (fillRef.current) fillRef.current.style.transform = 'scaleX(1)';
       return;
     }
 
@@ -46,7 +49,7 @@ export default function CounterBar() {
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [active, expiry, defenderSeat]);
+  }, [active, expiry, defenderSeat, isPaused]);
 
   // "Counter!" bubble when a counter lands
   useEffect(() => {

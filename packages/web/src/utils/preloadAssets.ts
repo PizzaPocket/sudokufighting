@@ -20,7 +20,6 @@ export function preloadArenaAssets(arenaId: string): void {
   ].filter((s): s is string => !!s);
 
   for (const src of srcs) {
-    const img = new Image();
-    img.src = src;
+    fetch(src).catch(() => {});
   }
 }

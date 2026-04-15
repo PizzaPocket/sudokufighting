@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { buildCampaignStartQueue } from '../../ai/useCampaign';
 import { fadeOutMusic, switchToSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
+import { preloadArenaAssets } from '../../utils/preloadAssets';
+import { CAMPAIGN_FIGHTS } from '@sudoku-fighting/shared';
 import CharacterSprite from '../character/CharacterSprite';
 
 export default function CampaignGameOver() {
@@ -32,6 +34,7 @@ export default function CampaignGameOver() {
 
   function handleTryAgain() {
     if (!myCharacter) return;
+    preloadArenaAssets(CAMPAIGN_FIGHTS[0].arenaId);
     const queue = buildCampaignStartQueue(myCharacter, characters);
     fadeOutMusic(400);
     useGameStore.setState({

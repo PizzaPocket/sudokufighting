@@ -3,6 +3,8 @@ import { useGameStore } from '../store/gameStore';
 import type { Character, Difficulty } from '@sudoku-fighting/shared';
 import { buildCampaignStartQueue } from '../ai/useCampaign';
 import { fadeOutMusic } from '../audio/audioManager';
+import { preloadArenaAssets } from '../utils/preloadAssets';
+import { CAMPAIGN_FIGHTS } from '@sudoku-fighting/shared';
 
 interface Props { active: boolean; }
 
@@ -54,6 +56,7 @@ export default function CharacterSelectScreen({ active }: Props) {
 
   function handleContinue() {
     if (!selected) return;
+    preloadArenaAssets(CAMPAIGN_FIGHTS[0].arenaId);
     const queue = buildCampaignStartQueue(selected, characters);
     fadeOutMusic(800);
     useGameStore.setState({ campaignDialogueQueue: queue } as never);

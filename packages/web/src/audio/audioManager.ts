@@ -157,13 +157,18 @@ let _iosSessionEl: HTMLAudioElement | null = null;
 
 function keepIOSSession(): void {
   if (_iosSessionEl) return;
-  // Use a real pre-fetched audio file at near-zero volume.
-  // iOS does not count silent data-URI audio or volume=0 as maintaining the
-  // "playback" session — it needs actual audio content with non-zero volume.
-  // The blip at 0.001 (~60 dB below unity) is completely inaudible.
+  const ctx = getCtx();
   const el = new Audio(SFX_SRCS.blip);
-  el.loop   = true;
-  el.volume = 0.001;
+  el.loop = true;
+  // Route through Web Audio at gain=0 — completely silent in the audio output,
+  // but the HTMLAudioElement is actively playing so iOS recognises it as real
+  // media and keeps the audio session in "playback" mode indefinitely.
+  // This is inaudible even through headphones, unlike a non-zero volume approach.
+  const source = ctx.createMediaElementSource(el);
+  const muteGain = ctx.createGain();
+  muteGain.gain.value = 0;
+  source.connect(muteGain);
+  muteGain.connect(ctx.destination);
   el.play().catch(() => {});
   _iosSessionEl = el;
 }

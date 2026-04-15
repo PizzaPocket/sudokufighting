@@ -294,7 +294,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     } else {
       const s = get();
       const extra = s.pauseStartTime != null ? Date.now() - s.pauseStartTime : 0;
-      set({ isPaused: false, pauseStartTime: null, totalPausedMs: s.totalPausedMs + extra });
+      // Shift counter window expiry forward by the pause duration so the bar
+      // resumes from exactly where it froze rather than appearing expired.
+      const counterWindowExpiry = s.counterWindowExpiry != null ? s.counterWindowExpiry + extra : null;
+      set({ isPaused: false, pauseStartTime: null, totalPausedMs: s.totalPausedMs + extra, counterWindowExpiry });
       resumeMusic();
     }
   },
