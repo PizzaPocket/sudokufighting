@@ -42,7 +42,7 @@ html, body {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   pointer-events: all;
 }
 
@@ -91,7 +91,7 @@ html, body {
 .header-text-btn {
   font-size: var(--text-sm);
   letter-spacing: 0.06em;
-  padding: 0 12px;
+  padding: 0 8px;
   height: 36px;
 }
 
@@ -100,7 +100,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 0 12px;
+  padding: 0 8px;
   height: 36px;
   font-size: var(--text-sm);
   letter-spacing: 0.06em;

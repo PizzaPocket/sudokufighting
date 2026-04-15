@@ -33,26 +33,29 @@ function generateShareCode() {
 // Room creation & player management
 // ---------------------------------------------------------------------------
 
-export function createRoom() {
+export function createRoom(gameMode = 'quick') {
   const roomId = uuidv4();
   rooms.set(roomId, {
     roomId,
     state: 'waiting', // waiting | in_round | round_end | match_end
+    gameMode,         // 'quick' | 'friend'
     players: [],      // max 2, indexed by seat (0 = left, 1 = right)
     match: {
       roundNumber: 1,
       roundWins: [0, 0],
+      scores: [0, 0],   // cumulative across all rounds
+      startTime: null,  // wall-clock ms when round 1 began
     },
     round: null,
   });
   return roomId;
 }
 
-export function addPlayerToRoom(roomId, playerId, ws, characterId, name) {
+export function addPlayerToRoom(roomId, playerId, ws, characterId, name, userId = null) {
   const room = rooms.get(roomId);
   if (!room || room.players.length >= 2) return null;
   const seat = room.players.length;
-  room.players.push({ id: playerId, ws, seat, characterId, name, useAlt: false });
+  room.players.push({ id: playerId, ws, seat, characterId, name, useAlt: false, userId });
   return seat;
 }
 
@@ -72,10 +75,10 @@ export function getRoomCount() {
 // Matchmaking queue
 // ---------------------------------------------------------------------------
 
-export function enqueue(playerId, ws, characterId, name, preferredArenaId = null) {
+export function enqueue(playerId, ws, characterId, name, preferredArenaId = null, userId = null) {
   const shareCode = generateShareCode();
   shareCodeMap.set(shareCode, { type: 'queue', id: playerId });
-  queue.push({ playerId, ws, characterId, name, preferredArenaId, shareCode });
+  queue.push({ playerId, ws, characterId, name, preferredArenaId, shareCode, userId });
   return shareCode;
 }
 
@@ -111,6 +114,11 @@ export function dequeue(playerId) {
 export function startRound(roomId) {
   const room = rooms.get(roomId);
   if (!room) return null;
+
+  // Record wall-clock start time on the first round only
+  if (room.match.roundNumber === 1 && !room.match.startTime) {
+    room.match.startTime = Date.now();
+  }
 
   const puzzles = [generatePuzzle(), generatePuzzle()];
 
@@ -505,9 +513,9 @@ export function createSinglePlayerRoom(realPlayerId, ws, charId, name, aiCharId,
 // Private rooms (Play with a Friend)
 // ---------------------------------------------------------------------------
 
-export function createPrivateRoom(playerId, ws, characterId, name) {
-  const roomId = createRoom();
-  addPlayerToRoom(roomId, playerId, ws, characterId, name);
+export function createPrivateRoom(playerId, ws, characterId, name, userId = null) {
+  const roomId = createRoom('friend');
+  addPlayerToRoom(roomId, playerId, ws, characterId, name, userId);
   const shareCode = generateShareCode();
   shareCodeMap.set(shareCode, { type: 'private', id: roomId });
   const room = rooms.get(roomId);
@@ -516,7 +524,7 @@ export function createPrivateRoom(playerId, ws, characterId, name) {
   return { roomId, shareCode };
 }
 
-export function joinByShareCode(shareCode, playerId, ws, characterId, name) {
+export function joinByShareCode(shareCode, playerId, ws, characterId, name, userId = null) {
   const entry = shareCodeMap.get(shareCode);
   if (!entry) return { error: 'not_found' };
 
@@ -524,7 +532,7 @@ export function joinByShareCode(shareCode, playerId, ws, characterId, name) {
     const room = rooms.get(entry.id);
     if (!room) return { error: 'not_found' };
     if (room.players.length >= 2) return { error: 'full' };
-    addPlayerToRoom(entry.id, playerId, ws, characterId, name);
+    addPlayerToRoom(entry.id, playerId, ws, characterId, name, userId);
     if (room.players[0].characterId === room.players[1].characterId) room.players[1].useAlt = true;
     shareCodeMap.delete(shareCode);
     room.shareCode = null;
@@ -536,9 +544,9 @@ export function joinByShareCode(shareCode, playerId, ws, characterId, name) {
     if (idx === -1) return { error: 'not_found' };
     const host = queue.splice(idx, 1)[0];
     if (host.shareCode) shareCodeMap.delete(host.shareCode);
-    const roomId = createRoom();
-    addPlayerToRoom(roomId, host.playerId, host.ws, host.characterId, host.name);
-    addPlayerToRoom(roomId, playerId, ws, characterId, name);
+    const roomId = createRoom('quick');
+    addPlayerToRoom(roomId, host.playerId, host.ws, host.characterId, host.name, host.userId);
+    addPlayerToRoom(roomId, playerId, ws, characterId, name, userId);
     const room = rooms.get(roomId);
     if (room.players[0].characterId === room.players[1].characterId) room.players[1].useAlt = true;
     return { type: 'joined_queue', roomId, room, host };

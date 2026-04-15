@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { disconnect, send } from '../../hooks/useGameSocket';
 import { stopVsAI } from '../../ai/useVsAI';
+import { useAuthStore } from '../../auth/authStore';
 
 function screenTitle(screen: string, gameMode: string | null): string | null {
   switch (screen) {
@@ -31,6 +32,10 @@ export default function AppHeader() {
   const matchOver = useGameStore(s => s.matchOver);
   const isPaused = useGameStore(s => s.isPaused);
   const setIsPaused = useGameStore(s => s.setIsPaused);
+
+  const user = useAuthStore(s => s.user);
+  const openSignIn = useAuthStore(s => s.openSignIn);
+  const openAccount = useAuthStore(s => s.openAccount);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -111,6 +116,26 @@ export default function AppHeader() {
             >
               {surrenderLabel}
             </button>
+          )}
+          {/* Auth entry point — hidden during gameplay to avoid distraction */}
+          {!isGameplay && (
+            user ? (
+              <button
+                className="btn-utility header-icon-btn"
+                onClick={openAccount}
+                aria-label="My account"
+              >
+                <img src="/assets/ui/icon-user.svg" className="header-icon-img" alt="" />
+              </button>
+            ) : (
+              <button
+                className="btn-utility header-text-btn"
+                onClick={openSignIn}
+                aria-label="Sign in"
+              >
+                SIGN IN
+              </button>
+            )
           )}
           <button
             className="btn-utility header-icon-btn header-settings-btn"

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
+import { useAuthStore } from '../auth/authStore';
 import { send } from '../hooks/useGameSocket';
 import { ARENAS } from '@sudoku-fighting/shared';
 import { fadeOutMusic } from '../audio/audioManager';
@@ -47,17 +48,18 @@ export default function LobbyScreen({ active }: Props) {
     const storedName = myName ?? 'Player';
     const charId = myCharacter ?? 'fighter1';
 
+    const userId = useAuthStore.getState().user?.id;
     if (gameMode === 'quick') {
-      send('find_match', { characterId: charId, name: storedName, preferredArenaId: useGameStore.getState().preferredArenaId });
+      send('find_match', { characterId: charId, name: storedName, preferredArenaId: useGameStore.getState().preferredArenaId, userId });
     } else if (gameMode === 'friend') {
       // Check if we have a pending join code
       const st = useGameStore.getState() as never as { pendingJoinCode?: string };
       const pending = (st as { pendingJoinCode?: string }).pendingJoinCode;
       if (pending) {
         useGameStore.setState({ pendingJoinCode: null } as never);
-        send('join_room', { shareCode: pending, characterId: charId, name: storedName });
+        send('join_room', { shareCode: pending, characterId: charId, name: storedName, userId });
       } else {
-        send('create_room', { characterId: charId, name: storedName });
+        send('create_room', { characterId: charId, name: storedName, userId });
         // Send initial arena preference so the server has it before P2 joins
         send('set_arena_preference', { arenaId: ARENAS[arenaIndex].id });
       }

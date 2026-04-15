@@ -9,6 +9,8 @@ import {
   startFightMusic, fadeOutMusic, getSelectedTrackIndex,
   switchToSelectMusic, SELECT_TRACK_INDEX,
 } from '../../audio/audioManager';
+import { useAuthStore } from '../../auth/authStore';
+import { recordMatch, setPendingMatch, type RecordMatchInput } from '../../stats/statsService';
 
 interface OverlayContent {
   main: string;
@@ -33,11 +35,16 @@ export default function GameOverlay() {
   const gameMode = useGameStore(s => s.gameMode);
   const resetAll = useGameStore(s => s.resetAll);
 
+  const user = useAuthStore(s => s.user);
+  const openSignIn = useAuthStore(s => s.openSignIn);
+
   const [overlay, setOverlay] = useState<OverlayContent | null>(null);
   const [showButtons, setShowButtons] = useState(false);
   const [hidden, setHidden] = useState(true);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const mainRef = useRef<HTMLDivElement>(null);
+  // Wall-clock time when round 1 started — used to compute match duration
+  const matchStartTimeRef = useRef<number | null>(null);
 
   function clearTimers() {
     timers.current.forEach(t => clearTimeout(t));
@@ -74,6 +81,7 @@ export default function GameOverlay() {
     setShowButtons(false);
 
     const { roundNumber, backgroundId } = preRoundSignal;
+    if (roundNumber === 1) matchStartTimeRef.current = Date.now();
     playRoundAnnouncer(roundNumber);
     showOverlay({
       main: `ROUND ${roundNumber}`,
@@ -138,14 +146,35 @@ export default function GameOverlay() {
     setShowButtons(false);
 
     addTimer(() => {
-      if (matchWinnerSeat === -1) {
+      const st = useGameStore.getState();
+      const isTie = matchWinnerSeat === -1;
+      const isWinner = !isTie && matchWinnerSeat === mySeat;
+      const result: 'win' | 'loss' | 'tie' = isTie ? 'tie' : isWinner ? 'win' : 'loss';
+
+      // Record match stats (fire-and-forget)
+      if (st.mySeat !== null && st.myCharacter) {
+        const matchInput: RecordMatchInput = {
+          gameMode:      st.gameMode ?? 'quick',
+          result,
+          characterId:   st.myCharacter,
+          opponentName:  st.opponentName,
+          score:         st.score[st.mySeat],
+          difficulty:    st.gameMode === 'campaign' ? st.spDifficulty : null,
+          matchDurationMs: matchStartTimeRef.current ? Date.now() - matchStartTimeRef.current : 0,
+        };
+        if (useAuthStore.getState().user) {
+          recordMatch(matchInput);
+        } else {
+          setPendingMatch(matchInput);
+        }
+      }
+
+      if (isTie) {
         showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
         setShowButtons(true);
         return;
       }
 
-      const st = useGameStore.getState();
-      const isWinner = matchWinnerSeat === mySeat;
       const winnerCharId = matchWinnerSeat === st.mySeat ? st.myCharacter : st.opponentCharacter;
       const winnerName = charName(winnerCharId, st.characters) ?? st.matchWinnerName ?? 'Unknown';
       const winnerDisplayName = opponentDisconnected
@@ -205,6 +234,11 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
+          {!user && (
+            <button className="btn btn-secondary" onClick={openSignIn}>
+              SAVE YOUR PROGRESS
+            </button>
+          )}
           {gameMode === 'campaign' && (
             <button
               className="btn"

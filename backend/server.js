@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
 import { ARENAS } from '../packages/shared/dist/arenas.js';
+import { supabase } from './supabase.js';
 import {
   enqueue, dequeue, tryMatch, setQueuedArenaPreference,
   findRoomByPlayer, getRoom, deleteRoom, getRoomCount,
@@ -175,6 +176,40 @@ function checkRoundEnd(roomId, room) {
   }
 }
 
+// Write match results for both players to Supabase (multiplayer only).
+// Uses the service-role key so it bypasses RLS — server is authoritative.
+async function recordMultiplayerMatch(room, matchWinnerSeat) {
+  if (!supabase || room.isSinglePlayer) return;
+
+  const durationMs = room.match.startTime ? Date.now() - room.match.startTime : 0;
+  const rows = [];
+
+  for (const player of room.players) {
+    if (!player.userId) continue; // guest — no record
+    const opponentSeat = 1 - player.seat;
+    const opponent = room.players[opponentSeat];
+    const result = matchWinnerSeat === -1 ? 'tie'
+      : matchWinnerSeat === player.seat ? 'win'
+      : 'loss';
+
+    rows.push({
+      user_id:           player.userId,
+      game_mode:         room.gameMode ?? 'quick',
+      result,
+      character_id:      player.characterId,
+      opponent_name:     opponent?.name ?? null,
+      score:             room.match.scores[player.seat] ?? 0,
+      adjusted_score:    room.match.scores[player.seat] ?? 0,
+      match_duration_ms: durationMs,
+    });
+  }
+
+  if (rows.length > 0) {
+    const { error } = await supabase.from('match_history').insert(rows);
+    if (error) console.error('[supabase] match_history insert error:', error.message);
+  }
+}
+
 function triggerRoundEnd(roomId, room, winnerSeat) {
   clearRoundTimer(roomId);
   // Clear all pending timers for this room
@@ -183,6 +218,12 @@ function triggerRoundEnd(roomId, room, winnerSeat) {
   }
   // Stop bot AI for this round (restarted per-round in next_round handler)
   if (room.isSinglePlayer) stopBotAI(roomId);
+
+  // Accumulate this round's scores into the match total before endRound clears round state
+  if (room.round?.score) {
+    room.match.scores[0] += room.round.score[0];
+    room.match.scores[1] += room.round.score[1];
+  }
 
   const result = endRound(roomId, winnerSeat);
   if (!result) return;
@@ -200,6 +241,7 @@ function triggerRoundEnd(roomId, room, winnerSeat) {
       winnerSeat: mw,
       winnerName: winner?.name ?? 'Unknown',
     });
+    recordMultiplayerMatch(room, mw); // fire-and-forget
   }
 }
 
@@ -220,10 +262,10 @@ wss.on('connection', (ws) => {
 
     switch (type) {
       case 'find_match': {
-        const { characterId = 'fighter1', name = 'Player', preferredArenaId = null } = payload;
+        const { characterId = 'fighter1', name = 'Player', preferredArenaId = null, userId = null } = payload;
         // Remove any existing queue entry for this player (e.g. re-entering after back-navigate)
         dequeue(playerId);
-        const shareCode = enqueue(playerId, ws, characterId, name, preferredArenaId);
+        const shareCode = enqueue(playerId, ws, characterId, name, preferredArenaId, userId);
         const matched = tryMatch();
         if (matched) {
           const room = getRoom(matched.roomId);
@@ -265,18 +307,18 @@ wss.on('connection', (ws) => {
       }
 
       case 'create_room': {
-        const { characterId = 'fighter1', name = 'Player' } = payload;
+        const { characterId = 'fighter1', name = 'Player', userId = null } = payload;
         dequeue(playerId);
-        const { roomId, shareCode: roomShareCode } = createPrivateRoom(playerId, ws, characterId, name);
+        const { roomId, shareCode: roomShareCode } = createPrivateRoom(playerId, ws, characterId, name, userId);
         send(ws, 'room_created', { roomId, shareCode: roomShareCode });
         break;
       }
 
       case 'join_room': {
-        const { shareCode: joinCode, characterId = 'fighter1', name = 'Player' } = payload;
+        const { shareCode: joinCode, characterId = 'fighter1', name = 'Player', userId = null } = payload;
         dequeue(playerId);
         if (!joinCode) { send(ws, 'room_not_found', {}); break; }
-        const result = joinByShareCode(joinCode.toUpperCase(), playerId, ws, characterId, name);
+        const result = joinByShareCode(joinCode.toUpperCase(), playerId, ws, characterId, name, userId);
         if (result.error === 'not_found') { send(ws, 'room_not_found', {}); break; }
         if (result.error === 'full')      { send(ws, 'room_full', {}); break; }
         const room = result.room;
@@ -365,12 +407,17 @@ wss.on('connection', (ws) => {
         clearRoundTimer(room.roomId);
         for (const attack of (room.round?.pendingAttacks ?? [])) clearAttackTimer(attack.id);
         if (room.isSinglePlayer) stopBotAI(room.roomId);
+        if (room.round?.score) {
+          room.match.scores[0] += room.round.score[0];
+          room.match.scores[1] += room.round.score[1];
+        }
         room.state = 'match_end';
         const winner = room.players[winnerSeat];
         broadcast(room, 'match_end', {
           winnerSeat,
           winnerName: winner?.name ?? 'Unknown',
         });
+        recordMultiplayerMatch(room, winnerSeat); // fire-and-forget
         break;
       }
 
@@ -437,12 +484,17 @@ wss.on('connection', (ws) => {
         clearAttackTimer(attack.id);
       }
       broadcast(room, 'opponent_disconnected', { seat: loserSeat });
+      if (room.round?.score) {
+        room.match.scores[0] += room.round.score[0];
+        room.match.scores[1] += room.round.score[1];
+      }
       endRound(room.roomId, winnerSeat);
       broadcast(room, 'match_end', {
         winnerSeat,
         winnerName: room.players[winnerSeat]?.name ?? 'Unknown',
         reason: 'disconnect',
       });
+      recordMultiplayerMatch(room, winnerSeat); // fire-and-forget
       deleteRoom(room.roomId);
     }
   });

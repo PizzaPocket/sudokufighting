@@ -3,9 +3,9 @@ import type { AttackType } from './game.js';
 // ── Client → Server ──────────────────────────────────────────────────────────
 
 export type ClientMessage =
-  | { type: 'find_match';           payload: { characterId: string; name: string; preferredArenaId: string | null } }
-  | { type: 'create_room';          payload: { characterId: string; name: string } }
-  | { type: 'join_room';            payload: { shareCode: string; characterId: string; name: string } }
+  | { type: 'find_match';           payload: { characterId: string; name: string; preferredArenaId: string | null; userId?: string } }
+  | { type: 'create_room';          payload: { characterId: string; name: string; userId?: string } }
+  | { type: 'join_room';            payload: { shareCode: string; characterId: string; name: string; userId?: string } }
   | { type: 'start_singleplayer';   payload: { characterId: string; name: string; difficulty: 'easy' | 'normal' | 'extreme'; aiCharacterId: string; aiName: string; preferredArenaId: string | null } }
   | { type: 'set_arena_preference'; payload: { arenaId: string } }
   | { type: 'cell_input';           payload: { row: number; col: number; value: number } }

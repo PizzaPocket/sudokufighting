@@ -138,6 +138,7 @@ interface GameStore {
   sfxEnabled: boolean;
   selectedTrackIndex: number;
   settingsOpen: boolean;
+  scoreboardOpen: boolean;
   testCreditsOpen: boolean;
 
   // ── Actions ───────────────────────────────────────────────────────────────
@@ -164,6 +165,7 @@ interface GameStore {
   setSfxEnabled: (enabled: boolean) => void;
   setSelectedTrackIndex: (index: number) => void;
   setSettingsOpen: (open: boolean) => void;
+  setScoreboardOpen: (open: boolean) => void;
   clearAttackFlash: () => void;
   removeFloatingPoints: (id: number) => void;
   setIsPaused: (v: boolean) => void;
@@ -268,6 +270,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   sfxEnabled: true,
   selectedTrackIndex: SELECT_TRACK_INDEX,
   settingsOpen: false,
+  scoreboardOpen: false,
   testCreditsOpen: false,
 
   // ── Simple setters ────────────────────────────────────────────────────────
@@ -285,6 +288,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSfxEnabled: (sfxEnabled) => set({ sfxEnabled }),
   setSelectedTrackIndex: (selectedTrackIndex) => set({ selectedTrackIndex }),
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
+  setScoreboardOpen: (scoreboardOpen) => set({ scoreboardOpen }),
   clearAttackFlash: () => set({ attackFlashType: null }),
   removeFloatingPoints: (id) => set(s => ({ floatingPoints: s.floatingPoints.filter(fp => fp.id !== id) })),
   setIsPaused: (isPaused) => {

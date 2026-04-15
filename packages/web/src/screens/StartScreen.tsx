@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 
+
 interface Props { active: boolean; entering?: boolean; }
 
 export default function StartScreen({ active, entering }: Props) {
   const setScreen = useGameStore(s => s.setScreen);
   const setGameMode = useGameStore(s => s.setGameMode);
   const lobbyJoinError = useGameStore(s => s.lobbyJoinError);
+  const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
 
   const joinCodeRef = useRef<HTMLInputElement>(null);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -89,6 +91,9 @@ export default function StartScreen({ active, entering }: Props) {
           </button>
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('practice')}>
             PRACTICE
+          </button>
+          <button className="btn btn-secondary" onClick={() => setScoreboardOpen(true)}>
+            LEADERBOARD
           </button>
         </div>
 

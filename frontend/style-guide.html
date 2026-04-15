@@ -2246,6 +2246,114 @@
   </section>
 
 
+  <!-- ===== ORGANISMS: Modal Sheet ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Modal Sheet</h2>
+    <p class="sg-note" style="margin-bottom:12px">Focused overlay sheet for auth flows and account management. Full-width on mobile, max 520px on desktop. Header has a fixed left/center/right layout so title stays centered regardless of back/close buttons present.</p>
+
+    <style>
+      .sg-modal-sheet-demo {
+        position: relative;
+        background: rgba(0,0,0,0.72);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+      }
+      .sg-msheet {
+        background: var(--surface-raised);
+        border: 2px solid var(--surface-raised-edge);
+        border-radius: var(--radius-lg);
+        width: 100%;
+        max-width: 520px;
+        overflow: hidden;
+      }
+      .sg-msheet-header {
+        display: flex;
+        align-items: center;
+        height: 52px;
+        flex-shrink: 0;
+        padding: 0 8px;
+        border-bottom: 1px solid var(--surface-raised-edge);
+        position: relative;
+      }
+      .sg-msheet-slot {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        background: rgba(255,255,255,0.07);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--canvas-text-muted);
+      }
+      .sg-msheet-close { margin-left: auto; }
+      .sg-msheet-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        font-weight: var(--weight-black);
+        color: var(--canvas-text);
+        text-shadow: var(--text-shadow-xl);
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        pointer-events: none;
+      }
+      .sg-msheet-body {
+        padding: 24px 28px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .sg-msheet-field {
+        width: 100%;
+        background: rgba(255,255,255,0.08);
+        border: 1.5px solid var(--surface-raised-edge);
+        border-radius: var(--radius-sm);
+        color: var(--canvas-text);
+        font-family: var(--font);
+        font-size: var(--text-base);
+        padding: 12px 14px;
+      }
+      .sg-msheet-divider { display:flex; align-items:center; gap:12px; color:var(--canvas-text-muted); font-family:var(--font); font-size:var(--text-sm); }
+      .sg-msheet-divider::before, .sg-msheet-divider::after { content:''; flex:1; height:1px; background:var(--surface-raised-edge); }
+    </style>
+
+    <div class="sg-modal-sheet-demo">
+      <div class="sg-msheet">
+        <div class="sg-msheet-header">
+          <div class="sg-msheet-slot">←</div>
+          <span class="sg-msheet-title">SIGN IN</span>
+          <div class="sg-msheet-slot sg-msheet-close">✕</div>
+        </div>
+        <div class="sg-msheet-body">
+          <input class="sg-msheet-field" type="email" placeholder="Email" style="pointer-events:none" />
+          <input class="sg-msheet-field" type="password" placeholder="Password" style="pointer-events:none" />
+          <button class="btn" style="width:100%">SIGN IN</button>
+          <div class="sg-msheet-divider"><span>or</span></div>
+          <button class="btn-social" style="pointer-events:none">Continue with Google</button>
+          <button class="auth-link" style="pointer-events:none">Create an Account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sg-note" style="margin-top:10px">
+      <strong>Overlay:</strong> <code>.modal-overlay</code> — fixed inset-0, <code>rgba(0,0,0,0.72)</code>, z-index 700.<br>
+      <strong>Sheet:</strong> <code>.modal-sheet</code> — <code>--surface-raised</code> bg, 2px <code>--surface-raised-edge</code> border, <code>--radius-lg</code>, max-width 520px.<br>
+      <strong>Header:</strong> <code>.modal-sheet-header</code> — flex row, 52px height, absolute-centered title. Left slot = <code>.modal-sheet-back</code> (only on Create Account); right slot = <code>.modal-sheet-close</code>. Back never shown on Account screen.<br>
+      <strong>Body:</strong> <code>.modal-sheet-body</code> — 24/28px padding, <code>gap:12px</code> flex column, scrollable.<br>
+      <strong>Fields:</strong> <code>.auth-field</code> — <code>--text-base</code> (14px), subtle white fill, accent border on focus.<br>
+      <strong>Social button:</strong> <code>.btn-social</code> — full-width outlined pill.<br>
+      <strong>Text link:</strong> <code>.auth-link</code> — <code>--text-btn</code> (15px), matches button scale. Used for "Create an Account".<br>
+      <strong>Account labels:</strong> <code>.account-section-label</code> — <code>--text-sm</code> (12px), uppercase, bold, muted. <code>.account-stat-row</code> — <code>--text-base</code> (14px).
+    </div>
+  </section>
+
+
   <!-- ════════════════════════════════════════════════════════════════ -->
   <div class="sg-level">
     <div class="sg-level-title">Templates</div>

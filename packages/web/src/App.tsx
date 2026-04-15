@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGameStore } from './store/gameStore';
 import { useGameSocket } from './hooks/useGameSocket';
+import { useAuthInit } from './auth/useAuthInit';
+import SignInSheet from './components/auth/SignInSheet';
+import CreateAccountSheet from './components/auth/CreateAccountSheet';
+import AccountScreen from './components/auth/AccountScreen';
+import Scoreboard from './components/overlays/Scoreboard';
 import { initAudio, SELECT_TRACK_INDEX, TRACKS, preloadMusicTrack } from './audio/audioManager';
 import { getArena } from '@sudoku-fighting/shared';
 import SplashScreen from './screens/SplashScreen';
@@ -30,6 +35,9 @@ export default function App() {
 
   // Connect WebSocket on mount
   useGameSocket();
+
+  // Restore auth session on load + listen for sign-in/out events
+  useAuthInit();
 
   // Preload arena assets as soon as the background is decided (lobby or game_start),
   // so SVGs are cached before GameplayScreen renders them.
@@ -72,6 +80,11 @@ export default function App() {
     <>
       <AppHeader />
       <ContextualMenu />
+      {/* Auth sheets — mounted globally, visibility controlled by authStore */}
+      <SignInSheet />
+      <CreateAccountSheet />
+      <AccountScreen />
+      <Scoreboard />
       {currentScreen === 'splash' && (
         <SplashScreen onComplete={handleSplashComplete} />
       )}
