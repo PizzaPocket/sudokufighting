@@ -159,7 +159,7 @@
 @media (max-width: 860px) {
   .start-columns { display: flex; flex-direction: column; align-items: center; gap: 20px; }
 }
-.start-section  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.start-section  { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .start-section-label {
   font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text);
   text-shadow: var(--text-shadow-sm); letter-spacing: 0.08em;
@@ -566,7 +566,7 @@
   /* bar top=8px, height=4px → bar centre=10px; dot half=4px → top=6px */
   top: 6px; width: 8px; height: 8px;
   pointer-events: none;
-  filter: drop-shadow(2px 2px 0 #fff);
+  box-shadow: 2px 2px 0 #fff;
 }
 .counter-bubble {
   position: absolute; top: 20px; left: 50%;
