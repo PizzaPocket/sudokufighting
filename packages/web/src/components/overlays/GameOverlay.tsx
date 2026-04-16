@@ -275,7 +275,7 @@ export default function GameOverlay() {
             </button>
           )}
           {!user && (
-            <button className="btn btn-secondary" onClick={openSignIn}>
+            <button className="btn btn-alt" onClick={openSignIn}>
               SIGN IN / CREATE ACCOUNT
             </button>
           )}
