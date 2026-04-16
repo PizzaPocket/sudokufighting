@@ -540,7 +540,7 @@
 
 /* Counter window bar — overlays .fight-characters-inner (position: relative, inline-flex) */
 .counter-bar-wrap {
-  position: absolute; top: 8px; left: 32px; right: 32px;
+  position: absolute; top: 8px; left: 36px; right: 36px;
   height: 4px;
   background: rgba(255, 255, 255, 0.4);
   pointer-events: none; z-index: 20;
@@ -556,7 +556,7 @@
    box-shadow is part of the element's own GPU layer — it moves with the transform
    matrix for free, with no filter recomposite and no separate element to sync. */
 .counter-bar-fill {
-  position: absolute; top: 8px; left: 32px; right: 32px;
+  position: absolute; top: 8px; left: 36px; right: 36px;
   height: 4px;
   box-shadow: 2px 2px 0 #fff;
   will-change: transform;
