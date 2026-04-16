@@ -51,6 +51,9 @@ export function consumePendingMatch(): RecordMatchInput | null {
 export async function recordMatch(input: RecordMatchInput): Promise<void> {
   const user = useAuthStore.getState().user;
   if (!user) return;
+  // quick and friend matches are written server-side by the backend (service key,
+  // bypasses RLS) — skip client-side write to avoid duplicates
+  if (input.gameMode === 'quick' || input.gameMode === 'friend') return;
 
   const multiplier = input.difficulty
     ? (CAMPAIGN_SCORE_MULTIPLIERS[input.difficulty] ?? 1.0)
