@@ -124,12 +124,12 @@
 #screen-start.entering .start-columns > :nth-child(1) > :nth-child(4) { animation: start-logo-in 0.35s 0.66s ease-out both; }
 #screen-start.entering .start-columns > :nth-child(1) > :nth-child(5) { animation: start-logo-in 0.35s 0.73s ease-out both; }
 #screen-start.entering .start-columns > :nth-child(1) > :nth-child(6) { animation: start-logo-in 0.35s 0.80s ease-out both; }
-/* Leaderboard card — animate centre column as one unit */
-#screen-start.entering .start-columns > :nth-child(2)                 { animation: start-logo-in 0.35s 0.52s ease-out both; }
-/* Single player section — 3 children */
-#screen-start.entering .start-columns > :nth-child(3) > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
-#screen-start.entering .start-columns > :nth-child(3) > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
-#screen-start.entering .start-columns > :nth-child(3) > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
+/* Single player section — column 2, 3 children */
+#screen-start.entering .start-columns > :nth-child(2) > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(2) > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(2) > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
+/* Leaderboard card — column 3, animate as whole section */
+#screen-start.entering .start-columns > :nth-child(3)                 { animation: start-logo-in 0.35s 0.52s ease-out both; }
 
 /* =========================================================
    Start Screen
@@ -620,7 +620,7 @@
 .game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: none; z-index: 200; pointer-events: none; }
 .game-overlay.hidden { display: none; }
 .overlay-btn-row { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 12px; width: 280px; pointer-events: all; }
-.overlay-btn-row .btn { width: 100%; }
+.overlay-btn-row .btn { width: 100%; padding-left: 12px; padding-right: 12px; white-space: nowrap; }
 .overlay-btn-row.hidden { display: none; }
 .overlay-save-prompt { margin: 0; font-size: var(--text-sm); color: #fff; text-align: center; text-shadow: var(--text-shadow-sm); opacity: 0.85; pointer-events: none; }
 .overlay-main {

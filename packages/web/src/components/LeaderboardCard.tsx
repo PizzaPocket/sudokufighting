@@ -33,6 +33,7 @@ export default function LeaderboardCard() {
 
   return (
     <div className="surface-card leaderboard-card">
+      <div className="surface-card-title">Leaderboard</div>
       <div className="scoreboard-tabs">
         <button
           className={`scoreboard-tab${tab === 'online' ? ' active' : ''}`}

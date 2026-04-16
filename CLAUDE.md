@@ -67,6 +67,8 @@ Each level introduces no new visual primitives beyond what exists below it.
 - **No CSS Modules** — all styles are global, matching the battle-tested ID/class structure from the vanilla frontend
 - **IDs for unique game elements** (`#p1-grid`, `#lobby-p1-portrait`); classes for reusable patterns
 - **No `display: none` for transient feedback** — use `visibility: hidden/visible` or in-place text swaps to prevent layout jumping
+- **No layout shift from dynamic content** — any element whose text or content changes at runtime (labels, scores, names, arena titles) must have a fixed `width` or `min-width` so surrounding layout never shifts. Use `white-space: nowrap` + `text-overflow: ellipsis` on variable-length labels. Never let changing content push or reflow neighbouring interactive elements. Example: `.track-title` has `width: 130px` so arena name changes don't shift the prev/next buttons.
+- **No text wrapping in interactive elements** — buttons, labels, and pill text must never wrap to a second line. If text is too long for default padding, reduce horizontal padding (`padding-left`/`padding-right`) before reducing font size. Add `white-space: nowrap` as a safety net. Example: `.overlay-btn-row .btn` uses reduced horizontal padding to fit longer labels.
 - **Text over arena backgrounds** always uses white/high-chroma color + hard pixel shadow (`text-shadow: 2px 2px 0 var(--accent)`) for legibility regardless of backdrop
 - **SVG icons** in `<img>` tags use `filter: brightness(0) invert(1)` to force white
 

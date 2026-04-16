@@ -72,11 +72,13 @@
   font-weight: var(--weight-bold);
   color: var(--canvas-text-dim);
   letter-spacing: 0.04em;
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
+  /* Fixed width = longest arena name — prevents layout shift on content change */
+  width: 130px;
+  flex-shrink: 0;
 }
 
 /* Toggle switch */

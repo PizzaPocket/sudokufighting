@@ -56,7 +56,7 @@ export default function StartScreen({ active, entering }: Props) {
           <span className="start-mode-label">2 PLAYER ONLINE</span>
           <span className="start-action-hint">Enter matchmaking queue</span>
           <button className="btn" onClick={() => goToCharacterSelect('quick')}>
-            QUICK PLAY
+            QUICK MATCH
           </button>
           <span className="start-action-hint">Play with a friend</span>
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('friend')}>
@@ -75,12 +75,7 @@ export default function StartScreen({ active, entering }: Props) {
           </div>
         </div>
 
-        {/* Column 2 — Leaderboard card */}
-        <div className="start-section">
-          <LeaderboardCard />
-        </div>
-
-        {/* Column 3 — Single Player */}
+        {/* Column 2 — Single Player */}
         <div className="start-section">
           <span className="start-mode-label">SINGLE PLAYER</span>
           <button className="btn btn-alt" onClick={() => goToCharacterSelect('campaign')}>
@@ -89,6 +84,11 @@ export default function StartScreen({ active, entering }: Props) {
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('practice')}>
             PRACTICE
           </button>
+        </div>
+
+        {/* Column 3 — Leaderboard card */}
+        <div className="start-section">
+          <LeaderboardCard />
         </div>
 
       </div>

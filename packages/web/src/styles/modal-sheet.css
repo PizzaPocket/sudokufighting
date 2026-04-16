@@ -176,26 +176,27 @@
 
 /* ── Text links ──────────────────────────────────────────── */
 
-/* "Create an Account" link at bottom of Sign In */
+/* Text link styled to match button typography — same weight, size, case.
+   Used wherever a navigational action needs button-level visual prominence
+   without the button chrome (e.g. "CREATE AN ACCOUNT", "VIEW ALL"). */
 .auth-link {
   background: none;
   border: none;
-  color: var(--canvas-text-dim);
+  color: var(--canvas-text);
   font-family: var(--font);
   font-size: var(--text-btn);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   cursor: pointer;
   text-align: center;
   padding: 4px;
   margin-top: 4px;
-  text-decoration-line: underline;
-  text-decoration-color: transparent;
-  transition: color 0.15s, text-decoration-color 0.15s;
+  opacity: 0.7;
+  transition: opacity 0.15s;
 }
 @media (hover: hover) {
-  .auth-link:hover {
-    color: var(--canvas-text);
-    text-decoration-color: currentColor;
-  }
+  .auth-link:hover { opacity: 1; }
 }
 
 /* Sign Out — low prominence, danger color on hover */

@@ -17,3 +17,15 @@
   flex-direction: column;
   overflow: hidden;
 }
+
+/* Optional heading inside a surface card */
+.surface-card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: var(--weight-black);
+  color: var(--canvas-text);
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 12px 16px 0;
+  text-transform: uppercase;
+}

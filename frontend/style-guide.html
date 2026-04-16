@@ -1900,6 +1900,20 @@
     </div>
   </section>
 
+  <!-- ===== PRINCIPLES: Layout Stability ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Layout Stability Principles</h2>
+    <p class="sg-note" style="margin-bottom:20px">Two non-negotiable rules that apply at every level of the design system. Violating either creates jank that undermines the game's polish.</p>
+
+    <h3 class="sg-subsection-title">1. No layout shift from dynamic content</h3>
+    <p class="sg-note" style="margin-bottom:12px">Any element whose text or content changes at runtime — labels, scores, names, carousel titles — must have a <strong>fixed <code>width</code></strong> or <strong><code>min-width</code></strong> so that when the content changes, no surrounding element moves. Use <code>white-space: nowrap</code> + <code>text-overflow: ellipsis</code> on variable-length text. Never use <code>display: none</code> for transient states — use <code>visibility: hidden/visible</code> or in-place text swaps.</p>
+    <p class="sg-note" style="margin-bottom:20px"><strong>Example:</strong> <code>.track-title</code> in the arena carousel has <code>width: 130px</code> (sized to the longest arena name). The prev/next buttons sit at a fixed position regardless of which arena is selected.</p>
+
+    <h3 class="sg-subsection-title">2. No text wrapping in interactive elements</h3>
+    <p class="sg-note" style="margin-bottom:12px">Buttons, pills, tabs, and labels must never wrap to a second line. If a label is too long for a button's default padding, reduce <code>padding-left</code>/<code>padding-right</code> before reducing font size. Add <code>white-space: nowrap</code> as a safety net on any element where wrapping would be catastrophic.</p>
+    <p class="sg-note"><strong>Example:</strong> <code>.overlay-btn-row .btn</code> uses <code>padding-left: 12px; padding-right: 12px</code> (reduced from the default 32px) to accommodate longer labels like "SIGN IN / CREATE ACCOUNT" within the fixed 280px container.</p>
+  </section>
+
   <!-- ===== MOLECULES: Glass Card ===== -->
   <section class="sg-section">
     <h2 class="sg-section-title">Glass Card — <code>.glass-card</code></h2>
