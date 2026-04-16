@@ -142,6 +142,16 @@
   gap: 0;
   margin-bottom: 32px;
 }
+.start-tagline {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  margin-top: 10px;
+  text-align: center;
+}
 .start-logo-top,
 .start-logo-bottom {
   max-width: 380px;

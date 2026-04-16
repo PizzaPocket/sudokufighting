@@ -47,6 +47,7 @@ export default function StartScreen({ active, entering }: Props) {
       <div className="start-logo-container">
         <img className="start-logo-top"    src="/assets/ui/Logo1_Sudoku.svg"   alt="Sudoku" />
         <img className="start-logo-bottom" src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" />
+        <p className="start-tagline">Competitive Sudoku with fighting game combat</p>
       </div>
 
       <div className="start-columns">
