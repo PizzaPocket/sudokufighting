@@ -2,7 +2,8 @@
   "buildCommand": "cd ../.. && pnpm --filter @sudoku-fighting/shared build && pnpm --filter @sudoku-fighting/web build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/favicon.ico", "destination": "/assets/favicons/favicon.ico", "permanent": true }
+    { "source": "/favicon.ico", "destination": "/assets/favicons/favicon.ico", "permanent": true },
+    { "source": "/privacy",     "destination": "/privacy.html",                "permanent": false }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
