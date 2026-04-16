@@ -3,6 +3,7 @@ import { useAuthStore } from '../../auth/authStore';
 import { useGameStore } from '../../store/gameStore';
 import { signOut, updateUsername } from '../../auth/authService';
 import { loadMyStats, type MyStats } from '../../stats/statsService';
+import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 function fmt(n: number): string {
   return n.toLocaleString();
@@ -22,6 +23,8 @@ export default function AccountScreen() {
   const unlockedCharacterIds = useGameStore(s => s.unlockedCharacterIds);
   const campaignClearCount = useGameStore(s => s.campaignClearCount);
 
+  const { rendered, closing } = useModalAnimation(accountOpen);
+
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [nameError, setNameError] = useState('');
@@ -33,7 +36,7 @@ export default function AccountScreen() {
     loadMyStats(user.id).then(setStats);
   }, [accountOpen, user]);
 
-  if (!accountOpen || !user || !profile) return null;
+  if (!rendered || !user || !profile) return null;
 
   function handleClose() {
     setEditing(false);
@@ -72,7 +75,7 @@ export default function AccountScreen() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div className="modal-sheet" onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />

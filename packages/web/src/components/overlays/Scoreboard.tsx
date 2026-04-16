@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../auth/authStore';
+import { useModalAnimation } from '../../hooks/useModalAnimation';
 import {
   loadOnlineLeaderboard,
   loadCampaignLeaderboard,
@@ -18,6 +19,8 @@ export default function Scoreboard() {
   const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
   const profile = useAuthStore(s => s.profile);
 
+  const { rendered, closing } = useModalAnimation(open);
+
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
   const [onlineRows, setOnlineRows] = useState<LeaderboardOnlineRow[] | null>(null);
   const [campaignRows, setCampaignRows] = useState<LeaderboardCampaignRow[] | null>(null);
@@ -33,11 +36,11 @@ export default function Scoreboard() {
     });
   }, [open]);
 
-  if (!open) return null;
+  if (!rendered) return null;
 
   return (
     <div className="modal-overlay" onPointerDown={() => setScoreboardOpen(false)}>
-      <div className="modal-sheet" onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />

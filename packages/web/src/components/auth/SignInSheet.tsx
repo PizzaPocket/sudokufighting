@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
 import { signIn, signInWithGoogle, signInWithApple } from '../../auth/authService';
+import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 export default function SignInSheet() {
   const signInOpen = useAuthStore(s => s.signInOpen);
   const closeAll = useAuthStore(s => s.closeAll);
   const openCreateAccount = useAuthStore(s => s.openCreateAccount);
 
+  const { rendered, closing } = useModalAnimation(signInOpen);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (!signInOpen) return null;
+  if (!rendered) return null;
 
   function resetForm() {
     setEmail('');
@@ -46,7 +49,7 @@ export default function SignInSheet() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div className="modal-sheet" onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           {/* Left spacer balances the close button so title stays centred */}

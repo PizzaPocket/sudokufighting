@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
 import { createAccount, signInWithGoogle, signInWithApple } from '../../auth/authService';
+import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 export default function CreateAccountSheet() {
   const createAccountOpen = useAuthStore(s => s.createAccountOpen);
   const closeAll = useAuthStore(s => s.closeAll);
   const openSignIn = useAuthStore(s => s.openSignIn);
+
+  const { rendered, closing } = useModalAnimation(createAccountOpen);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +16,7 @@ export default function CreateAccountSheet() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (!createAccountOpen) return null;
+  if (!rendered) return null;
 
   function resetForm() {
     setEmail('');
@@ -56,7 +59,7 @@ export default function CreateAccountSheet() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div className="modal-sheet" onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           <button

@@ -83,13 +83,24 @@ export default function CounterBar() {
           {/* Fill + end squares — dots render first so the fill paints on top,
               covering any shadow bleed from the dots onto the bar area. */}
           <div className="counter-bar-layer">
-            {/* Fill renders first so dots paint on top — dots must stay visible
-                above the fill and above the fill's box-shadow edge. */}
-            <div ref={fillRef} className="counter-bar-fill" style={{ background: fillColor, transformOrigin }} />
-            {/* Moving dot — tracks the depleting tail end of the bar */}
-            <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
-            {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
-            <div className="counter-dot" style={targetStyle} />
+            {/* Z-order by physical position: left dot → fill → right dot.
+                Left dot's rightward shadow is painted over by the fill above it.
+                Right dot's rightward shadow escapes off the bar edge. */}
+            {defenderSeat === 0 ? (
+              // Defender left: target(left) → fill → tail(right)
+              <>
+                <div className="counter-dot" style={targetStyle} />
+                <div ref={fillRef} className="counter-bar-fill" style={{ background: fillColor, transformOrigin }} />
+                <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
+              </>
+            ) : (
+              // Defender right: tail(left) → fill → target(right)
+              <>
+                <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
+                <div ref={fillRef} className="counter-bar-fill" style={{ background: fillColor, transformOrigin }} />
+                <div className="counter-dot" style={targetStyle} />
+              </>
+            )}
           </div>
         </>
       )}

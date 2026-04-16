@@ -27,10 +27,15 @@
   overflow: hidden;
 }
 
-/* Mobile: bottom-sheet layout — sheet anchors to bottom edge and slides up */
+/* Mobile: bottom-sheet layout — sheet anchors to bottom edge and slides up/down */
 @keyframes modal-slide-up {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
+}
+
+@keyframes modal-slide-down {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
 }
 
 @media (max-width: 600px) {
@@ -44,6 +49,9 @@
     border-bottom-right-radius: 0;
     max-height: calc(100svh - 8px);
     animation: modal-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+  .modal-sheet.closing {
+    animation: modal-slide-down 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
   /* Pad body so content clears the iOS home indicator */
   .modal-sheet-body {
