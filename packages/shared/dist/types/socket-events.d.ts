@@ -5,12 +5,14 @@ export type ClientMessage = {
         characterId: string;
         name: string;
         preferredArenaId: string | null;
+        userId?: string;
     };
 } | {
     type: 'create_room';
     payload: {
         characterId: string;
         name: string;
+        userId?: string;
     };
 } | {
     type: 'join_room';
@@ -18,6 +20,7 @@ export type ClientMessage = {
         shareCode: string;
         characterId: string;
         name: string;
+        userId?: string;
     };
 } | {
     type: 'start_singleplayer';

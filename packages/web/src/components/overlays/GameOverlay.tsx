@@ -275,11 +275,8 @@ export default function GameOverlay() {
             </button>
           )}
           {!user && (
-            <p className="overlay-save-prompt">Sign in or create an account to save your progress</p>
-          )}
-          {!user && (
             <button className="btn btn-secondary" onClick={openSignIn}>
-              SIGN IN
+              SIGN IN / CREATE ACCOUNT
             </button>
           )}
         </div>

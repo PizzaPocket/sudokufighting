@@ -1,0 +1,19 @@
+/* =========================================================
+   Surface Card — generic dark raised card.
+   Molecule-level pattern. Named for the visual structure,
+   not the content it holds.
+
+   Use for: inline content panels embedded in page layout.
+   Contrast with:
+     .ctx-menu    — floating panel anchored to a trigger
+     .modal-sheet — full-screen overlay panel
+   ========================================================= */
+
+.surface-card {
+  background: rgba(20, 20, 20, 0.96);
+  border: 1px solid var(--surface-raised-edge);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

@@ -13,6 +13,7 @@ export default function CounterBar() {
   const counterLandedNonce = useGameStore(s => s.counterLandedNonce);
 
   const fillRef    = useRef<HTMLDivElement>(null);
+  const shadowRef  = useRef<HTMLDivElement>(null);
   const barWrapRef = useRef<HTMLDivElement>(null);
   const tailDotRef = useRef<HTMLDivElement>(null);
   const rafRef     = useRef<number>(0);
@@ -31,7 +32,8 @@ export default function CounterBar() {
 
     const tick = () => {
       const fraction = Math.max(0, (expiry - Date.now()) / DURATION);
-      if (fillRef.current) fillRef.current.style.transform = `scaleX(${fraction})`;
+      if (fillRef.current)   fillRef.current.style.transform   = `scaleX(${fraction})`;
+      if (shadowRef.current) shadowRef.current.style.transform = `scaleX(${fraction})`;
       if (tailDotRef.current && barWrapRef.current) {
         const barW = barWrapRef.current.offsetWidth;
         const offset = `${BAR_INSET + barW * fraction - DOT_RADIUS}px`;
@@ -87,11 +89,8 @@ export default function CounterBar() {
             <div ref={tailDotRef} className="counter-dot" style={{ background: fillColor }} />
             {/* Static dot — pinned at defender's end; tail dot meets it at fraction=0 */}
             <div className="counter-dot" style={targetStyle} />
-            <div
-              ref={fillRef}
-              className="counter-bar-fill"
-              style={{ background: fillColor, transformOrigin }}
-            />
+            <div ref={shadowRef} className="counter-bar-fill-shadow" style={{ transformOrigin }} />
+            <div ref={fillRef}   className="counter-bar-fill"        style={{ background: fillColor, transformOrigin }} />
           </div>
         </>
       )}

@@ -524,6 +524,49 @@
     }
     .char-name { font-size: var(--text-base); font-weight: var(--weight-bold); color: var(--puzzle-text); transition: color 0.15s; }
 
+    /* ── Surface Card specimen ───────────────────────────────────────── */
+    .demo-surface-card {
+      background: rgba(20, 20, 20, 0.96);
+      border: 1px solid var(--surface-raised-edge);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      width: 220px;
+    }
+    .demo-surface-card-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--surface-raised-edge);
+      padding: 10px 12px 0;
+      gap: 4px;
+    }
+    .demo-surface-card-tab {
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      color: rgba(255,255,255,0.4);
+      font-family: var(--font); font-size: var(--text-xs); font-weight: var(--weight-bold);
+      letter-spacing: 0.08em; padding: 4px 8px 8px; cursor: pointer; margin-bottom: -1px;
+    }
+    .demo-surface-card-tab.active { color: #fff; border-bottom-color: var(--accent); }
+    .demo-surface-card-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 14px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-family: var(--font); font-size: 12px; color: rgba(255,255,255,0.6);
+    }
+    .demo-surface-card-row:last-child { border-bottom: none; }
+    .demo-surface-card-rank { width: 16px; text-align: right; color: rgba(255,255,255,0.35); }
+    .demo-surface-card-name { flex: 1; }
+    .demo-surface-card-score { color: #fff; font-weight: 700; }
+    .demo-surface-card-footer {
+      padding: 4px 14px 10px; display: flex; justify-content: center;
+      border-top: 1px solid var(--surface-raised-edge);
+    }
+    .demo-view-all {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-family: var(--font); font-size: 12px; cursor: pointer;
+      text-decoration: underline; text-decoration-color: transparent;
+    }
+
     /* ── Contextual Menu specimen ────────────────────────────────────── */
     .demo-ctx-menu {
       background: rgba(20,20,20,0.96);
@@ -1876,6 +1919,37 @@
         Background: <code>rgba(255,255,255,0.12)</code><br>
         Border: 1px <code>rgba(255,255,255,0.25)</code><br>
         Radius: radius-md (12px)
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Surface Card ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Surface Card — <code>.surface-card</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Generic dark raised card for inline layout use. Named for the visual pattern, not the content. Contrast with <code>.ctx-menu</code> (floating, anchored to a trigger) and <code>.modal-sheet</code> (full-screen overlay). Any scrollable list, tabbed content, or data panel embedded directly in a page can use this shell.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="padding:32px;display:flex;justify-content:center">
+        <div class="demo-surface-card">
+          <div class="demo-surface-card-tabs">
+            <button class="demo-surface-card-tab active">ONLINE WINS</button>
+            <button class="demo-surface-card-tab">CAMPAIGN</button>
+          </div>
+          <div class="demo-surface-card-row"><span class="demo-surface-card-rank">1</span><span class="demo-surface-card-name">IronRonin#12</span><span class="demo-surface-card-score">42 W</span></div>
+          <div class="demo-surface-card-row"><span class="demo-surface-card-rank">2</span><span class="demo-surface-card-name">VoidSage#7</span><span class="demo-surface-card-score">38 W</span></div>
+          <div class="demo-surface-card-row"><span class="demo-surface-card-rank">3</span><span class="demo-surface-card-name">BlazingOni#99</span><span class="demo-surface-card-score">31 W</span></div>
+          <div class="demo-surface-card-row" style="opacity:0.3"><span class="demo-surface-card-rank">4</span><span class="demo-surface-card-name">—</span><span class="demo-surface-card-score">—</span></div>
+          <div class="demo-surface-card-row" style="opacity:0.3"><span class="demo-surface-card-rank">5</span><span class="demo-surface-card-name">—</span><span class="demo-surface-card-score">—</span></div>
+          <div class="demo-surface-card-footer"><button class="demo-view-all">View All</button></div>
+        </div>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Style</div>
+        Background: <code>rgba(20,20,20,0.96)</code><br>
+        Border: 1px <code>var(--surface-raised-edge)</code><br>
+        Radius: <code>var(--radius-lg)</code><br>
+        Flex-column, overflow hidden.<br><br>
+        <strong>When to use:</strong> data panels, scoreboards, content cards embedded in page layout.<br>
+        <strong>When not to use:</strong> floating menus → use <code>.ctx-menu</code>; full-screen overlays → use <code>.modal-sheet</code>.
       </div>
     </div>
   </section>

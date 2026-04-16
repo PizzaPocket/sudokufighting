@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-
+import LeaderboardCard from '../components/LeaderboardCard';
 
 interface Props { active: boolean; entering?: boolean; }
 
@@ -8,7 +8,6 @@ export default function StartScreen({ active, entering }: Props) {
   const setScreen = useGameStore(s => s.setScreen);
   const setGameMode = useGameStore(s => s.setGameMode);
   const lobbyJoinError = useGameStore(s => s.lobbyJoinError);
-  const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
 
   const joinCodeRef = useRef<HTMLInputElement>(null);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -46,19 +45,13 @@ export default function StartScreen({ active, entering }: Props) {
     <div id="screen-start" className={`screen${active ? ' active' : ''}${entering ? ' entering' : ''}`}>
       <div className="start-bg" />
       <div className="start-logo-container">
-        <img
-          className="start-logo-top"
-          src="/assets/ui/Logo1_Sudoku.svg"
-          alt="Sudoku"
-        />
-        <img
-          className="start-logo-bottom"
-          src="/assets/ui/Logo2_Fighting.svg"
-          alt="Fighting"
-        />
+        <img className="start-logo-top"    src="/assets/ui/Logo1_Sudoku.svg"   alt="Sudoku" />
+        <img className="start-logo-bottom" src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" />
       </div>
 
-      <div className="start-actions">
+      <div className="start-columns">
+
+        {/* Column 1 — 2 Player Online */}
         <div className="start-section">
           <span className="start-mode-label">2 PLAYER ONLINE</span>
           <span className="start-action-hint">Enter matchmaking queue</span>
@@ -82,8 +75,12 @@ export default function StartScreen({ active, entering }: Props) {
           </div>
         </div>
 
-        <div className="start-divider" />
+        {/* Column 2 — Leaderboard card */}
+        <div className="start-section">
+          <LeaderboardCard />
+        </div>
 
+        {/* Column 3 — Single Player */}
         <div className="start-section">
           <span className="start-mode-label">SINGLE PLAYER</span>
           <button className="btn btn-alt" onClick={() => goToCharacterSelect('campaign')}>
@@ -92,13 +89,11 @@ export default function StartScreen({ active, entering }: Props) {
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('practice')}>
             PRACTICE
           </button>
-          <button className="btn btn-secondary" onClick={() => setScoreboardOpen(true)}>
-            LEADERBOARD
-          </button>
         </div>
 
-        <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
       </div>
+
+      <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
     </div>
   );
 }

@@ -110,26 +110,26 @@
   animation: start-bg-enter 0.8s ease-out forwards;
 }
 
-/* Start actions stagger in element-by-element after logo slam completes (~0.82s).
-   .start-actions children: div.start-section (1), div.start-divider (2),
-   div.start-section (3), p.start-error (4 — not animated, visibility-toggled). */
+/* Start screen columns stagger in after logo slam completes (~0.82s).
+   3 columns animate in parallel — outer sections cascade per-item, center card as one unit.
+   animation-fill-mode: both keeps opacity:0 before each delay fires — no flash on load. */
 @keyframes start-logo-in {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-/* Section 1 — 6 children */
-#screen-start.entering .start-section:first-child > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
-#screen-start.entering .start-section:first-child > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
-#screen-start.entering .start-section:first-child > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
-#screen-start.entering .start-section:first-child > :nth-child(4) { animation: start-logo-in 0.35s 0.66s ease-out both; }
-#screen-start.entering .start-section:first-child > :nth-child(5) { animation: start-logo-in 0.35s 0.73s ease-out both; }
-#screen-start.entering .start-section:first-child > :nth-child(6) { animation: start-logo-in 0.35s 0.80s ease-out both; }
-/* Divider */
-#screen-start.entering .start-divider                             { animation: start-logo-in 0.35s 0.87s ease-out both; }
-/* Section 2 — 3 children */
-#screen-start.entering .start-actions > :nth-child(3) > :nth-child(1) { animation: start-logo-in 0.35s 0.94s ease-out both; }
-#screen-start.entering .start-actions > :nth-child(3) > :nth-child(2) { animation: start-logo-in 0.35s 1.01s ease-out both; }
-#screen-start.entering .start-actions > :nth-child(3) > :nth-child(3) { animation: start-logo-in 0.35s 1.08s ease-out both; }
+/* 2P Online section — 6 children */
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(4) { animation: start-logo-in 0.35s 0.66s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(5) { animation: start-logo-in 0.35s 0.73s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(1) > :nth-child(6) { animation: start-logo-in 0.35s 0.80s ease-out both; }
+/* Leaderboard card — animate centre column as one unit */
+#screen-start.entering .start-columns > :nth-child(2)                 { animation: start-logo-in 0.35s 0.52s ease-out both; }
+/* Single player section — 3 children */
+#screen-start.entering .start-columns > :nth-child(3) > :nth-child(1) { animation: start-logo-in 0.35s 0.45s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(3) > :nth-child(2) { animation: start-logo-in 0.35s 0.52s ease-out both; }
+#screen-start.entering .start-columns > :nth-child(3) > :nth-child(3) { animation: start-logo-in 0.35s 0.59s ease-out both; }
 
 /* =========================================================
    Start Screen
@@ -149,7 +149,16 @@
   height: auto;
   display: block;
 }
-.start-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.start-columns {
+  display: grid;
+  grid-template-columns: 240px auto 240px;
+  gap: 16px 48px;
+  align-items: start;
+  justify-items: center;
+}
+@media (max-width: 860px) {
+  .start-columns { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+}
 .start-section  { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .start-section-label {
   font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text);
@@ -159,13 +168,21 @@
 #screen-start .combo-input { width: 240px; box-sizing: border-box; }
 #screen-start .combo-input { margin-top: 8px; }
 
-.start-divider { width: 240px; height: 1px; background: var(--surface-frosted-edge); margin: 4px 0; }
 
 .start-mode-label {
   font-family: var(--font-display); font-size: var(--text-xl); font-weight: var(--weight-black);
   color: var(--canvas-text); letter-spacing: 0.12em; text-shadow: var(--text-shadow-xl);
   margin: 4px 0 2px; text-align: center;
 }
+
+.leaderboard-card { width: 260px; }
+.leaderboard-card-footer {
+  padding: 4px 16px 10px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--surface-raised-edge);
+}
+.leaderboard-card-placeholder { opacity: 0.3; }
 
 .start-action-hint {
   font-family: var(--font-body); font-size: var(--text-sm);
@@ -296,11 +313,11 @@
 .lobby-share {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   margin: 12px 0 0; padding: 12px 20px;
-  background: var(--surface-frosted); border-radius: var(--radius-md);
-  border: 1px solid var(--surface-frosted-edge);
+  background: rgba(20, 20, 20, 0.96); border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-raised-edge); overflow: hidden;
 }
 .lobby-share.hidden { display: none; }
-.lobby-share-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; }
+.lobby-share-label { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--canvas-text); letter-spacing: 0.08em; text-shadow: var(--text-shadow-sm); }
 .lobby-invite-row { display: flex; align-items: center; gap: 8px; }
 .lobby-share-code {
   font-family: var(--font); font-size: var(--text-xl); font-weight: var(--weight-black);
@@ -535,11 +552,16 @@
   position: absolute; inset: 0;
   pointer-events: none; z-index: 21;
 }
+/* White offset layer behind the fill — simulates a hard shadow without filter compositing. */
+.counter-bar-fill-shadow {
+  position: absolute; top: 10px; left: 34px; right: 30px;
+  height: 4px;
+  background: #fff;
+}
 /* Fill renders last in DOM (on top) so it covers any dot shadow bleed onto the bar. */
 .counter-bar-fill {
   position: absolute; top: 8px; left: 32px; right: 32px;
   height: 4px;
-  filter: drop-shadow(2px 2px 0 #fff);
 }
 .counter-dot {
   position: absolute;
@@ -666,6 +688,7 @@
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
   /* Counter bar: centre vertically in the 110px fixed fight stage */
   .counter-bar-wrap { top: 50%; }
+  .counter-bar-fill-shadow { top: calc(50% + 2px); }
   .counter-bar-fill { top: 50%; }
   .counter-dot      { top: calc(50% - 2px); }
 }

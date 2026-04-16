@@ -27,7 +27,12 @@
   overflow: hidden;
 }
 
-/* Mobile: bottom-sheet layout — sheet anchors to bottom edge when tall */
+/* Mobile: bottom-sheet layout — sheet anchors to bottom edge and slides up */
+@keyframes modal-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
   .modal-overlay {
     padding: 8px 8px 0;
@@ -38,6 +43,7 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     max-height: calc(100svh - 8px);
+    animation: modal-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
   /* Pad body so content clears the iOS home indicator */
   .modal-sheet-body {
