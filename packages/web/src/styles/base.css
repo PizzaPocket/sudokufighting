@@ -31,12 +31,13 @@ html, body {
   padding: 16px 0 4px;
   margin-top: 8px;
 }
-.screen-footer-tagline {
+.screen-footer-tagline,
+.screen-footer-copy {
   font-family: var(--font);
   font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.75);
   text-align: center;
 }
 .privacy-footer-link {
@@ -44,13 +45,13 @@ html, body {
   font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.75);
   text-decoration: none;
   transition: color 0.15s;
   white-space: nowrap;
 }
 @media (hover: hover) {
-  .privacy-footer-link:hover { color: rgba(255,255,255,0.7); }
+  .privacy-footer-link:hover { color: rgba(255,255,255,1); }
 }
 /* Splash screen is fixed/viewport-height — footer pins to bottom */
 .splash-footer {

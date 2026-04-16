@@ -8,6 +8,7 @@ import { TRACKS, setMusicEnabled, setSfxEnabled } from '../../audio/audioManager
 export default function ContextualMenu() {
   const settingsOpen = useGameStore(s => s.settingsOpen);
   const setSettingsOpen = useGameStore(s => s.setSettingsOpen);
+  const setAboutOpen = useGameStore(s => s.setAboutOpen);
   const musicEnabled = useGameStore(s => s.musicEnabled);
   const sfxEnabled = useGameStore(s => s.sfxEnabled);
   const selectedTrackIndex = useGameStore(s => s.selectedTrackIndex);
@@ -67,6 +68,15 @@ export default function ContextualMenu() {
           <span className="toggle-slider" />
         </label>
       </div>
+
+      <div className="ctx-menu-divider" />
+
+      <button
+        className="auth-link ctx-about-link"
+        onClick={() => { setSettingsOpen(false); setAboutOpen(true); }}
+      >
+        ABOUT
+      </button>
 
     </div>
   );

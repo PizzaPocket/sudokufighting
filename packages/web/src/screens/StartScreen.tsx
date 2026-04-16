@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import LeaderboardCard from '../components/LeaderboardCard';
+import { CREDITS } from '../creditsContent';
 
 interface Props { active: boolean; entering?: boolean; }
 
@@ -97,6 +98,7 @@ export default function StartScreen({ active, entering }: Props) {
 
       <div className="screen-footer">
         <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
         <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
       </div>
     </div>

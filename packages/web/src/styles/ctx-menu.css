@@ -108,3 +108,10 @@
 }
 .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
 .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+/* About link at bottom of menu */
+.ctx-about-link {
+  text-align: center;
+  margin: 0;
+  padding: 2px;
+}

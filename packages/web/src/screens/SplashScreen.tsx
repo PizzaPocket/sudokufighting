@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { initAudio, playLogoAndSelectMusic } from '../audio/audioManager';
 import SudokuCell from '../components/grid/SudokuCell';
+import { CREDITS } from '../creditsContent';
 
 // ── Puzzle generation ──────────────────────────────────────────────────────────
 
@@ -215,6 +216,7 @@ export default function SplashScreen({ onComplete }: Props) {
       <h1 style={{ position:'absolute', width:'1px', height:'1px', overflow:'hidden', clip:'rect(0,0,0,0)', whiteSpace:'nowrap' }}>Sudoku Fighting</h1>
       <div className="screen-footer splash-footer">
         <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
         <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
       </div>
     </div>

@@ -6,6 +6,7 @@ import SignInSheet from './components/auth/SignInSheet';
 import CreateAccountSheet from './components/auth/CreateAccountSheet';
 import AccountScreen from './components/auth/AccountScreen';
 import Scoreboard from './components/overlays/Scoreboard';
+import AboutModal from './components/overlays/AboutModal';
 import { initAudio, SELECT_TRACK_INDEX, TRACKS, preloadMusicTrack } from './audio/audioManager';
 import { getArena } from '@sudoku-fighting/shared';
 import SplashScreen from './screens/SplashScreen';
@@ -85,6 +86,7 @@ export default function App() {
       <CreateAccountSheet />
       <AccountScreen />
       <Scoreboard />
+      <AboutModal />
       {currentScreen === 'splash' && (
         <SplashScreen onComplete={handleSplashComplete} />
       )}

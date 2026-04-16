@@ -139,6 +139,7 @@ interface GameStore {
   selectedTrackIndex: number;
   settingsOpen: boolean;
   scoreboardOpen: boolean;
+  aboutOpen: boolean;
   testCreditsOpen: boolean;
 
   // ── Actions ───────────────────────────────────────────────────────────────
@@ -166,6 +167,7 @@ interface GameStore {
   setSelectedTrackIndex: (index: number) => void;
   setSettingsOpen: (open: boolean) => void;
   setScoreboardOpen: (open: boolean) => void;
+  setAboutOpen: (open: boolean) => void;
   clearAttackFlash: () => void;
   removeFloatingPoints: (id: number) => void;
   setIsPaused: (v: boolean) => void;
@@ -271,6 +273,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   selectedTrackIndex: SELECT_TRACK_INDEX,
   settingsOpen: false,
   scoreboardOpen: false,
+  aboutOpen: false,
   testCreditsOpen: false,
 
   // ── Simple setters ────────────────────────────────────────────────────────
@@ -289,6 +292,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSelectedTrackIndex: (selectedTrackIndex) => set({ selectedTrackIndex }),
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setScoreboardOpen: (scoreboardOpen) => set({ scoreboardOpen }),
+  setAboutOpen: (aboutOpen) => set({ aboutOpen }),
   clearAttackFlash: () => set({ attackFlashType: null }),
   removeFloatingPoints: (id) => set(s => ({ floatingPoints: s.floatingPoints.filter(fp => fp.id !== id) })),
   setIsPaused: (isPaused) => {
@@ -395,6 +399,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
     settingsOpen: false,
+    aboutOpen: false,
     isPaused: false,
     totalPausedMs: 0,
     pauseStartTime: null,
