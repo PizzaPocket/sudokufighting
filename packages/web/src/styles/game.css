@@ -599,8 +599,10 @@
 /* Game overlay */
 .game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: none; z-index: 200; pointer-events: none; }
 .game-overlay.hidden { display: none; }
-.overlay-btn-row { display: flex; gap: 16px; margin-top: 12px; pointer-events: all; }
+.overlay-btn-row { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 12px; width: 280px; pointer-events: all; }
+.overlay-btn-row .btn { width: 100%; }
 .overlay-btn-row.hidden { display: none; }
+.overlay-save-prompt { margin: 0; font-size: var(--text-sm); color: #fff; text-align: center; text-shadow: var(--text-shadow-sm); opacity: 0.85; pointer-events: none; }
 .overlay-main {
   font-family: var(--font-display); font-size: var(--text-4xl); font-weight: var(--weight-black);
   color: var(--accent); letter-spacing: 0; line-height: 1; text-align: center;

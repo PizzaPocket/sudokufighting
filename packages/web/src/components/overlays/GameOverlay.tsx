@@ -234,11 +234,6 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
-          {!user && (
-            <button className="btn btn-secondary" onClick={openSignIn}>
-              SAVE YOUR PROGRESS
-            </button>
-          )}
           {gameMode === 'campaign' && (
             <button
               className="btn"
@@ -277,6 +272,14 @@ export default function GameOverlay() {
               }}
             >
               {gameMode === 'practice' ? 'LEAVE' : 'BACK TO MENU'}
+            </button>
+          )}
+          {!user && (
+            <p className="overlay-save-prompt">Sign in or create an account to save your progress</p>
+          )}
+          {!user && (
+            <button className="btn btn-secondary" onClick={openSignIn}>
+              SIGN IN
             </button>
           )}
         </div>
