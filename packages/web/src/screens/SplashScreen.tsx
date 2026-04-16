@@ -211,6 +211,12 @@ export default function SplashScreen({ onComplete }: Props) {
       >
         ENTER
       </button>
+
+      <h1 style={{ position:'absolute', width:'1px', height:'1px', overflow:'hidden', clip:'rect(0,0,0,0)', whiteSpace:'nowrap' }}>Sudoku Fighting</h1>
+      <div className="screen-footer splash-footer">
+        <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
+      </div>
     </div>
   );
 }

@@ -22,24 +22,42 @@ html, body {
   background: #000 url(/assets/ui/bg_0.svg) center/cover no-repeat;
 }
 
-/* Privacy footer link — shown only on start screen */
-.privacy-footer-link {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+/* Screen footer — tagline + privacy link at bottom of scrollable screens */
+.screen-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 16px 0 4px;
+  margin-top: 8px;
+}
+.screen-footer-tagline {
   font-family: var(--font);
   font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+.privacy-footer-link {
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
   text-decoration: none;
-  z-index: 10;
   transition: color 0.15s;
   white-space: nowrap;
 }
 @media (hover: hover) {
-  .privacy-footer-link:hover { color: rgba(255,255,255,0.5); }
+  .privacy-footer-link:hover { color: rgba(255,255,255,0.7); }
+}
+/* Splash screen is fixed/viewport-height — footer pins to bottom */
+.splash-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* =========================================================

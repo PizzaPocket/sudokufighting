@@ -47,7 +47,6 @@ export default function StartScreen({ active, entering }: Props) {
       <div className="start-logo-container">
         <img className="start-logo-top"    src="/assets/ui/Logo1_Sudoku.svg"   alt="Sudoku" />
         <img className="start-logo-bottom" src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" />
-        <p className="start-tagline">Competitive Sudoku with fighting game combat</p>
       </div>
 
       <div className="start-columns">
@@ -95,6 +94,11 @@ export default function StartScreen({ active, entering }: Props) {
       </div>
 
       <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
+
+      <div className="screen-footer">
+        <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
+      </div>
     </div>
   );
 }
