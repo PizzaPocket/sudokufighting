@@ -22,6 +22,26 @@ html, body {
   background: #000 url(/assets/ui/bg_0.svg) center/cover no-repeat;
 }
 
+/* Privacy footer link — shown only on start screen */
+.privacy-footer-link {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  z-index: 10;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .privacy-footer-link:hover { color: rgba(255,255,255,0.5); }
+}
+
 /* =========================================================
    Persistent Header
    ========================================================= */

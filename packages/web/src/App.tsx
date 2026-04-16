@@ -88,6 +88,9 @@ export default function App() {
       {currentScreen === 'splash' && (
         <SplashScreen onComplete={handleSplashComplete} />
       )}
+      {currentScreen === 'start' && (
+        <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
+      )}
       <StartScreen active={currentScreen === 'start'} entering={startEntering} />
       <CharacterSelectScreen active={currentScreen === 'character-select'} />
       <LobbyScreen active={currentScreen === 'lobby'} />
