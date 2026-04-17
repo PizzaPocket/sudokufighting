@@ -1,4 +1,4 @@
-export type CreditLineType = 'logo' | 'name' | 'body' | 'spacer';
+export type CreditLineType = 'logo' | 'name' | 'body' | 'copyright' | 'spacer';
 
 export interface CreditLine {
   type: CreditLineType;
@@ -16,12 +16,12 @@ export const CREDITS: CreditLine[] = [
 
   { type: 'spacer' },
 
-  { type: 'body', text: 'Game Design, Programming, Writing, Music' },
+  { type: 'body', text: 'Game Design and Programming' },
   { type: 'name', text: 'Leonard Downs Reese IV' },
 
   { type: 'spacer' },
 
-  { type: 'body', text: 'Character Design, Art, Creative Design' },
+  { type: 'body', text: 'Character Design, Creative Direction, and Musical Contribution' },
   { type: 'name', text: 'Kaius Lu Reese' },
 
   { type: 'spacer' },
@@ -45,8 +45,8 @@ export const CREDITS: CreditLine[] = [
 
   { type: 'spacer' },
 
-  { type: 'body', text: '© 2026 Leonard Downs Reese IV and Kaius Lu Reese' },
-  { type: 'body', text: 'All rights reserved.' },
+  { type: 'copyright', text: '© 2026 Leonard Downs Reese IV and Kaius Lu Reese' },
+  { type: 'copyright', text: 'All rights reserved.' },
 ];
 
 export const CREDITS_SCROLL_DURATION_MS = 24000;

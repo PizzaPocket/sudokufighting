@@ -3,6 +3,15 @@ import { useGameStore } from '../store/gameStore';
 import LeaderboardCard from '../components/LeaderboardCard';
 import { CREDITS } from '../creditsContent';
 
+const CHEAT_CODE = 'uuddlrlrba';
+const ALL_CHARACTERS = [
+  'fighter1', 'fighter1_alt',
+  'fighter2', 'fighter2_alt',
+  'fighter3', 'fighter3_alt',
+  'fighter4', 'fighter4_alt',
+  'fighter5', 'fighter5_alt',
+];
+
 interface Props { active: boolean; entering?: boolean; }
 
 export default function StartScreen({ active, entering }: Props) {
@@ -12,6 +21,7 @@ export default function StartScreen({ active, entering }: Props) {
 
   const joinCodeRef = useRef<HTMLInputElement>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [cheatActive, setCheatActive] = useState(false);
 
   // Pre-fill room code from ?room=CODE URL param on first mount
   useEffect(() => {
@@ -22,7 +32,7 @@ export default function StartScreen({ active, entering }: Props) {
     }
   }, []);
 
-  const errorMsg = localError ?? lobbyJoinError;
+  const errorMsg = cheatActive ? 'ALL FIGHTERS UNLOCKED' : (localError ?? lobbyJoinError);
 
   function goToCharacterSelect(mode: 'quick' | 'friend' | 'practice' | 'campaign') {
     setGameMode(mode);
@@ -32,7 +42,15 @@ export default function StartScreen({ active, entering }: Props) {
   }
 
   function handleJoinRoom() {
-    const code = joinCodeRef.current?.value.trim().toUpperCase() ?? '';
+    const raw = joinCodeRef.current?.value.trim() ?? '';
+    if (raw.toLowerCase() === CHEAT_CODE) {
+      useGameStore.setState({ unlockedCharacterIds: ALL_CHARACTERS } as never);
+      joinCodeRef.current!.value = '';
+      setLocalError(null);
+      setCheatActive(true);
+      return;
+    }
+    const code = raw.toUpperCase();
     if (code.length < 4) {
       setLocalError('Enter a valid room code.');
       return;
@@ -68,12 +86,14 @@ export default function StartScreen({ active, entering }: Props) {
               ref={joinCodeRef}
               className="combo-text"
               type="text"
-              maxLength={8}
+              maxLength={10}
               placeholder="Room code"
+              onChange={() => cheatActive && setCheatActive(false)}
               onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
             />
             <button id="btn-join-room" onClick={handleJoinRoom}>JOIN</button>
           </div>
+          <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
         </div>
 
         {/* Column 2 — Single Player */}
@@ -93,8 +113,6 @@ export default function StartScreen({ active, entering }: Props) {
         </div>
 
       </div>
-
-      <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
 
       <div className="screen-footer">
         <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>

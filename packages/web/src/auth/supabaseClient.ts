@@ -12,5 +12,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
+    // Bypass navigator.locks — the SDK uses it to serialize auth across tabs, but
+    // concurrent lock requests during React StrictMode's double-mount (and Vite HMR
+    // module re-evaluation) cause "stole it" errors that prevent INITIAL_SESSION
+    // from firing, leaving the user permanently signed out after a page reload.
+    lock: async (_name, _acquireTimeout, fn) => fn(),
   },
 });

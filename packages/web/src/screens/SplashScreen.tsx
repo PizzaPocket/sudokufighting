@@ -187,34 +187,36 @@ export default function SplashScreen({ onComplete }: Props) {
 
   return (
     <div id="screen-splash" className={exiting ? 'exiting' : ''}>
-      <div id="splash-grid-wrap">
-        <div id="splash-grid" className="sudoku-grid is-me">
-          {cellEls}
-        </div>
-      </div>
-
-      <div id="mobile-numpad">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
-          <div
-            key={d}
-            className="numpad-btn"
-            onPointerDown={e => { e.preventDefault(); submitDigit(d); }}
-          >
-            {d}
+      <div className="splash-main">
+        <div id="splash-grid-wrap">
+          <div id="splash-grid" className="sudoku-grid is-me">
+            {cellEls}
           </div>
-        ))}
-      </div>
+        </div>
 
-      <button
-        className={`btn splash-enter-btn${inputState === 'correct' ? ' active' : ''}`}
-        disabled={inputState !== 'correct'}
-        onClick={handleEnter}
-      >
-        ENTER
-      </button>
+        <div id="mobile-numpad">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => (
+            <div
+              key={d}
+              className="numpad-btn"
+              onPointerDown={e => { e.preventDefault(); submitDigit(d); }}
+            >
+              {d}
+            </div>
+          ))}
+        </div>
+
+        <button
+          className={`btn splash-enter-btn${inputState === 'correct' ? ' active' : ''}`}
+          disabled={inputState !== 'correct'}
+          onClick={handleEnter}
+        >
+          ENTER
+        </button>
+      </div>
 
       <h1 style={{ position:'absolute', width:'1px', height:'1px', overflow:'hidden', clip:'rect(0,0,0,0)', whiteSpace:'nowrap' }}>Sudoku Fighting</h1>
-      <div className="screen-footer splash-footer">
+      <div className="screen-footer">
         <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
         <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
         <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>

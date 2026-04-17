@@ -406,39 +406,20 @@
 /* ── About modal ─────────────────────────────────────────── */
 
 .about-body {
-  gap: 4px;
-  text-align: center;
-  align-items: center;
-}
-
-.about-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 4px;
-}
-
-.about-logo img {
-  width: 100%;
-  max-width: 240px;
-  height: auto;
-  display: block;
-}
-
-.about-spacer { height: 14px; }
-
-.about-name {
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: var(--weight-black);
-  color: var(--canvas-text);
-  letter-spacing: 0.06em;
+  gap: 16px;
 }
 
 .about-body-text {
   font-family: var(--font);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
+  color: var(--canvas-text-dim);
+  line-height: 1.6;
+}
+
+.about-copyright {
+  font-family: var(--font);
+  font-size: var(--text-xs);
   color: var(--canvas-text-muted);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  margin-top: 8px;
 }

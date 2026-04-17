@@ -113,6 +113,7 @@ export default function App() {
             );
             if (line.type === 'spacer') return <div key={i} className="credits-spacer" />;
             if (line.type === 'name') return <div key={i} className="credits-name">{line.text}</div>;
+            if (line.type === 'copyright') return <div key={i} className="credits-copyright">{line.text}</div>;
             return <div key={i} className="credits-body">{line.text}</div>;
           })}
         </div>

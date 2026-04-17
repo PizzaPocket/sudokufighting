@@ -36,9 +36,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  padding: var(--header-h) 16px 24px;
+}
+
+.splash-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 28px;
-  padding: var(--header-h) 16px 24px;
+  width: 100%;
 }
 
 #screen-splash.exiting {
@@ -826,6 +835,11 @@
 .credits-body {
   font-family: var(--font); font-size: var(--text-md);
   color: #ffffffcc; text-shadow: 1px 1px 0 #000;
+  text-align: center;
+}
+.credits-copyright {
+  font-family: var(--font); font-size: var(--text-sm);
+  color: rgba(255,255,255,0.5); text-shadow: 1px 1px 0 #000;
   text-align: center;
 }
 .credits-spacer { height: 24px; }

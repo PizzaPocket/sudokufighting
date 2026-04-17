@@ -29,7 +29,7 @@ html, body {
   align-items: center;
   gap: 5px;
   padding: 16px 0 4px;
-  margin-top: 8px;
+  margin-top: 32px;
 }
 .screen-footer-tagline,
 .screen-footer-copy {
@@ -52,13 +52,6 @@ html, body {
 }
 @media (hover: hover) {
   .privacy-footer-link:hover { color: rgba(255,255,255,1); }
-}
-/* Splash screen is fixed/viewport-height — footer pins to bottom */
-.splash-footer {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 /* =========================================================

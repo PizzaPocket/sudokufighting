@@ -84,13 +84,18 @@ async function createProfile(userId: string): Promise<Profile> {
   return { id: data.id, username: data.username, createdAt: data.created_at };
 }
 
-// Called by useAuthInit on every SIGNED_IN event
+// Called by useAuthInit on every auth state change with a valid user
 export async function handleAuthStateChange(userId: string): Promise<void> {
   let profile = await loadProfile(userId);
   if (!profile) {
-    profile = await createProfile(userId);
+    try {
+      profile = await createProfile(userId);
+    } catch {
+      // Profile may already exist (race condition or trigger-created row) — retry select
+      profile = await loadProfile(userId);
+    }
   }
-  useAuthStore.getState().setProfile(profile);
+  if (profile) useAuthStore.getState().setProfile(profile);
 }
 
 // ── Auth actions ──────────────────────────────────────────────────────────────
@@ -128,7 +133,11 @@ export async function signInWithApple(): Promise<void> {
 }
 
 export async function signOut(): Promise<void> {
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut();
+  } catch {
+    // Clear local state regardless of whether the API call succeeded
+  }
   const store = useAuthStore.getState();
   store.setUser(null);
   store.setProfile(null);

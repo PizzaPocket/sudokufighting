@@ -1,6 +1,5 @@
 import { useGameStore } from '../../store/gameStore';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
-import { CREDITS } from '../../creditsContent';
 
 export default function AboutModal() {
   const open = useGameStore(s => s.aboutOpen);
@@ -26,17 +25,13 @@ export default function AboutModal() {
         </div>
 
         <div className="modal-sheet-body about-body">
-          {CREDITS.map((line, i) => {
-            if (line.type === 'logo') return (
-              <div key={i} className="about-logo">
-                <img src="/assets/ui/Logo1_Sudoku.svg" alt="Sudoku" />
-                <img src="/assets/ui/Logo2_Fighting.svg" alt="Fighting" />
-              </div>
-            );
-            if (line.type === 'spacer') return <div key={i} className="about-spacer" />;
-            if (line.type === 'name')   return <p key={i} className="about-name">{line.text}</p>;
-            return <p key={i} className="about-body-text">{line.text}</p>;
-          })}
+          <p className="about-body-text">
+            Sudoku Fighting is a passion project by the parent &amp; kid game development duo <strong>Leonard Downs Reese IV</strong> and <strong>Kaius Lu Reese</strong>. Character design, creative direction, and musical contribution by Kaius. Game design, programming, and original soundtrack by Leonard.
+          </p>
+          <p className="about-body-text">
+            Special thanks to <strong>Tingting Lu</strong> for your love and support, and for putting up so much with two obsessive maniacs in your home. We love you.
+          </p>
+          <p className="about-copyright">© 2026 Leonard Downs Reese IV and Kaius Lu Reese. All rights reserved.</p>
         </div>
 
       </div>
