@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
 const CLOSE_MS = 160;
+const isMobileSheet = () => window.matchMedia('(max-width: 600px)').matches;
 
 /**
  * Manages rendered/closing state for modal exit animations.
- * Keeps the DOM element alive for CLOSE_MS after `open` goes false
- * so CSS exit animations can play before unmount.
+ * On mobile (≤600px) the sheet slides down — keep DOM alive for CLOSE_MS
+ * so the CSS exit animation plays before unmount.
+ * On wide screen there is no movement, so close is instant.
  */
 export function useModalAnimation(open: boolean, instant = false) {
   const [rendered, setRendered] = useState(open);
@@ -16,7 +18,7 @@ export function useModalAnimation(open: boolean, instant = false) {
       setRendered(true);
       setClosing(false);
     } else if (rendered) {
-      if (instant) {
+      if (instant || !isMobileSheet()) {
         setRendered(false);
         setClosing(false);
       } else {

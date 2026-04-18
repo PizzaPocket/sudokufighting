@@ -14,13 +14,6 @@
   background: rgba(0, 0, 0, 0.72);
   padding: 16px;
 }
-.modal-overlay.closing {
-  animation: modal-overlay-fade-out 0.16s cubic-bezier(0.4, 0, 1, 1) both;
-}
-@keyframes modal-overlay-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
 
 .modal-sheet {
   background: var(--surface-raised);
@@ -60,6 +53,9 @@
   .modal-sheet.closing {
     animation: modal-slide-down 0.16s cubic-bezier(0.4, 0, 1, 1) both;
   }
+  .modal-overlay.closing {
+    animation: modal-overlay-fade-out 0.16s cubic-bezier(0.4, 0, 1, 1) both;
+  }
   .modal-sheet.instant {
     animation: none;
   }
@@ -67,6 +63,11 @@
   .modal-sheet-body {
     padding-bottom: max(40px, env(safe-area-inset-bottom));
   }
+}
+
+@keyframes modal-overlay-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* ── Header ──────────────────────────────────────────────── */
