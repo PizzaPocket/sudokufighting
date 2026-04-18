@@ -51,7 +51,7 @@
     animation: modal-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
   .modal-sheet.closing {
-    animation: modal-slide-down 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+    animation: modal-slide-down 0.16s cubic-bezier(0.4, 0, 1, 1) both;
   }
   .modal-sheet.instant {
     animation: none;

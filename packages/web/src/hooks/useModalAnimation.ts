@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const CLOSE_MS = 280;
+const CLOSE_MS = 160;
 
 /**
  * Manages rendered/closing state for modal exit animations.
