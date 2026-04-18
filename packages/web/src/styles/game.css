@@ -37,7 +37,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: var(--header-h) 16px 24px;
+  padding: calc(var(--header-h) + env(safe-area-inset-top, 0px)) 16px 24px;
 }
 
 .splash-main {
@@ -370,7 +370,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: var(--header-h) 0 0;
+  padding: calc(var(--header-h) + env(safe-area-inset-top, 0px)) 0 0;
   gap: 0;
   background: #000;
   background-size: cover;
@@ -679,7 +679,7 @@
   }
   .lobby-status { display: none; }
   #screen-character-select { justify-content: flex-start; align-items: stretch; overflow: hidden; }
-  .char-select-scroll { overflow-y: auto; flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--header-h) + 20px); padding-bottom: 40px; width: 100%; }
+  .char-select-scroll { overflow-y: auto; flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 20px); padding-bottom: 40px; width: 100%; }
   .start-logo-top, .start-logo-bottom { max-width: 200px; }
   #character-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px; width: 100%; max-width: 380px; }
   .character-card { width: 100%; }
@@ -858,6 +858,53 @@
 }
 .credits-spacer { height: 24px; }
 
+.credits-score-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 32px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 320px;
+}
+.credits-score-label {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.6);
+  text-shadow: 1px 1px 0 #000;
+}
+.credits-score-value {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  color: var(--accent);
+  text-shadow: var(--text-shadow-xl);
+}
+.credits-score-rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.credits-score-rank-callout {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: var(--text-shadow-sm);
+}
+.credits-score-rank-name {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.6);
+}
+
 .unlock-screen {
   position: fixed; inset: 0; z-index: 400;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
@@ -947,7 +994,7 @@
 /* ── Campaign Character Select ───────────────────────────── */
 .campaign-difficulty-selector {
   display: flex; flex-direction: column; align-items: center; gap: 10px;
-  padding: calc(var(--header-h) + 20px) 0 20px;
+  padding: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 20px) 0 20px;
 }
 .campaign-continue-btn { margin-top: 24px; min-width: 200px; }
 #screen-character-select.campaign-select .char-select-scroll { padding-top: 0; }

@@ -151,15 +151,16 @@ export default function GameOverlay() {
       const isWinner = !isTie && matchWinnerSeat === mySeat;
       const result: 'win' | 'loss' | 'tie' = isTie ? 'tie' : isWinner ? 'win' : 'loss';
 
-      // Record match stats (fire-and-forget)
-      if (st.mySeat !== null && st.myCharacter) {
+      // Record match stats (fire-and-forget).
+      // Campaign runs are recorded once at full campaign victory in useCampaign.ts.
+      if (st.mySeat !== null && st.myCharacter && st.gameMode !== 'campaign') {
         const matchInput: RecordMatchInput = {
           gameMode:      st.gameMode ?? 'quick',
           result,
           characterId:   st.myCharacter,
           opponentName:  st.opponentName,
           score:         st.score[st.mySeat],
-          difficulty:    st.gameMode === 'campaign' ? st.spDifficulty : null,
+          difficulty:    null,
           matchDurationMs: matchStartTimeRef.current ? Date.now() - matchStartTimeRef.current : 0,
         };
         if (useAuthStore.getState().user) {

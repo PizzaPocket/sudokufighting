@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from '../../creditsContent';
+import { useAuthStore } from '../../auth/authStore';
 import { switchToSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
 
 // win animation: 2 frames × 300ms = 600ms/loop. Let it run ~4 loops before freezing.
@@ -15,6 +16,9 @@ export default function CampaignVictory() {
   const resetAll = useGameStore(s => s.resetAll);
   const mySeat = useGameStore(s => s.mySeat);
   const setCreditsActive = useGameStore(s => s.setCreditsActive);
+  const campaignFinalScore = useGameStore(s => s.campaignFinalScore);
+  const campaignFinalRank = useGameStore(s => s.campaignFinalRank);
+  const username = useAuthStore(s => s.profile?.username ?? null);
   const [phase, setPhase] = useState<Phase>('credits');
 
   useEffect(() => {
@@ -53,6 +57,21 @@ export default function CampaignVictory() {
           className="credits-scroll"
           style={{ animationDuration: `${CREDITS_SCROLL_DURATION_MS}ms` }}
         >
+          {campaignFinalScore !== null && (
+            <div className="credits-score-card">
+              <div className="credits-score-label">YOUR BEST RUN</div>
+              <div className="credits-score-value">
+                {campaignFinalScore.toLocaleString()} PTS
+              </div>
+              {campaignFinalRank !== null && campaignFinalRank <= 10 && (
+                <div className="credits-score-rank">
+                  <span className="credits-score-rank-callout"># {campaignFinalRank} ON THE LEADERBOARD</span>
+                  {username && <span className="credits-score-rank-name">{username}</span>}
+                </div>
+              )}
+            </div>
+          )}
+          <div className="credits-spacer" />
             {CREDITS.map((line, i) => {
             if (line.type === 'logo') return (
               <div key={i} className="credits-logo">

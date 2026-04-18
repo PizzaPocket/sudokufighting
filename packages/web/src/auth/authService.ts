@@ -1,4 +1,5 @@
 import { Filter } from 'bad-words';
+import { Capacitor } from '@capacitor/core';
 import { supabase } from './supabaseClient';
 import { useAuthStore } from './authStore';
 import type { Profile } from './authStore';
@@ -127,9 +128,14 @@ export async function signInWithGoogle(): Promise<void> {
   await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
 }
 
-export async function signInWithApple(): Promise<void> {
+export function isAppleSignInAvailable(): boolean {
+  return !(Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android');
+}
+
+export async function signInWithApple(): Promise<string | null> {
   const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
   await supabase.auth.signInWithOAuth({ provider: 'apple', options: { redirectTo } });
+  return null;
 }
 
 export async function signOut(): Promise<void> {

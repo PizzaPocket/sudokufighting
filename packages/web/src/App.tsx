@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useGameStore } from './store/gameStore';
 import { useGameSocket } from './hooks/useGameSocket';
 import { useAuthInit } from './auth/useAuthInit';
@@ -29,10 +29,18 @@ export default function App() {
   const setInitialInteractionDone = useGameStore(s => s.setInitialInteractionDone);
   const initialInteractionDone = useGameStore(s => s.initialInteractionDone);
 
-  // Whether the start screen should play its entrance animation (only on first
-  // load from the splash screen, not when returning from gameplay).
-  const [startEntering, setStartEntering] = useState(false);
+  const startEntering = useGameStore(s => s.startEntering);
+  const transitionToStart = useGameStore(s => s.transitionToStart);
   const prevScreenRef = useRef(currentScreen);
+
+  // Remove the static pre-render cover once React has painted its first frame
+  useEffect(() => {
+    const cover = document.getElementById('pre-render-cover');
+    if (cover) {
+      cover.style.opacity = '0';
+      setTimeout(() => cover.remove(), 150);
+    }
+  }, []);
 
   // Connect WebSocket on mount
   useGameSocket();
@@ -69,9 +77,8 @@ export default function App() {
   }, [currentScreen, initialInteractionDone, setInitialInteractionDone]);
 
   function handleSplashComplete() {
-    setStartEntering(true);
-    setTimeout(() => setStartEntering(false), 2000);
-    useGameStore.setState({ currentScreen: 'start', selectedTrackIndex: SELECT_TRACK_INDEX } as never);
+    useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
+    transitionToStart();
   }
 
   return (

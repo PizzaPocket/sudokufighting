@@ -97,6 +97,16 @@ export async function loadOnlineLeaderboard(): Promise<LeaderboardOnlineRow[]> {
   }));
 }
 
+export async function getCampaignRank(adjustedScore: number): Promise<number> {
+  const { count } = await supabase
+    .from('match_history')
+    .select('id', { count: 'exact', head: true })
+    .eq('game_mode', 'campaign')
+    .eq('result', 'win')
+    .gt('adjusted_score', adjustedScore);
+  return (count ?? 0) + 1;
+}
+
 export async function loadCampaignLeaderboard(): Promise<LeaderboardCampaignRow[]> {
   const { data } = await supabase.rpc('get_campaign_leaderboard');
   return (data ?? []).map((row: { username: string; score: number; adjusted_score: number; difficulty: string }, i: number) => ({

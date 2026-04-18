@@ -8,7 +8,7 @@
 
 .ctx-menu {
   position: fixed;
-  top: calc(var(--header-h) + 4px);
+  top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 4px);
   right: 12px;
   background: rgba(20,20,20,0.96);
   border: 1px solid var(--surface-raised-edge);

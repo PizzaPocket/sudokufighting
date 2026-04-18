@@ -7,7 +7,7 @@ const CLOSE_MS = 280;
  * Keeps the DOM element alive for CLOSE_MS after `open` goes false
  * so CSS exit animations can play before unmount.
  */
-export function useModalAnimation(open: boolean) {
+export function useModalAnimation(open: boolean, instant = false) {
   const [rendered, setRendered] = useState(open);
   const [closing, setClosing]   = useState(false);
 
@@ -16,14 +16,19 @@ export function useModalAnimation(open: boolean) {
       setRendered(true);
       setClosing(false);
     } else if (rendered) {
-      setClosing(true);
-      const t = setTimeout(() => {
+      if (instant) {
         setRendered(false);
         setClosing(false);
-      }, CLOSE_MS);
-      return () => clearTimeout(t);
+      } else {
+        setClosing(true);
+        const t = setTimeout(() => {
+          setRendered(false);
+          setClosing(false);
+        }, CLOSE_MS);
+        return () => clearTimeout(t);
+      }
     }
-  }, [open]);
+  }, [open, instant]);
 
   return { rendered, closing };
 }

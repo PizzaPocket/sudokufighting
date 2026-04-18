@@ -53,6 +53,9 @@
   .modal-sheet.closing {
     animation: modal-slide-down 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
+  .modal-sheet.instant {
+    animation: none;
+  }
   /* Pad body so content clears the iOS home indicator */
   .modal-sheet-body {
     padding-bottom: max(28px, env(safe-area-inset-bottom));
@@ -109,6 +112,14 @@
 
 /* ── Form fields ─────────────────────────────────────────── */
 
+.modal-sheet-value-prop {
+  text-align: center;
+  font-size: var(--text-base);
+  color: var(--canvas-text);
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
 .auth-field {
   width: 100%;
   background: rgba(255, 255, 255, 0.08);
@@ -162,25 +173,49 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid var(--surface-raised-edge);
   border-radius: var(--radius-sm);
-  color: var(--canvas-text);
   font-family: var(--font);
   font-size: var(--text-btn);
   font-weight: var(--weight-bold);
   letter-spacing: 0.04em;
   padding: 11px 16px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: filter 0.15s;
+}
+.btn-social-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* Google — white background, per Google branding guidelines */
+.btn-social-google {
+  background: #fff;
+  border: 1px solid #747775;
+  color: #1f1f1f;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 @media (hover: hover) {
-  .btn-social:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--surface-frosted-edge);
-  }
+  .btn-social-google:hover { filter: brightness(0.97); }
 }
-.btn-social:active { background: rgba(255, 255, 255, 0.04); }
+.btn-social-google:active { filter: brightness(0.93); }
+
+/* Apple — white button on dark background, per Apple HIG */
+.btn-social-apple {
+  background: #fff;
+  border: none;
+  color: #000;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+@media (hover: hover) {
+  .btn-social-apple:hover { filter: brightness(0.95); }
+}
+.btn-social-apple:active { filter: brightness(0.9); }
 
 /* ── Text links ──────────────────────────────────────────── */
 

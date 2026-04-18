@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
-import { signIn, signInWithGoogle, signInWithApple } from '../../auth/authService';
+import { signIn, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 export default function SignInSheet() {
   const signInOpen = useAuthStore(s => s.signInOpen);
+  const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
-  const openCreateAccount = useAuthStore(s => s.openCreateAccount);
+  const switchToCreateAccount = useAuthStore(s => s.switchToCreateAccount);
 
-  const { rendered, closing } = useModalAnimation(signInOpen);
+  const { rendered, closing } = useModalAnimation(signInOpen, switching);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +32,7 @@ export default function SignInSheet() {
 
   function handleCreateAccount() {
     resetForm();
-    openCreateAccount();
+    switchToCreateAccount();
   }
 
   async function handleSignIn() {
@@ -49,7 +50,7 @@ export default function SignInSheet() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           {/* Left spacer balances the close button so title stays centred */}
@@ -65,6 +66,7 @@ export default function SignInSheet() {
         </div>
 
         <div className="modal-sheet-body">
+          <p className="modal-sheet-value-prop">Save your progress and achievements</p>
           <input
             className="auth-field"
             type="email"
@@ -97,10 +99,21 @@ export default function SignInSheet() {
 
           <div className="auth-divider"><span>or</span></div>
 
-          <button className="btn-social" onClick={signInWithGoogle}>
+          <button className="btn-social btn-social-google" onClick={signInWithGoogle}>
+            <img src="/assets/ui/icon-google.svg" className="btn-social-icon" alt="" />
             Continue with Google
           </button>
-          {/* Apple Sign-In: shown on iOS in Capacitor phase */}
+          {isAppleSignInAvailable() && (
+            <button className="btn-social btn-social-apple" onClick={async () => {
+              setLoading(true);
+              const err = await signInWithApple();
+              setLoading(false);
+              if (err) setError(err);
+            }}>
+              <img src="/assets/ui/icon-apple.svg" className="btn-social-icon" alt="" />
+              Continue with Apple
+            </button>
+          )}
 
           <button className="auth-link" onClick={handleCreateAccount}>
             Create an Account

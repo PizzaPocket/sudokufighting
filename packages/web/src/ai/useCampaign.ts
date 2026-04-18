@@ -5,6 +5,8 @@ import { useGameStore } from '../store/gameStore';
 import { saveProgression } from '../progression/progressionService';
 import { fadeOutMusic } from '../audio/audioManager';
 import { preloadArenaAssets } from '../utils/preloadAssets';
+import { recordMatch, getCampaignRank, CAMPAIGN_SCORE_MULTIPLIERS } from '../stats/statsService';
+import { useAuthStore } from '../auth/authStore';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -129,13 +131,35 @@ export function useCampaign() {
       // Final fight — victory
       const newUnlocks = calculateUnlocks(st.unlockedCharacterIds, st.myCharacter, st.characters);
       const merged = [...new Set([...st.unlockedCharacterIds, ...newUnlocks])];
+
+      const mySeat = st.mySeat ?? 0;
+      const rawScore = st.score[mySeat];
+      const multiplier = CAMPAIGN_SCORE_MULTIPLIERS[st.spDifficulty ?? 'normal'] ?? 1.0;
+      const adjustedScore = Math.round(rawScore * multiplier);
+
       useGameStore.setState({
         campaignResult: 'victory',
         unlockedCharacterIds: merged,
         pendingUnlockIds: newUnlocks,
         campaignClearCount: st.campaignClearCount + 1,
+        campaignFinalScore: adjustedScore,
+        campaignFinalRank: null,
       } as never);
       saveProgression({ unlockedCharacterIds: merged, campaignClearCount: st.campaignClearCount + 1 });
+
+      if (st.myCharacter && useAuthStore.getState().user) {
+        recordMatch({
+          gameMode: 'campaign',
+          result: 'win',
+          characterId: st.myCharacter,
+          opponentName: null,
+          score: rawScore,
+          difficulty: st.spDifficulty,
+          matchDurationMs: 0,
+        }).then(() => getCampaignRank(adjustedScore))
+          .then(rank => useGameStore.setState({ campaignFinalRank: rank } as never))
+          .catch(() => {});
+      }
     } else {
       // Non-final win — pre-build next opponent's dialogue queue.
       // Do NOT call setupNextFight here (would flicker background/opponent while

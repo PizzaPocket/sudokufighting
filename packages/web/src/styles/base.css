@@ -61,11 +61,11 @@ html, body {
 .app-header {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: var(--header-h);
+  height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
+  padding: env(safe-area-inset-top, 0px) 12px 0;
   z-index: 900;
   pointer-events: none;
 }
@@ -220,8 +220,8 @@ html, body {
 #screen-campaign-lobby {
   overflow-y: auto;
   justify-content: safe center;
-  padding-top: var(--header-h);
-  padding-bottom: 24px;
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 }
 
 #btn-select-char { display: none; }

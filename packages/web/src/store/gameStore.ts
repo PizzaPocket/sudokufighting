@@ -40,6 +40,7 @@ export interface WipingCell {
 interface GameStore {
   // ── Navigation ────────────────────────────────────────────────────────────
   currentScreen: Screen;
+  startEntering: boolean;
   gameMode: GameMode;
   initialInteractionDone: boolean;
 
@@ -85,6 +86,7 @@ interface GameStore {
   health: [number, number];
   combo: [number, number];
   score: [number, number];
+  scoreOffset: [number, number];
   counterWindowActive: boolean;
   counterWindowExpiry: number | null;
   counterWindowDefenderSeat: 0 | 1 | null;
@@ -127,6 +129,8 @@ interface GameStore {
 
   // ── Credits cinematic ─────────────────────────────────────────────────────
   creditsActive: boolean;
+  campaignFinalScore: number | null;   // adjusted score for completed run
+  campaignFinalRank: number | null;    // global rank; null = loading or not yet queried
 
   // ── Pause ─────────────────────────────────────────────────────────────────
   isPaused: boolean;
@@ -144,6 +148,7 @@ interface GameStore {
 
   // ── Actions ───────────────────────────────────────────────────────────────
   setScreen: (screen: Screen) => void;
+  transitionToStart: () => void;
   setInitialInteractionDone: () => void;
   setGameMode: (mode: GameMode) => void;
   setMyName: (name: string) => void;
@@ -191,6 +196,7 @@ function isHeavyAttack(type: AttackType) {
 export const useGameStore = create<GameStore>((set, get) => ({
   // ── Initial state ──────────────────────────────────────────────────────────
   currentScreen: getInitialScreen(),
+  startEntering: false,
   gameMode: null,
   initialInteractionDone: false,
 
@@ -229,6 +235,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   health: [STARTING_HEALTH, STARTING_HEALTH],
   combo: [0, 0],
   score: [0, 0],
+  scoreOffset: [0, 0],
   counterWindowActive: false,
   counterWindowExpiry: null,
   counterWindowDefenderSeat: null,
@@ -263,6 +270,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   pendingUnlockIds: [],
   campaignClearCount: 0,
   creditsActive: false,
+  campaignFinalScore: null,
+  campaignFinalRank: null,
 
   isPaused: false,
   totalPausedMs: 0,
@@ -278,6 +287,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   // ── Simple setters ────────────────────────────────────────────────────────
   setScreen: (currentScreen) => set({ currentScreen }),
+  transitionToStart: () => {
+    set({ currentScreen: 'start', startEntering: true });
+    setTimeout(() => set({ startEntering: false }), 2000);
+  },
   setInitialInteractionDone: () => set({ initialInteractionDone: true }),
   setGameMode: (gameMode) => set({ gameMode }),
   setMyName: (myName) => set({ myName }),
@@ -369,7 +382,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     opponentGivens: null, opponentGrid: null,
     selectedCell: null, opponentCursorPos: null,
     health: [STARTING_HEALTH, STARTING_HEALTH],
-    combo: [0, 0], score: [0, 0],
+    combo: [0, 0], score: [0, 0], scoreOffset: [0, 0],
     counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
     selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, p1AnimSignal: null, p2AnimSignal: null,
@@ -390,7 +403,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     opponentGivens: null, opponentGrid: null,
     selectedCell: null, opponentCursorPos: null,
     health: [STARTING_HEALTH, STARTING_HEALTH],
-    combo: [0, 0], score: [0, 0],
+    combo: [0, 0], score: [0, 0], scoreOffset: [0, 0],
     counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
     selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
@@ -407,6 +420,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     campaignResult: null,
     campaignDialogueQueue: [],
     pendingUnlockIds: [],
+    campaignFinalScore: null,
+    campaignFinalRank: null,
     // unlockedCharacterIds and campaignClearCount persist across resets
   })),
 
@@ -477,7 +492,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
           opponentGivens: p.opponentGivens.map(r => [...r]),
           opponentGrid: p.opponentGivens.map(r => [...r]),
           health: [STARTING_HEALTH, STARTING_HEALTH],
-          combo: [0, 0], score: [0, 0],
+          combo: [0, 0],
+          score: (p.roundNumber === 1 && s.gameMode !== 'campaign') ? [0, 0] : s.score,
+          scoreOffset: (p.roundNumber === 1 && s.gameMode !== 'campaign') ? [0, 0] : s.score,
           counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
           selfDamagePredicted: false,
           roundOver: false,
@@ -628,12 +645,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       case 'score_update': {
         const { seat, score } = msg.payload;
-        const prevScore = get().score[seat];
-        const delta = score - prevScore;
-        const lastCell = get().lastCorrectCell;
+        const st0 = get();
+        const cumulative = st0.scoreOffset[seat] + score;
+        const delta = cumulative - st0.score[seat];
+        const lastCell = st0.lastCorrectCell;
         set(st => {
           const sc: [number, number] = [...st.score] as [number, number];
-          sc[seat] = score;
+          sc[seat] = cumulative;
           const fp: FloatingPointsEvent[] = [...st.floatingPoints];
           if (delta > 0) fp.push({
             id: ++_fpId,

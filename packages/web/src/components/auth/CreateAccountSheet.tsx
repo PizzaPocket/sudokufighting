@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
-import { createAccount, signInWithGoogle, signInWithApple } from '../../auth/authService';
+import { createAccount, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 export default function CreateAccountSheet() {
   const createAccountOpen = useAuthStore(s => s.createAccountOpen);
+  const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
-  const openSignIn = useAuthStore(s => s.openSignIn);
+  const switchToSignIn = useAuthStore(s => s.switchToSignIn);
 
-  const { rendered, closing } = useModalAnimation(createAccountOpen);
+  const { rendered, closing } = useModalAnimation(createAccountOpen, switching);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +34,7 @@ export default function CreateAccountSheet() {
 
   function handleBack() {
     resetForm();
-    openSignIn();
+    switchToSignIn();
   }
 
   async function handleCreateAccount() {
@@ -59,7 +60,7 @@ export default function CreateAccountSheet() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
+      <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">
           <button
@@ -80,6 +81,7 @@ export default function CreateAccountSheet() {
         </div>
 
         <div className="modal-sheet-body">
+          <p className="modal-sheet-value-prop">Save your progress and achievements</p>
           <input
             className="auth-field"
             type="email"
@@ -121,10 +123,21 @@ export default function CreateAccountSheet() {
 
           <div className="auth-divider"><span>or</span></div>
 
-          <button className="btn-social" onClick={signInWithGoogle}>
+          <button className="btn-social btn-social-google" onClick={signInWithGoogle}>
+            <img src="/assets/ui/icon-google.svg" className="btn-social-icon" alt="" />
             Continue with Google
           </button>
-          {/* Apple Sign-In: shown on iOS in Capacitor phase */}
+          {isAppleSignInAvailable() && (
+            <button className="btn-social btn-social-apple" onClick={async () => {
+              setLoading(true);
+              const err = await signInWithApple();
+              setLoading(false);
+              if (err) setError(err);
+            }}>
+              <img src="/assets/ui/icon-apple.svg" className="btn-social-icon" alt="" />
+              Continue with Apple
+            </button>
+          )}
 
         </div>
 
