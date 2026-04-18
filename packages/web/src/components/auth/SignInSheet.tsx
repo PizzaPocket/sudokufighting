@@ -49,7 +49,7 @@ export default function SignInSheet() {
   }
 
   return (
-    <div className="modal-overlay" onPointerDown={handleClose}>
+    <div className={`modal-overlay${closing && !switching ? ' closing' : ''}`} onPointerDown={handleClose}>
       <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
 
         <div className="modal-sheet-header">

@@ -14,6 +14,13 @@
   background: rgba(0, 0, 0, 0.72);
   padding: 16px;
 }
+.modal-overlay.closing {
+  animation: modal-overlay-fade-out 0.16s cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes modal-overlay-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
 
 .modal-sheet {
   background: var(--surface-raised);
@@ -58,7 +65,7 @@
   }
   /* Pad body so content clears the iOS home indicator */
   .modal-sheet-body {
-    padding-bottom: max(28px, env(safe-area-inset-bottom));
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
   }
 }
 
@@ -102,7 +109,7 @@
 /* ── Body ────────────────────────────────────────────────── */
 
 .modal-sheet-body {
-  padding: 24px 28px 28px;
+  padding: 24px 28px 40px;
   overflow-y: auto;
   flex: 1;
   display: flex;
