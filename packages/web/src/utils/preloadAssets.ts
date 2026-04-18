@@ -1,9 +1,10 @@
 import { getArena } from '@sudoku-fighting/shared';
 
+const _preloaded = new Set<string>();
+
 /**
- * Preload all image assets for a given arena into the browser cache.
- * Called as soon as backgroundId is known (lobby, game_start) so assets
- * are warm by the time GameplayScreen renders them.
+ * Preload all image assets for a given arena through the full image decode
+ * pipeline (not just fetch cache), so they're ready to paint with no flash.
  */
 export function preloadArenaAssets(arenaId: string): void {
   const arena = getArena(arenaId);
@@ -17,9 +18,12 @@ export function preloadArenaAssets(arenaId: string): void {
     arena.sunStart,
     arena.dialogueBg,
     ...arena.overlays.map(o => o.src),
-  ].filter((s): s is string => !!s);
+  ].filter((s): s is string => !!s && !_preloaded.has(s));
 
   for (const src of srcs) {
-    fetch(src).catch(() => {});
+    _preloaded.add(src);
+    const img = new Image();
+    img.src = src;
+    img.decode?.().catch(() => {});
   }
 }

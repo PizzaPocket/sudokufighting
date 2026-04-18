@@ -26,7 +26,7 @@ export default function AboutModal() {
 
         <div className="modal-sheet-body about-body">
           <p className="about-body-text">
-            Sudoku Fighting is a passion project by the parent &amp; kid game development duo <strong>Leonard Downs Reese IV</strong> and <strong>Kaius Lu Reese</strong>. Character design, creative direction, and musical contribution by Kaius. Game design, programming, and original soundtrack by Leonard.
+            Sudoku Fighting is a passion project by the parent-and-kid developer duo <strong>Leonard Downs Reese IV</strong> and <strong>Kaius Lu Reese</strong>. Character design, creative direction, and musical contribution by Kaius. Game design, programming, and original soundtrack by Leonard.
           </p>
           <p className="about-body-text">
             Special thanks to <strong>Tingting Lu</strong> for your love and support, and for putting up so much with two obsessive maniacs in your home. We love you.

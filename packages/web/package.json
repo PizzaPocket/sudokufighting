@@ -7,9 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build:native": "VITE_NATIVE=true VITE_AUTH_REDIRECT_URL=sudokufighting://auth/callback tsc && VITE_NATIVE=true VITE_AUTH_REDIRECT_URL=sudokufighting://auth/callback vite build",
+    "cap:sync": "pnpm build:native && cap sync",
+    "cap:ios": "pnpm build:native && cap sync ios && cap open ios",
+    "cap:android": "pnpm build:native && cap sync android && cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
+    "@capacitor/ios": "^8.3.1",
     "@sudoku-fighting/shared": "workspace:*",
     "@supabase/supabase-js": "^2.103.0",
     "bad-words": "^4.0.0",

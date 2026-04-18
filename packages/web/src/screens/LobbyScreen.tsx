@@ -32,6 +32,7 @@ export default function LobbyScreen({ active }: Props) {
     !!navigator.share &&
     (navigator.maxTouchPoints > 0 || 'ontouchstart' in window);
   const hasSentJoin = useRef(false);
+  const screenRef = useRef<HTMLDivElement>(null);
 
   const isPrivate = gameMode === 'friend';
 
@@ -65,6 +66,11 @@ export default function LobbyScreen({ active }: Props) {
       }
     }
   }, [active, wsConnected]);
+
+  // Reset scroll position to top whenever the screen becomes active
+  useEffect(() => {
+    if (active) screenRef.current?.scrollTo(0, 0);
+  }, [active]);
 
   // Reset hasSentJoin on deactivation
   useEffect(() => {
@@ -140,7 +146,7 @@ export default function LobbyScreen({ active }: Props) {
   const p2CharName = (!myP1 ? myChar : oppChar)?.name;
 
   return (
-    <div id="screen-lobby" className={`screen${active ? ' active' : ''}`}>
+    <div ref={screenRef} id="screen-lobby" className={`screen${active ? ' active' : ''}`}>
       <div className="lobby-players">
         <div id="lobby-p1" className={`lobby-player${myP1 ? ' is-me' : ''}`}>
           <span className="lobby-player-label">P1</span>

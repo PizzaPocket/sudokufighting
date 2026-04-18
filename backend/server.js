@@ -328,6 +328,7 @@ wss.on('connection', (ws) => {
           send(player.ws, 'player_joined', {
             playerId: player.id, seat: player.seat,
             name: player.name, characterId: player.characterId, useAlt: player.useAlt,
+            shareCode: joinCode.toUpperCase(),
           });
         }
         send(room.players[0].ws, 'opponent_joined', {

@@ -24,6 +24,7 @@ export default function CharacterSelectScreen({ active }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [cardsReady, setCardsReady] = useState(false);
   const screenRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const isCampaign = gameMode === 'campaign';
 
@@ -39,6 +40,8 @@ export default function CharacterSelectScreen({ active }: Props) {
   // Trigger card-appear animation each time screen becomes active
   useEffect(() => {
     if (!active) { setCardsReady(false); return; }
+    screenRef.current?.scrollTo(0, 0);
+    scrollRef.current?.scrollTo(0, 0);
     setSelected(null);
     const t = setTimeout(() => setCardsReady(true), 50);
     return () => clearTimeout(t);
@@ -71,7 +74,7 @@ export default function CharacterSelectScreen({ active }: Props) {
       ref={screenRef}
       className={`screen${active ? ' active' : ''}${cardsReady ? ' cards-ready' : ''}${isCampaign ? ' campaign-select' : ''}`}
     >
-      <div className="char-select-scroll">
+      <div className="char-select-scroll" ref={scrollRef}>
         {isCampaign && (
           <div className="campaign-difficulty-selector">
             <span className="start-mode-label">DIFFICULTY</span>

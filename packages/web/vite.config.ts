@@ -22,6 +22,12 @@ export default defineConfig({
     },
   },
   define: {
-    __WS_URL__: JSON.stringify(process.env.VITE_WS_URL ?? process.env.WS_URL ?? null),
+    // VITE_NATIVE=true is set when building for Capacitor (iOS/Android).
+    // Native builds must use the production WS directly — localhost doesn't exist on device.
+    __WS_URL__: JSON.stringify(
+      process.env.VITE_WS_URL ??
+      process.env.WS_URL ??
+      (process.env.VITE_NATIVE === 'true' ? 'wss://sudoku-fighting-backend.fly.dev/ws' : null)
+    ),
   },
 });

@@ -32,7 +32,7 @@ export default function StartScreen({ active, entering }: Props) {
     }
   }, []);
 
-  const errorMsg = cheatActive ? 'ALL FIGHTERS UNLOCKED' : (localError ?? lobbyJoinError);
+  const errorMsg = localError ?? lobbyJoinError;
 
   function goToCharacterSelect(mode: 'quick' | 'friend' | 'practice' | 'campaign') {
     setGameMode(mode);
@@ -48,10 +48,11 @@ export default function StartScreen({ active, entering }: Props) {
       joinCodeRef.current!.value = '';
       setLocalError(null);
       setCheatActive(true);
+      setTimeout(() => setCheatActive(false), 2500);
       return;
     }
     const code = raw.toUpperCase();
-    if (code.length < 4) {
+    if (code.length !== 6 || !/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(code)) {
       setLocalError('Enter a valid room code.');
       return;
     }
@@ -88,12 +89,13 @@ export default function StartScreen({ active, entering }: Props) {
               type="text"
               maxLength={10}
               placeholder="Room code"
-              onChange={() => cheatActive && setCheatActive(false)}
               onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
             />
             <button id="btn-join-room" onClick={handleJoinRoom}>JOIN</button>
           </div>
-          <p className={`start-error${errorMsg ? ' visible' : ''}`}>{errorMsg ?? '\u00A0'}</p>
+          <p className={`field-message${(cheatActive || errorMsg) ? ' visible' : ''}${cheatActive ? ' confirm' : ' error'}`}>
+            {cheatActive ? 'ALL FIGHTERS UNLOCKED' : (errorMsg ?? '\u00A0')}
+          </p>
         </div>
 
         {/* Column 2 — Single Player */}

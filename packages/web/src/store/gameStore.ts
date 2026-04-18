@@ -442,6 +442,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           mySeat: msg.payload.seat,
           myCharacter: msg.payload.characterId,
           myUseAlt: msg.payload.useAlt,
+          shareCode: msg.payload.shareCode ?? get().shareCode,
           currentScreen: 'lobby',
         });
         break;
@@ -714,6 +715,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           roundWins: roundWins as [number, number],
           roundWinnerSeat: winnerSeat,
           roundOver: true,
+          counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
         });
         if (winnerSeat !== -1) {
           // Delay anim signals past the health_update setTimeout (max 300ms) so
@@ -738,6 +740,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           matchOver: true,
           matchWinnerSeat: msg.payload.winnerSeat,
           matchWinnerName: msg.payload.winnerName,
+          counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
         });
         break;
 

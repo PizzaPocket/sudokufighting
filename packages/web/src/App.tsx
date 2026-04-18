@@ -49,13 +49,8 @@ export default function App() {
     if (arena) preloadMusicTrack(TRACKS[arena.trackIndex].src);
   }, [backgroundId]);
 
-  // Detect splash → start transition to trigger entrance animation
+  // Track previous screen for other uses
   useEffect(() => {
-    if (currentScreen === 'start' && prevScreenRef.current === 'splash') {
-      setStartEntering(true);
-      const t = setTimeout(() => setStartEntering(false), 2000);
-      return () => clearTimeout(t);
-    }
     prevScreenRef.current = currentScreen;
   }, [currentScreen]);
 
@@ -74,6 +69,8 @@ export default function App() {
   }, [currentScreen, initialInteractionDone, setInitialInteractionDone]);
 
   function handleSplashComplete() {
+    setStartEntering(true);
+    setTimeout(() => setStartEntering(false), 2000);
     useGameStore.setState({ currentScreen: 'start', selectedTrackIndex: SELECT_TRACK_INDEX } as never);
   }
 

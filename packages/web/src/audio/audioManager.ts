@@ -503,11 +503,22 @@ const ATTACK_SFX_KEYS: Record<string, string> = {
   subgrid_special: 'subgridSpecial',
 };
 
+// Frame at which impact lands, per special (120ms per frame)
+const SPECIAL_HIT_FRAME: Partial<Record<AttackType, number>> = {
+  row_special:     2, // hit on frame 2 → 120ms
+  column_special:  3, // hit on frame 3 → 240ms
+  subgrid_special: 3,
+};
+
 export function playAttackSFX(type: AttackType, delay = SFX_LEAD_MS) {
   if (!sfxEnabled) return;
   const key = ATTACK_SFX_KEYS[type] ?? 'punch';
   const src = SFX_SRCS[key];
   playBuf(src, delay);
+  const hitFrame = SPECIAL_HIT_FRAME[type];
+  if (hitFrame != null) {
+    playBuf(SFX_SRCS.punch, (hitFrame - 1) * 120);
+  }
 }
 
 // ── Module init ────────────────────────────────────────────────────────────────

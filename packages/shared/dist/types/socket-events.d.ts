@@ -92,6 +92,7 @@ export type ServerMessage = {
         name: string;
         characterId: string;
         useAlt: boolean;
+        shareCode?: string;
     };
 } | {
     type: 'opponent_joined';

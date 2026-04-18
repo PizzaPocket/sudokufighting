@@ -1095,6 +1095,10 @@
       height: 80px;
       object-fit: cover;
       image-rendering: pixelated;
+      filter: drop-shadow(6px 6px 0 var(--p1-color));
+    }
+    .demo-player-portrait.p2 {
+      filter: drop-shadow(-6px 6px 0 var(--p2-color));
     }
     .demo-player-name {
       font-size: var(--text-md);
@@ -1800,7 +1804,7 @@
         <div class="demo-lobby-vs">VS</div>
         <div class="demo-player-row">
           <div class="demo-player-label p2" style="color:var(--p2-color)">PLAYER 2</div>
-          <img class="demo-player-portrait" src="/characters/placeholder_fighter.svg" alt="" style="opacity:0.5" />
+          <img class="demo-player-portrait p2" src="/characters/placeholder_fighter.svg" alt="" style="opacity:0.5" />
           <div class="demo-player-name">---</div>
           <span class="status-pill inactive">WAITING...</span>
         </div>
@@ -1808,7 +1812,7 @@
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Anatomy</div>
         <strong>Player label:</strong> Barlow Condensed 28px w900, player-color, white shadow (3px 3px)<br>
-        <strong>Portrait:</strong> 80px, object-fit:cover, image-rendering:pixelated. Use <code>placeholder_fighter.svg</code> until assigned.<br>
+        <strong>Portrait:</strong> 80px, object-fit:cover, image-rendering:pixelated. Shadow: <code>filter: drop-shadow(6px 6px 0 var(--p1-color))</code> for P1; <code>drop-shadow(-6px 6px 0 var(--p2-color))</code> for P2 (negative x compensates for <code>scaleX(-1)</code> portrait flip so light source is consistent). Use <code>placeholder_fighter.svg</code> until assigned.<br>
         <strong>Name:</strong> Roboto Mono 18px bold, white, purple shadow (2px 2px)<br>
         <strong>Status:</strong> <code>.status-pill.active</code> or <code>.status-pill.inactive</code>
       </div>
@@ -1837,6 +1841,27 @@
         <strong>Placeholder:</strong> tertiary, normal weight, no letter-spacing<br>
         <strong>Button:</strong> white bg, accent text, 15px bold, 1px left-border<br>
         <strong>Active:</strong> accent bg, white text (inverts)
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOLECULES: Field Message ===== -->
+  <section class="sg-section">
+    <h2 class="sg-section-title">Field Message — <code>.field-message</code></h2>
+    <p class="sg-note" style="margin-bottom:12px">Inline feedback line below a form field. Always rendered (no <code>display:none</code>) — uses <code>visibility:hidden</code> to hold its space and prevent layout jump. Add <code>.visible</code> to show, <code>.error</code> or <code>.confirm</code> for semantic colour.</p>
+    <div class="sg-row center">
+      <div class="sg-card arena" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px">
+        <p class="field-message error visible">Invalid room code — try again.</p>
+        <p class="field-message confirm visible">ALL FIGHTERS UNLOCKED</p>
+        <p class="field-message error">&nbsp;</p>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Anatomy</div>
+        <strong>Base:</strong> <code>text-sm</code>, bold, uppercase, <code>visibility:hidden</code>, <code>margin:0</code><br>
+        <strong>.error:</strong> <code>var(--danger-color)</code>, <code>text-shadow: 1px 1px 0 #fff</code><br>
+        <strong>.confirm:</strong> white, <code>var(--text-shadow-md)</code>, letter-spacing 0.08em<br>
+        <strong>.visible:</strong> <code>visibility:visible</code><br>
+        <strong>Context offset:</strong> consuming parent may add negative <code>margin-top</code> to absorb flex gap
       </div>
     </div>
   </section>

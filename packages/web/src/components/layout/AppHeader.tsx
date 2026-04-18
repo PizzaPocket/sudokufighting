@@ -71,9 +71,6 @@ export default function AppHeader() {
 
   const surrenderLabel = gameMode === 'campaign' ? 'QUIT' : 'SURRENDER';
   const confirmTitle = gameMode === 'campaign' ? 'Quit campaign?' : 'Surrender?';
-  const confirmBody = gameMode === 'campaign'
-    ? "You'll restart from Fight 1."
-    : "You'll lose this match.";
 
   return (
     <>
@@ -151,7 +148,6 @@ export default function AppHeader() {
         <div className="confirm-overlay">
           <div className="confirm-dialog">
             <span className="dialog-title">{confirmTitle}</span>
-            <span className="confirm-dialog-body">{confirmBody}</span>
             <div className="confirm-dialog-btns">
               <button className="btn btn-secondary" onClick={() => setConfirmOpen(false)}>
                 CANCEL

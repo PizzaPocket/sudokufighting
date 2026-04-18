@@ -22,7 +22,7 @@ export type ServerMessage =
   | { type: 'room_created';           payload: { roomId: string; shareCode: string } }
   | { type: 'room_not_found';         payload: Record<string, never> }
   | { type: 'room_full';              payload: Record<string, never> }
-  | { type: 'player_joined';          payload: { playerId: string; seat: 0 | 1; name: string; characterId: string; useAlt: boolean } }
+  | { type: 'player_joined';          payload: { playerId: string; seat: 0 | 1; name: string; characterId: string; useAlt: boolean; shareCode?: string } }
   | { type: 'opponent_joined';        payload: { name: string; characterId: string; useAlt: boolean; seat: 0 | 1 } }
   | { type: 'opponent_left_lobby';    payload: Record<string, never> }
   | { type: 'game_start';             payload: { roundNumber: number; puzzle: (number | null)[][]; solution: number[][]; opponentGivens: (number | null)[][]; opponentName: string; opponentCharacter: string; mySeat: 0 | 1; myUseAlt: boolean; opponentUseAlt: boolean; roundStartTime: number; backgroundId: string } }

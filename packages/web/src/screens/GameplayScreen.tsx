@@ -41,10 +41,6 @@ export default function GameplayScreen({ active }: Props) {
   const p1PanelClass = `player-panel${mySeat === 0 ? ' is-me' : ''}`;
   const p2PanelClass = `player-panel${mySeat === 1 ? ' is-me' : ''}`;
 
-  const bgStyle = arena?.background
-    ? { backgroundImage: `url(${arena.background})` }
-    : undefined;
-
   if (!active) return null;
 
   return (
@@ -52,8 +48,11 @@ export default function GameplayScreen({ active }: Props) {
       id="screen-gameplay"
       ref={screenRef}
       className="screen active"
-      style={bgStyle}
     >
+      {/* Main background image — separate layer so it can fade in without affecting HUD/grids */}
+      {arena?.background && (
+        <div className="arena-bg-image" style={{ backgroundImage: `url(${arena.background})` }} />
+      )}
       {/* Arena background layers (sun, ground, overlays) */}
       <ArenaBackground />
 

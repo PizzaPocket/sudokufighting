@@ -35,7 +35,13 @@ export default function SpLobbyScreen({ active }: Props) {
     return pickAICharacter(st.myCharacter, st.characters, st.unlockedCharacterIds);
   });
 
+  const screenRef = useRef<HTMLDivElement>(null);
   const prevActiveRef = useRef(false);
+
+  useEffect(() => {
+    if (active) screenRef.current?.scrollTo(0, 0);
+  }, [active]);
+
   useEffect(() => {
     if (active && !prevActiveRef.current && characters.length > 0) {
       setAiChar(pickAICharacter(myCharacter, characters, unlockedCharacterIds));
@@ -59,7 +65,7 @@ export default function SpLobbyScreen({ active }: Props) {
   }
 
   return (
-    <div id="screen-practice-lobby" className={`screen${active ? ' active' : ''}`}>
+    <div ref={screenRef} id="screen-practice-lobby" className={`screen${active ? ' active' : ''}`}>
       <div className="lobby-players">
         <div id="sp-lobby-p1" className="lobby-player is-me">
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />

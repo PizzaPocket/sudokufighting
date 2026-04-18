@@ -15,8 +15,7 @@ export function resolveNextFight(fightIndex, myCharacterId, characters) {
     if (!fight)
         return null;
     const opponent = characters.find(c => c.id === fight.opponentCharacterId) ?? null;
-    const isMirror = myCharacterId === fight.opponentCharacterId ||
-        (opponent?.altId != null && myCharacterId === opponent.altId);
+    const isMirror = myCharacterId === fight.opponentCharacterId;
     const opponentCharId = isMirror && opponent?.altId ? opponent.altId : fight.opponentCharacterId;
     const opponentName = isMirror && opponent?.altName ? opponent.altName : (opponent?.name ?? 'CPU');
     return { opponentCharId, opponentName, useAlt: isMirror, arenaId: fight.arenaId };

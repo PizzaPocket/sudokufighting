@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { CAMPAIGN_FIGHTS, ARENAS } from '@sudoku-fighting/shared';
 import { fadeOutMusic } from '../audio/audioManager';
@@ -8,6 +8,7 @@ import { startCampaignNextFight } from '../ai/useVsAI';
 interface Props { active: boolean; }
 
 export default function CampaignLobbyScreen({ active }: Props) {
+  const screenRef = useRef<HTMLDivElement>(null);
   const myCharacter = useGameStore(s => s.myCharacter);
   const characters = useGameStore(s => s.characters);
   const opponentCharacter = useGameStore(s => s.opponentCharacter);
@@ -19,6 +20,10 @@ export default function CampaignLobbyScreen({ active }: Props) {
 
   const fight = CAMPAIGN_FIGHTS[campaignFightIndex];
   const arena = ARENAS.find(a => a.id === fight?.arenaId);
+
+  useEffect(() => {
+    if (active) screenRef.current?.scrollTo(0, 0);
+  }, [active]);
 
   // Resolve opponent whenever the lobby activates or fight index changes
   useEffect(() => {
@@ -40,7 +45,7 @@ export default function CampaignLobbyScreen({ active }: Props) {
   }
 
   return (
-    <div id="screen-campaign-lobby" className={`screen${active ? ' active' : ''}`}>
+    <div ref={screenRef} id="screen-campaign-lobby" className={`screen${active ? ' active' : ''}`}>
       <div className="campaign-lobby-players">
         <div className="lobby-player is-me">
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />
