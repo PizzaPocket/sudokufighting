@@ -41,11 +41,13 @@ export default function AppHeader() {
 
   const isGameplay = currentScreen === 'gameplay';
   const isAiMode = gameMode === 'practice' || gameMode === 'campaign';
-  const showBack = ['character-select', 'lobby', 'practice-lobby', 'campaign-lobby'].includes(currentScreen);
+  const showBack = ['character-select', 'lobby', 'practice-lobby', 'campaign-lobby', 'privacy'].includes(currentScreen);
   const title = screenTitle(currentScreen, gameMode);
 
   function handleBack() {
     if (currentScreen === 'character-select') {
+      useGameStore.getState().setScreen('start');
+    } else if (currentScreen === 'privacy') {
       useGameStore.getState().setScreen('start');
     } else if (currentScreen === 'lobby' || currentScreen === 'practice-lobby' || currentScreen === 'campaign-lobby') {
       disconnect();

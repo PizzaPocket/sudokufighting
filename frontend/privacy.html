@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy — Sudoku Fighting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,59 +10,13 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root { --header-h: 52px; }
-
     body {
       background: #111113;
       color: rgba(255,255,255,0.85);
       font-family: 'Roboto Mono', monospace;
       font-size: 15px;
       line-height: 1.75;
-      padding: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 32px)
-               max(24px, env(safe-area-inset-right, 0px))
-               max(80px, env(safe-area-inset-bottom, 0px))
-               max(24px, env(safe-area-inset-left, 0px));
-    }
-
-    .app-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
-      padding: env(safe-area-inset-top, 0px) 12px 0;
-      background: rgba(17,17,19,0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .back-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255,255,255,0.08);
-      border: none;
-      border-radius: 20px;
-      color: rgba(255,255,255,0.85);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 6px 14px 6px 10px;
-      cursor: pointer;
-      min-height: 36px;
-      text-decoration: none;
-    }
-
-    .back-btn:hover { background: rgba(255,255,255,0.14); }
-
-    .back-arrow {
-      font-size: 18px;
-      line-height: 1;
-      margin-top: -1px;
+      padding: 48px 24px 80px;
     }
 
     .page {
@@ -155,12 +109,6 @@
   </style>
 </head>
 <body>
-  <header class="app-header">
-    <button class="back-btn" onclick="history.length > 1 ? history.back() : (location.href='/')">
-      <span class="back-arrow">&#8592;</span> Back
-    </button>
-  </header>
-
   <div class="page">
 
     <div class="wordmark">Sudoku <span>Fighting</span></div>

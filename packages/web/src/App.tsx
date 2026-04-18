@@ -17,6 +17,7 @@ import SpLobbyScreen from './screens/SpLobbyScreen';
 import CampaignLobbyScreen from './screens/CampaignLobbyScreen';
 import DialogueCutscene from './components/campaign/DialogueCutscene';
 import GameplayScreen from './screens/GameplayScreen';
+import PrivacyScreen from './screens/PrivacyScreen';
 import AppHeader from './components/layout/AppHeader';
 import ContextualMenu from './components/layout/ContextualMenu';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from './creditsContent';
@@ -101,6 +102,7 @@ export default function App() {
       <CampaignLobbyScreen active={currentScreen === 'campaign-lobby'} />
       <DialogueCutscene active={currentScreen === 'campaign-dialogue'} />
       <GameplayScreen active={currentScreen === 'gameplay'} />
+      <PrivacyScreen active={currentScreen === 'privacy'} />
       {testCreditsOpen && (
         <div className="credits-overlay">
         <div

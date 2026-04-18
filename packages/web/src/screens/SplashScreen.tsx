@@ -47,6 +47,7 @@ interface Props { onComplete: () => void; }
 export default function SplashScreen({ onComplete }: Props) {
   const setInitialInteractionDone = useGameStore(s => s.setInitialInteractionDone);
   const initialInteractionDone    = useGameStore(s => s.initialInteractionDone);
+  const setScreen                 = useGameStore(s => s.setScreen);
 
   const [puzzle]                      = useState<SplashPuzzle>(generateSplashPuzzle);
   const [inputVal, setInputVal]       = useState<number | null>(null);
@@ -219,7 +220,7 @@ export default function SplashScreen({ onComplete }: Props) {
       <div className="screen-footer">
         <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
         <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
-        <a href="/privacy.html" className="privacy-footer-link">Privacy Policy</a>
+        <button className="privacy-footer-link" onClick={() => setScreen('privacy')}>Privacy Policy</button>
       </div>
     </div>
   );

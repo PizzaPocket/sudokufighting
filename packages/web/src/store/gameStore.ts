@@ -6,7 +6,7 @@ import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY, 
 import { playAttackSFX, pauseMusic, resumeMusic, SELECT_TRACK_INDEX } from '../audio/audioManager';
 import { BASE_UNLOCKED } from '../progression/progressionService';
 
-export type Screen = 'splash' | 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay';
+export type Screen = 'splash' | 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay' | 'privacy';
 
 // Skip splash when the URL contains a ?room= code (user tapped an invite link).
 function getInitialScreen(): Screen {
