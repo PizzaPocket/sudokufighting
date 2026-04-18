@@ -49,6 +49,10 @@ html, body {
   text-decoration: none;
   transition: color 0.15s;
   white-space: nowrap;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 @media (hover: hover) {
   .privacy-footer-link:hover { color: rgba(255,255,255,1); }
