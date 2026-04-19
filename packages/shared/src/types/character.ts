@@ -27,6 +27,7 @@ export interface AnimationConfig {
   loop: boolean;
   priority: 1 | 2 | 3 | 4 | 5;
   freeze?: boolean;
+  srcOverride?: string;
 }
 
 export const ANIMATION_CONFIG: Record<AnimationState, AnimationConfig> = {
@@ -41,5 +42,5 @@ export const ANIMATION_CONFIG: Record<AnimationState, AnimationConfig> = {
   block:           { frames: 2, frameDuration: 200, loop: true,  priority: 2 },
   ko:              { frames: 2, frameDuration: 400, loop: false, priority: 5, freeze: true },
   win:             { frames: 2, frameDuration: 300, loop: true,  priority: 4 },
-  win_freeze:      { frames: 2, frameDuration: 300, loop: false, priority: 5, freeze: true },
+  win_freeze:      { frames: 2, frameDuration: 300, loop: false, priority: 5, freeze: true, srcOverride: 'win' },
 };

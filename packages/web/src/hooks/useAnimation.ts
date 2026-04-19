@@ -115,7 +115,9 @@ export class AnimationController {
   }
 
   private _updateSrc() {
-    const src = `/characters/${this.characterId}/${this.currentState}_frame${this.currentFrame}.svg`;
+    const cfg = this.currentState ? ANIMATION_CONFIG[this.currentState] : null;
+    const srcName = cfg?.srcOverride ?? this.currentState;
+    const src = `/characters/${this.characterId}/${srcName}_frame${this.currentFrame}.svg`;
     if (this.img && this._lastSrc !== src) {
       this._lastSrc = src;
       this.img.src = src;

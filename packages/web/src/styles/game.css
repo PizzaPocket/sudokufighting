@@ -192,6 +192,16 @@
   display: flex;
   justify-content: center;
   border-top: 1px solid var(--surface-raised-edge);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  cursor: pointer;
+  width: 100%;
+}
+@media (hover: hover) {
+  .leaderboard-card-footer:hover .auth-link { opacity: 1; }
 }
 .leaderboard-card-placeholder { opacity: 0.3; }
 
@@ -640,7 +650,7 @@
 .attack-flash.self-flash  { animation: self-flash  0.2s  ease-out forwards; }
 
 /* Game overlay */
-.game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: none; z-index: 200; pointer-events: none; }
+.game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: none; z-index: 200; pointer-events: none; padding-bottom: 20%; }
 .game-overlay.hidden { display: none; }
 .overlay-btn-row { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 12px; width: 280px; pointer-events: all; }
 .overlay-btn-row .btn { width: 100%; padding-left: 12px; padding-right: 12px; white-space: nowrap; }
@@ -651,8 +661,16 @@
   color: var(--accent); letter-spacing: 0; line-height: 1; text-align: center;
   animation: pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1); text-shadow: 4px 5px 0 #ffffff;
 }
+.overlay-main.campaign-exit {
+  animation: campaign-victory-exit 7.2s linear forwards;
+}
+@keyframes campaign-victory-exit {
+  0%   { transform: translateY(0); opacity: 1; }
+  78%  { opacity: 1; }
+  100% { transform: translateY(-80vh); opacity: 0; }
+}
 .overlay-sub {
-  font-size: var(--text-lg); font-weight: var(--weight-bold); color: var(--yellow);
+  font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--yellow);
   letter-spacing: -0.3px; text-shadow: var(--text-shadow-lg);
 }
 
@@ -848,12 +866,12 @@
 }
 .credits-body {
   font-family: var(--font); font-size: var(--text-md);
-  color: #ffffffcc; text-shadow: 1px 1px 0 #000;
+  color: #fff; text-shadow: 1px 1px 0 #000;
   text-align: center;
 }
 .credits-copyright {
   font-family: var(--font); font-size: var(--text-sm);
-  color: rgba(255,255,255,0.5); text-shadow: 1px 1px 0 #000;
+  color: rgba(255,255,255,0.85); text-shadow: 1px 1px 0 #000;
   text-align: center;
 }
 .credits-spacer { height: 24px; }
@@ -864,9 +882,6 @@
   align-items: center;
   gap: 8px;
   padding: 24px 32px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: var(--radius-lg);
   width: 100%;
   max-width: 320px;
 }
@@ -875,14 +890,14 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-bold);
   letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.6);
+  color: #fff;
   text-shadow: 1px 1px 0 #000;
 }
 .credits-score-value {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
-  color: var(--accent);
-  text-shadow: var(--text-shadow-xl);
+  color: #fff;
+  text-shadow: 2px 3px 0 var(--accent);
 }
 .credits-score-rank {
   display: flex;
@@ -908,23 +923,21 @@
 .unlock-screen {
   position: fixed; inset: 0; z-index: 400;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
-  background: rgba(0,0,0,0.85); pointer-events: all;
+  background: var(--purple-dark); pointer-events: all;
 }
 .unlock-header {
   font-family: var(--font-display); font-size: var(--text-3xl);
-  color: var(--accent); text-shadow: 3px 4px 0 #fff;
+  color: #fff; text-shadow: 3px 4px 0 var(--purple-deep);
   letter-spacing: 0.08em; text-align: center;
   animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) both;
 }
+.unlock-screen .character-card { box-shadow: 4px 4px 0 #fff; cursor: default; }
 .unlock-cards {
   display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
 }
 .unlock-card {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
   animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) both;
 }
-.unlock-card img { width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius-sm); }
-.unlock-card-name { font-family: var(--font-display); font-size: var(--text-xl); color: var(--canvas-text); }
 
 /* ── Campaign Lobby ───────────────────────────────────────── */
 #screen-campaign-lobby { gap: 0; }

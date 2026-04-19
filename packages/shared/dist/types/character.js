@@ -10,5 +10,5 @@ export const ANIMATION_CONFIG = {
     block: { frames: 2, frameDuration: 200, loop: true, priority: 2 },
     ko: { frames: 2, frameDuration: 400, loop: false, priority: 5, freeze: true },
     win: { frames: 2, frameDuration: 300, loop: true, priority: 4 },
-    win_freeze: { frames: 2, frameDuration: 300, loop: false, priority: 5, freeze: true },
+    win_freeze: { frames: 2, frameDuration: 300, loop: false, priority: 5, freeze: true, srcOverride: 'win' },
 };

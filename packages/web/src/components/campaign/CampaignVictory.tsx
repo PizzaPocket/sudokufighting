@@ -95,16 +95,16 @@ export default function CampaignVictory() {
               {unlockChars.map((char, i) => (
                 <div
                   key={char.id}
-                  className="unlock-card"
+                  className="unlock-card character-card"
                   style={{ animationDelay: `${i * 150}ms` }}
                 >
-                  <img src={char.portraitPath} alt={char.name} />
-                  <span className="unlock-card-name">{char.name}</span>
+                  <img src={char.portraitPath} alt={char.name} draggable={false} />
+                  <span className="char-name">{char.name}</span>
                 </div>
               ))}
             </div>
           )}
-          <button className="btn btn-alt" onClick={() => { switchToSelectMusic(); useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never); resetAll(); }}>
+          <button className="btn" onClick={() => { switchToSelectMusic(); useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never); resetAll(); }}>
             CONTINUE
           </button>
         </div>

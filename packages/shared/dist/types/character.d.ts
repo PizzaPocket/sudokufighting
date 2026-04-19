@@ -13,6 +13,7 @@ export interface AnimationConfig {
     loop: boolean;
     priority: 1 | 2 | 3 | 4 | 5;
     freeze?: boolean;
+    srcOverride?: string;
 }
 export declare const ANIMATION_CONFIG: Record<AnimationState, AnimationConfig>;
 //# sourceMappingURL=character.d.ts.map

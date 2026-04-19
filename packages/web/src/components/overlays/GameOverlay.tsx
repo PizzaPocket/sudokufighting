@@ -41,6 +41,7 @@ export default function GameOverlay() {
   const [overlay, setOverlay] = useState<OverlayContent | null>(null);
   const [showButtons, setShowButtons] = useState(false);
   const [hidden, setHidden] = useState(true);
+  const [campaignExiting, setCampaignExiting] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const mainRef = useRef<HTMLDivElement>(null);
   // Wall-clock time when round 1 started — used to compute match duration
@@ -62,6 +63,7 @@ export default function GameOverlay() {
   function showOverlay(content: OverlayContent) {
     setOverlay(content);
     setHidden(false);
+    setCampaignExiting(false);
     if (mainRef.current) {
       mainRef.current.style.animation = 'none';
       void mainRef.current.offsetWidth;
@@ -186,7 +188,7 @@ export default function GameOverlay() {
         playVictoryAnnouncer();
         showOverlay({
           main: 'VICTORY!',
-          sub: winnerDisplayName,
+          sub: st.gameMode === 'campaign' ? '' : winnerDisplayName,
           mainColor: '#FF8B16',
           mainShadow: '4px 5px 0 #8B49FF',
           subColor: '#FFCA00',
@@ -202,10 +204,11 @@ export default function GameOverlay() {
           nonce: Date.now(),
         });
       }
-      // Campaign: show CONTINUE button on win, auto-hide on loss (useCampaign shows game over)
+      // Campaign: slide VICTORY! up with credits on win, auto-hide on loss
       if (useGameStore.getState().gameMode === 'campaign') {
         if (isWinner) {
-          setShowButtons(true); // CONTINUE rendered below
+          addTimer(() => setCampaignExiting(true), 2000);
+          addTimer(() => hideOverlay(), 9200);
         } else {
           addTimer(() => hideOverlay(), 2000);
         }
@@ -223,7 +226,7 @@ export default function GameOverlay() {
       <div
         ref={mainRef}
         id="game-overlay-main"
-        className="overlay-main"
+        className={`overlay-main${campaignExiting ? ' campaign-exit' : ''}`}
         style={{ color: overlay.mainColor, textShadow: overlay.mainShadow }}
       >
         {overlay.main}
@@ -235,21 +238,6 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
-          {gameMode === 'campaign' && (
-            <button
-              className="btn"
-              onClick={() => {
-                setShowButtons(false);
-                setHidden(true);
-                fadeOutMusic(600);
-                setTimeout(() => {
-                  useGameStore.setState({ currentScreen: 'campaign-dialogue' } as never);
-                }, 600);
-              }}
-            >
-              CONTINUE
-            </button>
-          )}
           {gameMode === 'practice' && (
             <button
               className="btn"

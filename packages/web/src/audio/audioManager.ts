@@ -517,7 +517,7 @@ export function playAttackSFX(type: AttackType, delay = SFX_LEAD_MS) {
   playBuf(src, delay);
   const hitFrame = SPECIAL_HIT_FRAME[type];
   if (hitFrame != null) {
-    playBuf(SFX_SRCS.punch, (hitFrame - 1) * 120);
+    playBuf(SFX_SRCS.kick, (hitFrame - 1) * 120);
   }
 }
 

@@ -40,14 +40,14 @@
 
 @media (max-width: 600px) {
   .modal-overlay {
-    padding: 8px 8px 0;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 8px 0;
     align-items: flex-end;
   }
   .modal-sheet {
     border-bottom: none;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-height: calc(100svh - 8px);
+    max-height: calc(100svh - 8px - env(safe-area-inset-top, 0px));
     animation: modal-slide-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
   .modal-sheet.closing {

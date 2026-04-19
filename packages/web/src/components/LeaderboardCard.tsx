@@ -84,9 +84,9 @@ export default function LeaderboardCard() {
         })}
       </div>
 
-      <div className="leaderboard-card-footer">
-        <button className="auth-link" onClick={() => setScoreboardOpen(true)}>View All</button>
-      </div>
+      <button className="leaderboard-card-footer" onClick={() => setScoreboardOpen(true)}>
+        <span className="auth-link">View All</span>
+      </button>
     </div>
   );
 }
