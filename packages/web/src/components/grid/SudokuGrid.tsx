@@ -3,7 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { send } from '../../hooks/useGameSocket';
 import { vsAiPlayerMove } from '../../ai/useVsAI';
 import SudokuCell from './SudokuCell';
-import { hapticRipple } from '../../audio/haptics';
+import { hapticRipple, hapticCorrectCell, hapticWrongCell } from '../../audio/haptics';
 
 interface Props {
   /** Which player seat this grid belongs to (0 = p1, 1 = p2) */
@@ -27,6 +27,7 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
   const wipingCells = useGameStore(s => s.wipingCells);
   const lastCorrectCell = useGameStore(s => s.lastCorrectCell);
   const lastCorrectNonce = lastCorrectCell?.nonce;
+  const mistakeSignal = useGameStore(s => mySeat === 0 ? s.p1MistakeSignal : s.p2MistakeSignal);
 
   const selectCell = useGameStore(s => s.selectCell);
   const setLocalCellValue = useGameStore(s => s.setLocalCellValue);
@@ -96,6 +97,16 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
       }, dist * 120);
     });
   }, [lastCorrectNonce]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!isMe || lastCorrectNonce == null) return;
+    hapticCorrectCell();
+  }, [lastCorrectNonce]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!isMe || !mistakeSignal) return;
+    hapticWrongCell();
+  }, [mistakeSignal?.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keyboard input — only for own grid
   useEffect(() => {
