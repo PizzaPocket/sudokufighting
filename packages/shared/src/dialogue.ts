@@ -96,8 +96,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Silence alone will not bring you balance.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
-      "You are steady and focused, I will give you that.",
-      "Let's see how you handle real pressure.",
+      "Quiet and serious. You're not going to make this very entertaining.",
+      "I suppose I'll have to carry the show for both of us.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
       "You aim to be perfect, don't you?",
@@ -128,7 +128,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let go for once and see what happens.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "No plan, no strategy — just going on vibes, yeah?",
+      "No plan, no strategy, just going on vibes, yeah?",
       "Same approach I use, honestly. But I'm better at it.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
@@ -152,8 +152,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Try loosening up before you snap.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "Hey mate, now that's some proper strength.",
-      "Let's make this a good one.",
+      "Pure instinct, no map. Respect that, mate.",
+      "Let's see how far it gets ya.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
       "You're cold as ice, but also stiff as a board.",
@@ -216,7 +216,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Come on, lighten up! Even a little?",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
-      "All that stillness and not a word — confident, or just waiting?",
+      "All that stillness and not a word. Confident, or just waiting?",
       "Either way, I don't lose to patience.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
@@ -224,7 +224,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Perfection requires constant refinement, not waiting.",
     ]},
     fighter4: { speaker: 'Senna', lines: [
-      "What is with all the quiet?! Just standing there —",
+      "What is with all the quiet?! You're just standing there.",
       "I'll give you something to react to.",
     ]},
     fighter4_alt: { speaker: 'Ninja S', lines: [
@@ -233,7 +233,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
     ]},
     fighter5: { speaker: 'Boombox', lines: [
       "Blimey, you're quiet. Not even gonna say g'day?",
-      "Fair enough — I'll let the game do the talking.",
+      "Fair enough. I'll let the game do the talking.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
       "You have found quiet. But quiet is not the same as clarity.",
@@ -272,12 +272,12 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let's see how you handle pressure.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "Raw power, huh? I like that.",
-      "But can you control it under fire?",
+      "Big entrance, nice hair. Love the commitment, mate.",
+      "Hope the fight's as good as the show.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
-      "You've stripped everything down to pure focus.",
-      "Let's see if that's enough.",
+      "The presentation is noted.",
+      "Now let's see what's underneath it.",
     ]},
   },
 
@@ -312,8 +312,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "But efficiency is only the beginning.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "You possess great strength, but lack polish, mate.",
-      "That is your weakness.",
+      "Raw power, no architecture.",
+      "You were not built to be precise. I will demonstrate the difference.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
       "You remove emotion, but not imperfection.",
@@ -333,7 +333,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
     ]},
     fighter2: { speaker: 'Chuck', lines: [
       "Okay! You fight like you're angry at the whole world.",
-      "I'm just here to have a good time — try not to take it personally?",
+      "I'm just here for a good time. Try not to take it personally?",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
       "You move like a storm with no direction.",
@@ -352,8 +352,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let's see which one wins.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "Big, loud, and strong.",
-      "Yeah, I've taken down worse.",
+      "Scrappy and quick. Credit where it's due.",
+      "Still going down though.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
       "You feel… empty.",
@@ -380,8 +380,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "But sharpness that never rests will eventually break.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
-      "Your patterns are visible and exploitable.",
-      "I have already adapted.",
+      "No entrance, no warmup, no words.",
+      "All business. I can respect that. Still won't be enough.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
       "You are efficient, but not optimal.",
@@ -404,15 +404,15 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
   // ── Playing as Boombox (fighter5) ────────────────────────────────────────
   fighter5: {
     fighter1: { speaker: 'Xiao Long', lines: [
-      "You've got that calm, disciplined thing going on.",
-      "Let's see how long it holds up under pressure.",
+      "You carry a lot more than just strength.",
+      "I wonder if you've decided what to do with it.",
     ]},
     fighter1_alt: { speaker: 'Brace', lines: [
       "You fight loose, I like that.",
       "Let's see if you can back it up.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "Wow, okay — you are really big.",
+      "Wow. Okay. You are really big.",
       "I'm going to need to be extra charming to get through this one.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
@@ -428,16 +428,16 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Let's test that theory.",
     ]},
     fighter4: { speaker: 'Senna', lines: [
-      "Scrappy fighter, I respect that.",
-      "Let's see how you handle real power.",
+      "Okay. You're big. Real big.",
+      "Good thing I don't fight fair.",
     ]},
     fighter4_alt: { speaker: 'Ninja S', lines: [
       "You're sharp and precise.",
       "This'll be a good one.",
     ]},
     fighter5_alt: { speaker: 'Icebox', lines: [
-      "You've gone all cold on me, huh?",
-      "Let's see which version comes out on top.",
+      "All heat, no calculation.",
+      "I've already mapped where this leads.",
     ]},
   },
 
@@ -460,24 +460,24 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "But emptiness is not the same as stillness.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
-      "Your confidence is evident.",
-      "It will be evaluated.",
+      "You've put a lot into the performance.",
+      "Let's see if the result matches.",
     ]},
     fighter3_alt: { speaker: 'Johan', lines: [
       "You strive for perfection.",
       "I will measure the result.",
     ]},
     fighter4: { speaker: 'Senna', lines: [
-      "Your movements are erratic.",
-      "I will impose order.",
+      "All instinct, no blueprint.",
+      "That'll make this quick.",
     ]},
     fighter4_alt: { speaker: 'Ninja S', lines: [
-      "Your efficiency is acceptable.",
-      "We will determine superiority.",
+      "Efficient. Optimised for different constraints.",
+      "We'll see which ones matter today.",
     ]},
     fighter5: { speaker: 'Boombox', lines: [
-      "Hey mate, you look familiar.",
-      "Let's throw a shrimp on this barbie",
+      "Oi. That's a bit unsettling.",
+      "What happened to all the fun?",
     ]},
   },
 };
