@@ -1,10 +1,7 @@
 // Audio manager — TypeScript singleton
-import { Capacitor } from '@capacitor/core';
 import { getArena } from '@sudoku-fighting/shared';
 import type { AttackType } from '@sudoku-fighting/shared';
 import { hapticAttack } from './haptics';
-
-const isNative = Capacitor.isNativePlatform();
 
 export const TRACKS = [
   { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.m4a'    },
@@ -137,9 +134,7 @@ let _musicPauseOffset   = 0;   // track position saved on pause
 let _keepAliveNode: AudioBufferSourceNode | null = null;
 
 function startKeepAlive(ctx: AudioContext): void {
-  // Not needed on native: WKWebView/Android WebView don't auto-suspend AudioContext
-  // in the foreground. Backgrounding is handled by the onstatechange recovery listener.
-  if (isNative || _keepAliveNode) return;
+  if (_keepAliveNode) return;
   const silentBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); // 1s silence
   const node = ctx.createBufferSource();
   node.buffer = silentBuf;
@@ -162,10 +157,7 @@ function startKeepAlive(ctx: AudioContext): void {
 let _iosSessionEl: HTMLAudioElement | null = null;
 
 function keepIOSSession(): void {
-  // Not needed on native: AVAudioSession category is set at the native layer
-  // (Info.plist / AppDelegate). The HTMLAudioElement session-upgrade trick is
-  // a mobile Safari workaround only.
-  if (isNative || _iosSessionEl) return;
+  if (_iosSessionEl) return;
   const ctx = getCtx();
   const el = new Audio(SFX_SRCS.blip);
   el.loop = true;
