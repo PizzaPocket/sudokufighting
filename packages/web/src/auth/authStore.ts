@@ -12,7 +12,9 @@ interface AuthStore {
   profile: Profile | null;
   signInOpen: boolean;
   createAccountOpen: boolean;
+  forgotPasswordOpen: boolean;
   accountOpen: boolean;
+  resetPasswordMode: boolean;
   switching: boolean;
 
   setUser: (user: User | null) => void;
@@ -22,6 +24,8 @@ interface AuthStore {
   openAccount: () => void;
   switchToSignIn: () => void;
   switchToCreateAccount: () => void;
+  switchToForgotPassword: () => void;
+  setResetPasswordMode: (on: boolean) => void;
   closeAll: () => void;
 }
 
@@ -30,17 +34,22 @@ export const useAuthStore = create<AuthStore>((set) => ({
   profile: null,
   signInOpen: false,
   createAccountOpen: false,
+  forgotPasswordOpen: false,
   accountOpen: false,
+  resetPasswordMode: false,
   switching: false,
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
 
-  openSignIn: () => set({ signInOpen: true, createAccountOpen: false, accountOpen: false }),
-  openCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, accountOpen: false }),
-  openAccount: () => set({ accountOpen: true, signInOpen: false, createAccountOpen: false }),
-  closeAll: () => set({ signInOpen: false, createAccountOpen: false, accountOpen: false, switching: false }),
+  openSignIn: () => set({ signInOpen: true, createAccountOpen: false, forgotPasswordOpen: false, accountOpen: false }),
+  openCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, forgotPasswordOpen: false, accountOpen: false }),
+  openAccount: () => set({ accountOpen: true, signInOpen: false, createAccountOpen: false, forgotPasswordOpen: false }),
+  closeAll: () => set({ signInOpen: false, createAccountOpen: false, forgotPasswordOpen: false, accountOpen: false, switching: false }),
 
-  switchToSignIn: () => set({ signInOpen: true, createAccountOpen: false, switching: true }),
-  switchToCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, switching: true }),
+  switchToSignIn: () => set({ signInOpen: true, createAccountOpen: false, forgotPasswordOpen: false, switching: true }),
+  switchToCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, forgotPasswordOpen: false, switching: true }),
+  switchToForgotPassword: () => set({ forgotPasswordOpen: true, signInOpen: false, createAccountOpen: false, switching: true }),
+
+  setResetPasswordMode: (on) => set({ resetPasswordMode: on }),
 }));

@@ -3,11 +3,13 @@ import { useAuthStore } from '../../auth/authStore';
 import { signIn, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 
+
 export default function SignInSheet() {
   const signInOpen = useAuthStore(s => s.signInOpen);
   const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
   const switchToCreateAccount = useAuthStore(s => s.switchToCreateAccount);
+  const switchToForgotPassword = useAuthStore(s => s.switchToForgotPassword);
 
   const { rendered, closing } = useModalAnimation(signInOpen, switching);
 
@@ -85,6 +87,10 @@ export default function SignInSheet() {
             onChange={e => { setPassword(e.target.value); setError(''); }}
             onKeyDown={e => e.key === 'Enter' && handleSignIn()}
           />
+
+          <button className="auth-link" style={{ fontSize: 'var(--text-sm)', textAlign: 'right', marginTop: '-4px' }} onClick={switchToForgotPassword}>
+            Forgot password?
+          </button>
 
           <p className={`auth-error${error ? ' visible' : ''}`}>{error || '\u00A0'}</p>
 

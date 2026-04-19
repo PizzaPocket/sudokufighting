@@ -4,6 +4,8 @@ import { useGameSocket } from './hooks/useGameSocket';
 import { useAuthInit } from './auth/useAuthInit';
 import SignInSheet from './components/auth/SignInSheet';
 import CreateAccountSheet from './components/auth/CreateAccountSheet';
+import ForgotPasswordSheet from './components/auth/ForgotPasswordSheet';
+import ResetPasswordScreen from './components/auth/ResetPasswordScreen';
 import AccountScreen from './components/auth/AccountScreen';
 import Scoreboard from './components/overlays/Scoreboard';
 import AboutModal from './components/overlays/AboutModal';
@@ -89,6 +91,8 @@ export default function App() {
       {/* Auth sheets — mounted globally, visibility controlled by authStore */}
       <SignInSheet />
       <CreateAccountSheet />
+      <ForgotPasswordSheet />
+      <ResetPasswordScreen />
       <AccountScreen />
       <Scoreboard />
       <AboutModal />

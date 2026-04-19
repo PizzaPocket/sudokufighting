@@ -153,6 +153,7 @@
   visibility: hidden;
 }
 .auth-error.visible { visibility: visible; }
+.auth-error.success { color: #4ade80; }
 
 /* ── Divider ─────────────────────────────────────────────── */
 

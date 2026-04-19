@@ -42,12 +42,16 @@ export default function CreateAccountSheet() {
       setError('Please enter your email and password.');
       return;
     }
-    if (password !== confirm) {
-      setError('Passwords do not match.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('Please enter a valid email address.');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (password !== confirm) {
+      setError('Passwords do not match.');
       return;
     }
     setLoading(true);

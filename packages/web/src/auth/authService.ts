@@ -1,5 +1,7 @@
 import { Filter } from 'bad-words';
 import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
+import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { supabase } from './supabaseClient';
 import { useAuthStore } from './authStore';
 import type { Profile } from './authStore';
@@ -122,10 +124,28 @@ export async function createAccount(email: string, password: string): Promise<st
   return error ? friendlyError(error.message) : null;
 }
 
+function getRedirectUrl(): string {
+  if (Capacitor.isNativePlatform()) return 'sudokufighting://auth/callback';
+  return import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
+}
+
+async function oauthSignIn(provider: 'google' | 'apple'): Promise<void> {
+  const redirectTo = getRedirectUrl();
+  if (Capacitor.isNativePlatform()) {
+    // Use in-app browser sheet (ASWebAuthenticationSession on iOS) — no app switch
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo, skipBrowserRedirect: true },
+    });
+    if (error || !data.url) return;
+    await Browser.open({ url: data.url, windowName: '_self' });
+  } else {
+    await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
+  }
+}
+
 export async function signInWithGoogle(): Promise<void> {
-  // VITE_AUTH_REDIRECT_URL: set to window.location.origin for dev, deep link for Capacitor
-  const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
-  await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
+  await oauthSignIn('google');
 }
 
 export function isAppleSignInAvailable(): boolean {
@@ -133,9 +153,38 @@ export function isAppleSignInAvailable(): boolean {
 }
 
 export async function signInWithApple(): Promise<string | null> {
-  const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
-  await supabase.auth.signInWithOAuth({ provider: 'apple', options: { redirectTo } });
+  // On iOS native: use the system Face ID / Touch ID prompt — no browser at all
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+    try {
+      const { response } = await SignInWithApple.authorize({
+        clientId: 'com.sudokufighting.app',
+        redirectURI: 'sudokufighting://auth/callback',
+        scopes: 'email name',
+      });
+      const { error } = await supabase.auth.signInWithIdToken({
+        provider: 'apple',
+        token: response.identityToken,
+      });
+      if (error) return error.message;
+      return null;
+    } catch {
+      return null; // user cancelled
+    }
+  }
+  // Web / Android: OAuth sheet
+  await oauthSignIn('apple');
   return null;
+}
+
+export async function resetPassword(email: string): Promise<string | null> {
+  const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+  return error ? friendlyError(error.message) : null;
+}
+
+export async function updatePassword(password: string): Promise<string | null> {
+  const { error } = await supabase.auth.updateUser({ password });
+  return error ? friendlyError(error.message) : null;
 }
 
 export async function signOut(): Promise<void> {
