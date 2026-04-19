@@ -9,3 +9,5 @@ art/
 packages/web/src/**/*.js
 packages/web/src/**/*.js.map
 packages/shared/tsconfig.tsbuildinfo
+*.p8
+gen-apple-secret.mjs
