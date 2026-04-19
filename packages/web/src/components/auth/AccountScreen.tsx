@@ -25,6 +25,7 @@ export default function AccountScreen() {
 
   const { rendered, closing } = useModalAnimation(accountOpen);
 
+  const [confirmSignOut, setConfirmSignOut] = useState(false);
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [nameError, setNameError] = useState('');
@@ -71,6 +72,7 @@ export default function AccountScreen() {
   }
 
   async function handleSignOut() {
+    setConfirmSignOut(false);
     await signOut();
   }
 
@@ -213,12 +215,28 @@ export default function AccountScreen() {
 
           <div className="account-divider" />
 
-          <button className="auth-signout-link" onClick={handleSignOut}>
+          <button className="auth-signout-link" onClick={() => setConfirmSignOut(true)}>
             SIGN OUT
           </button>
 
         </div>
       </div>
+
+      {confirmSignOut && (
+        <div className="confirm-overlay">
+          <div className="confirm-dialog">
+            <span className="dialog-title">SIGN OUT?</span>
+            <div className="confirm-dialog-btns">
+              <button className="btn btn-secondary" onClick={() => setConfirmSignOut(false)}>
+                CANCEL
+              </button>
+              <button className="btn" onClick={handleSignOut}>
+                SIGN OUT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

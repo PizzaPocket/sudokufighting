@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { send } from '../../hooks/useGameSocket';
 import { vsAiPlayerMove } from '../../ai/useVsAI';
 import SudokuCell from './SudokuCell';
+import { hapticRipple } from '../../audio/haptics';
 
 interface Props {
   /** Which player seat this grid belongs to (0 = p1, 1 = p2) */
@@ -84,6 +85,8 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
       if (!byDist.has(dist)) byDist.set(dist, []);
       byDist.get(dist)!.push(key);
     });
+    const maxDist = Math.max(...byDist.keys());
+    hapticRipple(maxDist);
     byDist.forEach((keys, dist) => {
       setTimeout(() => {
         setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.add(k)); return next; });

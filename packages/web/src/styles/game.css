@@ -670,7 +670,7 @@
   100% { transform: translateY(-80vh); opacity: 0; }
 }
 .overlay-sub {
-  font-size: var(--text-xl); font-weight: var(--weight-bold); color: var(--yellow);
+  font-size: var(--text-overlay-sub); font-weight: var(--weight-bold); color: var(--yellow);
   letter-spacing: -0.3px; text-shadow: var(--text-shadow-lg);
 }
 
@@ -691,6 +691,10 @@
 
 @media (max-width: 500px) {
   :root {
+    /* Layout tokens only — safe to compress on small screens.
+       Do NOT add display tokens here (e.g. --text-overlay-sub).
+       Display tokens must stay fixed; override them in the specific
+       component rule instead of here. */
     --text-xl:  18px;
     --text-3xl: 44px;
     --text-4xl: 56px;
@@ -751,15 +755,19 @@
     width: 100%; padding: 2px 0 8px;
     margin-top: 0; flex-shrink: 0; position: relative; z-index: 10;
   }
+  .game-overlay { padding-bottom: 30%; }
   .numpad-btn {
     font-family: var(--font); font-size: 19px; font-weight: var(--weight-bold);
     background: rgba(255,255,255,0.85); border: 2px solid rgba(0,0,0,0.15);
     border-radius: 6px; color: var(--puzzle-text); height: 44px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.1s, transform 0.08s;
+    transition: background 0.08s, transform 0.06s, color 0.08s, border-color 0.08s;
     text-shadow: none; user-select: none; touch-action: manipulation;
   }
-  .numpad-btn:active { background: rgba(255,255,255,1); transform: scale(0.93); }
+  .numpad-btn:active {
+    background: var(--accent); border-color: var(--accent);
+    color: #000; transform: scale(0.91);
+  }
 }
 
 /* =========================================================

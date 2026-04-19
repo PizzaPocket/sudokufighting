@@ -18,7 +18,13 @@ export default function CampaignGameOver() {
     const el = document.getElementById('fight-stage');
     if (el) {
       const rect = el.getBoundingClientRect();
-      setSpriteBottom(window.innerHeight - rect.bottom);
+      // On native iOS (viewport-fit=cover), window.innerHeight includes the
+      // home-indicator safe area. Subtract it so the sprite lands at the same
+      // visual position as on mobile web.
+      const sab = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--sab')
+      ) || 0;
+      setSpriteBottom(window.innerHeight - rect.bottom - sab);
     }
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);

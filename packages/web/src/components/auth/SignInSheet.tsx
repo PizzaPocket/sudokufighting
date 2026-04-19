@@ -105,7 +105,12 @@ export default function SignInSheet() {
 
           <div className="auth-divider"><span>or</span></div>
 
-          <button className="btn-social btn-social-google" onClick={signInWithGoogle}>
+          <button className="btn-social btn-social-google" onClick={async () => {
+              setLoading(true);
+              const err = await signInWithGoogle();
+              setLoading(false);
+              if (err) setError(err);
+            }}>
             <img src="/assets/ui/icon-google.svg" className="btn-social-icon" alt="" />
             Continue with Google
           </button>

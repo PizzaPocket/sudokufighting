@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { initAudio, playLogoAndSelectMusic } from '../audio/audioManager';
+import { hapticRipple } from '../audio/haptics';
 import SudokuCell from '../components/grid/SudokuCell';
 import { CREDITS } from '../creditsContent';
 
@@ -97,6 +98,7 @@ export default function SplashScreen({ onComplete }: Props) {
         if (!byDist.has(dist)) byDist.set(dist, []);
         byDist.get(dist)!.push(key);
       });
+      hapticRipple(Math.max(...byDist.keys()));
       byDist.forEach((keys, dist) => {
         setTimeout(() => {
           setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.add(k)); return next; });

@@ -26,6 +26,15 @@ const SPECIAL_HIT_MS: Partial<Record<AttackType, number>> = {
   subgrid_special: 240,
 };
 
+// Staggered light taps mirroring the visual ripple (120ms per wave, matching CSS).
+// waveCount = max Chebyshev distance in the ripple's byDist map.
+export function hapticRipple(waveCount: number) {
+  if (!isNative) return;
+  for (let wave = 0; wave <= waveCount; wave++) {
+    delayed(() => impact(wave === 0 ? ImpactStyle.Medium : ImpactStyle.Light), wave * 120);
+  }
+}
+
 export function hapticAttack(type: AttackType, leadMs = 0) {
   if (!isNative) return;
 

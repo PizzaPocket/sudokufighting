@@ -138,14 +138,19 @@ async function oauthSignIn(provider: 'google' | 'apple'): Promise<void> {
       options: { redirectTo, skipBrowserRedirect: true },
     });
     if (error || !data.url) return;
-    await Browser.open({ url: data.url, windowName: '_self' });
+    await Browser.open({ url: data.url });
   } else {
     await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
   }
 }
 
-export async function signInWithGoogle(): Promise<void> {
-  await oauthSignIn('google');
+export async function signInWithGoogle(): Promise<string | null> {
+  try {
+    await oauthSignIn('google');
+    return null;
+  } catch {
+    return 'Something went wrong — please try again.';
+  }
 }
 
 export function isAppleSignInAvailable(): boolean {

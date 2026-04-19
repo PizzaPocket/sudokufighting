@@ -55,7 +55,7 @@
   --font:         'Roboto Mono', ui-monospace, 'Courier New', monospace;
   --font-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
 
-  /* Type scale */
+  /* Type scale — layout tokens (safe to compress on mobile breakpoints) */
   --text-xs:   10px;
   --text-btn:  15px;
   --text-sm:   12px;
@@ -66,6 +66,10 @@
   --text-2xl:  28px;
   --text-3xl:  66px;
   --text-4xl:  96px;
+
+  /* Display tokens — do NOT override in mobile breakpoints.
+     For text that must stay legible at a fixed size regardless of screen width. */
+  --text-overlay-sub: 28px;
 
   /* Weight scale */
   --weight-normal: 400;
@@ -121,4 +125,8 @@
   --text-shadow-4xl:  4px 5px 0 var(--accent);
 
   --header-h: 48px;
+
+  /* Exposes env() safe-area values as CSS custom properties so JS can read
+     them via getComputedStyle — env() is not directly accessible from JS. */
+  --sab: env(safe-area-inset-bottom, 0px);
 }
