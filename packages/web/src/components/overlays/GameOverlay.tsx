@@ -207,9 +207,10 @@ export default function GameOverlay() {
           nonce: Date.now(),
         });
       }
-      // Final campaign fight: slide VICTORY! up with credits on win, auto-hide on loss
-      if (useGameStore.getState().gameMode === 'campaign' && isFinalCampaignFight) {
-        if (isWinner) {
+      // Campaign: never show manual CTAs — game advances automatically.
+      // Final fight win gets the credits cinematic; everything else auto-hides.
+      if (useGameStore.getState().gameMode === 'campaign') {
+        if (isFinalCampaignFight && isWinner) {
           addTimer(() => setCampaignExiting(true), 2000);
           addTimer(() => hideOverlay(), 9200);
         } else {
