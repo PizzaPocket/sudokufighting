@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { AnimationController, preloadCharacterSprites } from '../../hooks/useAnimation';
 import type { AnimSignal } from '../../store/gameStore';
 import MistakeEffect from './MistakeEffect';
+import { hapticHit } from '../../audio/haptics';
 
 interface Props {
   seat: 0 | 1;
@@ -70,6 +71,13 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
     }
     controllerRef.current.play(signal.state);
   }, [signal?.state, signal?.nonce]);
+
+  // Haptic feedback when this character receives a hit (player's own sprite only)
+  useEffect(() => {
+    if (seat !== mySeat || !signal) return;
+    if (signal.state === 'damage_heavy') hapticHit(true);
+    else if (signal.state === 'damage_light') hapticHit(false);
+  }, [signal?.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!resolvedCharId) return null;
 

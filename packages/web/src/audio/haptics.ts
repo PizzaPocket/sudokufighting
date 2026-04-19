@@ -26,6 +26,13 @@ const SPECIAL_HIT_MS: Partial<Record<AttackType, number>> = {
   subgrid_special: 240,
 };
 
+export function hapticHit(heavy: boolean) {
+  if (!isNative) return;
+  // Red flash appears on frame 2 of damage_light (150ms) and frame 3 of damage_heavy (300ms)
+  const ms = heavy ? 300 : 150;
+  delayed(() => impact(heavy ? ImpactStyle.Heavy : ImpactStyle.Medium), ms);
+}
+
 export function hapticCorrectCell() {
   if (!isNative) return;
   impact(ImpactStyle.Light);

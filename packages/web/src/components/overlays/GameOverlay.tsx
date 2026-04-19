@@ -213,8 +213,12 @@ export default function GameOverlay() {
         if (isFinalCampaignFight && isWinner) {
           addTimer(() => setCampaignExiting(true), 2000);
           addTimer(() => hideOverlay(), 9200);
-        } else {
+        } else if (!isWinner) {
+          // Loss — CampaignGameOver overlay takes over, hide this overlay
           addTimer(() => hideOverlay(), 2000);
+        } else {
+          // Non-final win — show CONTINUE CTA
+          setShowButtons(true);
         }
         return;
       }
@@ -242,6 +246,18 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
+          {gameMode === 'campaign' && !isFinalCampaignFight && (
+            <button
+              className="btn"
+              onClick={() => {
+                setShowButtons(false);
+                hideOverlay();
+                useGameStore.setState({ campaignResult: null, currentScreen: 'campaign-dialogue' } as never);
+              }}
+            >
+              CONTINUE
+            </button>
+          )}
           {gameMode === 'practice' && (
             <button
               className="btn"
