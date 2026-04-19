@@ -1,6 +1,7 @@
 // Audio manager — TypeScript singleton
 import { getArena } from '@sudoku-fighting/shared';
 import type { AttackType } from '@sudoku-fighting/shared';
+import { hapticAttack } from './haptics';
 
 export const TRACKS = [
   { title: "I'm Going For It", src: '/sounds/Im_Going_For_It.m4a'    },
@@ -519,6 +520,7 @@ export function playAttackSFX(type: AttackType, delay = SFX_LEAD_MS) {
   if (hitFrame != null) {
     playBuf(SFX_SRCS.kick, (hitFrame - 1) * 120);
   }
+  hapticAttack(type, delay);
 }
 
 // ── Module init ────────────────────────────────────────────────────────────────
