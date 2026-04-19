@@ -9,6 +9,7 @@ import {
   startFightMusic, fadeOutMusic, getSelectedTrackIndex,
   switchToSelectMusic, SELECT_TRACK_INDEX,
 } from '../../audio/audioManager';
+import { CAMPAIGN_FIGHTS } from '@sudoku-fighting/shared';
 import { useAuthStore } from '../../auth/authStore';
 import { recordMatch, setPendingMatch, type RecordMatchInput } from '../../stats/statsService';
 
@@ -33,6 +34,8 @@ export default function GameOverlay() {
   const matchWinnerSeat = useGameStore(s => s.matchWinnerSeat);
   const opponentDisconnected = useGameStore(s => s.opponentDisconnected);
   const gameMode = useGameStore(s => s.gameMode);
+  const campaignFightIndex = useGameStore(s => s.campaignFightIndex);
+  const isFinalCampaignFight = campaignFightIndex === CAMPAIGN_FIGHTS.length - 1;
   const resetAll = useGameStore(s => s.resetAll);
 
   const user = useAuthStore(s => s.user);
@@ -188,7 +191,7 @@ export default function GameOverlay() {
         playVictoryAnnouncer();
         showOverlay({
           main: 'VICTORY!',
-          sub: st.gameMode === 'campaign' ? '' : winnerDisplayName,
+          sub: (st.gameMode === 'campaign' && isFinalCampaignFight) ? '' : winnerDisplayName,
           mainColor: '#FF8B16',
           mainShadow: '4px 5px 0 #8B49FF',
           subColor: '#FFCA00',
@@ -204,8 +207,8 @@ export default function GameOverlay() {
           nonce: Date.now(),
         });
       }
-      // Campaign: slide VICTORY! up with credits on win, auto-hide on loss
-      if (useGameStore.getState().gameMode === 'campaign') {
+      // Final campaign fight: slide VICTORY! up with credits on win, auto-hide on loss
+      if (useGameStore.getState().gameMode === 'campaign' && isFinalCampaignFight) {
         if (isWinner) {
           addTimer(() => setCampaignExiting(true), 2000);
           addTimer(() => hideOverlay(), 9200);
