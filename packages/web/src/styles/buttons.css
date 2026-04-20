@@ -69,3 +69,20 @@
 .btn-danger { background: var(--danger-color); box-shadow: 4px 4px 0 #ffffff; }
 @media (hover: hover) { .btn-danger:not(:disabled):hover { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; } }
 .btn-danger:not(:disabled):active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
+
+.btn-link {
+  font-family: var(--font);
+  font-size: var(--text-btn);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--canvas-text-dim);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (hover: hover) { .btn-link:hover { color: var(--canvas-text); } }
+.btn-link:active { color: var(--accent-light); }

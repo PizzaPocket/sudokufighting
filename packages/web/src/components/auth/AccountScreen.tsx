@@ -127,7 +127,7 @@ export default function AccountScreen() {
             <>
               <div className="account-username-row">
                 <span className="account-username">{profile.username}</span>
-                <button className="btn btn-sm btn-secondary" onClick={startEdit}>
+                <button className="btn-link" onClick={startEdit}>
                   EDIT
                 </button>
               </div>

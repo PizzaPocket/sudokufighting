@@ -172,8 +172,11 @@ export async function signInWithApple(): Promise<string | null> {
       });
       if (error) return error.message;
       return null;
-    } catch {
-      return null; // user cancelled
+    } catch (e: unknown) {
+      // Code 1001 = user cancelled — silent. Everything else is a real error.
+      const code = (e as { code?: number })?.code;
+      if (code === 1001) return null;
+      return 'Apple Sign-In failed — please try again.';
     }
   }
   // Web / Android: OAuth sheet

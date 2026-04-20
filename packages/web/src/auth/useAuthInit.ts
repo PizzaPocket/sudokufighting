@@ -16,8 +16,12 @@ export function useAuthInit() {
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
         if (url.startsWith('sudokufighting://auth/callback')) {
-          await supabase.auth.exchangeCodeForSession(url);
+          const { error } = await supabase.auth.exchangeCodeForSession(url);
           await Browser.close();
+          if (error) {
+            // Show a recoverable error on the sign-in sheet
+            useAuthStore.getState().openSignIn();
+          }
         }
       }).then(handle => { urlSub = handle; });
     }
@@ -39,12 +43,21 @@ export function useAuthInit() {
           return;
         }
 
-        // Close auth sheets on successful sign-in
-        if (event === 'SIGNED_IN') {
+        // Close auth sheets on successful sign-in.
+        // Also handle INITIAL_SESSION: OAuth redirects (especially Apple web) can
+        // establish the session before the subscription is registered, so SIGNED_IN
+        // fires before our listener and we only see INITIAL_SESSION on subscribe.
+        const shouldClose = event === 'SIGNED_IN' ||
+          (event === 'INITIAL_SESSION' && user != null &&
+            (useAuthStore.getState().signInOpen || useAuthStore.getState().createAccountOpen));
+
+        if (shouldClose) {
           useAuthStore.getState().closeAll();
-          // Retroactively save any match played as a guest
-          const pending = consumePendingMatch();
-          if (pending) recordMatch(pending);
+          if (event === 'SIGNED_IN') {
+            // Retroactively save any match played as a guest
+            const pending = consumePendingMatch();
+            if (pending) recordMatch(pending);
+          }
         }
       }
     );
