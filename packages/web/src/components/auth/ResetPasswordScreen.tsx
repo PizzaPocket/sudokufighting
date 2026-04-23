@@ -29,14 +29,19 @@ export default function ResetPasswordScreen() {
     }
     setLoading(true);
     setMessage('');
-    const err = await updatePassword(password);
-    setLoading(false);
-    if (err) {
-      setMessage(err);
-    } else {
-      setIsSuccess(true);
-      setMessage('Password updated! You\'re now signed in.');
-      setTimeout(() => setResetPasswordMode(false), 2000);
+    try {
+      const err = await updatePassword(password);
+      if (err) {
+        setMessage(err);
+      } else {
+        setIsSuccess(true);
+        setMessage('Password updated! You\'re now signed in.');
+        setTimeout(() => setResetPasswordMode(false), 2000);
+      }
+    } catch {
+      setMessage('Something went wrong — please try again.');
+    } finally {
+      setLoading(false);
     }
   }
 

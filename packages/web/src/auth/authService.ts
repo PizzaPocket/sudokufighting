@@ -191,8 +191,12 @@ export async function resetPassword(email: string): Promise<string | null> {
 }
 
 export async function updatePassword(password: string): Promise<string | null> {
-  const { error } = await supabase.auth.updateUser({ password });
-  return error ? friendlyError(error.message) : null;
+  try {
+    const { error } = await supabase.auth.updateUser({ password });
+    return error ? friendlyError(error.message) : null;
+  } catch {
+    return 'Something went wrong — please try again.';
+  }
 }
 
 export async function signOut(): Promise<void> {
