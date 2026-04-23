@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
 import { resetPassword } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
-import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 
 export default function ForgotPasswordSheet() {
   const forgotPasswordOpen = useAuthStore(s => s.forgotPasswordOpen);
@@ -10,8 +9,7 @@ export default function ForgotPasswordSheet() {
   const closeAll = useAuthStore(s => s.closeAll);
   const switchToSignIn = useAuthStore(s => s.switchToSignIn);
 
-  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
-  const { rendered, closing } = useModalAnimation(forgotPasswordOpen, switching || swipeOut);
+  const { rendered, closing } = useModalAnimation(forgotPasswordOpen, switching);
 
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -63,8 +61,7 @@ export default function ForgotPasswordSheet() {
 
   return (
     <div className={`modal-overlay${closing && !switching ? ' closing' : ''}`} onPointerDown={handleClose}>
-      <div ref={sheetRef} className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
-        <div className="modal-sheet-handle" {...handleProps} />
+      <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
         <div className="modal-sheet-header">
           <button
             className="btn-utility header-icon-btn modal-sheet-back"

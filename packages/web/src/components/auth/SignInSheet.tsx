@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
 import { signIn, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
-import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 
 
 export default function SignInSheet() {
@@ -14,8 +13,7 @@ export default function SignInSheet() {
   const oauthError = useAuthStore(s => s.oauthError);
   const setOauthError = useAuthStore(s => s.setOauthError);
 
-  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
-  const { rendered, closing } = useModalAnimation(signInOpen, switching || swipeOut);
+  const { rendered, closing } = useModalAnimation(signInOpen, switching);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -56,8 +54,7 @@ export default function SignInSheet() {
 
   return (
     <div className={`modal-overlay${closing && !switching ? ' closing' : ''}`} onPointerDown={handleClose}>
-      <div ref={sheetRef} className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
-        <div className="modal-sheet-handle" {...handleProps} />
+      <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
         <div className="modal-sheet-header">
           {/* Left spacer balances the close button so title stays centred */}
           <div className="modal-sheet-back" />

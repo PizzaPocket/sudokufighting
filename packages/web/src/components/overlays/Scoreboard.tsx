@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../auth/authStore';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
-import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 import {
   loadOnlineLeaderboard,
   loadCampaignLeaderboard,
@@ -21,8 +20,7 @@ export default function Scoreboard() {
   const profile = useAuthStore(s => s.profile);
 
   function handleClose() { setScoreboardOpen(false); }
-  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
-  const { rendered, closing } = useModalAnimation(open, swipeOut);
+  const { rendered, closing } = useModalAnimation(open);
 
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
   const [onlineRows, setOnlineRows] = useState<LeaderboardOnlineRow[] | null>(null);
@@ -43,8 +41,7 @@ export default function Scoreboard() {
 
   return (
     <div className="modal-overlay" onPointerDown={handleClose}>
-      <div ref={sheetRef} className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
-        <div className="modal-sheet-handle" {...handleProps} />
+      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />
           <span className="modal-sheet-title">LEADERBOARD</span>

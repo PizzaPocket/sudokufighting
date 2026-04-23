@@ -1,4 +1,4 @@
-export type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'default' | 'error';
 
 interface Toast {
   id: number;
@@ -14,7 +14,7 @@ function notify() {
   listeners.forEach(l => l());
 }
 
-export function showToast(message: string, type: ToastType = 'success', durationMs = 3000) {
+export function showToast(message: string, type: ToastType = 'default', durationMs = 3000) {
   const id = nextId++;
   toasts = [...toasts, { id, message, type }];
   notify();

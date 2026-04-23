@@ -27,11 +27,6 @@
   overflow: hidden;
 }
 
-/* Drag handle — only visible on mobile where the sheet slides up from the bottom */
-.modal-sheet-handle {
-  display: none;
-}
-
 /* Mobile: bottom-sheet layout — sheet anchors to bottom edge and slides up/down */
 @keyframes modal-slide-up {
   from { transform: translateY(100%); }
@@ -44,26 +39,6 @@
 }
 
 @media (max-width: 600px) {
-  .modal-sheet-handle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 24px;
-    flex-shrink: 0;
-    touch-action: none;
-    cursor: grab;
-  }
-  .modal-sheet-handle::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.2);
-  }
-  .modal-sheet-handle:active { cursor: grabbing; }
-
   .modal-overlay {
     padding: calc(8px + env(safe-area-inset-top, 0px)) 8px 0;
     align-items: flex-end;

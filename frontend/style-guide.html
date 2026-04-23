@@ -2318,20 +2318,20 @@
   <!-- ===== ORGANISMS: Toast ===== -->
   <section class="sg-section">
     <h2 class="sg-section-title">Toast Notification</h2>
-    <p class="sg-note" style="margin-bottom:12px">Ephemeral feedback over gameplay or between screens. Fixed bottom-center, slides up on show, auto-dismisses at 3s. Dark mode — readable over any arena. Left border carries the semantic signal.</p>
+    <p class="sg-note" style="margin-bottom:12px">Ephemeral feedback over gameplay or between screens. Fixed bottom-center, slides up on show, auto-dismisses at 3s. The left border is the only semantic signal. No icons.</p>
     <div class="sg-row center">
       <div class="sg-card dark" style="display:flex;flex-direction:column;gap:10px;flex:1;padding:20px">
-        <div class="sg-toast toast-success"><span class="sg-toast-icon">✓</span><span>Match saved to history</span></div>
-        <div class="sg-toast toast-error"><span class="sg-toast-icon">✕</span><span>Connection lost — reconnecting</span></div>
-        <div class="sg-toast toast-info"><span class="sg-toast-icon">i</span><span>Opponent joined the room</span></div>
+        <div class="sg-toast" style="border-left:4px solid var(--accent)">Account created. Welcome!</div>
+        <div class="sg-toast" style="border-left:4px solid var(--accent)">Signed out.</div>
+        <div class="sg-toast toast-error">Connection lost. Please reconnect.</div>
       </div>
       <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
         <div class="sg-card-label">Variants</div>
-        <code>toast-success</code> → accent left border<br>
-        <code>toast-error</code> → danger left border<br>
-        <code>toast-info</code> → grey left border<br><br>
+        <code>default</code> → purple (<code>--accent</code>) left border<br>
+        <code>error</code> → red (<code>--danger-color</code>) left border<br><br>
+        No icons. The border colour carries the signal.<br><br>
         Panel: rgba(20,20,20,0.96), hard pixel shadow<br>
-        <strong>React:</strong> <code>showToast(message, type)</code> from <code>toastStore.ts</code> → slide-up 0.2s → auto-remove after 3s
+        <strong>React:</strong> <code>showToast(msg)</code> or <code>showToast(msg, 'error')</code>
       </div>
     </div>
   </section>
