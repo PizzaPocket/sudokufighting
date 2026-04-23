@@ -49,6 +49,10 @@ export default function GameOverlay() {
   const mainRef = useRef<HTMLDivElement>(null);
   // Wall-clock time when round 1 started — used to compute match duration
   const matchStartTimeRef = useRef<number | null>(null);
+  // Snapshot of isFinalCampaignFight at match-end time. useCampaign immediately
+  // advances campaignFightIndex to nextIndex on a non-final win, so by the time
+  // the buttons render isFinalCampaignFight is already true for the penultimate fight.
+  const matchEndWasFinalFight = useRef(false);
 
   function clearTimers() {
     timers.current.forEach(t => clearTimeout(t));
@@ -149,6 +153,7 @@ export default function GameOverlay() {
     if (!matchOver || matchWinnerSeat === null) return;
     clearTimers();
     setShowButtons(false);
+    matchEndWasFinalFight.current = isFinalCampaignFight;
 
     addTimer(() => {
       const st = useGameStore.getState();
@@ -210,7 +215,7 @@ export default function GameOverlay() {
       // Campaign: never show manual CTAs — game advances automatically.
       // Final fight win gets the credits cinematic; everything else auto-hides.
       if (useGameStore.getState().gameMode === 'campaign') {
-        if (isFinalCampaignFight && isWinner) {
+        if (matchEndWasFinalFight.current && isWinner) {
           addTimer(() => setCampaignExiting(true), 2000);
           addTimer(() => hideOverlay(), 9200);
         } else if (!isWinner) {
@@ -246,7 +251,7 @@ export default function GameOverlay() {
       )}
       {showButtons && (
         <div className="overlay-btn-row">
-          {gameMode === 'campaign' && !isFinalCampaignFight && (
+          {gameMode === 'campaign' && !matchEndWasFinalFight.current && (
             <button
               className="btn"
               onClick={() => {

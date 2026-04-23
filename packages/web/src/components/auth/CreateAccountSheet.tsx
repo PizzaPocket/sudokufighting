@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuthStore } from '../../auth/authStore';
 import { createAccount, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
+import { showToast } from '../../toasts/toastStore';
 
 export default function CreateAccountSheet() {
   const createAccountOpen = useAuthStore(s => s.createAccountOpen);
@@ -9,7 +11,8 @@ export default function CreateAccountSheet() {
   const closeAll = useAuthStore(s => s.closeAll);
   const switchToSignIn = useAuthStore(s => s.switchToSignIn);
 
-  const { rendered, closing } = useModalAnimation(createAccountOpen, switching);
+  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
+  const { rendered, closing } = useModalAnimation(createAccountOpen, switching || swipeOut);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,14 +61,14 @@ export default function CreateAccountSheet() {
     setError('');
     const err = await createAccount(email.trim(), password);
     setLoading(false);
-    if (err) setError(err);
-    // On success, useAuthInit closes the sheet via closeAll()
+    if (err) { setError(err); return; }
+    showToast('Account created. Welcome!');
   }
 
   return (
     <div className={`modal-overlay${closing && !switching ? ' closing' : ''}`} onPointerDown={handleClose}>
-      <div className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
-
+      <div ref={sheetRef} className={`modal-sheet${closing && !switching ? ' closing' : ''}${switching ? ' instant' : ''}`} onPointerDown={e => e.stopPropagation()}>
+        <div className="modal-sheet-handle" {...handleProps} />
         <div className="modal-sheet-header">
           <button
             className="btn-utility header-icon-btn modal-sheet-back"

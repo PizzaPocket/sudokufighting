@@ -4,6 +4,8 @@ import { useGameStore } from '../../store/gameStore';
 import { signOut, updateUsername } from '../../auth/authService';
 import { loadMyStats, type MyStats } from '../../stats/statsService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
+import { showToast } from '../../toasts/toastStore';
 
 function fmt(n: number): string {
   return n.toLocaleString();
@@ -23,7 +25,8 @@ export default function AccountScreen() {
   const unlockedCharacterIds = useGameStore(s => s.unlockedCharacterIds);
   const campaignClearCount = useGameStore(s => s.campaignClearCount);
 
-  const { rendered, closing } = useModalAnimation(accountOpen);
+  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
+  const { rendered, closing } = useModalAnimation(accountOpen, swipeOut);
 
   const [confirmSignOut, setConfirmSignOut] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -73,6 +76,7 @@ export default function AccountScreen() {
 
   async function handleSignOut() {
     setConfirmSignOut(false);
+    showToast('Signed out', 'info');
     await signOut();
   }
 
@@ -81,8 +85,8 @@ export default function AccountScreen() {
 
   return (
     <div className={`modal-overlay${closing ? ' closing' : ''}`} onPointerDown={handleClose}>
-      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
-
+      <div ref={sheetRef} className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
+        <div className="modal-sheet-handle" {...handleProps} />
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />
           <span className="modal-sheet-title">MY ACCOUNT</span>

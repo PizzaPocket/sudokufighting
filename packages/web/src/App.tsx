@@ -9,6 +9,7 @@ import ResetPasswordScreen from './components/auth/ResetPasswordScreen';
 import AccountScreen from './components/auth/AccountScreen';
 import Scoreboard from './components/overlays/Scoreboard';
 import AboutModal from './components/overlays/AboutModal';
+import ToastStack from './toasts/ToastStack';
 import { initAudio, SELECT_TRACK_INDEX, TRACKS, preloadMusicTrack } from './audio/audioManager';
 import { getArena } from '@sudoku-fighting/shared';
 import SplashScreen from './screens/SplashScreen';
@@ -96,6 +97,7 @@ export default function App() {
       <AccountScreen />
       <Scoreboard />
       <AboutModal />
+      <ToastStack />
       {currentScreen === 'splash' && (
         <SplashScreen onComplete={handleSplashComplete} />
       )}

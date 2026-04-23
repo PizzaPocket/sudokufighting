@@ -185,7 +185,9 @@ export async function signInWithApple(): Promise<string | null> {
 }
 
 export async function resetPassword(email: string): Promise<string | null> {
-  const redirectTo = getRedirectUrl();
+  // Always redirect to the website — simpler than deep-linking back to the native app,
+  // and password reset is already an out-of-app browser flow.
+  const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
   const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
   return error ? friendlyError(error.message) : null;
 }
@@ -230,17 +232,21 @@ export async function updatePassword(password: string): Promise<string | null> {
 }
 
 export async function signOut(): Promise<void> {
-  useAuthStore.getState().setSigningOut(true);
-  try {
-    await supabase.auth.signOut();
-  } catch {
-    // Clear local state regardless of whether the API call succeeded
-  }
   const store = useAuthStore.getState();
-  store.setSigningOut(false);
+  // Clear local state immediately — don't block on the API call.
+  // supabase.auth.signOut() can hang indefinitely on native due to the lock
+  // bypass (same issue as updateUser), so we never await it.
+  store.setSigningOut(true);
   store.setUser(null);
   store.setProfile(null);
   store.closeAll();
+  // Release the signingOut guard when the API call finishes, or after 5s
+  // as a safety net in case it hangs and SIGNED_OUT never fires.
+  const releaseLock = () => {
+    if (useAuthStore.getState().signingOut) useAuthStore.getState().setSigningOut(false);
+  };
+  supabase.auth.signOut().then(releaseLock).catch(releaseLock);
+  setTimeout(releaseLock, 5000);
 }
 
 // ── Username management ───────────────────────────────────────────────────────

@@ -1,0 +1,50 @@
+/* =========================================================
+   Toast Notification — transient feedback pill.
+   Stacks bottom-center; each toast slides in and auto-dismisses.
+   ========================================================= */
+
+@keyframes toast-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.toast-stack {
+  position: fixed;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  background: rgba(20, 20, 20, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.5);
+  color: var(--canvas-text);
+  white-space: nowrap;
+  animation: toast-in 0.2s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.toast-success { border-left: 4px solid var(--accent); }
+.toast-error   { border-left: 4px solid var(--danger-color); }
+.toast-info    { border-left: 4px solid var(--grid-box-border); }
+
+.toast-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}

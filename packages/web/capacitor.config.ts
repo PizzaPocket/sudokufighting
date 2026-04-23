@@ -13,6 +13,8 @@ const config: CapacitorConfig = {
   ios: {
     // Scheme used for OAuth deep-link callback: sudokufighting://auth/callback
     scheme: 'sudokufighting',
+    // Match the #root background so the WKWebView doesn't flash white before CSS loads
+    backgroundColor: '#000000',
   },
   android: {
     allowMixedContent: false,

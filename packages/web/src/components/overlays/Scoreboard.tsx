@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../auth/authStore';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss';
 import {
   loadOnlineLeaderboard,
   loadCampaignLeaderboard,
@@ -19,7 +20,9 @@ export default function Scoreboard() {
   const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
   const profile = useAuthStore(s => s.profile);
 
-  const { rendered, closing } = useModalAnimation(open);
+  function handleClose() { setScoreboardOpen(false); }
+  const { sheetRef, handleProps, swipeOut } = useSwipeToDismiss(handleClose);
+  const { rendered, closing } = useModalAnimation(open, swipeOut);
 
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
   const [onlineRows, setOnlineRows] = useState<LeaderboardOnlineRow[] | null>(null);
@@ -39,15 +42,15 @@ export default function Scoreboard() {
   if (!rendered) return null;
 
   return (
-    <div className="modal-overlay" onPointerDown={() => setScoreboardOpen(false)}>
-      <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
-
+    <div className="modal-overlay" onPointerDown={handleClose}>
+      <div ref={sheetRef} className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
+        <div className="modal-sheet-handle" {...handleProps} />
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />
           <span className="modal-sheet-title">LEADERBOARD</span>
           <button
             className="btn-utility header-icon-btn modal-sheet-close"
-            onClick={() => setScoreboardOpen(false)}
+            onClick={handleClose}
             aria-label="Close"
           >
             <img src="/assets/ui/icon-close.svg" className="header-icon-img" alt="" />

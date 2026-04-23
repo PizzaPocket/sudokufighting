@@ -17,7 +17,19 @@ export function useAuthInit() {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
         console.log('[appUrlOpen]', url);
         if (url.startsWith('sudokufighting://auth/callback')) {
-          const { error } = await supabase.auth.exchangeCodeForSession(url);
+          // The Supabase SDK only parses query params from URLs starting with "http".
+          // Custom schemes (sudokufighting://) pass through as-is, so the full URL
+          // gets sent to the server as the auth code — causing the "non-empty" error.
+          // Extract the code ourselves and pass the plain string.
+          const parsedUrl = new URL(url);
+          const code = parsedUrl.searchParams.get('code') ?? '';
+          if (!code) {
+            await Browser.close();
+            useAuthStore.getState().setOauthError('Sign-in failed — please try again.');
+            useAuthStore.getState().openSignIn();
+            return;
+          }
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
           await Browser.close();
           if (error) {
             console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
