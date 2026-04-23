@@ -251,8 +251,11 @@ export default function GameOverlay() {
               className="btn"
               onClick={() => {
                 setShowButtons(false);
-                hideOverlay();
-                useGameStore.setState({ campaignResult: null, currentScreen: 'campaign-dialogue' } as never);
+                setHidden(true);
+                fadeOutMusic(600);
+                setTimeout(() => {
+                  useGameStore.setState({ campaignResult: null, currentScreen: 'campaign-dialogue' } as never);
+                }, 600);
               }}
             >
               CONTINUE

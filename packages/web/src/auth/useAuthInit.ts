@@ -19,7 +19,7 @@ export function useAuthInit() {
           const { error } = await supabase.auth.exchangeCodeForSession(url);
           await Browser.close();
           if (error) {
-            // Show a recoverable error on the sign-in sheet
+            console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
             useAuthStore.getState().openSignIn();
           }
         }
@@ -29,6 +29,11 @@ export function useAuthInit() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         const user = session?.user ?? null;
+
+        // Ignore any session-restoring events that race with an intentional sign-out
+        // (TOKEN_REFRESHED / SIGNED_IN can fire concurrently due to the lock bypass)
+        if (useAuthStore.getState().signingOut && user != null) return;
+
         useAuthStore.getState().setUser(user);
 
         if (user) {
@@ -36,6 +41,10 @@ export function useAuthInit() {
           await loadProgressionFromDB(user.id);
         } else {
           useAuthStore.getState().setProfile(null);
+        }
+
+        if (event === 'SIGNED_OUT') {
+          useAuthStore.getState().setSigningOut(false);
         }
 
         if (event === 'PASSWORD_RECOVERY') {

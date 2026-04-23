@@ -196,12 +196,14 @@ export async function updatePassword(password: string): Promise<string | null> {
 }
 
 export async function signOut(): Promise<void> {
+  useAuthStore.getState().setSigningOut(true);
   try {
     await supabase.auth.signOut();
   } catch {
     // Clear local state regardless of whether the API call succeeded
   }
   const store = useAuthStore.getState();
+  store.setSigningOut(false);
   store.setUser(null);
   store.setProfile(null);
   store.closeAll();

@@ -16,6 +16,7 @@ interface AuthStore {
   accountOpen: boolean;
   resetPasswordMode: boolean;
   switching: boolean;
+  signingOut: boolean;
 
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile | null) => void;
@@ -26,6 +27,7 @@ interface AuthStore {
   switchToCreateAccount: () => void;
   switchToForgotPassword: () => void;
   setResetPasswordMode: (on: boolean) => void;
+  setSigningOut: (v: boolean) => void;
   closeAll: () => void;
 }
 
@@ -38,6 +40,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   accountOpen: false,
   resetPasswordMode: false,
   switching: false,
+  signingOut: false,
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
@@ -52,4 +55,5 @@ export const useAuthStore = create<AuthStore>((set) => ({
   switchToForgotPassword: () => set({ forgotPasswordOpen: true, signInOpen: false, createAccountOpen: false, switching: true }),
 
   setResetPasswordMode: (on) => set({ resetPasswordMode: on }),
+  setSigningOut: (v) => set({ signingOut: v }),
 }));
