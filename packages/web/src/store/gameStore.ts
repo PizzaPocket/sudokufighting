@@ -40,6 +40,7 @@ export interface WipingCell {
 interface GameStore {
   // ── Navigation ────────────────────────────────────────────────────────────
   currentScreen: Screen;
+  prevScreen: Screen | null;
   startEntering: boolean;
   gameMode: GameMode;
   initialInteractionDone: boolean;
@@ -196,6 +197,7 @@ function isHeavyAttack(type: AttackType) {
 export const useGameStore = create<GameStore>((set, get) => ({
   // ── Initial state ──────────────────────────────────────────────────────────
   currentScreen: getInitialScreen(),
+  prevScreen: null,
   startEntering: false,
   gameMode: null,
   initialInteractionDone: false,
@@ -286,7 +288,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   testCreditsOpen: false,
 
   // ── Simple setters ────────────────────────────────────────────────────────
-  setScreen: (currentScreen) => set({ currentScreen }),
+  setScreen: (screen) => set(s => ({ prevScreen: s.currentScreen, currentScreen: screen })),
   transitionToStart: () => {
     set({ currentScreen: 'start', startEntering: true });
     setTimeout(() => set({ startEntering: false }), 2000);

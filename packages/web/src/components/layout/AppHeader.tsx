@@ -25,6 +25,7 @@ function screenTitle(screen: string, gameMode: string | null): string | null {
 
 export default function AppHeader() {
   const currentScreen = useGameStore(s => s.currentScreen);
+  const prevScreen = useGameStore(s => s.prevScreen);
   const gameMode = useGameStore(s => s.gameMode);
   const resetAll = useGameStore(s => s.resetAll);
   const setSettingsOpen = useGameStore(s => s.setSettingsOpen);
@@ -48,7 +49,7 @@ export default function AppHeader() {
     if (currentScreen === 'character-select') {
       useGameStore.getState().setScreen('start');
     } else if (currentScreen === 'privacy') {
-      useGameStore.getState().setScreen('start');
+      useGameStore.getState().setScreen(prevScreen ?? 'start');
     } else if (currentScreen === 'lobby' || currentScreen === 'practice-lobby' || currentScreen === 'campaign-lobby') {
       disconnect();
       resetAll();

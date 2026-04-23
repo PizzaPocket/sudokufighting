@@ -8,6 +8,14 @@ import { handleAuthStateChange } from './authService';
 import { consumePendingMatch, recordMatch } from '../stats/statsService';
 import { loadProgressionFromDB } from '../progression/progressionService';
 
+// When the native OAuth callback fires, onAuthStateChange fires re-entrantly
+// *inside* setSession()/exchangeCodeForSession() before those calls return.
+// Any supabase.from() call made at that point calls getSession() which
+// re-enters the auth client's internal state machine and deadlocks on iOS.
+// This flag tells onAuthStateChange to skip profile/progression loading —
+// appUrlOpen loads them directly after the auth call fully returns instead.
+let oauthCallbackInProgress = false;
+
 export function useAuthInit() {
   useEffect(() => {
     // On native, handle the OAuth deep-link callback (sudokufighting://auth/callback?code=...)
@@ -17,9 +25,6 @@ export function useAuthInit() {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
         console.log('[appUrlOpen]', url);
         if (url.startsWith('sudokufighting://auth/callback')) {
-          // Close the browser immediately — don't block on the token exchange.
-          // supabase calls can hang on native due to the lock bypass, same as
-          // signOut / updateUser, so Browser.close() must not wait on them.
           await Browser.close();
 
           try {
@@ -28,11 +33,19 @@ export function useAuthInit() {
             // PKCE flow: Supabase redirects with ?code=...
             const code = parsedUrl.searchParams.get('code');
             if (code) {
+              oauthCallbackInProgress = true;
               const { error } = await supabase.auth.exchangeCodeForSession(code);
+              oauthCallbackInProgress = false;
               if (error) {
                 console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
                 useAuthStore.getState().setOauthError(error.message);
                 useAuthStore.getState().openSignIn();
+                return;
+              }
+              const user = (await supabase.auth.getUser()).data.user;
+              if (user) {
+                await handleAuthStateChange(user.id).catch(() => {});
+                await loadProgressionFromDB(user.id).catch(() => {});
               }
               return;
             }
@@ -44,11 +57,18 @@ export function useAuthInit() {
               const accessToken  = params.get('access_token');
               const refreshToken = params.get('refresh_token');
               if (accessToken && refreshToken) {
-                const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+                oauthCallbackInProgress = true;
+                const { data, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+                oauthCallbackInProgress = false;
                 if (error) {
                   console.error('[OAuth callback] setSession failed:', error.message);
                   useAuthStore.getState().setOauthError(error.message);
                   useAuthStore.getState().openSignIn();
+                  return;
+                }
+                if (data.session?.user) {
+                  await handleAuthStateChange(data.session.user.id).catch(() => {});
+                  await loadProgressionFromDB(data.session.user.id).catch(() => {});
                 }
                 return;
               }
@@ -62,6 +82,7 @@ export function useAuthInit() {
             useAuthStore.getState().setOauthError(errMsg);
             useAuthStore.getState().openSignIn();
           } catch (e) {
+            oauthCallbackInProgress = false;
             console.error('[OAuth callback] unexpected error:', e);
             useAuthStore.getState().setOauthError('Sign-in failed. Please try again.');
             useAuthStore.getState().openSignIn();
@@ -86,17 +107,8 @@ export function useAuthInit() {
 
         useAuthStore.getState().setUser(user);
 
-        if (user) {
-          await handleAuthStateChange(user.id);
-          await loadProgressionFromDB(user.id);
-        } else {
-          useAuthStore.getState().setProfile(null);
-        }
-
-        // Close auth sheets on successful sign-in.
-        // Also handle INITIAL_SESSION: OAuth redirects (especially Apple web) can
-        // establish the session before the subscription is registered, so SIGNED_IN
-        // fires before our listener and we only see INITIAL_SESSION on subscribe.
+        // Close auth sheets immediately — don't wait for profile/progression loads.
+        // On native the DB calls that follow can be slow, so close the UI first.
         const shouldClose = event === 'SIGNED_IN' ||
           (event === 'INITIAL_SESSION' && user != null &&
             (useAuthStore.getState().signInOpen || useAuthStore.getState().createAccountOpen));
@@ -104,10 +116,20 @@ export function useAuthInit() {
         if (shouldClose) {
           useAuthStore.getState().closeAll();
           if (event === 'SIGNED_IN') {
-            // Retroactively save any match played as a guest
             const pending = consumePendingMatch();
             if (pending) recordMatch(pending);
           }
+        }
+
+        // Skip profile/progression loads when fired re-entrantly from the native OAuth
+        // callback — appUrlOpen handles those after the auth call fully returns.
+        if (oauthCallbackInProgress) return;
+
+        if (user) {
+          await handleAuthStateChange(user.id);
+          await loadProgressionFromDB(user.id);
+        } else {
+          useAuthStore.getState().setProfile(null);
         }
       }
     );
