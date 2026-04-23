@@ -185,7 +185,7 @@ export async function signInWithApple(): Promise<string | null> {
 }
 
 export async function resetPassword(email: string): Promise<string | null> {
-  const redirectTo = import.meta.env.VITE_AUTH_REDIRECT_URL ?? window.location.origin;
+  const redirectTo = getRedirectUrl();
   const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
   return error ? friendlyError(error.message) : null;
 }
