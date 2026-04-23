@@ -10,6 +10,8 @@ export default function SignInSheet() {
   const closeAll = useAuthStore(s => s.closeAll);
   const switchToCreateAccount = useAuthStore(s => s.switchToCreateAccount);
   const switchToForgotPassword = useAuthStore(s => s.switchToForgotPassword);
+  const oauthError = useAuthStore(s => s.oauthError);
+  const setOauthError = useAuthStore(s => s.setOauthError);
 
   const { rendered, closing } = useModalAnimation(signInOpen, switching);
 
@@ -105,7 +107,14 @@ export default function SignInSheet() {
 
           <div className="auth-divider"><span>or</span></div>
 
+          {oauthError && (
+            <p className="auth-error visible" style={{ marginBottom: '8px' }} onClick={() => setOauthError(null)}>
+              {oauthError}
+            </p>
+          )}
+
           <button className="btn-social btn-social-google" onClick={async () => {
+              setOauthError(null);
               setLoading(true);
               const err = await signInWithGoogle();
               setLoading(false);
@@ -116,6 +125,7 @@ export default function SignInSheet() {
           </button>
           {isAppleSignInAvailable() && (
             <button className="btn-social btn-social-apple" onClick={async () => {
+              setOauthError(null);
               setLoading(true);
               const err = await signInWithApple();
               setLoading(false);

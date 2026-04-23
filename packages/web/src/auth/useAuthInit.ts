@@ -15,11 +15,13 @@ export function useAuthInit() {
     let urlSub: { remove: () => void } | null = null;
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
+        console.log('[appUrlOpen]', url);
         if (url.startsWith('sudokufighting://auth/callback')) {
           const { error } = await supabase.auth.exchangeCodeForSession(url);
           await Browser.close();
           if (error) {
             console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
+            useAuthStore.getState().setOauthError(error.message);
             useAuthStore.getState().openSignIn();
           }
         }

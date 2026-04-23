@@ -17,6 +17,7 @@ interface AuthStore {
   resetPasswordMode: boolean;
   switching: boolean;
   signingOut: boolean;
+  oauthError: string | null;
 
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile | null) => void;
@@ -28,6 +29,7 @@ interface AuthStore {
   switchToForgotPassword: () => void;
   setResetPasswordMode: (on: boolean) => void;
   setSigningOut: (v: boolean) => void;
+  setOauthError: (msg: string | null) => void;
   closeAll: () => void;
 }
 
@@ -41,6 +43,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   resetPasswordMode: false,
   switching: false,
   signingOut: false,
+  oauthError: null,
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
@@ -56,4 +59,5 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   setResetPasswordMode: (on) => set({ resetPasswordMode: on }),
   setSigningOut: (v) => set({ signingOut: v }),
+  setOauthError: (msg) => set({ oauthError: msg }),
 }));
