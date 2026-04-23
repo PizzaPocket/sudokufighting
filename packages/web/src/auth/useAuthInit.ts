@@ -17,47 +17,55 @@ export function useAuthInit() {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
         console.log('[appUrlOpen]', url);
         if (url.startsWith('sudokufighting://auth/callback')) {
-          const parsedUrl = new URL(url);
+          // Close the browser immediately — don't block on the token exchange.
+          // supabase calls can hang on native due to the lock bypass, same as
+          // signOut / updateUser, so Browser.close() must not wait on them.
+          await Browser.close();
 
-          // PKCE flow: Supabase redirects with ?code=...
-          const code = parsedUrl.searchParams.get('code');
-          if (code) {
-            const { error } = await supabase.auth.exchangeCodeForSession(code);
-            await Browser.close();
-            if (error) {
-              console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
-              useAuthStore.getState().setOauthError(error.message);
-              useAuthStore.getState().openSignIn();
-            }
-            return;
-          }
+          try {
+            const parsedUrl = new URL(url);
 
-          // Implicit flow: Supabase redirects with #access_token=...&refresh_token=...
-          const hash = parsedUrl.hash.slice(1);
-          if (hash) {
-            const params = new URLSearchParams(hash);
-            const accessToken  = params.get('access_token');
-            const refreshToken = params.get('refresh_token');
-            if (accessToken && refreshToken) {
-              const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-              await Browser.close();
+            // PKCE flow: Supabase redirects with ?code=...
+            const code = parsedUrl.searchParams.get('code');
+            if (code) {
+              const { error } = await supabase.auth.exchangeCodeForSession(code);
               if (error) {
-                console.error('[OAuth callback] setSession failed:', error.message);
+                console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
                 useAuthStore.getState().setOauthError(error.message);
                 useAuthStore.getState().openSignIn();
               }
               return;
             }
-          }
 
-          // No token found — surface any error param from the URL
-          const errMsg = parsedUrl.searchParams.get('error_description')
-            ?? parsedUrl.searchParams.get('error')
-            ?? 'Sign-in failed. Please try again.';
-          await Browser.close();
-          console.error('[OAuth callback] no token in URL:', url);
-          useAuthStore.getState().setOauthError(errMsg);
-          useAuthStore.getState().openSignIn();
+            // Implicit flow: Supabase redirects with #access_token=...&refresh_token=...
+            const hash = parsedUrl.hash.slice(1);
+            if (hash) {
+              const params = new URLSearchParams(hash);
+              const accessToken  = params.get('access_token');
+              const refreshToken = params.get('refresh_token');
+              if (accessToken && refreshToken) {
+                const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+                if (error) {
+                  console.error('[OAuth callback] setSession failed:', error.message);
+                  useAuthStore.getState().setOauthError(error.message);
+                  useAuthStore.getState().openSignIn();
+                }
+                return;
+              }
+            }
+
+            // No token found — surface any error param from the URL
+            const errMsg = parsedUrl.searchParams.get('error_description')
+              ?? parsedUrl.searchParams.get('error')
+              ?? 'Sign-in failed. Please try again.';
+            console.error('[OAuth callback] no token in URL:', url);
+            useAuthStore.getState().setOauthError(errMsg);
+            useAuthStore.getState().openSignIn();
+          } catch (e) {
+            console.error('[OAuth callback] unexpected error:', e);
+            useAuthStore.getState().setOauthError('Sign-in failed. Please try again.');
+            useAuthStore.getState().openSignIn();
+          }
         }
       }).then(handle => { urlSub = handle; });
     }
@@ -76,10 +84,6 @@ export function useAuthInit() {
           return;
         }
 
-        // Ignore any session-restoring events that race with an intentional sign-out
-        // (TOKEN_REFRESHED / SIGNED_IN can fire concurrently due to the lock bypass)
-        if (useAuthStore.getState().signingOut && user != null) return;
-
         useAuthStore.getState().setUser(user);
 
         if (user) {
@@ -87,10 +91,6 @@ export function useAuthInit() {
           await loadProgressionFromDB(user.id);
         } else {
           useAuthStore.getState().setProfile(null);
-        }
-
-        if (event === 'SIGNED_OUT') {
-          useAuthStore.getState().setSigningOut(false);
         }
 
         // Close auth sheets on successful sign-in.

@@ -233,20 +233,13 @@ export async function updatePassword(password: string): Promise<string | null> {
 
 export async function signOut(): Promise<void> {
   const store = useAuthStore.getState();
-  // Clear local state immediately — don't block on the API call.
-  // supabase.auth.signOut() can hang indefinitely on native due to the lock
-  // bypass (same issue as updateUser), so we never await it.
-  store.setSigningOut(true);
   store.setUser(null);
   store.setProfile(null);
   store.closeAll();
-  // Release the signingOut guard when the API call finishes, or after 5s
-  // as a safety net in case it hangs and SIGNED_OUT never fires.
-  const releaseLock = () => {
-    if (useAuthStore.getState().signingOut) useAuthStore.getState().setSigningOut(false);
-  };
-  supabase.auth.signOut().then(releaseLock).catch(releaseLock);
-  setTimeout(releaseLock, 5000);
+  // scope:'local' clears localStorage immediately with no network call,
+  // so it can't hang. A full remote revocation would hang on native
+  // (same lock-bypass issue as updateUser / the old signOut).
+  await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
 }
 
 // ── Username management ───────────────────────────────────────────────────────
