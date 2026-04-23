@@ -17,25 +17,47 @@ export function useAuthInit() {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
         console.log('[appUrlOpen]', url);
         if (url.startsWith('sudokufighting://auth/callback')) {
-          // The Supabase SDK only parses query params from URLs starting with "http".
-          // Custom schemes (sudokufighting://) pass through as-is, so the full URL
-          // gets sent to the server as the auth code — causing the "non-empty" error.
-          // Extract the code ourselves and pass the plain string.
           const parsedUrl = new URL(url);
-          const code = parsedUrl.searchParams.get('code') ?? '';
-          if (!code) {
+
+          // PKCE flow: Supabase redirects with ?code=...
+          const code = parsedUrl.searchParams.get('code');
+          if (code) {
+            const { error } = await supabase.auth.exchangeCodeForSession(code);
             await Browser.close();
-            useAuthStore.getState().setOauthError('Sign-in failed — please try again.');
-            useAuthStore.getState().openSignIn();
+            if (error) {
+              console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
+              useAuthStore.getState().setOauthError(error.message);
+              useAuthStore.getState().openSignIn();
+            }
             return;
           }
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          await Browser.close();
-          if (error) {
-            console.error('[OAuth callback] exchangeCodeForSession failed:', error.message);
-            useAuthStore.getState().setOauthError(error.message);
-            useAuthStore.getState().openSignIn();
+
+          // Implicit flow: Supabase redirects with #access_token=...&refresh_token=...
+          const hash = parsedUrl.hash.slice(1);
+          if (hash) {
+            const params = new URLSearchParams(hash);
+            const accessToken  = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            if (accessToken && refreshToken) {
+              const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+              await Browser.close();
+              if (error) {
+                console.error('[OAuth callback] setSession failed:', error.message);
+                useAuthStore.getState().setOauthError(error.message);
+                useAuthStore.getState().openSignIn();
+              }
+              return;
+            }
           }
+
+          // No token found — surface any error param from the URL
+          const errMsg = parsedUrl.searchParams.get('error_description')
+            ?? parsedUrl.searchParams.get('error')
+            ?? 'Sign-in failed. Please try again.';
+          await Browser.close();
+          console.error('[OAuth callback] no token in URL:', url);
+          useAuthStore.getState().setOauthError(errMsg);
+          useAuthStore.getState().openSignIn();
         }
       }).then(handle => { urlSub = handle; });
     }
