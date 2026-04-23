@@ -30,6 +30,13 @@ export function useAuthInit() {
       async (event, session) => {
         const user = session?.user ?? null;
 
+        // Recovery flow: show the reset-password modal but don't sign the user in yet.
+        // After updateUser() succeeds, Supabase fires SIGNED_IN which completes the flow.
+        if (event === 'PASSWORD_RECOVERY') {
+          useAuthStore.getState().setResetPasswordMode(true);
+          return;
+        }
+
         // Ignore any session-restoring events that race with an intentional sign-out
         // (TOKEN_REFRESHED / SIGNED_IN can fire concurrently due to the lock bypass)
         if (useAuthStore.getState().signingOut && user != null) return;
@@ -45,11 +52,6 @@ export function useAuthInit() {
 
         if (event === 'SIGNED_OUT') {
           useAuthStore.getState().setSigningOut(false);
-        }
-
-        if (event === 'PASSWORD_RECOVERY') {
-          useAuthStore.getState().setResetPasswordMode(true);
-          return;
         }
 
         // Close auth sheets on successful sign-in.
