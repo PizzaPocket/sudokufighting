@@ -30,9 +30,12 @@ export function useAuthInit() {
       async (event, session) => {
         const user = session?.user ?? null;
 
-        // Recovery flow: show the reset-password modal but don't sign the user in yet.
-        // After updateUser() succeeds, Supabase fires SIGNED_IN which completes the flow.
+        // Recovery flow: clear any existing auth state and show the reset-password modal.
+        // INITIAL_SESSION may have already signed the user in before this event fires,
+        // so we must explicitly clear user/profile here, not just skip setting them.
         if (event === 'PASSWORD_RECOVERY') {
+          useAuthStore.getState().setUser(null);
+          useAuthStore.getState().setProfile(null);
           useAuthStore.getState().setResetPasswordMode(true);
           return;
         }

@@ -191,12 +191,37 @@ export async function resetPassword(email: string): Promise<string | null> {
 }
 
 export async function updatePassword(password: string): Promise<string | null> {
+  // supabase.auth.updateUser hangs in recovery sessions due to the lock bypass.
+  // Read the session directly and POST to the REST API instead.
   try {
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      console.error('[updatePassword]', error.message);
-      return friendlyError(error.message);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      return 'Session expired — please request a new reset link.';
     }
+
+    const res = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL as string}/auth/v1/user`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+        },
+        body: JSON.stringify({ password }),
+      }
+    );
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as Record<string, string>;
+      const msg = body.message || body.error_description || body.error || 'Failed to update password.';
+      console.error('[updatePassword]', res.status, msg);
+      return friendlyError(msg);
+    }
+
+    // Sign the user in after a successful password update
+    useAuthStore.getState().setUser(session.user);
+    await handleAuthStateChange(session.user.id).catch(() => {});
     return null;
   } catch (e) {
     console.error('[updatePassword] threw:', e);
