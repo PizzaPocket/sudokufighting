@@ -59,7 +59,7 @@ export async function recordMatch(input: RecordMatchInput): Promise<void> {
     ? (CAMPAIGN_SCORE_MULTIPLIERS[input.difficulty] ?? 1.0)
     : 1.0;
 
-  await supabase.from('match_history').insert({
+  const { error } = await supabase.from('match_history').insert({
     user_id:          user.id,
     game_mode:        input.gameMode,
     result:           input.result,
@@ -70,6 +70,7 @@ export async function recordMatch(input: RecordMatchInput): Promise<void> {
     adjusted_score:   Math.round(input.score * multiplier),
     match_duration_ms: input.matchDurationMs,
   });
+  if (error) console.error('[recordMatch] insert failed:', error.message, error.code);
 }
 
 // ── Leaderboard ───────────────────────────────────────────────────────────────

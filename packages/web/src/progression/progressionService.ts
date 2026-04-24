@@ -33,12 +33,13 @@ export async function saveProgression(data: ProgressionData): Promise<void> {
   const user = useAuthStore.getState().user;
   if (!user) return;
 
-  await supabase.from('progression').upsert({
+  const { error } = await supabase.from('progression').upsert({
     user_id: user.id,
     unlocked_character_ids: data.unlockedCharacterIds,
     campaign_clear_count: data.campaignClearCount,
     updated_at: new Date().toISOString(),
   });
+  if (error) console.error('[saveProgression] upsert failed:', error.message, error.code);
 }
 
 /** Fallback for code paths that haven't been migrated — returns in-memory defaults. */

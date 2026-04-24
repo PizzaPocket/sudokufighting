@@ -91,6 +91,18 @@ export function useAuthInit() {
       }).then(handle => { urlSub = handle; });
     }
 
+    // On mobile browsers, background tabs suspend JS timers so Supabase's
+    // auto-refresh doesn't fire. Re-validate the session whenever the tab
+    // becomes visible so tokens don't silently expire mid-session.
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        supabase.auth.getSession().catch(() => {});
+      }
+    }
+    if (!Capacitor.isNativePlatform()) {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         const user = session?.user ?? null;
@@ -136,6 +148,7 @@ export function useAuthInit() {
     return () => {
       subscription.unsubscribe();
       urlSub?.remove();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 }

@@ -706,6 +706,8 @@
   #character-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px; width: 100%; max-width: 380px; }
   .character-card { width: 100%; }
   .character-card img { width: 100%; height: auto; object-position: 50% 12%; }
+  .unlock-screen .character-card { width: auto; }
+  .unlock-screen .character-card img { width: 124px; height: 124px; }
   .lobby-player:not(.is-me) { display: none; }
   .lobby-vs { display: none; }
   #screen-practice-lobby #sp-lobby-p2 { display: none; }

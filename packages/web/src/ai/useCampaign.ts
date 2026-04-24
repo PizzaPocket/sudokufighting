@@ -145,21 +145,26 @@ export function useCampaign() {
         campaignFinalScore: adjustedScore,
         campaignFinalRank: null,
       } as never);
-      saveProgression({ unlockedCharacterIds: merged, campaignClearCount: st.campaignClearCount + 1 });
-
-      if (st.myCharacter && useAuthStore.getState().user) {
-        recordMatch({
-          gameMode: 'campaign',
-          result: 'win',
-          characterId: st.myCharacter,
-          opponentName: null,
-          score: rawScore,
-          difficulty: st.spDifficulty,
-          matchDurationMs: 0,
-        }).then(() => getCampaignRank(adjustedScore))
-          .then(rank => useGameStore.setState({ campaignFinalRank: rank } as never))
-          .catch(() => {});
-      }
+      // Run saves sequentially — concurrent supabase.from() calls both trigger
+      // getSession() at the same time, which deadlocks with the lock bypass.
+      void (async () => {
+        await saveProgression({ unlockedCharacterIds: merged, campaignClearCount: st.campaignClearCount + 1 });
+        if (st.myCharacter && useAuthStore.getState().user) {
+          try {
+            await recordMatch({
+              gameMode: 'campaign',
+              result: 'win',
+              characterId: st.myCharacter,
+              opponentName: null,
+              score: rawScore,
+              difficulty: st.spDifficulty,
+              matchDurationMs: 0,
+            });
+            const rank = await getCampaignRank(adjustedScore);
+            useGameStore.setState({ campaignFinalRank: rank } as never);
+          } catch {}
+        }
+      })();
     } else {
       // Non-final win — pre-build next opponent's dialogue queue.
       // Do NOT call setupNextFight here (would flicker background/opponent while
