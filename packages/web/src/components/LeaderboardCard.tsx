@@ -17,19 +17,22 @@ export default function LeaderboardCard() {
   const currentScreen = useGameStore(s => s.currentScreen);
   const profile = useAuthStore(s => s.profile);
 
-  const authReady = useAuthStore(s => s.authReady);
+  // authVersion increments on INITIAL_SESSION, TOKEN_REFRESHED, and SIGNED_IN.
+  // Depending on it means the leaderboard automatically retries after a token
+  // refresh — fixing the blank leaderboard on first open after a long break.
+  const authVersion = useAuthStore(s => s.authVersion);
 
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
   const [onlineRows, setOnlineRows]     = useState<LeaderboardOnlineRow[] | null>(null);
   const [campaignRows, setCampaignRows] = useState<LeaderboardCampaignRow[] | null>(null);
 
   useEffect(() => {
-    if (currentScreen !== 'start' || !authReady) return;
+    if (currentScreen !== 'start' || authVersion === 0) return;
     Promise.all([loadOnlineLeaderboard(), loadCampaignLeaderboard()]).then(([online, campaign]) => {
       setOnlineRows(online);
       setCampaignRows(campaign);
     });
-  }, [currentScreen, authReady]);
+  }, [currentScreen, authVersion]);
 
   const rows: (Row | null)[] = Array.from({ length: ROWS }, (_, i) =>
     (tab === 'online' ? onlineRows : campaignRows)?.[i] ?? null

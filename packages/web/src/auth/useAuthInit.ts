@@ -129,6 +129,15 @@ export function useAuthInit() {
           useAuthStore.getState().setAuthReady(true);
         }
 
+        // Bump authVersion on every event that can deliver a fresh valid token so
+        // that data-loading effects (leaderboard, profile) automatically retry.
+        // INITIAL_SESSION fires first (possibly with a stale/expired token),
+        // TOKEN_REFRESHED fires once the refresh completes — both bumps ensure at
+        // least one load attempt happens with a valid token.
+        if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+          useAuthStore.getState().bumpAuthVersion();
+        }
+
         useAuthStore.getState().setUser(user);
 
         // Close auth sheets immediately — don't wait for profile/progression loads.

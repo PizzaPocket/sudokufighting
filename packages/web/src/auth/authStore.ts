@@ -11,6 +11,9 @@ interface AuthStore {
   user: User | null;
   profile: Profile | null;
   authReady: boolean;
+  // Incremented on INITIAL_SESSION, TOKEN_REFRESHED, and SIGNED_IN so that
+  // data-loading effects automatically retry after a token refresh on cold start.
+  authVersion: number;
   signInOpen: boolean;
   createAccountOpen: boolean;
   forgotPasswordOpen: boolean;
@@ -23,6 +26,7 @@ interface AuthStore {
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile | null) => void;
   setAuthReady: (v: boolean) => void;
+  bumpAuthVersion: () => void;
   openSignIn: () => void;
   openCreateAccount: () => void;
   openAccount: () => void;
@@ -39,6 +43,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   profile: null,
   authReady: false,
+  authVersion: 0,
   signInOpen: false,
   createAccountOpen: false,
   forgotPasswordOpen: false,
@@ -51,6 +56,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
   setAuthReady: (v) => set({ authReady: v }),
+  bumpAuthVersion: () => set(s => ({ authVersion: s.authVersion + 1 })),
 
   openSignIn: () => set({ signInOpen: true, createAccountOpen: false, forgotPasswordOpen: false, accountOpen: false }),
   openCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, forgotPasswordOpen: false, accountOpen: false }),
