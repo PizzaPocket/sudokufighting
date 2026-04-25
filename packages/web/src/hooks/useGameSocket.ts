@@ -29,8 +29,9 @@ function connect() {
   ws.onopen = () => {
     isConnecting = false;
     reconnectDelay = 1000;
-    useGameStore.getState().applyServerMessage({ type: 'connected', payload: { playerId: '' } });
-    // Real playerId comes from server 'connected' event
+    // Socket is open — mark connected immediately so lobby effects can fire.
+    // The server's 'connected' message still arrives and updates myPlayerId.
+    useGameStore.setState({ wsConnected: true });
   };
 
   ws.onmessage = (ev) => {
@@ -76,6 +77,25 @@ export function disconnect() {
     // is scheduled. Future lobby sessions need a live socket.
     socket.close();
   }
+}
+
+/**
+ * Called on app resume (iOS foreground / visibility restore) to detect and
+ * recover from stale sockets that iOS suspended without firing ws.onclose.
+ * If the socket is not open, force wsConnected=false, cancel any pending
+ * reconnect timer, and reconnect immediately.
+ */
+export function ensureConnected() {
+  if (socket?.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) return;
+  useGameStore.setState({ wsConnected: false });
+  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+  if (socket) {
+    socket.onclose = null; // suppress — we reconnect manually below
+    socket.close();
+    socket = null;
+  }
+  isConnecting = false;
+  connect();
 }
 
 export function useGameSocket() {

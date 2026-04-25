@@ -412,6 +412,11 @@
   color: var(--canvas-text);
   font-weight: var(--weight-bold);
 }
+.account-stat-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
 .account-divider {
   height: 1px;

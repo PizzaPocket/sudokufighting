@@ -20,14 +20,15 @@ export interface RecordMatchInput {
 }
 
 export interface MyStats {
-  onlineWins: number;
-  onlineLosses: number;
-  winRate: number | null;                 // null = no online games played yet
-  bestWinStreak: number;
-  matchesOnline: number;
+  rankedWins: number;                     // Quick Match only
+  rankedLosses: number;                   // Quick Match only
+  winRate: number | null;                 // null = no ranked games decided yet
+  bestWinStreak: number;                  // Quick Match only
+  matchesQuick: number;
   matchesCampaign: number;
   matchesPractice: number;
-  highestScore: number | null;
+  bestCampaignScore: number | null;       // raw score from best-adjusted run
+  bestCampaignDifficulty: string | null;
 }
 
 // ── Pending match (retroactive save after guest signs up at game end) ─────────
@@ -103,13 +104,17 @@ export async function loadOnlineLeaderboard(): Promise<LeaderboardOnlineRow[]> {
 }
 
 export async function getCampaignRank(adjustedScore: number): Promise<number> {
-  const { count } = await supabase
+  // Count unique players whose best campaign run beats our score.
+  // Fetching user_ids (not a count) so we can deduplicate — one player
+  // with multiple qualifying runs should count once, not once per run.
+  const { data } = await supabase
     .from('match_history')
-    .select('id', { count: 'exact', head: true })
+    .select('user_id')
     .eq('game_mode', 'campaign')
     .eq('result', 'win')
     .gt('adjusted_score', adjustedScore);
-  return (count ?? 0) + 1;
+  const uniquePlayers = new Set((data ?? []).map((r: { user_id: string }) => r.user_id)).size;
+  return uniquePlayers + 1;
 }
 
 export async function loadCampaignLeaderboard(): Promise<LeaderboardCampaignRow[]> {
@@ -128,43 +133,51 @@ export async function loadCampaignLeaderboard(): Promise<LeaderboardCampaignRow[
 export async function loadMyStats(userId: string): Promise<MyStats> {
   const { data } = await supabase
     .from('match_history')
-    .select('game_mode, result, score, match_duration_ms, created_at')
+    .select('game_mode, result, score, adjusted_score, difficulty, match_duration_ms, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
 
   const rows = data ?? [];
 
-  // Online = ranked modes (quick matchmaking + private friend rooms)
-  const onlineRows = rows.filter(r => r.game_mode === 'quick' || r.game_mode === 'friend');
-  const onlineWins   = onlineRows.filter(r => r.result === 'win').length;
-  const onlineLosses = onlineRows.filter(r => r.result === 'loss').length;
-  const totalDecided = onlineWins + onlineLosses;
-  const winRate = totalDecided > 0 ? Math.round((onlineWins / totalDecided) * 100) : null;
+  // Ranked = Quick Match only. Private Room is social, not competitive.
+  const rankedRows   = rows.filter(r => r.game_mode === 'quick');
+  const rankedWins   = rankedRows.filter(r => r.result === 'win').length;
+  const rankedLosses = rankedRows.filter(r => r.result === 'loss').length;
+  const totalDecided = rankedWins + rankedLosses;
+  const winRate      = totalDecided > 0 ? Math.round((rankedWins / totalDecided) * 100) : null;
 
-  // Best win streak — ties do not break the streak
+  // Best win streak — ties do not break the streak; ranked only
   let streak = 0;
   let bestWinStreak = 0;
-  for (const r of onlineRows) {
+  for (const r of rankedRows) {
     if (r.result === 'win')       { streak++; bestWinStreak = Math.max(bestWinStreak, streak); }
     else if (r.result === 'loss') { streak = 0; }
   }
 
   // Match counts by mode
-  const matchesOnline   = onlineRows.length;
+  const matchesQuick    = rankedRows.length;
   const matchesCampaign = rows.filter(r => r.game_mode === 'campaign').length;
   const matchesPractice = rows.filter(r => r.game_mode === 'practice').length;
 
-  const scores = rows.map(r => r.score as number).filter(s => s > 0);
-  const highestScore = scores.length > 0 ? Math.max(...scores) : null;
+  // Best campaign run: pick the win with the highest adjusted_score
+  // (adjusted_score is what the leaderboard ranks by; we surface the raw score
+  // + difficulty so the number matches what the user saw on the victory screen)
+  const campaignWins = rows.filter(r => r.game_mode === 'campaign' && r.result === 'win');
+  const bestRun = campaignWins.reduce((best: typeof rows[0] | null, row) => {
+    const rowAdj  = (row.adjusted_score as number) ?? (row.score as number) ?? 0;
+    const bestAdj = best ? ((best.adjusted_score as number) ?? (best.score as number) ?? 0) : -1;
+    return rowAdj > bestAdj ? row : best;
+  }, null);
 
   return {
-    onlineWins,
-    onlineLosses,
+    rankedWins,
+    rankedLosses,
     winRate,
     bestWinStreak,
-    matchesOnline,
+    matchesQuick,
     matchesCampaign,
     matchesPractice,
-    highestScore,
+    bestCampaignScore:      bestRun ? (bestRun.score as number)      : null,
+    bestCampaignDifficulty: bestRun ? (bestRun.difficulty as string)  : null,
   };
 }

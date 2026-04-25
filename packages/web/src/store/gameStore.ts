@@ -439,7 +439,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     switch (msg.type) {
 
       case 'connected':
-        set({ myPlayerId: msg.payload.playerId, wsConnected: !!msg.payload.playerId });
+        set({ myPlayerId: msg.payload.playerId });
         break;
 
       case 'waiting_for_opponent':

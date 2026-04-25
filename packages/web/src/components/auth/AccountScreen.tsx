@@ -23,6 +23,11 @@ export default function AccountScreen() {
   const { rendered, closing } = useModalAnimation(accountOpen);
 
   const [confirmSignOut, setConfirmSignOut] = useState(false);
+
+  // Reset confirm dialog whenever the modal closes so re-opening starts clean.
+  useEffect(() => {
+    if (!accountOpen) setConfirmSignOut(false);
+  }, [accountOpen]);
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [nameError, setNameError] = useState('');
@@ -139,11 +144,11 @@ export default function AccountScreen() {
 
           <div className="account-divider" />
 
-          <span className="account-section-label">Online Record</span>
+          <span className="account-section-label">Quick Match</span>
           <div className="account-stat-row">
-            <span>Wins / Losses</span>
+            <span>Record</span>
             <span className="account-stat-value">
-              {stats ? `${stats.onlineWins} / ${stats.onlineLosses}` : '—'}
+              {stats ? `${stats.rankedWins}W / ${stats.rankedLosses}L` : '—'}
             </span>
           </div>
           <div className="account-stat-row">
@@ -153,43 +158,60 @@ export default function AccountScreen() {
             </span>
           </div>
           <div className="account-stat-row">
-            <span>Best win streak</span>
+            <span>Best streak</span>
             <span className="account-stat-value">
               {stats ? (stats.bestWinStreak > 0 ? stats.bestWinStreak : '—') : '—'}
             </span>
           </div>
+          <div className="account-stat-row">
+            <span>Matches played</span>
+            <span className="account-stat-value">
+              {stats ? (stats.matchesQuick > 0 ? stats.matchesQuick : '—') : '—'}
+            </span>
+          </div>
 
           <div className="account-divider" />
 
-          <span className="account-section-label">Matches Played</span>
+          <span className="account-section-label">Campaign</span>
           <div className="account-stat-row">
-            <span>Online</span>
+            <span>Clears</span>
             <span className="account-stat-value">
-              {stats ? (stats.matchesOnline > 0 ? stats.matchesOnline : '—') : '—'}
+              {campaignClearCount > 0 ? campaignClearCount : '—'}
             </span>
           </div>
           <div className="account-stat-row">
-            <span>Campaign</span>
+            <span>Best run</span>
+            <span className="account-stat-value account-stat-inline">
+              {stats ? (
+                stats.bestCampaignScore !== null ? (
+                  <>
+                    {fmt(stats.bestCampaignScore)}
+                    <span className={`difficulty-badge ${stats.bestCampaignDifficulty}`}>
+                      {stats.bestCampaignDifficulty}
+                    </span>
+                  </>
+                ) : '—'
+              ) : '—'}
+            </span>
+          </div>
+          <div className="account-stat-row">
+            <span>Matches played</span>
             <span className="account-stat-value">
               {stats ? (stats.matchesCampaign > 0 ? stats.matchesCampaign : '—') : '—'}
             </span>
           </div>
-          <div className="account-stat-row">
-            <span>Practice</span>
-            <span className="account-stat-value">
-              {stats ? (stats.matchesPractice > 0 ? stats.matchesPractice : '—') : '—'}
-            </span>
-          </div>
 
-          <div className="account-divider" />
+          {stats && stats.matchesPractice > 0 && (
+            <>
+              <div className="account-divider" />
+              <span className="account-section-label">Practice</span>
+              <div className="account-stat-row">
+                <span>Matches played</span>
+                <span className="account-stat-value">{stats.matchesPractice}</span>
+              </div>
+            </>
+          )}
 
-          <span className="account-section-label">Personal Bests</span>
-          <div className="account-stat-row">
-            <span>Highest score</span>
-            <span className="account-stat-value">
-              {stats ? (stats.highestScore !== null ? fmt(stats.highestScore) : '—') : '—'}
-            </span>
-          </div>
           <div className="account-divider" />
 
           <span className="account-section-label">Progression</span>
@@ -216,7 +238,7 @@ export default function AccountScreen() {
       </div>
 
       {confirmSignOut && (
-        <div className="confirm-overlay">
+        <div className="confirm-overlay" onPointerDown={e => e.stopPropagation()}>
           <div className="confirm-dialog">
             <span className="dialog-title">SIGN OUT?</span>
             <div className="confirm-dialog-btns">

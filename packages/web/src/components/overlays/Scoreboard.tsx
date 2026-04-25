@@ -59,7 +59,7 @@ export default function Scoreboard() {
             className={`scoreboard-tab${tab === 'online' ? ' active' : ''}`}
             onClick={() => setTab('online')}
           >
-            ONLINE WINS
+            RANKED
           </button>
           <button
             className={`scoreboard-tab${tab === 'campaign' ? ' active' : ''}`}

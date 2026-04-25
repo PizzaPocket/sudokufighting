@@ -8,6 +8,7 @@ import { useAuthStore } from './authStore';
 import { handleAuthStateChange } from './authService';
 import { consumePendingMatch, recordMatch } from '../stats/statsService';
 import { loadProgressionFromDB } from '../progression/progressionService';
+import { ensureConnected } from '../hooks/useGameSocket';
 
 // When the native OAuth callback fires, onAuthStateChange fires re-entrantly
 // *inside* setSession()/exchangeCodeForSession() before those calls return.
@@ -104,11 +105,15 @@ export function useAuthInit() {
     function handleVisibilityChange() {
       if (document.visibilityState === 'visible') {
         supabase.auth.getSession().catch(() => {});
+        ensureConnected();
       }
     }
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('appStateChange', ({ isActive }) => {
-        if (isActive) supabase.auth.getSession().catch(() => {});
+        if (isActive) {
+          supabase.auth.getSession().catch(() => {});
+          ensureConnected();
+        }
       }).then(handle => { appStateSub = handle; });
     } else {
       document.addEventListener('visibilitychange', handleVisibilityChange);
