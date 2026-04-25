@@ -12,33 +12,15 @@ export default function CampaignGameOver() {
   const p1AnimSignal = useGameStore(s => s.p1AnimSignal);
   const resetAll = useGameStore(s => s.resetAll);
   const [visible, setVisible] = useState(false);
-  const [spriteBottom, setSpriteBottom] = useState(0);
 
   useEffect(() => {
-    const el = document.getElementById('fight-stage');
-    if (el) {
-      if (window.getComputedStyle(el).position === 'fixed') {
-        // Mobile/native: fight-stage is position:fixed; bottom:0.
-        // getBoundingClientRect() on iOS Capacitor returns safe-area-adjusted
-        // coordinates (short by ~safeAreaInset), so skip measurement and match
-        // fight-stage directly with bottom:0.
-        setSpriteBottom(0);
-      } else {
-        // Desktop: fight-stage is in normal flow; measure where its bottom lands.
-        const rect = el.getBoundingClientRect();
-        setSpriteBottom(window.innerHeight - rect.bottom);
+    const raf = requestAnimationFrame(() => {
+      setVisible(true);
+      if (p1AnimSignal?.state !== 'ko') {
+        useGameStore.setState({ p1AnimSignal: { state: 'ko', nonce: Date.now() } } as never);
       }
-    }
-    const t = setTimeout(() => setVisible(true), 50);
-    return () => clearTimeout(t);
-  }, []);
-
-  // If the player wasn't truly KO'd (TKO — health never hit 0), trigger the
-  // KO animation now so they always collapse at game over.
-  useEffect(() => {
-    if (p1AnimSignal?.state !== 'ko') {
-      useGameStore.setState({ p1AnimSignal: { state: 'ko', nonce: Date.now() } } as never);
-    }
+    });
+    return () => cancelAnimationFrame(raf);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleTryAgain() {
@@ -59,17 +41,7 @@ export default function CampaignGameOver() {
       {/* Layer 1 — black backdrop fades to full opacity (z-500) */}
       <div className={`gameover-backdrop${visible ? ' visible' : ''}`} />
 
-      {/* Layer 2 — duplicate of the fight-characters row, fixed above the
-          backdrop. An invisible spacer occupies p2's slot so p1 stays in the
-          same horizontal position it held during the fight. */}
-      <div className="gameover-sprite-layer" style={{ bottom: spriteBottom }}>
-        <div className="fight-characters">
-          <CharacterSprite seat={0} id="p1-char-img-go" wrapId="p1-char-wrap-go" showMistakeEffect={false} />
-          <CharacterSprite seat={1} flipped id="p2-char-img-go" wrapId="p2-char-wrap-go" showMistakeEffect={false} />
-        </div>
-      </div>
-
-      {/* Layer 3 — title + buttons above sprite (z-700) */}
+      {/* Layer 2 — UI + sprite in vertical flow (z-700) */}
       <div className={`gameover-ui${visible ? ' visible' : ''}`}>
         <div className="gameover-title">GAME OVER</div>
         <div className="overlay-btn-row">
@@ -83,6 +55,9 @@ export default function CampaignGameOver() {
           }}>
             MAIN MENU
           </button>
+        </div>
+        <div className="gameover-fighter">
+          <CharacterSprite seat={0} id="p1-char-img-go" wrapId="p1-char-wrap-go" showMistakeEffect={false} />
         </div>
       </div>
     </>

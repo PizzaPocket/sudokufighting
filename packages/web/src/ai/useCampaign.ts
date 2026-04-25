@@ -7,6 +7,7 @@ import { fadeOutMusic } from '../audio/audioManager';
 import { preloadArenaAssets } from '../utils/preloadAssets';
 import { recordMatch, getCampaignRank, CAMPAIGN_SCORE_MULTIPLIERS } from '../stats/statsService';
 import { useAuthStore } from '../auth/authStore';
+import { supabase } from '../auth/supabaseClient';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -148,6 +149,16 @@ export function useCampaign() {
       // Run saves sequentially — concurrent supabase.from() calls both trigger
       // getSession() at the same time, which deadlocks with the lock bypass.
       void (async () => {
+        // Refresh the session before writing — access token may have expired during
+        // a long campaign run. getSession() triggers a token refresh if needed and
+        // updates the store so recordMatch can use a valid user.
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) useAuthStore.getState().setUser(session.user);
+        } catch (e) {
+          console.error('[campaign victory] session refresh failed:', e);
+        }
+
         await saveProgression({ unlockedCharacterIds: merged, campaignClearCount: st.campaignClearCount + 1 });
         if (st.myCharacter && useAuthStore.getState().user) {
           try {
@@ -162,7 +173,9 @@ export function useCampaign() {
             });
             const rank = await getCampaignRank(adjustedScore);
             useGameStore.setState({ campaignFinalRank: rank } as never);
-          } catch {}
+          } catch (e) {
+            console.error('[campaign victory] save failed:', e);
+          }
         }
       })();
     } else {

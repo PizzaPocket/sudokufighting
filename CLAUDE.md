@@ -75,9 +75,9 @@ Each level introduces no new visual primitives beyond what exists below it.
 ### Button system
 | Class | Use |
 |---|---|
-| `.btn` | Primary CTA — orange fill, black text, pixel shadow |
-| `.btn.btn-secondary` | Secondary option — outlined, accent text |
-| `.btn.btn-alt` | Alternate/highlighted action |
+| `.btn` | Primary CTA — purple fill (`--accent`), white text, white pixel shadow. Use when there is one clear primary action. |
+| `.btn.btn-secondary` | Secondary option — white fill, accent text, accent shadow |
+| `.btn.btn-alt` | Alternate/competing primary — orange fill. Use when the default purple `.btn` would be lost against a purple-heavy background, or when two primary-weight actions compete (e.g. Play Again vs Main Menu). |
 | `.btn.btn-sm` | Smaller variant, combinable with above |
 | `.btn-utility` | Controls over arena/complex backgrounds — semi-transparent dark pill, no shadow |
 

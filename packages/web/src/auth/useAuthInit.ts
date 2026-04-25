@@ -123,6 +123,12 @@ export function useAuthInit() {
           return;
         }
 
+        // Mark auth as ready on the first event — Supabase has now restored the session
+        // (including any token refresh), so all Supabase calls can proceed safely.
+        if (event === 'INITIAL_SESSION') {
+          useAuthStore.getState().setAuthReady(true);
+        }
+
         useAuthStore.getState().setUser(user);
 
         // Close auth sheets immediately — don't wait for profile/progression loads.

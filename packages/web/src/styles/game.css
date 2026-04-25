@@ -731,7 +731,6 @@
   #fight-ground { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; }
   .midground-graphic { position: fixed; }
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
-  .gameover-sprite-layer { padding-bottom: 0; }
   /* Counter bar: centre vertically in the 110px fixed fight stage */
   .counter-bar-wrap { top: 50%; }
   .counter-bar-fill { top: 50%; }
@@ -819,20 +818,17 @@
 .gameover-backdrop {
   position: fixed; inset: 0; z-index: 500;
   background: rgba(0,0,0,0); pointer-events: none;
-  transition: background 1.5s ease;
+  transition: background 0.8s ease;
 }
 .gameover-backdrop.visible { background: rgba(0,0,0,1); }
 
-/* Layer 2: duplicate sprite layer — fixed above the backdrop, mirrors the
-   fight-characters flex layout so p1 sits in the same horizontal position */
-.gameover-sprite-layer {
-  position: fixed; left: 0; right: 0; z-index: 600;
-  display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 16px; pointer-events: none;
+/* Layer 2: UI + sprite in vertical flow (z-700) */
+.gameover-fighter {
+  display: flex;
+  align-items: flex-end;
+  height: 160px;
+  overflow: hidden;
 }
-#p2-char-wrap-go { opacity: 0; }
-
-/* Layer 3: title + buttons above the sprite */
 .gameover-ui {
   position: fixed; inset: 0; z-index: 700;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
@@ -841,12 +837,12 @@
 }
 .gameover-ui.visible {
   pointer-events: all;
-  opacity: 1; transition: opacity 0.4s ease 1.1s;
+  opacity: 1; transition: opacity 0.5s ease;
 }
 .gameover-title {
   font-family: var(--font-display); font-size: var(--text-4xl);
   color: #F00013; text-shadow: 4px 5px 0 #FF8B16; letter-spacing: 0.06em;
-  animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) 1.4s both;
+  animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) 0.3s both;
 }
 
 /* ── Campaign Victory ─────────────────────────────────────── */
@@ -1022,5 +1018,10 @@
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   padding: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 20px) 0 20px;
 }
-.campaign-continue-btn { margin-top: 24px; min-width: 200px; }
 #screen-character-select.campaign-select .char-select-scroll { padding-top: 0; }
+
+@media (max-width: 500px) {
+  #screen-character-select.campaign-select .char-select-scroll {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+}

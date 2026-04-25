@@ -10,6 +10,7 @@ export interface Profile {
 interface AuthStore {
   user: User | null;
   profile: Profile | null;
+  authReady: boolean;
   signInOpen: boolean;
   createAccountOpen: boolean;
   forgotPasswordOpen: boolean;
@@ -21,6 +22,7 @@ interface AuthStore {
 
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile | null) => void;
+  setAuthReady: (v: boolean) => void;
   openSignIn: () => void;
   openCreateAccount: () => void;
   openAccount: () => void;
@@ -36,6 +38,7 @@ interface AuthStore {
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   profile: null,
+  authReady: false,
   signInOpen: false,
   createAccountOpen: false,
   forgotPasswordOpen: false,
@@ -47,6 +50,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
+  setAuthReady: (v) => set({ authReady: v }),
 
   openSignIn: () => set({ signInOpen: true, createAccountOpen: false, forgotPasswordOpen: false, accountOpen: false }),
   openCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, forgotPasswordOpen: false, accountOpen: false }),

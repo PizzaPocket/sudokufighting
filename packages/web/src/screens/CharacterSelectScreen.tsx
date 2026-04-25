@@ -108,13 +108,15 @@ export default function CharacterSelectScreen({ active }: Props) {
         </div>
 
         {isCampaign && (
-          <button
-            className="btn btn-alt campaign-continue-btn"
-            disabled={!selected}
-            onClick={handleContinue}
-          >
-            CONTINUE
-          </button>
+          <div className="sticky-action-bar">
+            <button
+              className="btn btn-alt"
+              disabled={!selected}
+              onClick={handleContinue}
+            >
+              START
+            </button>
+          </div>
         )}
       </div>
     </div>

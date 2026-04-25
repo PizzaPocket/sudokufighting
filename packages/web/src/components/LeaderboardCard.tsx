@@ -17,17 +17,19 @@ export default function LeaderboardCard() {
   const currentScreen = useGameStore(s => s.currentScreen);
   const profile = useAuthStore(s => s.profile);
 
+  const authReady = useAuthStore(s => s.authReady);
+
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
   const [onlineRows, setOnlineRows]     = useState<LeaderboardOnlineRow[] | null>(null);
   const [campaignRows, setCampaignRows] = useState<LeaderboardCampaignRow[] | null>(null);
 
   useEffect(() => {
-    if (currentScreen !== 'start') return;
+    if (currentScreen !== 'start' || !authReady) return;
     Promise.all([loadOnlineLeaderboard(), loadCampaignLeaderboard()]).then(([online, campaign]) => {
       setOnlineRows(online);
       setCampaignRows(campaign);
     });
-  }, [currentScreen]);
+  }, [currentScreen, authReady]);
 
   const rows: (Row | null)[] = Array.from({ length: ROWS }, (_, i) =>
     (tab === 'online' ? onlineRows : campaignRows)?.[i] ?? null
