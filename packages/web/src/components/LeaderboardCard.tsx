@@ -14,6 +14,7 @@ const ROWS = 5;
 
 export default function LeaderboardCard() {
   const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
+  const currentScreen = useGameStore(s => s.currentScreen);
   const profile = useAuthStore(s => s.profile);
 
   const [tab, setTab] = useState<'online' | 'campaign'>('online');
@@ -21,11 +22,12 @@ export default function LeaderboardCard() {
   const [campaignRows, setCampaignRows] = useState<LeaderboardCampaignRow[] | null>(null);
 
   useEffect(() => {
+    if (currentScreen !== 'start') return;
     Promise.all([loadOnlineLeaderboard(), loadCampaignLeaderboard()]).then(([online, campaign]) => {
       setOnlineRows(online);
       setCampaignRows(campaign);
     });
-  }, []);
+  }, [currentScreen]);
 
   const rows: (Row | null)[] = Array.from({ length: ROWS }, (_, i) =>
     (tab === 'online' ? onlineRows : campaignRows)?.[i] ?? null

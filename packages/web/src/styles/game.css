@@ -731,6 +731,7 @@
   #fight-ground { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; z-index: 1; }
   .midground-graphic { position: fixed; }
   #fight-stage .fight-characters { align-items: flex-end; padding-bottom: 0; }
+  .gameover-sprite-layer { padding-bottom: 0; }
   /* Counter bar: centre vertically in the 110px fixed fight stage */
   .counter-bar-wrap { top: 50%; }
   .counter-bar-fill { top: 50%; }
@@ -967,7 +968,9 @@
   background: #000;
   background-size: cover;
   background-position: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: max(20vh, calc(var(--header-h) + env(safe-area-inset-top, 0px) + 40px));
+  padding-bottom: 40px;
   gap: 0;
   cursor: pointer;
 }

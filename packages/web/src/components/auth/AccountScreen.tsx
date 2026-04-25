@@ -3,6 +3,7 @@ import { useAuthStore } from '../../auth/authStore';
 import { useGameStore } from '../../store/gameStore';
 import { signOut, updateUsername } from '../../auth/authService';
 import { loadMyStats, type MyStats } from '../../stats/statsService';
+import { BASE_UNLOCKED } from '../../progression/progressionService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 import { showToast } from '../../toasts/toastStore';
 
@@ -10,11 +11,6 @@ function fmt(n: number): string {
   return n.toLocaleString();
 }
 
-function fmtDuration(ms: number): string {
-  const s = Math.floor(ms / 1000);
-  const m = Math.floor(s / 60);
-  return m > 0 ? `${m}m ${s % 60}s` : `${s}s`;
-}
 
 export default function AccountScreen() {
   const accountOpen = useAuthStore(s => s.accountOpen);
@@ -35,6 +31,7 @@ export default function AccountScreen() {
 
   useEffect(() => {
     if (!accountOpen || !user) return;
+    setStats(null);
     loadMyStats(user.id).then(setStats);
     // Fallback: if profile didn't load via onAuthStateChange (e.g. silent error on refresh), load it now
     if (!profile) {
@@ -193,19 +190,14 @@ export default function AccountScreen() {
               {stats ? (stats.highestScore !== null ? fmt(stats.highestScore) : '—') : '—'}
             </span>
           </div>
-          <div className="account-stat-row">
-            <span>Fastest win</span>
-            <span className="account-stat-value">
-              {stats ? (stats.fastestWinMs !== null ? fmtDuration(stats.fastestWinMs) : '—') : '—'}
-            </span>
-          </div>
-
           <div className="account-divider" />
 
           <span className="account-section-label">Progression</span>
           <div className="account-stat-row">
             <span>Fighters unlocked</span>
-            <span className="account-stat-value">{unlockedCharacterIds.length}</span>
+            <span className="account-stat-value">
+              {unlockedCharacterIds.filter(id => !BASE_UNLOCKED.includes(id)).length}
+            </span>
           </div>
           <div className="account-stat-row">
             <span>Campaign clears</span>

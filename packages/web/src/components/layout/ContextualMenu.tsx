@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { useGameStore } from '../../store/gameStore';
 import { TRACKS, setMusicEnabled, setSfxEnabled } from '../../audio/audioManager';
+import { setHapticsEnabled } from '../../audio/haptics';
 
 // Generic dark floating panel anchored to a trigger — not settings-specific.
 // This instance hosts game settings (music, track, SFX). The pattern (.ctx-menu,
@@ -12,8 +14,11 @@ export default function ContextualMenu() {
   const musicEnabled = useGameStore(s => s.musicEnabled);
   const sfxEnabled = useGameStore(s => s.sfxEnabled);
   const selectedTrackIndex = useGameStore(s => s.selectedTrackIndex);
+  const hapticsEnabled = useGameStore(s => s.hapticsEnabled);
   const storeSetMusic = useGameStore(s => s.setMusicEnabled);
   const storeSetSfx = useGameStore(s => s.setSfxEnabled);
+  const storeSetHaptics = useGameStore(s => s.setHapticsEnabled);
+  const isNative = Capacitor.isNativePlatform();
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,6 +47,12 @@ export default function ContextualMenu() {
     setSfxEnabled(next);
   }
 
+  function handleHapticsToggle() {
+    const next = !hapticsEnabled;
+    storeSetHaptics(next);
+    setHapticsEnabled(next);
+  }
+
   return (
     <div ref={panelRef} className={`ctx-menu${settingsOpen ? '' : ' hidden'}`} id="ctx-menu">
       <div className="ctx-menu-item">
@@ -68,6 +79,19 @@ export default function ContextualMenu() {
           <span className="toggle-slider" />
         </label>
       </div>
+
+      {isNative && (
+        <>
+          <div className="ctx-menu-divider" />
+          <div className="ctx-menu-item">
+            <span className="ctx-label">VIBRATION</span>
+            <label className="toggle-switch">
+              <input type="checkbox" checked={hapticsEnabled} onChange={handleHapticsToggle} />
+              <span className="toggle-slider" />
+            </label>
+          </div>
+        </>
+      )}
 
       <div className="ctx-menu-divider" />
 

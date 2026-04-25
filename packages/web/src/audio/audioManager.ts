@@ -42,8 +42,6 @@ const SFX_SRCS: Record<string, string> = {
   fight:          '/sounds/Fight.mp3',
   victory:        '/sounds/Victory.mp3',
   devastation:    '/sounds/Devestation.mp3',
-  ko:             '/sounds/KO.mp3',
-  tko:            '/sounds/TKO.mp3',
   fightBell:      '/sounds/fight_bell.wav',
   punch:          '/sounds/01_punch.wav',
   kick:           '/sounds/02_kick.wav',
@@ -479,15 +477,8 @@ export function playRoundAnnouncer(roundNumber: number) {
 
 export function playFightAnnouncer()       { playBuf(SFX_SRCS.fight); }
 
-export function playKOAnnouncer() {
-  playBuf(SFX_SRCS.fightBell);
-  playBuf(SFX_SRCS.ko, 600);
-}
-
-export function playTKOAnnouncer() {
-  playBuf(SFX_SRCS.fightBell);
-  playBuf(SFX_SRCS.tko, 600);
-}
+export function playKOAnnouncer()  { playBuf(SFX_SRCS.fightBell); }
+export function playTKOAnnouncer() { playBuf(SFX_SRCS.fightBell); }
 
 export function playVictoryAnnouncer()     { playBuf(SFX_SRCS.victory); }
 export function playDevastationAnnouncer() { playBuf(SFX_SRCS.devastation); }

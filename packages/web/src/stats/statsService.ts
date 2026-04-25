@@ -28,7 +28,6 @@ export interface MyStats {
   matchesCampaign: number;
   matchesPractice: number;
   highestScore: number | null;
-  fastestWinMs: number | null;
 }
 
 // ── Pending match (retroactive save after guest signs up at game end) ─────────
@@ -150,14 +149,8 @@ export async function loadMyStats(userId: string): Promise<MyStats> {
   const matchesCampaign = rows.filter(r => r.game_mode === 'campaign').length;
   const matchesPractice = rows.filter(r => r.game_mode === 'practice').length;
 
-  // Personal bests across all modes
   const scores = rows.map(r => r.score as number).filter(s => s > 0);
   const highestScore = scores.length > 0 ? Math.max(...scores) : null;
-
-  const winDurations = rows
-    .filter(r => r.result === 'win' && r.match_duration_ms != null)
-    .map(r => r.match_duration_ms as number);
-  const fastestWinMs = winDurations.length > 0 ? Math.min(...winDurations) : null;
 
   return {
     onlineWins,
@@ -168,6 +161,5 @@ export async function loadMyStats(userId: string): Promise<MyStats> {
     matchesCampaign,
     matchesPractice,
     highestScore,
-    fastestWinMs,
   };
 }

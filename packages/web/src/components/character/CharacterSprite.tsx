@@ -10,9 +10,10 @@ interface Props {
   flipped?: boolean;
   id: string;
   wrapId: string;
+  showMistakeEffect?: boolean;
 }
 
-export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
+export default function CharacterSprite({ seat, flipped, id, wrapId, showMistakeEffect = true }: Props) {
   const imgRef = useRef<HTMLImageElement>(null);
   const controllerRef = useRef<AnimationController | null>(null);
 
@@ -86,7 +87,7 @@ export default function CharacterSprite({ seat, flipped, id, wrapId }: Props) {
       id={wrapId}
       className={`character-wrap${flipped ? ' flipped' : ''}`}
     >
-      <MistakeEffect seat={seat} />
+      {showMistakeEffect && <MistakeEffect seat={seat} />}
       <img
         id={id}
         ref={imgRef}

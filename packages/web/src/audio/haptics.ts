@@ -3,14 +3,17 @@ import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import type { AttackType } from '@sudoku-fighting/shared';
 
 const isNative = Capacitor.isNativePlatform();
+let hapticsEnabled = true;
+
+export function setHapticsEnabled(enabled: boolean) { hapticsEnabled = enabled; }
 
 function impact(style: ImpactStyle) {
-  if (!isNative) return;
+  if (!isNative || !hapticsEnabled) return;
   Haptics.impact({ style }).catch(() => {});
 }
 
 function vibrate(duration: number) {
-  if (!isNative) return;
+  if (!isNative || !hapticsEnabled) return;
   Haptics.vibrate({ duration }).catch(() => {});
 }
 

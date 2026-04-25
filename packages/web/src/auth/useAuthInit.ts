@@ -91,15 +91,21 @@ export function useAuthInit() {
       }).then(handle => { urlSub = handle; });
     }
 
-    // On mobile browsers, background tabs suspend JS timers so Supabase's
-    // auto-refresh doesn't fire. Re-validate the session whenever the tab
-    // becomes visible so tokens don't silently expire mid-session.
+    // iOS and mobile browsers both suspend JS timers when backgrounded, so
+    // Supabase's internal auto-refresh interval may never fire after a long
+    // absence. Call getSession() on resume/visibility to force a token refresh,
+    // which fires TOKEN_REFRESHED → onAuthStateChange → re-loads profile/stats.
+    let appStateSub: { remove: () => void } | null = null;
     function handleVisibilityChange() {
       if (document.visibilityState === 'visible') {
         supabase.auth.getSession().catch(() => {});
       }
     }
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.isNativePlatform()) {
+      CapApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) supabase.auth.getSession().catch(() => {});
+      }).then(handle => { appStateSub = handle; });
+    } else {
       document.addEventListener('visibilitychange', handleVisibilityChange);
     }
 
@@ -148,6 +154,7 @@ export function useAuthInit() {
     return () => {
       subscription.unsubscribe();
       urlSub?.remove();
+      appStateSub?.remove();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);

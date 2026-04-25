@@ -88,6 +88,7 @@ interface GameStore {
   combo: [number, number];
   score: [number, number];
   scoreOffset: [number, number];
+  scoreFightOffset: [number, number];
   counterWindowActive: boolean;
   counterWindowExpiry: number | null;
   counterWindowDefenderSeat: 0 | 1 | null;
@@ -141,6 +142,7 @@ interface GameStore {
   // ── Settings ──────────────────────────────────────────────────────────────
   musicEnabled: boolean;
   sfxEnabled: boolean;
+  hapticsEnabled: boolean;
   selectedTrackIndex: number;
   settingsOpen: boolean;
   scoreboardOpen: boolean;
@@ -170,6 +172,7 @@ interface GameStore {
   resetAll: () => void;
   setMusicEnabled: (enabled: boolean) => void;
   setSfxEnabled: (enabled: boolean) => void;
+  setHapticsEnabled: (enabled: boolean) => void;
   setSelectedTrackIndex: (index: number) => void;
   setSettingsOpen: (open: boolean) => void;
   setScoreboardOpen: (open: boolean) => void;
@@ -238,6 +241,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   combo: [0, 0],
   score: [0, 0],
   scoreOffset: [0, 0],
+  scoreFightOffset: [0, 0],
   counterWindowActive: false,
   counterWindowExpiry: null,
   counterWindowDefenderSeat: null,
@@ -281,6 +285,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   musicEnabled: true,
   sfxEnabled: true,
+  hapticsEnabled: true,
   selectedTrackIndex: SELECT_TRACK_INDEX,
   settingsOpen: false,
   scoreboardOpen: false,
@@ -304,6 +309,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setCharacters: (characters) => set({ characters }),
   setMusicEnabled: (musicEnabled) => set({ musicEnabled }),
   setSfxEnabled: (sfxEnabled) => set({ sfxEnabled }),
+  setHapticsEnabled: (hapticsEnabled) => set({ hapticsEnabled }),
   setSelectedTrackIndex: (selectedTrackIndex) => set({ selectedTrackIndex }),
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setScoreboardOpen: (scoreboardOpen) => set({ scoreboardOpen }),
@@ -405,7 +411,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     opponentGivens: null, opponentGrid: null,
     selectedCell: null, opponentCursorPos: null,
     health: [STARTING_HEALTH, STARTING_HEALTH],
-    combo: [0, 0], score: [0, 0], scoreOffset: [0, 0],
+    combo: [0, 0], score: [0, 0], scoreOffset: [0, 0], scoreFightOffset: [0, 0],
     counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
     selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
@@ -497,6 +503,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           combo: [0, 0],
           score: (p.roundNumber === 1 && s.gameMode !== 'campaign') ? [0, 0] : s.score,
           scoreOffset: (p.roundNumber === 1 && s.gameMode !== 'campaign') ? [0, 0] : s.score,
+          scoreFightOffset: p.roundNumber === 1 ? (s.gameMode === 'campaign' ? s.score : [0, 0] as [number, number]) : s.scoreFightOffset,
           counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
           selfDamagePredicted: false,
           roundOver: false,
@@ -508,6 +515,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           selectedCell: null, opponentCursorPos: null,
           p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null, attackFlashType: null,
           floatingPoints: [],
+          lastCorrectCell: null,
           // Multiplayer: stay on lobby screen for the countdown; gameplay transition
           // happens in LobbyScreen after lobbyCountdown ticks to 0.
           // Single-player / VS-AI: switch immediately (useVsAI dispatches game_start

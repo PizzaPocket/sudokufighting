@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
 interface Props {
@@ -8,13 +8,25 @@ interface Props {
 
 export default function ScoreDisplay({ seat, id }: Props) {
   const score = useGameStore(s => s.score[seat]);
+  const scoreFightOffset = useGameStore(s => s.scoreFightOffset[seat]);
+  const perFightScore = score - scoreFightOffset;
+
   const [displayed, setDisplayed] = useState(0);
   const rafRef = useRef<number | null>(null);
   const targetRef = useRef(0);
   const displayedRef = useRef(0);
 
   useEffect(() => {
-    targetRef.current = score;
+    targetRef.current = perFightScore;
+
+    // New fight started — reset instantly instead of animating backward
+    if (displayedRef.current > perFightScore) {
+      if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+      displayedRef.current = 0;
+      setDisplayed(0);
+      return;
+    }
+
     if (rafRef.current) return;
 
     function animate() {
@@ -38,7 +50,7 @@ export default function ScoreDisplay({ seat, id }: Props) {
         rafRef.current = null;
       }
     };
-  }, [score]);
+  }, [perFightScore]);
 
   return (
     <span className="hud-score" id={id}>

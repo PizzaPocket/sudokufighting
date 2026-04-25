@@ -17,14 +17,17 @@ export default function CampaignGameOver() {
   useEffect(() => {
     const el = document.getElementById('fight-stage');
     if (el) {
-      const rect = el.getBoundingClientRect();
-      // On native iOS (viewport-fit=cover), window.innerHeight includes the
-      // home-indicator safe area. Subtract it so the sprite lands at the same
-      // visual position as on mobile web.
-      const sab = parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--sab')
-      ) || 0;
-      setSpriteBottom(window.innerHeight - rect.bottom - sab);
+      if (window.getComputedStyle(el).position === 'fixed') {
+        // Mobile/native: fight-stage is position:fixed; bottom:0.
+        // getBoundingClientRect() on iOS Capacitor returns safe-area-adjusted
+        // coordinates (short by ~safeAreaInset), so skip measurement and match
+        // fight-stage directly with bottom:0.
+        setSpriteBottom(0);
+      } else {
+        // Desktop: fight-stage is in normal flow; measure where its bottom lands.
+        const rect = el.getBoundingClientRect();
+        setSpriteBottom(window.innerHeight - rect.bottom);
+      }
     }
     const t = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(t);
@@ -61,8 +64,8 @@ export default function CampaignGameOver() {
           same horizontal position it held during the fight. */}
       <div className="gameover-sprite-layer" style={{ bottom: spriteBottom }}>
         <div className="fight-characters">
-          <CharacterSprite seat={0} id="p1-char-img-go" wrapId="p1-char-wrap-go" />
-          <CharacterSprite seat={1} flipped id="p2-char-img-go" wrapId="p2-char-wrap-go" />
+          <CharacterSprite seat={0} id="p1-char-img-go" wrapId="p1-char-wrap-go" showMistakeEffect={false} />
+          <CharacterSprite seat={1} flipped id="p2-char-img-go" wrapId="p2-char-wrap-go" showMistakeEffect={false} />
         </div>
       </div>
 
