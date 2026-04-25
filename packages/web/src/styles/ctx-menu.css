@@ -72,11 +72,15 @@
   font-weight: var(--weight-bold);
   color: var(--canvas-text-dim);
   letter-spacing: 0.04em;
-  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* Fixed width = longest arena name — prevents layout shift on content change */
+  max-width: 100%;
+}
+
+/* In the carousel, flanking buttons need a fixed width to prevent layout shift */
+.track-carousel .track-title {
+  text-align: center;
   width: 130px;
   flex-shrink: 0;
 }
