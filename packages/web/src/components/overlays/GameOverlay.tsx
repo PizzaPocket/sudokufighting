@@ -136,9 +136,11 @@ export default function GameOverlay() {
       }
 
       addTimer(() => {
-        if (useGameStore.getState().matchOver) return;
-        hideOverlay();
         const cur = useGameStore.getState();
+        // Guard: stop if match is already over (match_end arrived) OR
+        // a player already has 2 round wins (defensive in case match_end is delayed).
+        if (cur.matchOver || cur.roundWins[0] >= 2 || cur.roundWins[1] >= 2) return;
+        hideOverlay();
         if (cur.gameMode === 'practice' || cur.gameMode === 'campaign') {
           startVsAIRound(cur.roundNumber + 1);
         } else {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { useGameStore } from '../store/gameStore';
 import { useAuthStore } from '../auth/authStore';
 import { send } from '../hooks/useGameSocket';
@@ -72,10 +73,12 @@ export default function LobbyScreen({ active }: Props) {
     if (active) screenRef.current?.scrollTo(0, 0);
   }, [active]);
 
-  // Reset hasSentJoin on deactivation
+  // Reset hasSentJoin when screen deactivates OR socket drops while in lobby.
+  // If the socket drops, the server deletes the room; re-sending create_room on
+  // reconnect gets a fresh share code so the UI shows again.
   useEffect(() => {
-    if (!active) hasSentJoin.current = false;
-  }, [active]);
+    if (!active || !wsConnected) hasSentJoin.current = false;
+  }, [active, wsConnected]);
 
   // Sync arena carousel to the server-chosen arena when countdown starts
   useEffect(() => {
@@ -92,11 +95,15 @@ export default function LobbyScreen({ active }: Props) {
     return () => clearTimeout(timer);
   }, [lobbyCountdown]);
 
-  // When countdown hits 0, switch to gameplay and fire the pre-round signal
+  // When countdown hits 0, switch to gameplay and fire the pre-round signal.
+  // Only fade out music on the first round (currentScreen !== 'gameplay'). For
+  // rounds 2+ the fight music is already playing and we don't want to stop it.
   useEffect(() => {
     if (lobbyCountdown === 0) {
       setLobbyCountdown(null);
-      fadeOutMusic(800);
+      if (useGameStore.getState().currentScreen !== 'gameplay') {
+        fadeOutMusic(800);
+      }
       const { roundNumber, backgroundId: bgId } = useGameStore.getState();
       useGameStore.setState({
         currentScreen: 'gameplay',
@@ -108,7 +115,10 @@ export default function LobbyScreen({ active }: Props) {
   }, [lobbyCountdown]);
 
   async function handleShareInvite() {
-    const url = `${window.location.origin}?room=${shareCode}`;
+    // On Capacitor iOS the origin is capacitor://localhost (not shareable).
+    // Use the production URL so the invite link actually opens in a browser.
+    const origin = Capacitor.isNativePlatform() ? 'https://sudokufighting.com' : window.location.origin;
+    const url = `${origin}?room=${shareCode}`;
     if (canNativeShare) {
       try {
         await navigator.share({ title: 'Sudoku Fighting', text: 'Come fight me in Sudoku Fighting! Join my room:', url });
