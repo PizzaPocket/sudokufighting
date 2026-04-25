@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapApp } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
+import { StatusBar } from '@capacitor/status-bar';
 import { supabase } from './supabaseClient';
 import { useAuthStore } from './authStore';
 import { handleAuthStateChange } from './authService';
@@ -20,6 +21,10 @@ export function useAuthInit() {
   useEffect(() => {
     // On native, handle the OAuth deep-link callback (sudokufighting://auth/callback?code=...)
     // and exchange the code for a Supabase session, then close the in-app browser.
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.hide().catch(() => {});
+    }
+
     let urlSub: { remove: () => void } | null = null;
     if (Capacitor.isNativePlatform()) {
       CapApp.addListener('appUrlOpen', async ({ url }) => {
