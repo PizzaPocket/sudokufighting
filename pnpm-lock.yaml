@@ -45,6 +45,9 @@ importers:
       '@capacitor/ios':
         specifier: ^8.3.1
         version: 8.3.1(@capacitor/core@8.3.1)
+      '@capacitor/status-bar':
+        specifier: ^8.0.2
+        version: 8.0.2(@capacitor/core@8.3.1)
       '@sudoku-fighting/shared':
         specifier: workspace:*
         version: link:../shared
@@ -218,6 +221,11 @@ packages:
     resolution: {integrity: sha512-BEhLyYYHWJLib4mpaPMaaylbC8meqgxbNYwQJH2svsSLW7yo/hFie+Zoo66a44XnqcMd2tvmAuzimWunXZi/xA==}
     peerDependencies:
       '@capacitor/core': ^8.3.0
+
+  '@capacitor/status-bar@8.0.2':
+    resolution: {integrity: sha512-WXs8YB8B9eEaPZz+bcdY6t2nForF1FLoj/JU0Dl9RRgQnddnS98FEEyDooQhaY7wivr000j4+SC1FyeJkrFO7A==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -2580,6 +2588,10 @@ snapshots:
       '@capacitor/core': 8.3.1
 
   '@capacitor/ios@8.3.1(@capacitor/core@8.3.1)':
+    dependencies:
+      '@capacitor/core': 8.3.1
+
+  '@capacitor/status-bar@8.0.2(@capacitor/core@8.3.1)':
     dependencies:
       '@capacitor/core': 8.3.1
 

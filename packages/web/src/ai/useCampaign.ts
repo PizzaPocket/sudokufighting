@@ -162,7 +162,7 @@ export function useCampaign() {
         await saveProgression({ unlockedCharacterIds: merged, campaignClearCount: st.campaignClearCount + 1 });
         if (st.myCharacter && useAuthStore.getState().user) {
           try {
-            await recordMatch({
+            const saved = await recordMatch({
               gameMode: 'campaign',
               result: 'win',
               characterId: st.myCharacter,
@@ -171,8 +171,13 @@ export function useCampaign() {
               difficulty: st.spDifficulty,
               matchDurationMs: 0,
             });
-            const rank = await getCampaignRank(adjustedScore);
-            useGameStore.setState({ campaignFinalRank: rank } as never);
+            if (saved) {
+              const rank = await getCampaignRank(adjustedScore);
+              useGameStore.setState({ campaignFinalRank: rank } as never);
+              // Leaderboard may have already loaded while victory screen was showing.
+              // Bump authVersion so LeaderboardCard re-fetches with the new entry.
+              useAuthStore.getState().bumpAuthVersion();
+            }
           } catch (e) {
             console.error('[campaign victory] save failed:', e);
           }

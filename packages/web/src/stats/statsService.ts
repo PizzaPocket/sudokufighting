@@ -47,12 +47,13 @@ export function consumePendingMatch(): RecordMatchInput | null {
 
 // ── Write ─────────────────────────────────────────────────────────────────────
 
-export async function recordMatch(input: RecordMatchInput): Promise<void> {
+/** Returns true if the record was saved successfully, false otherwise. */
+export async function recordMatch(input: RecordMatchInput): Promise<boolean> {
   const user = useAuthStore.getState().user;
-  if (!user) return;
+  if (!user) return false;
   // quick and friend matches are written server-side by the backend (service key,
   // bypasses RLS) — skip client-side write to avoid duplicates
-  if (input.gameMode === 'quick' || input.gameMode === 'friend') return;
+  if (input.gameMode === 'quick' || input.gameMode === 'friend') return false;
 
   const multiplier = input.difficulty
     ? (CAMPAIGN_SCORE_MULTIPLIERS[input.difficulty] ?? 1.0)
@@ -69,7 +70,11 @@ export async function recordMatch(input: RecordMatchInput): Promise<void> {
     adjusted_score:   Math.round(input.score * multiplier),
     match_duration_ms: input.matchDurationMs,
   });
-  if (error) console.error('[recordMatch] insert failed:', error.message, error.code);
+  if (error) {
+    console.error('[recordMatch] insert failed:', error.message, error.code, error.details, error.hint);
+    return false;
+  }
+  return true;
 }
 
 // ── Leaderboard ───────────────────────────────────────────────────────────────
