@@ -259,8 +259,9 @@ export default function GameOverlay() {
       >
         {overlay.main}
       </div>
-      {overlay.isVictory ? (
+      {overlay.isVictory && !matchEndWasFinalFight.current ? (
         // Victory: single line combining label + animated score, all in overlay-sub typography.
+        // Campaign final fight excluded — score lives in the credits cinematic instead.
         // white-space: nowrap prevents "Flawless: 8,873 PTS" from breaking across lines.
         <div
           className={`overlay-sub${scoreGlowing ? ' overlay-sub--glow' : ''}`}
