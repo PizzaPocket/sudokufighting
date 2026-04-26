@@ -19,6 +19,22 @@ import { ensureConnected } from '../hooks/useGameSocket';
 let oauthCallbackInProgress = false;
 let _authEventSeq = 0;
 
+// Prevents re-entrant auth→DB→getSession→auth cycles.
+// The onAuthStateChange callback fires-and-forgets this function so the
+// callback returns before any supabase.from() call touches getSession().
+// "Latest wins": if TOKEN_REFRESHED supersedes INITIAL_SESSION mid-flight,
+// the stale load stops after handleAuthStateChange and the fresh one takes over.
+let _authDataLoadId = 0;
+
+function _loadAuthData(userId: string): Promise<void> {
+  const id = ++_authDataLoadId;
+  return (async () => {
+    await handleAuthStateChange(userId);
+    if (_authDataLoadId !== id) return;
+    await loadProgressionFromDB(userId);
+  })().catch(() => {});
+}
+
 export function useAuthInit() {
   useEffect(() => {
     // On native, handle the OAuth deep-link callback (sudokufighting://auth/callback?code=...)
@@ -51,8 +67,7 @@ export function useAuthInit() {
               }
               const user = (await supabase.auth.getUser()).data.user;
               if (user) {
-                await handleAuthStateChange(user.id).catch(() => {});
-                await loadProgressionFromDB(user.id).catch(() => {});
+                await _loadAuthData(user.id);
               }
               return;
             }
@@ -74,8 +89,7 @@ export function useAuthInit() {
                   return;
                 }
                 if (data.session?.user) {
-                  await handleAuthStateChange(data.session.user.id).catch(() => {});
-                  await loadProgressionFromDB(data.session.user.id).catch(() => {});
+                  await _loadAuthData(data.session.user.id);
                 }
                 return;
               }
@@ -177,16 +191,15 @@ export function useAuthInit() {
         // callback — appUrlOpen handles those after the auth call fully returns.
         if (oauthCallbackInProgress) return;
 
+        // Fire-and-forget: do not await supabase.from() calls here.
+        // Awaiting them deadlocks when TOKEN_REFRESHED fires inside the SDK's
+        // autoRefreshToken callback — getSession() would re-enter and wait on
+        // the refresh that is itself waiting for this handler to return.
         if (user) {
-          console.log(`[AUTH EVENT] #${seq} ${event} → handleAuthStateChange:start t=${new Date().toISOString()}`);
-          await handleAuthStateChange(user.id);
-          console.log(`[AUTH EVENT] #${seq} ${event} → handleAuthStateChange:done t=${new Date().toISOString()}`);
-          await loadProgressionFromDB(user.id);
-          console.log(`[AUTH EVENT] #${seq} ${event} → loadProgressionFromDB:done t=${new Date().toISOString()}`);
+          _loadAuthData(user.id);
         } else {
           useAuthStore.getState().setProfile(null);
         }
-        console.log(`[AUTH EVENT] #${seq} ${event} → handler:complete t=${new Date().toISOString()}`);
       }
     );
     return () => {

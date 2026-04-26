@@ -38,11 +38,7 @@ export default function AccountScreen() {
     if (!accountOpen || !user) return;
     setStats(null);
     loadMyStats(user.id).then(setStats);
-    // Fallback: if profile didn't load via onAuthStateChange (e.g. silent error on refresh), load it now
-    if (!profile) {
-      import('../../auth/authService').then(m => m.handleAuthStateChange(user.id));
-    }
-  }, [accountOpen, user, profile]);
+  }, [accountOpen, user]);
 
   if (!rendered || !user) return null;
 
