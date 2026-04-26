@@ -27,7 +27,6 @@ export interface MyStats {
   winRate: number | null;                 // null = no ranked games decided yet
   bestWinStreak: number;                  // Quick Match only
   matchesQuick: number;
-  matchesCampaign: number;
   matchesPractice: number;
   bestCampaignScore: number | null;       // raw score from best-adjusted run
   bestCampaignDifficulty: string | null;
@@ -142,7 +141,6 @@ export async function loadMyStats(userId: string): Promise<MyStats> {
 
   // Match counts by mode
   const matchesQuick    = rankedRows.length;
-  const matchesCampaign = rows.filter(r => r.game_mode === 'campaign').length;
   const matchesPractice = rows.filter(r => r.game_mode === 'practice').length;
 
   // Best campaign run: pick the win with the highest adjusted_score
@@ -161,7 +159,6 @@ export async function loadMyStats(userId: string): Promise<MyStats> {
     winRate,
     bestWinStreak,
     matchesQuick,
-    matchesCampaign,
     matchesPractice,
     bestCampaignScore:      bestRun ? (bestRun.score as number)      : null,
     bestCampaignDifficulty: bestRun ? (bestRun.difficulty as string)  : null,

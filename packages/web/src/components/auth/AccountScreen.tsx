@@ -163,12 +163,6 @@ export default function AccountScreen() {
             </span>
           </div>
           <div className="account-stat-row">
-            <span>Matches played</span>
-            <span className="account-stat-value">
-              {stats ? (stats.matchesCampaign > 0 ? stats.matchesCampaign : '—') : '—'}
-            </span>
-          </div>
-          <div className="account-stat-row">
             <span>Fighters unlocked</span>
             <span className="account-stat-value">
               {unlockedCharacterIds.filter(id => !BASE_UNLOCKED.includes(id)).length}
