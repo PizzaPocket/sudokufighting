@@ -39,7 +39,9 @@ interface AuthStore {
   closeAll: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+function ts() { return new Date().toISOString(); }
+
+export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   profile: null,
   authReady: false,
@@ -53,10 +55,25 @@ export const useAuthStore = create<AuthStore>((set) => ({
   signingOut: false,
   oauthError: null,
 
-  setUser: (user) => set({ user }),
-  setProfile: (profile) => set({ profile }),
-  setAuthReady: (v) => set({ authReady: v }),
-  bumpAuthVersion: () => set(s => ({ authVersion: s.authVersion + 1 })),
+  setUser: (user) => {
+    const prev = get().user;
+    console.log(`[STATE] setUser ${prev?.id ?? 'null'} → ${user?.id ?? 'null'} t=${ts()}`);
+    set({ user });
+  },
+  setProfile: (profile) => {
+    const prev = get().profile;
+    console.log(`[STATE] setProfile ${prev?.username ?? 'null'} → ${profile?.username ?? 'null'} t=${ts()}`);
+    set({ profile });
+  },
+  setAuthReady: (v) => {
+    console.log(`[STATE] setAuthReady → ${v} t=${ts()}`);
+    set({ authReady: v });
+  },
+  bumpAuthVersion: () => {
+    const prev = get().authVersion;
+    console.log(`[STATE] bumpAuthVersion ${prev} → ${prev + 1} t=${ts()}`);
+    set(s => ({ authVersion: s.authVersion + 1 }));
+  },
 
   openSignIn: () => set({ signInOpen: true, createAccountOpen: false, forgotPasswordOpen: false, accountOpen: false }),
   openCreateAccount: () => set({ createAccountOpen: true, signInOpen: false, forgotPasswordOpen: false, accountOpen: false }),

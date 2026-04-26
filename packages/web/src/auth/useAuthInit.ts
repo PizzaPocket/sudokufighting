@@ -17,6 +17,7 @@ import { ensureConnected } from '../hooks/useGameSocket';
 // This flag tells onAuthStateChange to skip profile/progression loading —
 // appUrlOpen loads them directly after the auth call fully returns instead.
 let oauthCallbackInProgress = false;
+let _authEventSeq = 0;
 
 export function useAuthInit() {
   useEffect(() => {
@@ -104,6 +105,7 @@ export function useAuthInit() {
     let appStateSub: { remove: () => void } | null = null;
     function handleVisibilityChange() {
       if (document.visibilityState === 'visible') {
+        console.log(`[AUTH] visibilityChange:visible → getSession t=${new Date().toISOString()}`);
         supabase.auth.getSession().catch(() => {});
         ensureConnected();
       }
@@ -121,7 +123,14 @@ export function useAuthInit() {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        const seq = ++_authEventSeq;
         const user = session?.user ?? null;
+        console.log(
+          `[AUTH EVENT] #${seq} ${event}` +
+          ` user=${user?.id ?? 'null'}` +
+          ` hasSession=${!!session}` +
+          ` t=${new Date().toISOString()}`
+        );
 
         // Recovery flow: clear any existing auth state and show the reset-password modal.
         // INITIAL_SESSION may have already signed the user in before this event fires,
@@ -169,11 +178,15 @@ export function useAuthInit() {
         if (oauthCallbackInProgress) return;
 
         if (user) {
+          console.log(`[AUTH EVENT] #${seq} ${event} → handleAuthStateChange:start t=${new Date().toISOString()}`);
           await handleAuthStateChange(user.id);
+          console.log(`[AUTH EVENT] #${seq} ${event} → handleAuthStateChange:done t=${new Date().toISOString()}`);
           await loadProgressionFromDB(user.id);
+          console.log(`[AUTH EVENT] #${seq} ${event} → loadProgressionFromDB:done t=${new Date().toISOString()}`);
         } else {
           useAuthStore.getState().setProfile(null);
         }
+        console.log(`[AUTH EVENT] #${seq} ${event} → handler:complete t=${new Date().toISOString()}`);
       }
     );
     return () => {

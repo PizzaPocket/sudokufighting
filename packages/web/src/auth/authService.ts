@@ -6,6 +6,8 @@ import { supabase } from './supabaseClient';
 import { useAuthStore } from './authStore';
 import type { Profile } from './authStore';
 
+function ts() { return new Date().toISOString(); }
+
 // ── Profanity filter ──────────────────────────────────────────────────────────
 
 const profanityFilter = new Filter();
@@ -67,12 +69,17 @@ async function generateUniqueUsername(): Promise<string> {
 // ── Profile helpers ───────────────────────────────────────────────────────────
 
 export async function loadProfile(userId: string): Promise<Profile | null> {
-  const { data } = await supabase
+  console.log(`[AUTH] loadProfile:start userId=${userId} t=${ts()}`);
+  const { data, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
     .maybeSingle();
-  if (!data) return null;
+  if (!data) {
+    console.log(`[AUTH] loadProfile:miss userId=${userId} error=${error?.message ?? 'none'} t=${ts()}`);
+    return null;
+  }
+  console.log(`[AUTH] loadProfile:hit userId=${userId} username=${data.username} t=${ts()}`);
   return { id: data.id, username: data.username, createdAt: data.created_at };
 }
 
@@ -89,16 +96,25 @@ async function createProfile(userId: string): Promise<Profile> {
 
 // Called by useAuthInit on every auth state change with a valid user
 export async function handleAuthStateChange(userId: string): Promise<void> {
+  console.log(`[AUTH] handleAuthStateChange:start userId=${userId} t=${ts()}`);
   let profile = await loadProfile(userId);
   if (!profile) {
+    console.log(`[AUTH] handleAuthStateChange:profile-miss → createProfile userId=${userId} t=${ts()}`);
     try {
       profile = await createProfile(userId);
+      console.log(`[AUTH] handleAuthStateChange:createProfile:ok userId=${userId} t=${ts()}`);
     } catch {
       // Profile may already exist (race condition or trigger-created row) — retry select
+      console.log(`[AUTH] handleAuthStateChange:createProfile:error → retry-load userId=${userId} t=${ts()}`);
       profile = await loadProfile(userId);
     }
   }
-  if (profile) useAuthStore.getState().setProfile(profile);
+  if (profile) {
+    useAuthStore.getState().setProfile(profile);
+    console.log(`[AUTH] handleAuthStateChange:done username=${profile.username} t=${ts()}`);
+  } else {
+    console.log(`[AUTH] handleAuthStateChange:done profile=null userId=${userId} t=${ts()}`);
+  }
 }
 
 // ── Auth actions ──────────────────────────────────────────────────────────────

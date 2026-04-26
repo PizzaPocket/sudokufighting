@@ -1,6 +1,8 @@
 import { supabase } from '../auth/supabaseClient';
 import { useAuthStore } from '../auth/authStore';
 
+function ts() { return new Date().toISOString(); }
+
 // Campaign difficulty multipliers — harder difficulty scores are normalized upward
 // so the leaderboard ranks effort fairly across all difficulties.
 export const CAMPAIGN_SCORE_MULTIPLIERS: Record<string, number> = {
@@ -95,12 +97,15 @@ export interface LeaderboardCampaignRow {
 }
 
 export async function loadOnlineLeaderboard(): Promise<LeaderboardOnlineRow[]> {
-  const { data } = await supabase.rpc('get_online_leaderboard');
-  return (data ?? []).map((row: { username: string; wins: number }, i: number) => ({
+  console.log(`[DATA] loadOnlineLeaderboard:start t=${ts()}`);
+  const { data, error } = await supabase.rpc('get_online_leaderboard');
+  const rows = (data ?? []).map((row: { username: string; wins: number }, i: number) => ({
     rank: i + 1,
     username: row.username,
     wins: Number(row.wins),
   }));
+  console.log(`[DATA] loadOnlineLeaderboard:done rows=${rows.length} error=${error?.message ?? 'none'} t=${ts()}`);
+  return rows;
 }
 
 export async function getCampaignRank(adjustedScore: number): Promise<number> {
@@ -118,14 +123,17 @@ export async function getCampaignRank(adjustedScore: number): Promise<number> {
 }
 
 export async function loadCampaignLeaderboard(): Promise<LeaderboardCampaignRow[]> {
-  const { data } = await supabase.rpc('get_campaign_leaderboard');
-  return (data ?? []).map((row: { username: string; score: number; adjusted_score: number; difficulty: string }, i: number) => ({
+  console.log(`[DATA] loadCampaignLeaderboard:start t=${ts()}`);
+  const { data, error } = await supabase.rpc('get_campaign_leaderboard');
+  const rows = (data ?? []).map((row: { username: string; score: number; adjusted_score: number; difficulty: string }, i: number) => ({
     rank: i + 1,
     username: row.username,
     score: row.score,
     adjusted_score: row.adjusted_score,
     difficulty: row.difficulty,
   }));
+  console.log(`[DATA] loadCampaignLeaderboard:done rows=${rows.length} error=${error?.message ?? 'none'} t=${ts()}`);
+  return rows;
 }
 
 // ── Read ──────────────────────────────────────────────────────────────────────
