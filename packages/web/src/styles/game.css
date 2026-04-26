@@ -921,7 +921,7 @@
 }
 .credits-score-rank-callout {
   font-family: var(--font);
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   font-weight: var(--weight-bold);
   letter-spacing: 0.08em;
   color: #fff;
@@ -929,7 +929,7 @@
 }
 .credits-score-rank-name {
   font-family: var(--font);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: var(--weight-bold);
   color: #fff;
 }
