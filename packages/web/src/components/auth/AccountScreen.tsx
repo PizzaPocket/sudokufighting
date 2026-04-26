@@ -140,34 +140,6 @@ export default function AccountScreen() {
 
           <div className="account-divider" />
 
-          <span className="account-section-label">Quick Match</span>
-          <div className="account-stat-row">
-            <span>Record</span>
-            <span className="account-stat-value">
-              {stats ? `${stats.rankedWins}W / ${stats.rankedLosses}L` : '—'}
-            </span>
-          </div>
-          <div className="account-stat-row">
-            <span>Win rate</span>
-            <span className="account-stat-value">
-              {stats ? (stats.winRate !== null ? `${stats.winRate}%` : '—') : '—'}
-            </span>
-          </div>
-          <div className="account-stat-row">
-            <span>Best streak</span>
-            <span className="account-stat-value">
-              {stats ? (stats.bestWinStreak > 0 ? stats.bestWinStreak : '—') : '—'}
-            </span>
-          </div>
-          <div className="account-stat-row">
-            <span>Matches played</span>
-            <span className="account-stat-value">
-              {stats ? (stats.matchesQuick > 0 ? stats.matchesQuick : '—') : '—'}
-            </span>
-          </div>
-
-          <div className="account-divider" />
-
           <span className="account-section-label">Campaign</span>
           <div className="account-stat-row">
             <span>Clears</span>
@@ -196,6 +168,40 @@ export default function AccountScreen() {
               {stats ? (stats.matchesCampaign > 0 ? stats.matchesCampaign : '—') : '—'}
             </span>
           </div>
+          <div className="account-stat-row">
+            <span>Fighters unlocked</span>
+            <span className="account-stat-value">
+              {unlockedCharacterIds.filter(id => !BASE_UNLOCKED.includes(id)).length}
+            </span>
+          </div>
+
+          <div className="account-divider" />
+
+          <span className="account-section-label">Quick Match</span>
+          <div className="account-stat-row">
+            <span>Record</span>
+            <span className="account-stat-value">
+              {stats ? `${stats.rankedWins}W / ${stats.rankedLosses}L` : '—'}
+            </span>
+          </div>
+          <div className="account-stat-row">
+            <span>Win rate</span>
+            <span className="account-stat-value">
+              {stats ? (stats.winRate !== null ? `${stats.winRate}%` : '—') : '—'}
+            </span>
+          </div>
+          <div className="account-stat-row">
+            <span>Best streak</span>
+            <span className="account-stat-value">
+              {stats ? (stats.bestWinStreak > 0 ? stats.bestWinStreak : '—') : '—'}
+            </span>
+          </div>
+          <div className="account-stat-row">
+            <span>Matches played</span>
+            <span className="account-stat-value">
+              {stats ? (stats.matchesQuick > 0 ? stats.matchesQuick : '—') : '—'}
+            </span>
+          </div>
 
           {stats && stats.matchesPractice > 0 && (
             <>
@@ -207,22 +213,6 @@ export default function AccountScreen() {
               </div>
             </>
           )}
-
-          <div className="account-divider" />
-
-          <span className="account-section-label">Progression</span>
-          <div className="account-stat-row">
-            <span>Fighters unlocked</span>
-            <span className="account-stat-value">
-              {unlockedCharacterIds.filter(id => !BASE_UNLOCKED.includes(id)).length}
-            </span>
-          </div>
-          <div className="account-stat-row">
-            <span>Campaign clears</span>
-            <span className="account-stat-value">
-              {campaignClearCount > 0 ? campaignClearCount : '—'}
-            </span>
-          </div>
 
           <div className="account-divider" />
 

@@ -6,9 +6,9 @@ function ts() { return new Date().toISOString(); }
 // Campaign difficulty multipliers — harder difficulty scores are normalized upward
 // so the leaderboard ranks effort fairly across all difficulties.
 export const CAMPAIGN_SCORE_MULTIPLIERS: Record<string, number> = {
-  easy:    1.0,
-  normal:  1.75,
-  extreme: 3.0,
+  easy:    0.75,
+  normal:  1.0,
+  extreme: 1.25,
 };
 
 export interface RecordMatchInput {
@@ -58,10 +58,6 @@ export async function recordMatch(input: RecordMatchInput): Promise<boolean> {
   // bypasses RLS) — skip client-side write to avoid duplicates
   if (input.gameMode === 'quick' || input.gameMode === 'friend') return false;
 
-  const multiplier = input.difficulty
-    ? (CAMPAIGN_SCORE_MULTIPLIERS[input.difficulty] ?? 1.0)
-    : 1.0;
-
   const { error } = await supabase.from('match_history').insert({
     user_id:          user.id,
     game_mode:        input.gameMode,
@@ -70,7 +66,7 @@ export async function recordMatch(input: RecordMatchInput): Promise<boolean> {
     opponent_name:    input.opponentName,
     difficulty:       input.difficulty,
     score:            input.score,
-    adjusted_score:   Math.round(input.score * multiplier),
+    adjusted_score:   input.score,  // difficulty multiplier already applied at gameplay time
     match_duration_ms: input.matchDurationMs,
   });
   if (error) {
@@ -82,30 +78,12 @@ export async function recordMatch(input: RecordMatchInput): Promise<boolean> {
 
 // ── Leaderboard ───────────────────────────────────────────────────────────────
 
-export interface LeaderboardOnlineRow {
-  rank: number;
-  username: string;
-  wins: number;
-}
-
 export interface LeaderboardCampaignRow {
   rank: number;
   username: string;
   score: number;
   adjusted_score: number;
   difficulty: string;
-}
-
-export async function loadOnlineLeaderboard(): Promise<LeaderboardOnlineRow[]> {
-  console.log(`[DATA] loadOnlineLeaderboard:start t=${ts()}`);
-  const { data, error } = await supabase.rpc('get_online_leaderboard');
-  const rows = (data ?? []).map((row: { username: string; wins: number }, i: number) => ({
-    rank: i + 1,
-    username: row.username,
-    wins: Number(row.wins),
-  }));
-  console.log(`[DATA] loadOnlineLeaderboard:done rows=${rows.length} error=${error?.message ?? 'none'} t=${ts()}`);
-  return rows;
 }
 
 export async function getCampaignRank(adjustedScore: number): Promise<number> {

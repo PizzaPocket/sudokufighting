@@ -5,6 +5,7 @@ import type {
 import { STARTING_HEALTH, HEALTH_UPDATE_DELAY_LIGHT, HEALTH_UPDATE_DELAY_HEAVY, ANIMATION_CONFIG } from '@sudoku-fighting/shared';
 import { playAttackSFX, pauseMusic, resumeMusic, SELECT_TRACK_INDEX } from '../audio/audioManager';
 import { BASE_UNLOCKED } from '../progression/progressionService';
+import { CAMPAIGN_SCORE_MULTIPLIERS } from '../stats/statsService';
 
 export type Screen = 'splash' | 'start' | 'character-select' | 'lobby' | 'practice-lobby' | 'campaign-lobby' | 'campaign-dialogue' | 'gameplay' | 'privacy';
 
@@ -133,6 +134,12 @@ interface GameStore {
   creditsActive: boolean;
   campaignFinalScore: number | null;   // adjusted score for completed run
   campaignFinalRank: number | null;    // global rank; null = loading or not yet queried
+
+  // ── Match scoring (canonical) ──────────────────────────────────────────────
+  isFlawlessVictory: boolean;     // player won 2–0 this match
+  rawMatchScore: number;          // points scored this match/fight (difficulty multiplier already applied)
+  finalMatchScore: number;        // rawMatchScore * 2 if flawless, else rawMatchScore
+  campaignTotalScore: number;     // accumulated finalMatchScore across all campaign fights
 
   // ── Pause ─────────────────────────────────────────────────────────────────
   isPaused: boolean;
@@ -278,6 +285,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   creditsActive: false,
   campaignFinalScore: null,
   campaignFinalRank: null,
+
+  isFlawlessVictory: false,
+  rawMatchScore: 0,
+  finalMatchScore: 0,
+  campaignTotalScore: 0,
 
   isPaused: false,
   totalPausedMs: 0,
@@ -430,6 +442,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     pendingUnlockIds: [],
     campaignFinalScore: null,
     campaignFinalRank: null,
+    isFlawlessVictory: false,
+    rawMatchScore: 0,
+    finalMatchScore: 0,
+    campaignTotalScore: 0,
     // unlockedCharacterIds and campaignClearCount persist across resets
   })),
 
@@ -529,6 +545,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
           totalPausedMs: 0,
           pauseStartTime: null,
           campaignResult: null,
+          // Reset per-match scoring fields for each new fight; also reset
+          // campaignTotalScore at the very start of a fresh campaign run.
+          isFlawlessVictory: false,
+          rawMatchScore: 0,
+          finalMatchScore: 0,
+          ...(p.roundNumber === 1 && s.gameMode === 'campaign' && s.campaignFightIndex === 0
+            ? { campaignTotalScore: 0 }
+            : {}),
         });
         break;
       }
@@ -656,7 +680,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
       case 'score_update': {
         const { seat, score } = msg.payload;
         const st0 = get();
-        const cumulative = st0.scoreOffset[seat] + score;
+        const isVsAI = st0.gameMode === 'campaign' || st0.gameMode === 'practice';
+        const multiplier = isVsAI
+          ? (CAMPAIGN_SCORE_MULTIPLIERS[st0.spDifficulty ?? 'normal'] ?? 1.0)
+          : 1.0;
+        const cumulative = st0.scoreOffset[seat] + Math.round(score * multiplier);
         const delta = cumulative - st0.score[seat];
         const lastCell = st0.lastCorrectCell;
         set(st => {
@@ -763,14 +791,27 @@ export const useGameStore = create<GameStore>((set, get) => ({
         break;
       }
 
-      case 'match_end':
+      case 'match_end': {
+        const st = get();
+        const mySeat = st.mySeat ?? 0;
+        const oppSeat = (1 - mySeat) as 0 | 1;
+        const iWon = msg.payload.winnerSeat === mySeat;
+        const isFlawless = iWon
+          && st.roundWins[mySeat] === 2
+          && st.roundWins[oppSeat] === 0;
+        const rawMatch = st.score[mySeat] - st.scoreFightOffset[mySeat];
+        const finalMatch = isFlawless ? rawMatch * 2 : rawMatch;
         set({
           matchOver: true,
           matchWinnerSeat: msg.payload.winnerSeat,
           matchWinnerName: msg.payload.winnerName,
+          isFlawlessVictory: isFlawless,
+          rawMatchScore: rawMatch,
+          finalMatchScore: finalMatch,
           counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
         });
         break;
+      }
 
       case 'opponent_disconnected':
         set({ opponentDisconnected: true });

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
+import ScoreReveal from './ScoreReveal';
 import { send } from '../../hooks/useGameSocket';
 import { startVsAIRound } from '../../ai/useVsAI';
 import {
@@ -20,6 +21,7 @@ interface OverlayContent {
   mainShadow?: string;
   subColor?: string;
   nonce: number;
+  isVictory?: boolean;
 }
 
 function charName(charId: string | null, characters: Array<{ id: string; name: string }>) {
@@ -40,6 +42,10 @@ export default function GameOverlay() {
 
   const user = useAuthStore(s => s.user);
   const openSignIn = useAuthStore(s => s.openSignIn);
+
+  const isFlawlessVictory = useGameStore(s => s.isFlawlessVictory);
+  const rawMatchScore = useGameStore(s => s.rawMatchScore);
+  const finalMatchScore = useGameStore(s => s.finalMatchScore);
 
   const [overlay, setOverlay] = useState<OverlayContent | null>(null);
   const [showButtons, setShowButtons] = useState(false);
@@ -196,13 +202,18 @@ export default function GameOverlay() {
 
       if (isWinner) {
         playVictoryAnnouncer();
+        const flawless = useGameStore.getState().isFlawlessVictory;
+        const isCampaignFinal = st.gameMode === 'campaign' && isFinalCampaignFight;
         showOverlay({
           main: 'VICTORY!',
-          sub: (st.gameMode === 'campaign' && isFinalCampaignFight) ? '' : winnerDisplayName,
+          // Campaign final: sub stays empty — overlay exits into credits cinematic
+          // and any lingering text would float over the credits scroll.
+          sub: isCampaignFinal ? '' : (flawless ? 'Flawless Victory' : winnerDisplayName),
           mainColor: '#FF8B16',
           mainShadow: '4px 5px 0 #8B49FF',
-          subColor: '#FFCA00',
+          subColor: flawless ? '#FFD700' : '#FFCA00',
           nonce: Date.now(),
+          isVictory: true,
         });
       } else {
         if (!opponentDisconnected) playDevastationAnnouncer();
@@ -251,8 +262,17 @@ export default function GameOverlay() {
           {overlay.sub}
         </div>
       )}
+      {/* Campaign final fight: score is shown in the credits cinematic (CampaignVictory),
+          so no ScoreReveal here — it would linger over the scrolling credits. */}
       {showButtons && (
         <div className="overlay-btn-row">
+          {overlay.isVictory && (
+            <ScoreReveal
+              rawScore={rawMatchScore}
+              finalScore={finalMatchScore}
+              isFlawless={isFlawlessVictory}
+            />
+          )}
           {gameMode === 'campaign' && !matchEndWasFinalFight.current && (
             <button
               className="btn"

@@ -3,10 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../auth/authStore';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 import {
-  loadOnlineLeaderboard,
   loadCampaignLeaderboard,
-  CAMPAIGN_SCORE_MULTIPLIERS,
-  type LeaderboardOnlineRow,
   type LeaderboardCampaignRow,
 } from '../../stats/statsService';
 
@@ -22,17 +19,14 @@ export default function Scoreboard() {
   function handleClose() { setScoreboardOpen(false); }
   const { rendered, closing } = useModalAnimation(open);
 
-  const [tab, setTab] = useState<'online' | 'campaign'>('online');
-  const [onlineRows, setOnlineRows] = useState<LeaderboardOnlineRow[] | null>(null);
   const [campaignRows, setCampaignRows] = useState<LeaderboardCampaignRow[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setLoading(true);
-    Promise.all([loadOnlineLeaderboard(), loadCampaignLeaderboard()]).then(([online, campaign]) => {
-      setOnlineRows(online);
-      setCampaignRows(campaign);
+    loadCampaignLeaderboard().then(rows => {
+      setCampaignRows(rows);
       setLoading(false);
     });
   }, [open]);
@@ -54,51 +48,14 @@ export default function Scoreboard() {
           </button>
         </div>
 
-        <div className="scoreboard-tabs">
-          <button
-            className={`scoreboard-tab${tab === 'online' ? ' active' : ''}`}
-            onClick={() => setTab('online')}
-          >
-            RANKED
-          </button>
-          <button
-            className={`scoreboard-tab${tab === 'campaign' ? ' active' : ''}`}
-            onClick={() => setTab('campaign')}
-          >
-            CAMPAIGN
-          </button>
-        </div>
-
         <div className="modal-sheet-body" style={{ padding: 0 }}>
           {loading && <div className="scoreboard-loading">LOADING...</div>}
 
-          {!loading && tab === 'online' && (
-            onlineRows && onlineRows.length > 0 ? (
-              <div className="scoreboard-list">
-                {onlineRows.map(row => {
-                  const isMe = profile?.username === row.username;
-                  return (
-                    <div key={row.rank} className={`scoreboard-row${isMe ? ' is-me' : ''}`}>
-                      <span className={`scoreboard-rank${row.rank <= 3 ? ' top3' : ''}`}>
-                        {row.rank}
-                      </span>
-                      <span className="scoreboard-username">{row.username}</span>
-                      <span className="scoreboard-score">{fmt(row.wins)} W</span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="scoreboard-empty">No online matches yet.<br />Be the first on the board.</div>
-            )
-          )}
-
-          {!loading && tab === 'campaign' && (
+          {!loading && (
             campaignRows && campaignRows.length > 0 ? (
               <div className="scoreboard-list">
                 {campaignRows.map(row => {
                   const isMe = profile?.username === row.username;
-                  const multiplier = CAMPAIGN_SCORE_MULTIPLIERS[row.difficulty] ?? 1;
                   return (
                     <div key={row.rank} className={`scoreboard-row${isMe ? ' is-me' : ''}`}>
                       <span className={`scoreboard-rank${row.rank <= 3 ? ' top3' : ''}`}>

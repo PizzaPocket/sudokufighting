@@ -5,7 +5,7 @@ import { useGameStore } from '../store/gameStore';
 import { saveProgression } from '../progression/progressionService';
 import { fadeOutMusic } from '../audio/audioManager';
 import { preloadArenaAssets } from '../utils/preloadAssets';
-import { recordMatch, getCampaignRank, CAMPAIGN_SCORE_MULTIPLIERS } from '../stats/statsService';
+import { recordMatch, getCampaignRank } from '../stats/statsService';
 import { useAuthStore } from '../auth/authStore';
 import { supabase } from '../auth/supabaseClient';
 
@@ -133,17 +133,17 @@ export function useCampaign() {
       const newUnlocks = calculateUnlocks(st.unlockedCharacterIds, st.myCharacter, st.characters);
       const merged = [...new Set([...st.unlockedCharacterIds, ...newUnlocks])];
 
-      const mySeat = st.mySeat ?? 0;
-      const rawScore = st.score[mySeat];
-      const multiplier = CAMPAIGN_SCORE_MULTIPLIERS[st.spDifficulty ?? 'normal'] ?? 1.0;
-      const adjustedScore = Math.round(rawScore * multiplier);
+      // finalMatchScore already includes the real-time difficulty multiplier
+      // and the flawless ×2 bonus (computed in match_end store handler).
+      const campaignTotal = st.campaignTotalScore + st.finalMatchScore;
 
       useGameStore.setState({
         campaignResult: 'victory',
         unlockedCharacterIds: merged,
         pendingUnlockIds: newUnlocks,
         campaignClearCount: st.campaignClearCount + 1,
-        campaignFinalScore: adjustedScore,
+        campaignFinalScore: campaignTotal,
+        campaignTotalScore: campaignTotal,
         campaignFinalRank: null,
       } as never);
       // Run saves sequentially — concurrent supabase.from() calls both trigger
@@ -167,12 +167,12 @@ export function useCampaign() {
               result: 'win',
               characterId: st.myCharacter,
               opponentName: null,
-              score: rawScore,
+              score: campaignTotal,
               difficulty: st.spDifficulty,
               matchDurationMs: 0,
             });
             if (saved) {
-              const rank = await getCampaignRank(adjustedScore);
+              const rank = await getCampaignRank(campaignTotal);
               useGameStore.setState({ campaignFinalRank: rank } as never);
               // Leaderboard may have already loaded while victory screen was showing.
               // Bump authVersion so LeaderboardCard re-fetches with the new entry.
@@ -198,6 +198,7 @@ export function useCampaign() {
         campaignFightIndex: nextIndex,
         campaignDialogueQueue: queue,
         campaignResult: 'continue',
+        campaignTotalScore: st.campaignTotalScore + st.finalMatchScore,
       } as never);
     }
   }, [matchOver, matchWinnerSeat, gameMode]); // eslint-disable-line react-hooks/exhaustive-deps
