@@ -51,6 +51,7 @@ export default function GameOverlay() {
   const [showButtons, setShowButtons] = useState(false);
   const [hidden, setHidden] = useState(true);
   const [campaignExiting, setCampaignExiting] = useState(false);
+  const [scoreGlowing, setScoreGlowing] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const mainRef = useRef<HTMLDivElement>(null);
   // Wall-clock time when round 1 started — used to compute match duration
@@ -77,6 +78,7 @@ export default function GameOverlay() {
     setOverlay(content);
     setHidden(false);
     setCampaignExiting(false);
+    setScoreGlowing(false);
     if (mainRef.current) {
       mainRef.current.style.animation = 'none';
       void mainRef.current.offsetWidth;
@@ -257,22 +259,28 @@ export default function GameOverlay() {
       >
         {overlay.main}
       </div>
-      {overlay.sub && (
+      {overlay.isVictory ? (
+        // Victory: single line combining label + animated score, all in overlay-sub typography.
+        // white-space: nowrap prevents "Flawless: 8,873 PTS" from breaking across lines.
+        <div
+          className={`overlay-sub${scoreGlowing ? ' overlay-sub--glow' : ''}`}
+          style={{ color: '#FFD700', whiteSpace: 'nowrap' }}
+        >
+          {isFlawlessVictory && 'Flawless: '}
+          <ScoreReveal
+            rawScore={rawMatchScore}
+            finalScore={finalMatchScore}
+            isFlawless={isFlawlessVictory}
+            onGlow={() => setScoreGlowing(true)}
+          />
+        </div>
+      ) : (overlay.sub ? (
         <div className="overlay-sub" style={overlay.subColor ? { color: overlay.subColor } : undefined}>
           {overlay.sub}
         </div>
-      )}
-      {/* Campaign final fight: score is shown in the credits cinematic (CampaignVictory),
-          so no ScoreReveal here — it would linger over the scrolling credits. */}
+      ) : null)}
       {showButtons && (
         <div className="overlay-btn-row">
-          {overlay.isVictory && (
-            <ScoreReveal
-              rawScore={rawMatchScore}
-              finalScore={finalMatchScore}
-              isFlawless={isFlawlessVictory}
-            />
-          )}
           {gameMode === 'campaign' && !matchEndWasFinalFight.current && (
             <button
               className="btn"

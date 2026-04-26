@@ -4,15 +4,17 @@ interface Props {
   rawScore: number;
   finalScore: number;
   isFlawless: boolean;
+  onGlow?: () => void;
 }
 
-export default function ScoreReveal({ rawScore, finalScore, isFlawless }: Props) {
+export default function ScoreReveal({ rawScore, finalScore, isFlawless, onGlow }: Props) {
   const [displayed, setDisplayed] = useState(rawScore);
-  const [glowing, setGlowing] = useState(false);
   const rafRef = useRef<number | null>(null);
   const firedRef = useRef(false);
   const displayedRef = useRef(rawScore);
   const crossedRef = useRef(false);
+  const onGlowRef = useRef(onGlow);
+  onGlowRef.current = onGlow;
 
   useEffect(() => {
     if (firedRef.current) return;
@@ -23,14 +25,17 @@ export default function ScoreReveal({ rawScore, finalScore, isFlawless }: Props)
 
     if (rawScore === finalScore) return;
 
-    const targetRef = { current: finalScore };
+    const target = finalScore;
 
     function animate() {
-      const diff = targetRef.current - displayedRef.current;
+      const diff = target - displayedRef.current;
       if (Math.abs(diff) < 1) {
-        displayedRef.current = targetRef.current;
-        setDisplayed(targetRef.current);
-        if (isFlawless) setGlowing(true);
+        displayedRef.current = target;
+        setDisplayed(target);
+        if (isFlawless && !crossedRef.current) {
+          crossedRef.current = true;
+          onGlowRef.current?.();
+        }
         rafRef.current = null;
         return;
       }
@@ -38,16 +43,14 @@ export default function ScoreReveal({ rawScore, finalScore, isFlawless }: Props)
       displayedRef.current = next;
       setDisplayed(next);
 
-      // Trigger glow the moment we cross rawScore (multiplier starts applying)
       if (isFlawless && !crossedRef.current && next > rawScore) {
         crossedRef.current = true;
-        setGlowing(true);
+        onGlowRef.current?.();
       }
 
       rafRef.current = requestAnimationFrame(animate);
     }
 
-    // Small delay so the animation starts after the overlay has settled
     const timeout = setTimeout(() => {
       rafRef.current = requestAnimationFrame(animate);
     }, 300);
@@ -61,9 +64,5 @@ export default function ScoreReveal({ rawScore, finalScore, isFlawless }: Props)
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <div className={`score-reveal${glowing ? ' score-reveal--flawless' : ''}`}>
-      {displayed.toLocaleString()} PTS
-    </div>
-  );
+  return <span>{displayed.toLocaleString()} PTS</span>;
 }
