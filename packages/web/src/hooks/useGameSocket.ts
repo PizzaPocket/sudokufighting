@@ -1,5 +1,6 @@
 // Module-level singleton — one socket per app lifecycle, not per component mount
 import type { ClientMessage, ServerMessage } from '@sudoku-fighting/shared';
+import { Capacitor } from '@capacitor/core';
 import { useGameStore } from '../store/gameStore';
 import { useEffect, useRef } from 'react';
 
@@ -13,6 +14,9 @@ function getWsUrl(): string {
   // Vite define injects __WS_URL__ at build time; fall back to auto-detect in dev
   const injected = (typeof __WS_URL__ !== 'undefined' && __WS_URL__) ? __WS_URL__ as string : null;
   if (injected) return injected;
+  // Capacitor's WKWebView uses capacitor://localhost — window.location can't give a real host.
+  // Guard here so a build without VITE_NATIVE=true still works on device.
+  if (Capacitor.isNativePlatform()) return 'wss://sudoku-fighting-backend.fly.dev/ws';
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   // /ws path matches the Vite proxy rule → backend at localhost:8080
   return `${proto}//${window.location.host}/ws`;
