@@ -921,17 +921,22 @@
 }
 .credits-score-rank-callout {
   font-family: var(--font);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: var(--weight-bold);
   letter-spacing: 0.08em;
   color: #fff;
   text-shadow: var(--text-shadow-sm);
+  white-space: nowrap;
 }
 .credits-score-rank-name {
   font-family: var(--font);
-  font-size: var(--text-base);
+  font-size: var(--text-lg);
   font-weight: var(--weight-bold);
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .unlock-screen {
