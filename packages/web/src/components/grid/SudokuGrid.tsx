@@ -38,6 +38,7 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
   // Completion flash state: key = "row-col", value = animation key counter
   const [flashCells, setFlashCells] = useState<Set<string>>(new Set());
   const lastSentCursor = useRef<{ row: number; col: number } | null>(null);
+  const flashTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   // Build wiping set for this grid's seat
   const wipingSet = new Set<string>();
@@ -47,7 +48,17 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
 
   // Completion ripple — triggered when my own cell becomes correct
   useEffect(() => {
-    if (!isMe || !lastCorrectCell || !myGrid || !mySolution) return;
+    if (!isMe) return;
+
+    if (!lastCorrectCell) {
+      // game_start reset — cancel any in-flight ripple timers and clear flash state
+      flashTimers.current.forEach(clearTimeout);
+      flashTimers.current = [];
+      setFlashCells(new Set());
+      return;
+    }
+
+    if (!myGrid || !mySolution) return;
     const { row, col } = lastCorrectCell;
 
     const g = myGrid as (number | null)[][];
@@ -89,12 +100,14 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
     const maxDist = Math.max(...byDist.keys());
     hapticRipple(maxDist);
     byDist.forEach((keys, dist) => {
-      setTimeout(() => {
+      const t1 = setTimeout(() => {
         setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.add(k)); return next; });
-        setTimeout(() => {
+        const t2 = setTimeout(() => {
           setFlashCells(prev => { const next = new Set(prev); keys.forEach(k => next.delete(k)); return next; });
         }, 400);
+        flashTimers.current.push(t2);
       }, dist * 120);
+      flashTimers.current.push(t1);
     });
   }, [lastCorrectNonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
