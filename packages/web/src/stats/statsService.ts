@@ -86,17 +86,13 @@ export interface LeaderboardCampaignRow {
 }
 
 export async function getCampaignRank(adjustedScore: number): Promise<number> {
-  // Count unique players whose best campaign run beats our score.
-  // Fetching user_ids (not a count) so we can deduplicate — one player
-  // with multiple qualifying runs should count once, not once per run.
-  const { data } = await supabase
+  const { count } = await supabase
     .from('match_history')
-    .select('user_id')
+    .select('*', { count: 'exact', head: true })
     .eq('game_mode', 'campaign')
     .eq('result', 'win')
     .gt('adjusted_score', adjustedScore);
-  const uniquePlayers = new Set((data ?? []).map((r: { user_id: string }) => r.user_id)).size;
-  return uniquePlayers + 1;
+  return (count ?? 0) + 1;
 }
 
 export async function loadCampaignLeaderboard(): Promise<LeaderboardCampaignRow[]> {
