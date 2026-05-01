@@ -613,13 +613,13 @@
   position: absolute; inset: 0; background-size: cover; background-position: center;
   z-index: 0; opacity: 1; pointer-events: none; display: none;
 }
-#arena-bg-overlay.active { display: block; animation: arena-fade-in 0.4s ease-out both; }
+#arena-bg-overlay.active { display: block; animation: arena-fade-in 0.4s ease-out backwards; }
 
 .arena-sun {
   position: absolute; width: 520px; height: 520px; left: 50%; transform: translateX(-50%);
   pointer-events: none; z-index: 0; display: none;
 }
-.arena-sun.active { display: block; animation: arena-fade-in 0.4s ease-out both; }
+.arena-sun.active { display: block; animation: arena-fade-in 0.4s ease-out backwards; }
 
 #fight-ground { position: absolute; bottom: 0; left: 0; width: 100%; height: auto; z-index: 0; animation: arena-fade-in 0.4s ease-out both; }
 
