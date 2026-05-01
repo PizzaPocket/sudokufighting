@@ -250,7 +250,10 @@ export function useVsAI() {
 
     vsAiPlayerMove = (row, col, value) => processMove(0, row, col, value);
     _stopCallback = clearAllTimers;
-    _startRoundCallback = startRound;
+    _startRoundCallback = (roundNumber: number) => {
+      localRoundWins.current = [0, 0];
+      startRound(roundNumber);
+    };
     _startCampaignFightCallback = () => {
       localRoundWins.current = [0, 0];
       clearAllTimers();
