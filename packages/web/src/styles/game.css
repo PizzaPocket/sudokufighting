@@ -177,6 +177,8 @@
 }
 #screen-start .btn,
 #screen-start .combo-input { width: 240px; box-sizing: border-box; }
+#start-single-player .start-mode-label + .btn { margin-top: 4px; }
+#start-single-player .btn + .btn             { margin-top: 10px; }
 #screen-start .combo-input { margin-top: 8px; }
 
 

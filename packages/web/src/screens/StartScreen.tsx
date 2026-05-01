@@ -99,7 +99,7 @@ export default function StartScreen({ active, entering }: Props) {
         </div>
 
         {/* Column 2 — Single Player */}
-        <div className="start-section">
+        <div id="start-single-player" className="start-section">
           <span className="start-mode-label">SINGLE PLAYER</span>
           <button className="btn btn-alt" onClick={() => goToCharacterSelect('campaign')}>
             CAMPAIGN
