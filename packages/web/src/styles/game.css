@@ -745,9 +745,16 @@
   .counter-dot      { top: calc(50% - 2px); }
 }
 
+/* Tablet and wider — minimum 40px side margins (all devices, all orientations) */
+@media (min-width: 600px) {
+  #hud { padding-left: 40px; padding-right: 40px; }
+  #arena { padding-left: 40px; padding-right: 40px; }
+  .action-bar { padding-left: 40px; padding-right: 40px; }
+}
+
 /* iPad / tablet — compact HUD to keep layout above the fold */
 @media (min-width: 501px) and (max-width: 1024px) and (pointer: coarse) {
-  #hud { padding: 4px 12px 2px; }
+  #hud { padding-top: 4px; padding-bottom: 2px; }
   .player-panel.is-me { gap: 5px; }
   .hud-score, .combo-counter { font-size: var(--text-sm); }
   .ko-block { font-size: 0; padding: 0; width: 6px; flex-shrink: 0; border-radius: 0; }
