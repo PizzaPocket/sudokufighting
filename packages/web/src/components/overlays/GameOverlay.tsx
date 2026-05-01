@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import ScoreReveal from './ScoreReveal';
 import { send } from '../../hooks/useGameSocket';
-import { startVsAIRound } from '../../ai/useVsAI';
+import { startVsAIRound, startVsAIMatch } from '../../ai/useVsAI';
 import {
   playRoundAnnouncer, playFightAnnouncer,
   playKOAnnouncer, playTKOAnnouncer,
@@ -302,7 +302,7 @@ export default function GameOverlay() {
               className="btn"
               onClick={() => {
                 useGameStore.setState({ matchOver: false, matchWinnerSeat: null, roundWins: [0, 0] } as never);
-                startVsAIRound(1);
+                startVsAIMatch();
                 setShowButtons(false);
                 setHidden(true);
               }}

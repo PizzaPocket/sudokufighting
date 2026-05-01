@@ -40,6 +40,12 @@ export function startCampaignNextFight() {
   _startCampaignFightCallback?.();
 }
 
+let _startMatchCallback: (() => void) | null = null;
+
+export function startVsAIMatch() {
+  _startMatchCallback?.();
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -250,13 +256,14 @@ export function useVsAI() {
 
     vsAiPlayerMove = (row, col, value) => processMove(0, row, col, value);
     _stopCallback = clearAllTimers;
-    _startRoundCallback = (roundNumber: number) => {
-      localRoundWins.current = [0, 0];
-      startRound(roundNumber);
-    };
+    _startRoundCallback = startRound;
     _startCampaignFightCallback = () => {
       localRoundWins.current = [0, 0];
       clearAllTimers();
+      startRound(1);
+    };
+    _startMatchCallback = () => {
+      localRoundWins.current = [0, 0];
       startRound(1);
     };
 
@@ -268,6 +275,7 @@ export function useVsAI() {
       _stopCallback = null;
       _startRoundCallback = null;
       _startCampaignFightCallback = null;
+      _startMatchCallback = null;
       clearAllTimers();
     };
   }, [gameMode, currentScreen]); // eslint-disable-line react-hooks/exhaustive-deps
