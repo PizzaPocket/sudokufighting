@@ -23,7 +23,8 @@
                         <constraints>
                             <constraint firstItem="Abc-De-Fgh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Cx1-ab-cd"/>
                             <constraint firstItem="Abc-De-Fgh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Cy1-ef-gh"/>
-                            <constraint firstItem="Abc-De-Fgh" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.65" id="W1-ij-kl"/>
+                            <constraint firstItem="Abc-De-Fgh" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.65" priority="750" id="W1-ij-kl"/>
+                            <constraint firstItem="Abc-De-Fgh" firstAttribute="width" constant="250" relation="lessThanOrEqual" id="Mw1-qr-st"/>
                             <constraint firstItem="Abc-De-Fgh" firstAttribute="width" secondItem="Abc-De-Fgh" secondAttribute="height" multiplier="0.8456" id="Ar1-mn-op"/>
                         </constraints>
                     </view>
