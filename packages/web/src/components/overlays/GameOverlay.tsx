@@ -297,7 +297,7 @@ export default function GameOverlay() {
       ) : null)}
       {showButtons && (
         <div className="overlay-btn-row">
-          {(gameMode === 'quick' || gameMode === 'friend') && rematchCancelled && (
+          {(gameMode === 'quick' || gameMode === 'friend') && rematchCancelled && !opponentDisconnected && (
             <div className="overlay-status">Opponent left</div>
           )}
           {(gameMode === 'quick' || gameMode === 'friend') && rematchOffered && !rematchPending && !rematchCancelled && (

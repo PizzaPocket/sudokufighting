@@ -131,7 +131,7 @@ export default function LobbyScreen({ active }: Props) {
   }
 
   async function handleShareGame() {
-    const url = window.location.origin;
+    const url = Capacitor.isNativePlatform() ? 'https://sudokufighting.com' : window.location.origin;
     if (canNativeShare) {
       try {
         await navigator.share({ title: 'Sudoku Fighting', text: 'Play Sudoku Fighting — real-time competitive puzzle battles. Challenge a friend:', url });
