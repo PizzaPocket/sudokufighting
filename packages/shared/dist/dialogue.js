@@ -83,8 +83,8 @@ export const MATCH_DIALOGUE = {
                 "Silence alone will not bring you balance.",
             ] },
         fighter3: { speaker: 'Jonathan', lines: [
-                "You are steady and focused, I will give you that.",
-                "Let's see how you handle real pressure.",
+                "Quiet and serious. You're not going to make this very entertaining.",
+                "I suppose I'll have to carry the show for both of us.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
                 "You aim to be perfect, don't you?",
@@ -110,11 +110,11 @@ export const MATCH_DIALOGUE = {
     // ── Playing as Brace (fighter1_alt) ──────────────────────────────────────
     fighter1_alt: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "You're still holding back, even now.",
-                "Let go for once and see what happens.",
+                "You've traded discipline for instinct.",
+                "Let's see how that holds when it counts.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
-                "No plan, no strategy — just going on vibes, yeah?",
+                "No plan, no strategy, just going on vibes, yeah?",
                 "Same approach I use, honestly. But I'm better at it.",
             ] },
         fighter2_alt: { speaker: 'Nun', lines: [
@@ -122,28 +122,28 @@ export const MATCH_DIALOGUE = {
                 "Speed without direction only leads you in circles.",
             ] },
         fighter3: { speaker: 'Jonathan', lines: [
-                "Confidence is easy when things go your way.",
-                "Let's see how you handle a little chaos.",
+                "All energy, no craft. You fight like a rough draft.",
+                "Let me show you how it's done properly.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
-                "You call yourself the perfect version, yeah?",
-                "Sounds a bit boring if you ask me.",
+                "No structure, no refinement. Just instinct.",
+                "I have already moved past that.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
                 "Now you're more my style.",
                 "Don't hold back, I won't.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
-                "You're wound up way too tight.",
-                "Try loosening up before you snap.",
+                "All that loose energy with no direction.",
+                "Precision will cut straight through it.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "Hey mate, now that's some proper strength.",
-                "Let's make this a good one.",
+                "Pure instinct, no map. Respect that, mate.",
+                "Let's see how far it gets ya.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
-                "You're cold as ice, but also stiff as a board.",
-                "I'll shake you out of that.",
+                "All impulse, no structure.",
+                "I've already run this scenario.",
             ] },
     },
     // ── Playing as Chuck (fighter2) ───────────────────────────────────────────
@@ -188,8 +188,8 @@ export const MATCH_DIALOGUE = {
     // ── Playing as Nun (fighter2_alt) ─────────────────────────────────────────
     fighter2_alt: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "Your discipline is admirable, but it is incomplete.",
-                "You have not yet found stillness.",
+                "Your quiet is real.",
+                "I only wonder what it's protecting.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
                 "All that stillness, and you call it strength?",
@@ -200,7 +200,7 @@ export const MATCH_DIALOGUE = {
                 "Come on, lighten up! Even a little?",
             ] },
         fighter3: { speaker: 'Jonathan', lines: [
-                "All that stillness and not a word — confident, or just waiting?",
+                "All that stillness and not a word. Confident, or just waiting?",
                 "Either way, I don't lose to patience.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
@@ -208,7 +208,7 @@ export const MATCH_DIALOGUE = {
                 "Perfection requires constant refinement, not waiting.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "What is with all the quiet?! Just standing there —",
+                "What is with all the quiet?! You're just standing there.",
                 "I'll give you something to react to.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
@@ -217,7 +217,7 @@ export const MATCH_DIALOGUE = {
             ] },
         fighter5: { speaker: 'Boombox', lines: [
                 "Blimey, you're quiet. Not even gonna say g'day?",
-                "Fair enough — I'll let the game do the talking.",
+                "Fair enough. I'll let the game do the talking.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
                 "You have found quiet. But quiet is not the same as clarity.",
@@ -227,12 +227,12 @@ export const MATCH_DIALOGUE = {
     // ── Playing as Jonathan (fighter3) ───────────────────────────────────────
     fighter3: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "Your control is impressive, but it feels rigid.",
-                "Let's see how it holds under pressure.",
+                "You treat this like a performance.",
+                "Let's see if the substance matches the show.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
-                "You abandon control too easily.",
-                "That will be your downfall.",
+                "All that style and showmanship.",
+                "I'm just here to fight.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
                 "Pretty sure of yourself for someone who hasn't won yet, yeah?",
@@ -247,20 +247,20 @@ export const MATCH_DIALOGUE = {
                 "I suppose I'll have to prove which one is better.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "You fight like you have nothing to lose.",
-                "That makes you dangerous, but predictable.",
+                "All that confidence.",
+                "Hope it holds when things get ugly.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
                 "Your precision is impressive.",
                 "Let's see how you handle pressure.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "Raw power, huh? I like that.",
-                "But can you control it under fire?",
+                "Big entrance, nice hair. Love the commitment, mate.",
+                "Hope the fight's as good as the show.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
-                "You've stripped everything down to pure focus.",
-                "Let's see if that's enough.",
+                "The presentation is noted.",
+                "Now let's see what's underneath it.",
             ] },
     },
     // ── Playing as Johan (fighter3_alt) ──────────────────────────────────────
@@ -270,8 +270,8 @@ export const MATCH_DIALOGUE = {
                 "There is still another level beyond you.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
-                "You mistake chaos for freedom.",
-                "It only reveals your limits.",
+                "Everything so controlled, so refined.",
+                "You've planned for everything except someone who doesn't bother.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
                 "Everything about you is so polished and serious.",
@@ -286,16 +286,16 @@ export const MATCH_DIALOGUE = {
                 "I am already there.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "Your movements are unrefined and scattered.",
-                "I will bring them to an end.",
+                "So polished it's almost boring.",
+                "Let's put some scratches on that finish.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
                 "You are efficient, which I respect.",
                 "But efficiency is only the beginning.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "You possess great strength, but lack polish, mate.",
-                "That is your weakness.",
+                "Every move calculated, every choice deliberate.",
+                "Let's see if you've accounted for someone who doesn't do that.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
                 "You remove emotion, but not imperfection.",
@@ -305,8 +305,8 @@ export const MATCH_DIALOGUE = {
     // ── Playing as Senna (fighter4) ───────────────────────────────────────────
     fighter4: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "You move like everything's planned out ahead of time.",
-                "Let's see what happens when things get messy.",
+                "No pattern, no plan. Pure instinct.",
+                "I have trained for this too.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
                 "Now that's more like it.",
@@ -314,7 +314,7 @@ export const MATCH_DIALOGUE = {
             ] },
         fighter2: { speaker: 'Chuck', lines: [
                 "Okay! You fight like you're angry at the whole world.",
-                "I'm just here to have a good time — try not to take it personally?",
+                "I'm just here for a good time. Try not to take it personally?",
             ] },
         fighter2_alt: { speaker: 'Nun', lines: [
                 "You move like a storm with no direction.",
@@ -325,31 +325,31 @@ export const MATCH_DIALOGUE = {
                 "Let's see how you handle pressure.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
-                "You think you're perfect or something?",
-                "I'd like to see that crack.",
+                "Unpredictable is another word for untrained.",
+                "I have no patience for it.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
                 "You're the version of me that never hesitates.",
                 "Let's see which one wins.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "Big, loud, and strong.",
-                "Yeah, I've taken down worse.",
+                "Scrappy and quick. Credit where it's due.",
+                "Still going down though.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
-                "You feel… empty.",
-                "Let's see if I can shake something loose.",
+                "Loud, emotional, chaotic.",
+                "You're giving me a lot to work with.",
             ] },
     },
     // ── Playing as Ninja S (fighter4_alt) ────────────────────────────────────
     fighter4_alt: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "Your form is rigid and predictable.",
-                "I will dismantle it.",
+                "Silent, precise, nothing wasted.",
+                "Let's see whose training runs deeper.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
-                "You lack discipline and structure.",
-                "You will fall quickly.",
+                "So precise, so controlled.",
+                "Wonder what happens when you lose the script.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
                 "You look like you've never laughed once in your life.",
@@ -360,20 +360,20 @@ export const MATCH_DIALOGUE = {
                 "But sharpness that never rests will eventually break.",
             ] },
         fighter3: { speaker: 'Jonathan', lines: [
-                "Your patterns are visible and exploitable.",
-                "I have already adapted.",
+                "No entrance, no warmup, no words.",
+                "All business. I can respect that. Still won't be enough.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
                 "You are efficient, but not optimal.",
                 "I will prove the difference.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "You hesitate where I do not.",
-                "That is why I will win.",
+                "All those years of training.",
+                "I learned mine in an alley. Let's see what sticks.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "How ya' goin'? If strength and instinct carries you,",
-                "Both can be countered.",
+                "Not a word, not a wink.",
+                "Alright then, I'll make enough noise for both of us.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
                 "Your logic is sound.",
@@ -383,15 +383,15 @@ export const MATCH_DIALOGUE = {
     // ── Playing as Boombox (fighter5) ────────────────────────────────────────
     fighter5: {
         fighter1: { speaker: 'Xiao Long', lines: [
-                "You've got that calm, disciplined thing going on.",
-                "Let's see how long it holds up under pressure.",
+                "You carry a lot more than just strength.",
+                "I wonder if you've decided what to do with it.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
-                "You fight loose, I like that.",
-                "Let's see if you can back it up.",
+                "Big, loud, and direct.",
+                "I've got no plan either. Should be interesting.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
-                "Wow, okay — you are really big.",
+                "Wow. Okay. You are really big.",
                 "I'm going to need to be extra charming to get through this one.",
             ] },
         fighter2_alt: { speaker: 'Nun', lines: [
@@ -407,16 +407,16 @@ export const MATCH_DIALOGUE = {
                 "Let's test that theory.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "Scrappy fighter, I respect that.",
-                "Let's see how you handle real power.",
+                "Okay. You're big. Real big.",
+                "Good thing I don't fight fair.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
-                "You're sharp and precise.",
-                "This'll be a good one.",
+                "Big and loud and not subtle about it.",
+                "Power without precision is easy to read.",
             ] },
         fighter5_alt: { speaker: 'Icebox', lines: [
-                "You've gone all cold on me, huh?",
-                "Let's see which version comes out on top.",
+                "All heat, no calculation.",
+                "I've already mapped where this leads.",
             ] },
     },
     // ── Playing as Icebox (fighter5_alt) ────────────────────────────────────
@@ -426,8 +426,8 @@ export const MATCH_DIALOGUE = {
                 "I will test how far that can take you.",
             ] },
         fighter1_alt: { speaker: 'Brace', lines: [
-                "You act on instinct without restraint.",
-                "That makes you predictable.",
+                "Everything mapped out, every angle covered.",
+                "Let me introduce some variables.",
             ] },
         fighter2: { speaker: 'Chuck', lines: [
                 "You are extremely intense right now.",
@@ -438,24 +438,24 @@ export const MATCH_DIALOGUE = {
                 "But emptiness is not the same as stillness.",
             ] },
         fighter3: { speaker: 'Jonathan', lines: [
-                "Your confidence is evident.",
-                "It will be evaluated.",
+                "Cold and blank. You're not going to give me anything to work with.",
+                "Fine. I can improvise.",
             ] },
         fighter3_alt: { speaker: 'Johan', lines: [
-                "You strive for perfection.",
-                "I will measure the result.",
+                "Efficient, cold, no wasted motion.",
+                "Optimised is not the same as perfected. I will show you the difference.",
             ] },
         fighter4: { speaker: 'Senna', lines: [
-                "Your movements are erratic.",
-                "I will impose order.",
+                "All blueprint, no feeling.",
+                "I wonder if that's actually a weakness.",
             ] },
         fighter4_alt: { speaker: 'Ninja S', lines: [
-                "Your efficiency is acceptable.",
-                "We will determine superiority.",
+                "Efficient. Optimised for different constraints.",
+                "We'll see which ones matter today.",
             ] },
         fighter5: { speaker: 'Boombox', lines: [
-                "Hey mate, you look familiar.",
-                "Let's throw a shrimp on this barbie",
+                "Oi. That's a bit unsettling.",
+                "What happened to all the fun?",
             ] },
     },
 };

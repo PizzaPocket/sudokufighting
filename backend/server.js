@@ -45,8 +45,12 @@ const pendingTimers = new Map();
 // roundTimers: Map<roomId, timeoutHandle>
 const roundTimers = new Map();
 
-function startRoundTimer(roomId) {
+// Time from game_start dispatch to "FIGHT!" firing: 3s lobby countdown + 2s "ROUND X" overlay
+const PRE_FIGHT_DURATION_MS = 5000;
+
+function startRoundTimer(roomId, fightStartTime) {
   clearRoundTimer(roomId);
+  const delay = (fightStartTime - Date.now()) + 99000;
   const handle = setTimeout(() => {
     roundTimers.delete(roomId);
     const room = getRoom(roomId);
@@ -54,7 +58,7 @@ function startRoundTimer(roomId) {
     const winnerSeat = determineRoundWinner(roomId);
     broadcast(room, 'time_up', {});
     triggerRoundEnd(roomId, room, winnerSeat);
-  }, 99000);
+  }, delay);
   roundTimers.set(roomId, handle);
 }
 
@@ -263,6 +267,13 @@ wss.on('connection', (ws) => {
     switch (type) {
       case 'find_match': {
         const { characterId = 'fighter1', name = 'Player', preferredArenaId = null, userId = null } = payload;
+        // Clean up any finished room this player is still attached to.
+        // The singleton WS never closes between matches, so ws.on('close') won't
+        // fire to do this — purge it here before re-queuing.
+        const staleRoom = findRoomByPlayer(playerId);
+        if (staleRoom && staleRoom.state === 'match_end') {
+          deleteRoom(staleRoom.roomId);
+        }
         // Remove any existing queue entry for this player (e.g. re-entering after back-navigate)
         dequeue(playerId);
         const shareCode = enqueue(playerId, ws, characterId, name, preferredArenaId, userId);
@@ -521,8 +532,8 @@ function startGameRound(roomId, room) {
       : ARENAS[Math.floor(Math.random() * ARENAS.length)].id;
   }
 
-  const roundStartTime = Date.now();
-  startRoundTimer(roomId);
+  const fightStartTime = Date.now() + PRE_FIGHT_DURATION_MS;
+  startRoundTimer(roomId, fightStartTime);
 
   for (const player of room.players) {
     const puzz = getRoundPuzzleForPlayer(roomId, player.seat);
@@ -538,7 +549,7 @@ function startGameRound(roomId, room) {
       mySeat: player.seat,
       myUseAlt: player.useAlt,
       opponentUseAlt: opponent.useAlt,
-      roundStartTime,
+      fightStartTime,
       backgroundId: room.backgroundId,
     });
   }

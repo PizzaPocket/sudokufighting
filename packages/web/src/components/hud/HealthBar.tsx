@@ -9,7 +9,7 @@ interface Props {
 
 export default function HealthBar({ hp, side, id }: Props) {
   const pct = Math.max(0, Math.min(100, (hp / STARTING_HEALTH) * 100));
-  const cls = pct <= 30 ? 'low' : pct <= 60 ? 'mid' : '';
+  const cls = pct <= 20 ? 'low' : pct <= 60 ? 'mid' : '';
 
   return (
     <div className={`hud-bar-track ${side}`}>

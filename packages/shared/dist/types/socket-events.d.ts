@@ -117,7 +117,7 @@ export type ServerMessage = {
         mySeat: 0 | 1;
         myUseAlt: boolean;
         opponentUseAlt: boolean;
-        roundStartTime: number;
+        fightStartTime: number;
         backgroundId: string;
     };
 } | {

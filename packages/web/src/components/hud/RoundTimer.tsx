@@ -1,33 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ROUND_DURATION_MS } from '@sudoku-fighting/shared';
 import { useGameStore } from '../../store/gameStore';
 
 export default function RoundTimer() {
-  const roundStartTime = useGameStore(s => s.roundStartTime);
+  const fightStartTime = useGameStore(s => s.fightStartTime);
   const roundOver = useGameStore(s => s.roundOver);
   const isPaused = useGameStore(s => s.isPaused);
   const totalPausedMs = useGameStore(s => s.totalPausedMs);
   const [seconds, setSeconds] = useState(99);
 
   useEffect(() => {
-    if (!roundStartTime || roundOver || isPaused) return;
+    if (!fightStartTime || roundOver || isPaused) return;
 
-    const pausedMs = totalPausedMs; // capture at effect start; stable during this interval
+    const pausedMs = totalPausedMs;
     const interval = setInterval(() => {
-      const elapsed = Date.now() - roundStartTime - pausedMs;
-      const remaining = Math.max(0, Math.ceil((ROUND_DURATION_MS - elapsed) / 1000));
-      setSeconds(remaining);
+      const elapsed = Date.now() - fightStartTime - pausedMs;
+      if (elapsed < 0) { setSeconds(99); return; }
+      setSeconds(Math.max(0, Math.ceil((ROUND_DURATION_MS - elapsed) / 1000)));
     }, 250);
 
     return () => clearInterval(interval);
-  }, [roundStartTime, roundOver, isPaused, totalPausedMs]);
+  }, [fightStartTime, roundOver, isPaused, totalPausedMs]);
 
   // Reset display on new round
-  useEffect(() => {
-    if (roundStartTime) setSeconds(99);
-  }, [roundStartTime]);
+  useEffect(() => { setSeconds(99); }, [fightStartTime]);
 
-  const urgent = seconds <= 10;
+  // Force 00 when round ends — resolves race between display interval and round_end dispatch
+  useEffect(() => { if (roundOver) setSeconds(0); }, [roundOver]);
+
+  const urgent = seconds <= 10 && !roundOver;
 
   return (
     <div id="round-timer" className={`round-timer${urgent ? ' urgent' : ''}`}>

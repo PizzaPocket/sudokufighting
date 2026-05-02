@@ -104,7 +104,7 @@ interface GameStore {
   matchWinnerName: string | null;
   opponentDisconnected: boolean;
   backgroundId: string | null;
-  roundStartTime: number | null;
+  fightStartTime: number | null;
 
   // ── Animation signals ─────────────────────────────────────────────────────
   p1AnimSignal: AnimSignal | null;
@@ -262,7 +262,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   matchWinnerName: null,
   opponentDisconnected: false,
   backgroundId: null,
-  roundStartTime: null,
+  fightStartTime: null,
 
   p1AnimSignal: null,
   p2AnimSignal: null,
@@ -427,7 +427,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
     selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
-    opponentDisconnected: false, backgroundId: null, roundStartTime: null,
+    opponentDisconnected: false, backgroundId: null, fightStartTime: null,
     p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null,
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
@@ -527,7 +527,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           matchWinnerSeat: null,
           matchWinnerName: null,
           backgroundId: p.backgroundId,
-          roundStartTime: p.roundStartTime,
+          fightStartTime: p.fightStartTime,
           selectedCell: null, opponentCursorPos: null,
           p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null, attackFlashType: null,
           floatingPoints: [],

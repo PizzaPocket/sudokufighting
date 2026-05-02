@@ -40,7 +40,7 @@ export default function HUD() {
 
       <div className="hud-sub-row">
         <div className="hud-sub-left">
-          <ScoreDisplay seat={mySeat === 0 ? 0 : 1} id="p1-score" />
+          <ScoreDisplay seat={0} id="p1-score" />
           <span className="combo-counter" id="p1-combo">
             {combo[0] > 1 ? `${combo[0]}× COMBO!` : ''}
           </span>
@@ -52,7 +52,7 @@ export default function HUD() {
           <span className="combo-counter" id="p2-combo">
             {combo[1] > 1 ? `${combo[1]}× COMBO!` : ''}
           </span>
-          <ScoreDisplay seat={mySeat === 0 ? 1 : 0} id="p2-score" />
+          <ScoreDisplay seat={1} id="p2-score" />
         </div>
       </div>
     </div>

@@ -25,7 +25,7 @@ export type ServerMessage =
   | { type: 'player_joined';          payload: { playerId: string; seat: 0 | 1; name: string; characterId: string; useAlt: boolean; shareCode?: string } }
   | { type: 'opponent_joined';        payload: { name: string; characterId: string; useAlt: boolean; seat: 0 | 1 } }
   | { type: 'opponent_left_lobby';    payload: Record<string, never> }
-  | { type: 'game_start';             payload: { roundNumber: number; puzzle: (number | null)[][]; solution: number[][]; opponentGivens: (number | null)[][]; opponentName: string; opponentCharacter: string; mySeat: 0 | 1; myUseAlt: boolean; opponentUseAlt: boolean; roundStartTime: number; backgroundId: string } }
+  | { type: 'game_start';             payload: { roundNumber: number; puzzle: (number | null)[][]; solution: number[][]; opponentGivens: (number | null)[][]; opponentName: string; opponentCharacter: string; mySeat: 0 | 1; myUseAlt: boolean; opponentUseAlt: boolean; fightStartTime: number; backgroundId: string } }
   | { type: 'cell_update';            payload: { seat: 0 | 1; row: number; col: number; value: number; isCorrect: boolean } }
   | { type: 'cursor_update';          payload: { seat: 0 | 1; row: number; col: number } }
   | { type: 'attack_incoming';        payload: { attackerSeat: 0 | 1; type: AttackType; damage: number; attackId: string; delayMs: number } }

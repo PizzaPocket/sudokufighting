@@ -80,6 +80,8 @@ export function useVsAI() {
   const roundState = useRef<RoundState>(makeEmptyRoundState());
   const attackTimers = useRef<Map<string, { handle: ReturnType<typeof setTimeout>; fireAt: number }>>(new Map());
   const pausedAttacks = useRef<Map<string, number>>(new Map()); // attackId → remaining ms
+  const roundEndTimerRef = useRef<{ handle: ReturnType<typeof setTimeout>; fireAt: number } | null>(null);
+  const pausedRoundEndMs = useRef<number>(0);
   const botQueue = useRef<BotCell[]>([]);
   const botSession = useRef<BotSession>({ stopped: true, timeouts: new Set() });
   const localRoundWins = useRef<[number, number]>([0, 0]);
@@ -90,6 +92,11 @@ export function useVsAI() {
     for (const { handle } of attackTimers.current.values()) clearTimeout(handle);
     attackTimers.current.clear();
     pausedAttacks.current.clear();
+    if (roundEndTimerRef.current) {
+      clearTimeout(roundEndTimerRef.current.handle);
+      roundEndTimerRef.current = null;
+    }
+    pausedRoundEndMs.current = 0;
     for (const t of botSession.current.timeouts) clearTimeout(t);
     botSession.current.stopped = true;
     botSession.current.timeouts.clear();
@@ -135,6 +142,17 @@ export function useVsAI() {
       checkRoundEnd();
     }, delay);
     attackTimers.current.set(attackId, { handle, fireAt });
+  }
+
+  function scheduleRoundEnd(delay: number) {
+    if (roundEndTimerRef.current) clearTimeout(roundEndTimerRef.current.handle);
+    const handle = setTimeout(() => {
+      roundEndTimerRef.current = null;
+      const h = roundState.current.health;
+      const winner: 0 | 1 | -1 = h[0] > h[1] ? 0 : h[1] > h[0] ? 1 : -1;
+      dispatchRoundEnd(winner);
+    }, delay);
+    roundEndTimerRef.current = { handle, fireAt: Date.now() + delay };
   }
 
   function processMove(seat: 0 | 1, row: number, col: number, value: number) {
@@ -208,7 +226,7 @@ export function useVsAI() {
         mySeat: 0,
         myUseAlt: false,
         opponentUseAlt,
-        roundStartTime: Date.now() + 3000,
+        fightStartTime: Date.now() + 2000,
         backgroundId: arenaId,
       },
     });
@@ -233,7 +251,7 @@ export function useVsAI() {
 
     replenishRef.current = replenish;
 
-    const startDelay = 3000;
+    const startDelay = 2000;
     const startTimer = setTimeout(() => {
       botSession.current.timeouts.delete(startTimer as unknown as number);
       scheduleNext(botQueue.current, botSession.current, difficulty, (r, c, v) => {
@@ -242,13 +260,7 @@ export function useVsAI() {
     }, startDelay);
     botSession.current.timeouts.add(startTimer as unknown as number);
 
-    const roundTimer = setTimeout(() => {
-      botSession.current.timeouts.delete(roundTimer as unknown as number);
-      const h = roundState.current.health;
-      const winner: 0 | 1 | -1 = h[0] > h[1] ? 0 : h[1] > h[0] ? 1 : -1;
-      dispatchRoundEnd(winner);
-    }, startDelay + ROUND_DURATION_MS);
-    botSession.current.timeouts.add(roundTimer as unknown as number);
+    scheduleRoundEnd(startDelay + ROUND_DURATION_MS);
   }
 
   useEffect(() => {
@@ -298,6 +310,12 @@ export function useVsAI() {
           pausedAttacks.current.set(id, Math.max(0, fireAt - now));
         }
         attackTimers.current.clear();
+        // Save round-end timer remaining time.
+        if (roundEndTimerRef.current) {
+          clearTimeout(roundEndTimerRef.current.handle);
+          pausedRoundEndMs.current = Math.max(0, roundEndTimerRef.current.fireAt - now);
+          roundEndTimerRef.current = null;
+        }
         for (const t of botSession.current.timeouts) clearTimeout(t);
         botSession.current.stopped = true;
         botSession.current.timeouts.clear();
@@ -307,6 +325,11 @@ export function useVsAI() {
           scheduleAttack(id, remaining);
         }
         pausedAttacks.current.clear();
+        // Reschedule round-end timer.
+        if (pausedRoundEndMs.current > 0) {
+          scheduleRoundEnd(pausedRoundEndMs.current);
+          pausedRoundEndMs.current = 0;
+        }
         // Resume bot move generation.
         botSession.current = { stopped: false, timeouts: new Set() };
         const difficulty = useGameStore.getState().spDifficulty as Difficulty;

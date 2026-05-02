@@ -81,31 +81,31 @@
   /* ── Player ramps ────────────────────────────────────── */
 
   /* Player 1 — blue-cyan */
+  --p1-bg-light: #D0F0FB;
+  --p1-bg-mid:   #9FE6F9;
   --p1-color:    #17B9EF;
   --p1-mid-dark: #0A8FBB;
   --p1-dark:     #006B8F;
-  --p1-bg-light: #E5F7FD;
-  --p1-bg-mid:   #B8ECFB;
 
   /* Player 2 — magenta */
+  --p2-bg-light: #FFD1EF;
+  --p2-bg-mid:   #FFB8E7;
   --p2-color:    #F31299;
   --p2-mid-dark: #BC0074;
   --p2-dark:     #880055;
-  --p2-bg-light: #FFEBF8;
-  --p2-bg-mid:   #FFD0EF;
 
   /* Danger — red */
+  --danger-bg-light: #FFD1D3;
+  --danger-bg-mid:   #FFB3B8;
   --danger-color:    #F00013;
   --danger-dark:     #A8000F;
-  --danger-bg-light: #FFEBEC;
-  --danger-bg-mid:   #FFCED1;
 
   /* ── Purple ramp — splash puzzle theme ──────────────── */
+  --purple-bg-light: #E2D6FF;  /* given cell background */
+  --purple-bg-mid:   #C3A3FF;  /* selection / accent fill */
   --purple:          #8B49FF;  /* = --accent */
   --purple-dark:     #6930CC;
   --purple-deep:     #4A1E99;
-  --purple-bg-light: #F3EEFF;  /* given cell background */
-  --purple-bg-mid:   #D4BCFF;  /* selection / accent fill */
 
   /* ── Shared action colours ───────────────────────────── */
   --orange:       #FF8B16;

@@ -16,7 +16,16 @@
       "Bash(__NEW_LINE_5bc88d88ecfc930a__ mv:*)",
       "Bash(__NEW_LINE_5bc88d88ecfc930a__ rmdir:*)",
       "Bash(sed -n '86,130p' /Users/leonard/dev/sudoku-fighting/frontend/css/style.css)",
-      "Bash(sed -n '445,470p' /Users/leonard/dev/sudoku-fighting/frontend/css/style.css)"
+      "Bash(sed -n '445,470p' /Users/leonard/dev/sudoku-fighting/frontend/css/style.css)",
+      "Bash(git -C /Users/leonard/dev/sudoku-fighting add packages/web/src/ai/useVsAI.ts packages/web/src/components/overlays/GameOverlay.tsx)",
+      "Bash(git -C /Users/leonard/dev/sudoku-fighting commit -m ' *)",
+      "Bash(xcodebuild -version)",
+      "Bash(file /Users/leonard/dev/sudoku-fighting/packages/web/ios/App/App/Assets.xcassets/LaunchLogo.imageset/*.png)",
+      "Bash(file /Users/leonard/dev/sudoku-fighting/packages/web/ios/App/App/Assets.xcassets/Splash.imageset/*.png)",
+      "Bash(git -C /Users/leonard/dev/sudoku-fighting add packages/web/ios/App/App/Base.lproj/LaunchScreen.storyboard)",
+      "Bash(grep -E \"\\\\.\\(tsx?|css\\)$\")",
+      "Bash(grep -n \"\\\\..*{\" /Users/leonard/dev/sudoku-fighting/packages/web/src/styles/game.css)",
+      "Bash(node -e ' *)"
     ]
   }
 }

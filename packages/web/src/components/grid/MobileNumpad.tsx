@@ -13,6 +13,7 @@ export default function MobileNumpad() {
     if (!btn) return;
     const st = useGameStore.getState();
     if (!st.selectedCell || st.roundOver || st.isPaused) return;
+    if (!st.fightStartTime || Date.now() < st.fightStartTime) return;
     const { row, col } = st.selectedCell;
     const value = parseInt(btn.dataset.value ?? '0');
 
