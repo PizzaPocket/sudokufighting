@@ -455,10 +455,11 @@
     }
     .demo-overlay-main.defeat { color: var(--danger-color); }
     .demo-overlay-sub {
-      font-size: var(--text-lg);
-      font-weight: var(--weight-bold);
+      font-size: var(--text-overlay-sub);
+      font-weight: var(--weight-heavy);
       color: var(--yellow);
       text-shadow: 1px 2px 0 var(--accent);
+      text-transform: uppercase;
     }
 
     /* ── Status Pill (unified: lobby status + badges) ───────────────── */
@@ -1360,7 +1361,7 @@
     <p class="sg-note" style="margin-bottom:16px"><strong>Mixed case (exceptions):</strong> body/narrative text and proper names — dialogue body (<code>.dialogue-text</code>), credits body, character names (<code>.lobby-player-name</code>, <code>.unlock-card-name</code>, <code>.credits-name</code>), and sub-hints (<code>.start-action-hint</code>). These are intentionally absent from the consolidated block.</p>
 
     <h3 class="sg-subsection-title">Type Scale with Text Shadow Offset Scale</h3>
-    <p class="sg-note" style="margin-bottom:16px">Hard pixel text shadows (offset, no blur) are used throughout. Shadow offset grows with type size so it remains proportionally punchy at every scale. Shadows pair with the background context — purple shadows over white UI, colored shadows over dark/arena backgrounds.</p>
+    <p class="sg-note" style="margin-bottom:16px">Hard pixel text shadows (offset, no blur) are used throughout. Shadow offset grows with type size so it remains proportionally punchy at every scale. Offsets are organised into bands — body (10–14px): 1×1→1×2; medium (18–22px): 2×2; large (26–28px): 2×3; display (66px): 3×4; hero (96px): 4×5. Shadows pair with the background context — purple shadows over white UI, colored shadows over dark/arena backgrounds.</p>
 
     <table class="shadow-table">
       <thead>
@@ -1373,7 +1374,7 @@
         <tr><td><code>--text-sm</code></td>    <td>12px</td><td>1px 1px 0</td><td>White text → <code>accent</code>; Settings labels</td></tr>
         <tr><td><code>--text-base</code></td>  <td>14px</td><td>1px 2px 0</td><td>White text → <code>accent</code>; Body copy</td></tr>
         <tr><td><code>--text-md</code></td>    <td>18px</td><td>2px 2px 0</td><td>P1 white name → <code>p1-mid-dark</code>; P2 white name → <code>p2-mid-dark</code>; Generic white → <code>accent</code></td></tr>
-        <tr><td><code>--text-lg</code></td>    <td>22px</td><td>1px 2px 0</td><td>Yellow overlay sub-text → <code>accent</code></td></tr>
+        <tr><td><code>--text-lg</code></td>    <td>22px</td><td>2px 2px 0</td><td>—</td></tr>
         <tr><td><code>--text-xl</code></td>    <td>26px</td><td>2px 3px 0</td><td>White timer → <code>accent</code>; Share code white → <code>accent</code></td></tr>
         <tr><td><code>--text-2xl</code></td>   <td>28px</td><td>2px 3px 0</td><td>White VS / lobby title → <code>accent</code>; Player label → <code>white</code></td></tr>
         <tr><td><code>--text-3xl</code></td>   <td>66px</td><td>3px 4px 0</td><td>Match-end title <code>accent</code> → semi-white; <code>danger</code> defeat variant</td></tr>
@@ -2257,17 +2258,17 @@
       <div class="sg-card arena" style="flex:1">
         <div class="demo-overlay">
           <div class="demo-overlay-main">VICTORY</div>
-          <div class="demo-overlay-sub">You win! 2–1</div>
+          <div class="demo-overlay-sub">Xian Wins!</div>
         </div>
       </div>
       <div class="sg-card arena" style="flex:1">
         <div class="demo-overlay">
           <div class="demo-overlay-main defeat">DEFEAT</div>
-          <div class="demo-overlay-sub">Opponent wins</div>
+          <div class="demo-overlay-sub">Opponent Wins!</div>
         </div>
       </div>
     </div>
-    <div class="sg-note" style="margin-top:10px">Main text: Barlow Condensed 96px w900. Normal: <code>accent</code> + white shadow. Defeat: <code>danger-color</code>. Sub-text: 22px w700 yellow + purple shadow — never white, legible on any arena.</div>
+    <div class="sg-note" style="margin-top:10px">Main text: Barlow Condensed 96px w900. Normal: <code>accent</code> + white shadow. Defeat: <code>danger-color</code>. Sub-text: 28px w800 yellow + <code>accent</code> shadow (2px 3px 0), all-caps (<code>text-transform: uppercase</code>) — never white, legible on any arena. All future text placed in <code>.overlay-sub</code> inherits the all-caps rule automatically.</div>
 
     <h3 class="sg-subsection-title">Floating Score Pop</h3>
     <p class="sg-note">Appears near the cell where a correct entry is made. 13px w800, <code>accent</code> purple. Floats up 36px and fades out over 0.75s.</p>

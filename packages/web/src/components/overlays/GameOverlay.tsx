@@ -35,6 +35,9 @@ export default function GameOverlay() {
   const mySeat = useGameStore(s => s.mySeat);
   const matchWinnerSeat = useGameStore(s => s.matchWinnerSeat);
   const opponentDisconnected = useGameStore(s => s.opponentDisconnected);
+  const rematchPending = useGameStore(s => s.rematchPending);
+  const rematchOffered = useGameStore(s => s.rematchOffered);
+  const rematchCancelled = useGameStore(s => s.rematchCancelled);
   const gameMode = useGameStore(s => s.gameMode);
   const campaignFightIndex = useGameStore(s => s.campaignFightIndex);
   const isFinalCampaignFight = campaignFightIndex === CAMPAIGN_FIGHTS.length - 1;
@@ -60,6 +63,8 @@ export default function GameOverlay() {
   // advances campaignFightIndex to nextIndex on a non-final win, so by the time
   // the buttons render isFinalCampaignFight is already true for the penultimate fight.
   const matchEndWasFinalFight = useRef(false);
+  // Track previous matchOver to detect rematch_start (matchOver flips true → false)
+  const prevMatchOverRef = useRef(false);
 
   function clearTimers() {
     timers.current.forEach(t => clearTimeout(t));
@@ -89,6 +94,16 @@ export default function GameOverlay() {
   function hideOverlay() {
     setHidden(true);
   }
+
+  // When rematch_start is processed, resetForRematch() sets matchOver false while
+  // we're still on the overlay. Hide buttons immediately so they don't flash before
+  // the incoming game_start triggers the pre-round sequence.
+  useEffect(() => {
+    if (prevMatchOverRef.current && !matchOver) {
+      setShowButtons(false);
+    }
+    prevMatchOverRef.current = matchOver;
+  }, [matchOver]);
 
   // Pre-round sequence: ROUND X (2s) → FIGHT! (1s) → hide
   const preRoundNonce = preRoundSignal?.nonce;
@@ -140,7 +155,7 @@ export default function GameOverlay() {
         const winnerCharId = winner === st.mySeat ? st.myCharacter : st.opponentCharacter;
         const wName = charName(winnerCharId, st.characters) ?? (winner === st.mySeat ? st.myName : st.opponentName) ?? 'Player';
         if (isTrueKO) playKOAnnouncer(); else playTKOAnnouncer();
-        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: wName.toUpperCase() + ' WINS!', mainColor: '#F00013', nonce: Date.now() });
+        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: wName + ' WINS!', mainColor: '#F00013', nonce: Date.now() });
       }
 
       addTimer(() => {
@@ -200,7 +215,7 @@ export default function GameOverlay() {
       const winnerName = charName(winnerCharId, st.characters) ?? st.matchWinnerName ?? 'Unknown';
       const winnerDisplayName = opponentDisconnected
         ? 'OPPONENT DISCONNECTED'
-        : winnerName.toUpperCase() + ' WINS!';
+        : winnerName + ' WINS!';
 
       if (isWinner) {
         playVictoryAnnouncer();
@@ -259,7 +274,7 @@ export default function GameOverlay() {
       >
         {overlay.main}
       </div>
-      {overlay.isVictory && !matchEndWasFinalFight.current ? (
+      {overlay.isVictory && !matchEndWasFinalFight.current && !opponentDisconnected ? (
         // Victory: single line combining label + animated score, all in overlay-sub typography.
         // Campaign final fight excluded — score lives in the credits cinematic instead.
         // white-space: nowrap prevents "Flawless: 8,873 PTS" from breaking across lines.
@@ -282,6 +297,12 @@ export default function GameOverlay() {
       ) : null)}
       {showButtons && (
         <div className="overlay-btn-row">
+          {(gameMode === 'quick' || gameMode === 'friend') && rematchCancelled && (
+            <div className="overlay-status">Opponent left</div>
+          )}
+          {(gameMode === 'quick' || gameMode === 'friend') && rematchOffered && !rematchPending && !rematchCancelled && (
+            <div className="overlay-status">Opponent wants a rematch</div>
+          )}
           {gameMode === 'campaign' && !matchEndWasFinalFight.current && (
             <button
               className="btn"
@@ -310,10 +331,29 @@ export default function GameOverlay() {
               PLAY AGAIN
             </button>
           )}
+          {(gameMode === 'quick' || gameMode === 'friend') && !opponentDisconnected && !rematchCancelled && (
+            <button
+              className="btn"
+              disabled={rematchPending}
+              onClick={() => {
+                useGameStore.setState({ rematchPending: true } as never);
+                send('rematch_vote', {});
+              }}
+            >
+              {rematchPending ? 'WAITING…' : 'REMATCH'}
+            </button>
+          )}
           {gameMode !== 'campaign' && (
             <button
-              className={gameMode === 'practice' ? 'btn btn-secondary' : 'btn'}
+              className={
+                (gameMode === 'practice')
+                  ? 'btn btn-secondary'
+                  : (opponentDisconnected || rematchCancelled)
+                    ? 'btn'
+                    : 'btn btn-secondary'
+              }
               onClick={() => {
+                if (gameMode === 'quick' || gameMode === 'friend') send('rematch_cancel', {});
                 switchToSelectMusic();
                 useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
                 resetAll();

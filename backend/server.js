@@ -271,7 +271,7 @@ wss.on('connection', (ws) => {
         // The singleton WS never closes between matches, so ws.on('close') won't
         // fire to do this — purge it here before re-queuing.
         const staleRoom = findRoomByPlayer(playerId);
-        if (staleRoom && staleRoom.state === 'match_end') {
+        if (staleRoom && (staleRoom.state === 'match_end' || staleRoom.state === 'rematch_pending')) {
           deleteRoom(staleRoom.roomId);
         }
         // Remove any existing queue entry for this player (e.g. re-entering after back-navigate)
@@ -456,6 +456,45 @@ wss.on('connection', (ws) => {
         break;
       }
 
+      case 'rematch_vote': {
+        const room = findRoomByPlayer(playerId);
+        if (!room || (room.state !== 'match_end' && room.state !== 'rematch_pending')) break;
+        const player = room.players.find(p => p.id === playerId);
+        if (!player) break;
+        player.wantsRematch = true;
+        room.state = 'rematch_pending';
+        // Notify the other player that their opponent wants a rematch
+        const other = room.players.find(p => p.id !== playerId);
+        if (other?.ws) send(other.ws, 'rematch_offered', {});
+        // If both players have voted, start a fresh match
+        if (room.players.length === 2 && room.players.every(p => p.wantsRematch)) {
+          room.players.forEach(p => delete p.wantsRematch);
+          room.match.roundNumber = 1;
+          room.match.roundWins = [0, 0];
+          room.match.scores = [0, 0];
+          room.match.startTime = null;
+          room.round = null;
+          broadcast(room, 'rematch_start', {});
+          startGameRound(room.roomId, room);
+        }
+        break;
+      }
+
+      case 'rematch_cancel': {
+        const room = findRoomByPlayer(playerId);
+        if (!room || (room.state !== 'match_end' && room.state !== 'rematch_pending')) break;
+        if (room.state === 'rematch_pending') {
+          const player = room.players.find(p => p.id === playerId);
+          if (player) delete player.wantsRematch;
+          room.state = 'match_end';
+        }
+        // Notify the other player regardless — covers both "leave while vote in flight"
+        // and "leave before any vote was cast" (opponent's REMATCH button should disappear)
+        const other = room.players.find(p => p.id !== playerId);
+        if (other?.ws) send(other.ws, 'rematch_cancelled', { reason: 'opponent_left' });
+        break;
+      }
+
       default:
         break;
     }
@@ -482,7 +521,11 @@ wss.on('connection', (ws) => {
       return;
     }
 
-    if (room && room.state === 'match_end') {
+    if (room && (room.state === 'match_end' || room.state === 'rematch_pending')) {
+      const other = room.players.find(p => p.id !== playerId);
+      if (other?.ws && room.state === 'rematch_pending') {
+        send(other.ws, 'rematch_cancelled', { reason: 'opponent_left' });
+      }
       deleteRoom(room.roomId);
       return;
     }

@@ -92,8 +92,8 @@ export function tryMatch() {
   const p1 = queue.shift();
   const p2 = queue.shift();
   const roomId = createRoom();
-  addPlayerToRoom(roomId, p1.playerId, p1.ws, p1.characterId, p1.name);
-  addPlayerToRoom(roomId, p2.playerId, p2.ws, p2.characterId, p2.name);
+  addPlayerToRoom(roomId, p1.playerId, p1.ws, p1.characterId, p1.name, p1.userId);
+  addPlayerToRoom(roomId, p2.playerId, p2.ws, p2.characterId, p2.name, p2.userId);
   // P1 (first in queue = seat 0) is authoritative for arena selection
   const preferredArenaId = p1.preferredArenaId || p2.preferredArenaId || null;
   return { roomId, p1, p2, preferredArenaId };

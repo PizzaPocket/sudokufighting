@@ -103,6 +103,9 @@ interface GameStore {
   matchWinnerSeat: 0 | 1 | -1 | null;
   matchWinnerName: string | null;
   opponentDisconnected: boolean;
+  rematchPending: boolean;    // this player voted to rematch, waiting for opponent
+  rematchOffered: boolean;    // opponent voted to rematch, waiting on us
+  rematchCancelled: boolean;  // opponent left the end screen; REMATCH is no longer available
   backgroundId: string | null;
   fightStartTime: number | null;
 
@@ -176,6 +179,7 @@ interface GameStore {
   addWipingCells: (cells: WipingCell[]) => void;
   removeWipingCells: (cells: WipingCell[]) => void;
   resetForNextRound: () => void;
+  resetForRematch: () => void;
   resetAll: () => void;
   setMusicEnabled: (enabled: boolean) => void;
   setSfxEnabled: (enabled: boolean) => void;
@@ -261,6 +265,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   matchWinnerSeat: null,
   matchWinnerName: null,
   opponentDisconnected: false,
+  rematchPending: false,
+  rematchOffered: false,
+  rematchCancelled: false,
   backgroundId: null,
   fightStartTime: null,
 
@@ -411,6 +418,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
     totalPausedMs: 0, pauseStartTime: null,
   })),
 
+  resetForRematch: () => set(() => ({
+    matchOver: false,
+    matchWinnerSeat: null,
+    matchWinnerName: null,
+    roundWins: [0, 0],
+    roundNumber: 1,
+    roundOver: false,
+    roundWinnerSeat: null,
+    rematchPending: false,
+    rematchOffered: false,
+    rematchCancelled: false,
+    opponentDisconnected: false,
+    isFlawlessVictory: false,
+    rawMatchScore: 0,
+    finalMatchScore: 0,
+    score: [0, 0],
+    scoreOffset: [0, 0],
+    scoreFightOffset: [0, 0],
+  })),
+
   resetAll: () => set(s => ({
     currentScreen: 'start',
     gameMode: null,
@@ -427,7 +454,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     counterWindowActive: false, counterWindowExpiry: null, counterWindowDefenderSeat: null,
     selfDamagePredicted: false,
     roundOver: false, roundWinnerSeat: null, matchOver: false, matchWinnerSeat: null, matchWinnerName: null,
-    opponentDisconnected: false, backgroundId: null, fightStartTime: null,
+    opponentDisconnected: false, rematchPending: false, rematchOffered: false, rematchCancelled: false,
+    backgroundId: null, fightStartTime: null,
     p1AnimSignal: null, p2AnimSignal: null, p1MistakeSignal: null, p2MistakeSignal: null,
     attackFlashType: null, floatingPoints: [],
     wipingCells: [], lastCorrectCell: null, preRoundSignal: null,
@@ -815,6 +843,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       case 'opponent_disconnected':
         set({ opponentDisconnected: true });
+        break;
+
+      case 'rematch_offered':
+        set({ rematchOffered: true });
+        break;
+
+      case 'rematch_start':
+        get().resetForRematch();
+        break;
+
+      case 'rematch_cancelled':
+        set({ rematchPending: false, rematchOffered: false, rematchCancelled: true });
         break;
 
       default:

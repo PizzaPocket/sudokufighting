@@ -11,7 +11,9 @@ export type ClientMessage =
   | { type: 'cell_input';           payload: { row: number; col: number; value: number } }
   | { type: 'cursor_move';          payload: { row: number; col: number } }
   | { type: 'surrender';            payload: Record<string, never> }
-  | { type: 'next_round';           payload: Record<string, never> };
+  | { type: 'next_round';           payload: Record<string, never> }
+  | { type: 'rematch_vote';         payload: Record<string, never> }
+  | { type: 'rematch_cancel';       payload: Record<string, never> };
 
 // ── Server → Client ──────────────────────────────────────────────────────────
 
@@ -44,6 +46,9 @@ export type ServerMessage =
   | { type: 'time_up';                payload: Record<string, never> }
   | { type: 'round_end';              payload: { winnerSeat: 0 | 1 | -1; roundWins: [number, number]; roundNumber: number } }
   | { type: 'match_end';              payload: { winnerSeat: 0 | 1 | -1; winnerName: string } }
-  | { type: 'opponent_disconnected';  payload: { seat: 0 | 1 } };
+  | { type: 'opponent_disconnected';  payload: { seat: 0 | 1 } }
+  | { type: 'rematch_offered';        payload: Record<string, never> }
+  | { type: 'rematch_start';          payload: Record<string, never> }
+  | { type: 'rematch_cancelled';      payload: { reason: 'opponent_left' } };
 
 export type { AttackType };

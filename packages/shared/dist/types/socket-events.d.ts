@@ -56,6 +56,12 @@ export type ClientMessage = {
 } | {
     type: 'next_round';
     payload: Record<string, never>;
+} | {
+    type: 'rematch_vote';
+    payload: Record<string, never>;
+} | {
+    type: 'rematch_cancel';
+    payload: Record<string, never>;
 };
 export type ServerMessage = {
     type: 'connected';
@@ -240,6 +246,17 @@ export type ServerMessage = {
     type: 'opponent_disconnected';
     payload: {
         seat: 0 | 1;
+    };
+} | {
+    type: 'rematch_offered';
+    payload: Record<string, never>;
+} | {
+    type: 'rematch_start';
+    payload: Record<string, never>;
+} | {
+    type: 'rematch_cancelled';
+    payload: {
+        reason: 'opponent_left';
     };
 };
 export type { AttackType };
