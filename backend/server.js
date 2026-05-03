@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'; // ci-deploy-test
 import { join, dirname } from 'path';
 import { ARENAS } from '../packages/shared/dist/arenas.js';
 import { supabase } from './supabase.js';
