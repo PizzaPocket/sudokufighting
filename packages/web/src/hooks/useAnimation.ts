@@ -6,8 +6,9 @@ const _spriteCache = new Map<string, HTMLImageElement>();
 
 export function preloadCharacterSprites(characterId: string) {
   for (const [animName, cfg] of Object.entries(ANIMATION_CONFIG)) {
+    const srcName = cfg.srcOverride ?? animName;
     for (let f = 1; f <= cfg.frames; f++) {
-      const src = `/characters/${characterId}/${animName}_frame${f}.svg`;
+      const src = `/characters/${characterId}/${srcName}_frame${f}.svg`;
       if (!_spriteCache.has(src)) {
         const img = new Image();
         img.src = src;

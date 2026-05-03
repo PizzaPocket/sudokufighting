@@ -189,7 +189,7 @@ async function recordMultiplayerMatch(room, matchWinnerSeat) {
   const rows = [];
 
   for (const player of room.players) {
-    if (!player.userId) continue; // guest — no record
+    if (!player.userId) continue;
     const opponentSeat = 1 - player.seat;
     const opponent = room.players[opponentSeat];
     const result = matchWinnerSeat === -1 ? 'tie'
@@ -208,10 +208,10 @@ async function recordMultiplayerMatch(room, matchWinnerSeat) {
     });
   }
 
-  if (rows.length > 0) {
-    const { error } = await supabase.from('match_history').insert(rows);
-    if (error) console.error('[supabase] match_history insert error:', error.message);
-  }
+  if (rows.length === 0) return;
+
+  const { error } = await supabase.from('match_history').insert(rows);
+  if (error) console.error('[supabase] match_history insert error:', error.message);
 }
 
 function triggerRoundEnd(roomId, room, winnerSeat) {

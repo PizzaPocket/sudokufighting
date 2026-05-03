@@ -252,18 +252,21 @@ function _startNode(src: string, buffer: AudioBuffer, offset = 0): void {
 
 function registerRecoveryListeners(ctx: AudioContext): void {
   ctx.onstatechange = () => {
-    if (ctx.state === 'suspended') {
-      // Save music position before ctx.currentTime freezes.
+    const state = ctx.state as string;
+    if (state === 'suspended' || state === 'interrupted') {
+      // iOS exposes a non-standard 'interrupted' state when another app takes audio.
+      // Treat it identically to 'suspended': save position and clear stale node refs.
       if (_musicBuffer && !_musicPaused) {
         _musicPauseOffset = _getMusicPosition();
       }
-      // Nodes are stopped by the suspension; clear refs so restart logic works.
       _keepAliveNode = null;
       _musicNode     = null;
-    } else if (ctx.state === 'running') {
+    } else if (state === 'running') {
       // Context recovered — restart keepAlive and music (if it was playing).
       startKeepAlive(ctx);
-      if (_musicBuffer && _musicSrc && !_musicPaused) {
+      // Guard !_musicNode: if resumeMusic() already started a node in its
+      // ctx.resume().then() callback, don't start a second one here.
+      if (_musicBuffer && _musicSrc && !_musicPaused && !_musicNode) {
         _startNode(_musicSrc, _musicBuffer, _musicPauseOffset);
       }
     }
@@ -271,6 +274,10 @@ function registerRecoveryListeners(ctx: AudioContext): void {
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
+      // Attempt to revive the iOS session element — this will likely fail here
+      // because visibilitychange is not a user gesture, but it's worth trying.
+      // The reliable revival happens in resumeMusic() / wakeOnGesture below.
+      if (_iosSessionEl?.paused) _iosSessionEl.play().catch(() => {});
       ctx.resume().catch(() => {});
     }
   });
@@ -347,6 +354,23 @@ export function pauseMusic(): void {
 export function resumeMusic(): void {
   if (!_musicPaused || !_musicBuffer || !_musicSrc) return;
   if (!musicEnabled) { _musicPaused = false; return; }
+  const ctx = getCtx();
+  if ((ctx.state as string) !== 'running') {
+    // Context is suspended or interrupted. This call is always inside a gesture
+    // handler (unpause tap), so HTMLAudioElement.play() is allowed — use it to
+    // reclaim the iOS "playback" audio session before calling ctx.resume().
+    const src = _musicSrc;
+    const buf = _musicBuffer;
+    const offset = _musicPauseOffset;
+    if (_iosSessionEl?.paused) _iosSessionEl.play().catch(() => {});
+    ctx.resume().then(() => {
+      // Only start if state hasn't been changed by onstatechange in the meantime.
+      if (_musicPaused && _musicSrc === src && _musicBuffer === buf) {
+        _startNode(src, buf, offset);
+      }
+    }).catch(() => {});
+    return;
+  }
   _startNode(_musicSrc, _musicBuffer, _musicPauseOffset);
 }
 
