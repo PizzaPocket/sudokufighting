@@ -529,8 +529,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       case 'game_start': {
         const p = msg.payload;
-        // DEBUG — remove after diagnosis
-        console.log('[DEBUG game_start] fightStartTime:', (p as any).fightStartTime, '| roundStartTime (legacy):', (p as any).roundStartTime, '| Date.now():', Date.now(), '| diff ms:', (p as any).fightStartTime != null ? (p as any).fightStartTime - Date.now() : 'FIELD MISSING');
         const myGrid = p.puzzle.map(r => r.map(v => v));
         const isMultiplayer = s.gameMode === 'quick' || s.gameMode === 'friend';
         set({
