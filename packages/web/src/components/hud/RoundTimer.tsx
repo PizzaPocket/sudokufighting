@@ -10,6 +10,8 @@ export default function RoundTimer() {
   const [seconds, setSeconds] = useState(99);
 
   useEffect(() => {
+    // DEBUG — remove after diagnosis
+    console.log('[DEBUG RoundTimer] effect | fightStartTime:', fightStartTime, '| roundOver:', roundOver, '| isPaused:', isPaused, '| now:', Date.now(), '| diff ms:', fightStartTime ? fightStartTime - Date.now() : 'NO VALUE');
     if (!fightStartTime || roundOver || isPaused) return;
 
     const pausedMs = totalPausedMs;

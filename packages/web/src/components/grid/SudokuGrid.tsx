@@ -145,7 +145,11 @@ export default function SudokuGrid({ gridSeat, id }: Props) {
       const { row, col } = st.selectedCell;
 
       if (st.isPaused) return;
-      if (!st.fightStartTime || Date.now() < st.fightStartTime) return;
+      if (!st.fightStartTime || Date.now() < st.fightStartTime) {
+        // DEBUG — remove after diagnosis
+        console.log('[DEBUG input guard] blocked | fightStartTime:', st.fightStartTime, '| now:', Date.now(), '| diff ms:', st.fightStartTime ? st.fightStartTime - Date.now() : 'NO VALUE');
+        return;
+      }
 
       const num = parseInt(e.key);
       if (num >= 1 && num <= 9) {
