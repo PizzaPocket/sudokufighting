@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import './i18n'; // initialise i18next before any component renders
 import { useGameStore } from './store/gameStore';
 import { useGameSocket } from './hooks/useGameSocket';
 import { useAuthInit } from './auth/useAuthInit';
@@ -27,6 +29,7 @@ import { CREDITS, CREDITS_SCROLL_DURATION_MS } from './creditsContent';
 import { preloadArenaAssets } from './utils/preloadAssets';
 
 export default function App() {
+  const { t } = useTranslation('ui');
   const currentScreen = useGameStore(s => s.currentScreen);
   const backgroundId  = useGameStore(s => s.backgroundId);
   const testCreditsOpen = useGameStore(s => s.testCreditsOpen);
@@ -124,9 +127,9 @@ export default function App() {
               </div>
             );
             if (line.type === 'spacer') return <div key={i} className="credits-spacer" />;
-            if (line.type === 'name') return <div key={i} className="credits-name">{line.text}</div>;
+            if (line.type === 'name') return <div key={i} className="credits-name">{line.i18nKey ? t(line.i18nKey) : line.text}</div>;
             if (line.type === 'copyright') return <div key={i} className="credits-copyright">{line.text}</div>;
-            return <div key={i} className="credits-body">{line.text}</div>;
+            return <div key={i} className="credits-body">{line.i18nKey ? t(line.i18nKey) : line.text}</div>;
           })}
         </div>
         </div>

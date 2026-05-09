@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../auth/authStore';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
@@ -12,6 +13,7 @@ function fmt(n: number): string {
 }
 
 export default function Scoreboard() {
+  const { t } = useTranslation('ui');
   const open = useGameStore(s => s.scoreboardOpen);
   const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
   const profile = useAuthStore(s => s.profile);
@@ -38,7 +40,7 @@ export default function Scoreboard() {
       <div className={`modal-sheet${closing ? ' closing' : ''}`} onPointerDown={e => e.stopPropagation()}>
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />
-          <span className="modal-sheet-title">LEADERBOARD</span>
+          <span className="modal-sheet-title">{t('leaderboard.title')}</span>
           <button
             className="btn-utility header-icon-btn modal-sheet-close"
             onClick={handleClose}
@@ -49,7 +51,7 @@ export default function Scoreboard() {
         </div>
 
         <div className="modal-sheet-body" style={{ padding: 0 }}>
-          {loading && <div className="scoreboard-loading">LOADING...</div>}
+          {loading && <div className="scoreboard-loading">{t('common.loading')}</div>}
 
           {!loading && (
             campaignRows && campaignRows.length > 0 ? (
@@ -64,7 +66,7 @@ export default function Scoreboard() {
                       <span className="scoreboard-username">{row.username}</span>
                       <span className="scoreboard-meta">
                         <span className={`difficulty-badge ${row.difficulty}`}>
-                          {row.difficulty}
+                          {t('char_select.' + row.difficulty)}
                         </span>
                         <span className="scoreboard-score">{fmt(row.adjusted_score)}</span>
                       </span>
@@ -73,7 +75,7 @@ export default function Scoreboard() {
                 })}
               </div>
             ) : (
-              <div className="scoreboard-empty">No campaign wins yet.<br />Clear a campaign to claim the top spot.</div>
+              <div className="scoreboard-empty" style={{ whiteSpace: 'pre-line' }}>{t('leaderboard.empty')}</div>
             )
           )}
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Capacitor } from '@capacitor/core';
 import { useGameStore } from '../store/gameStore';
 import { useAuthStore } from '../auth/authStore';
@@ -10,6 +11,7 @@ import ArenaCarousel from '../components/lobby/ArenaCarousel';
 interface Props { active: boolean; }
 
 export default function LobbyScreen({ active }: Props) {
+  const { t } = useTranslation('ui');
   const mySeat = useGameStore(s => s.mySeat);
   const myCharacter = useGameStore(s => s.myCharacter);
   const myName = useGameStore(s => s.myName);
@@ -152,8 +154,10 @@ export default function LobbyScreen({ active }: Props) {
     return useAlt && char.altPortraitPath ? char.altPortraitPath : char.portraitPath;
   }
 
-  const p1CharName = (myP1 ? myChar : oppChar)?.name;
-  const p2CharName = (!myP1 ? myChar : oppChar)?.name;
+  const p1Char = myP1 ? myChar : oppChar;
+  const p2Char = !myP1 ? myChar : oppChar;
+  const p1CharName = p1Char ? t('characters:' + p1Char.id, { defaultValue: p1Char.name }) : undefined;
+  const p2CharName = p2Char ? t('characters:' + p2Char.id, { defaultValue: p2Char.name }) : undefined;
 
   return (
     <div ref={screenRef} id="screen-lobby" className={`screen${active ? ' active' : ''}`}>
@@ -167,7 +171,7 @@ export default function LobbyScreen({ active }: Props) {
           />
           <span className="lobby-player-name">{p1CharName ?? '—'}</span>
           <span className={`lobby-status ${(myP1 ? true : lobbyOpponentReady) ? 'ready' : 'waiting'}`}>
-            {(myP1 ? true : lobbyOpponentReady) ? 'READY' : 'WAITING...'}
+            {(myP1 ? true : lobbyOpponentReady) ? t('lobby.ready') : t('lobby.waiting')}
           </span>
         </div>
 
@@ -182,34 +186,34 @@ export default function LobbyScreen({ active }: Props) {
           />
           <span className="lobby-player-name">{p2CharName ?? '—'}</span>
           <span className={`lobby-status ${(!myP1 ? true : lobbyOpponentReady) ? 'ready' : 'waiting'}`}>
-            {(!myP1 ? true : lobbyOpponentReady) ? 'READY' : 'WAITING...'}
+            {(!myP1 ? true : lobbyOpponentReady) ? t('lobby.ready') : t('lobby.waiting')}
           </span>
         </div>
       </div>
 
       {!lobbyOpponentReady && (
-        <p className="lobby-hint">Waiting for opponent…</p>
+        <p className="lobby-hint">{t('lobby.waiting_for_opponent')}</p>
       )}
 
       {isPrivate && shareCode ? (
         <div className="lobby-share">
           <span className="lobby-share-label">
-            {copyFeedback ? 'LINK COPIED!' : 'INVITE CODE'}
+            {copyFeedback ? t('lobby.link_copied') : t('lobby.invite_code')}
           </span>
           <div className="lobby-invite-row">
             <span className="lobby-share-code">{shareCode}</span>
             <button className="btn btn-sm btn-secondary" onClick={handleShareInvite}>
-              {canNativeShare ? 'INVITE' : 'COPY LINK'}
+              {canNativeShare ? t('lobby.invite') : t('lobby.copy_link')}
             </button>
           </div>
         </div>
       ) : !isPrivate ? (
         <div className="lobby-promo">
           <button className="btn btn-sm btn-secondary" onClick={handleShareGame}>
-            {canNativeShare ? 'SHARE' : 'SHARE GAME'}
+            {canNativeShare ? t('lobby.share') : t('lobby.share_game')}
           </button>
           <p className={`lobby-promo-feedback${copyFeedback ? ' visible' : ''}`}>
-            Link copied!
+            {t('lobby.link_copied_toast')}
           </p>
         </div>
       ) : null}

@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "2인 온라인",
+    "enter_queue": "매치메이킹 대기열 참가",
+    "play_friend": "친구와 플레이",
+    "quick_match": "빠른 매치",
+    "create_room": "방 만들기",
+    "room_code_placeholder": "방 코드",
+    "join": "참가",
+    "single_player": "싱글플레이어",
+    "campaign": "캠페인",
+    "practice": "연습",
+    "tagline": "격투 게임 전투가 있는 경쟁 스도쿠",
+    "privacy_policy": "개인정보 처리방침",
+    "all_unlocked": "모든 파이터 해금됨",
+    "invalid_room_code": "유효한 방 코드를 입력하세요."
+  },
+  "char_select": {
+    "difficulty": "난이도",
+    "choose_fighter": "파이터를 선택하세요",
+    "start": "시작",
+    "easy": "쉬움",
+    "normal": "보통",
+    "extreme": "어려움"
+  },
+  "lobby": {
+    "ready": "준비",
+    "waiting": "대기 중...",
+    "invite_code": "초대 코드",
+    "link_copied": "링크 복사됨!",
+    "invite": "초대",
+    "copy_link": "링크 복사",
+    "share": "공유",
+    "share_game": "게임 공유",
+    "link_copied_toast": "링크가 복사되었습니다!",
+    "arena": "아레나",
+    "waiting_for_opponent": "상대를 기다리는 중…"
+  },
+  "sp_lobby": {
+    "difficulty": "난이도",
+    "start": "시작!"
+  },
+  "campaign_lobby": {
+    "fight_label": "{{number}}번째 싸움 — {{arena}}",
+    "start": "시작!"
+  },
+  "gameplay": {
+    "paused": "일시정지",
+    "resume": "재개"
+  },
+  "dialogue": {
+    "next": "다음 ▶"
+  },
+  "overlay": {
+    "tie": "무승부",
+    "its_a_tie": "무승부입니다",
+    "victory": "승리!",
+    "devastation": "참패!",
+    "flawless": "완벽한",
+    "wins": "{{name}} 승리!",
+    "opponent_disconnected": "상대방 연결 끊김",
+    "continue": "계속",
+    "play_again": "다시 플레이",
+    "rematch": "재대결",
+    "waiting": "대기 중…",
+    "back_to_menu": "메뉴로 돌아가기",
+    "leave": "나가기",
+    "opponent_left": "상대방이 나갔습니다",
+    "opponent_wants_rematch": "상대방이 재대결을 원합니다",
+    "sign_in_cta": "로그인 / 계정 만들기"
+  },
+  "campaign_victory": {
+    "complete": "캠페인 완료!",
+    "fighters_unlocked": "새 파이터 {{count}}명 해금!",
+    "fighters_unlocked_other": "새 파이터 {{count}}명 해금!",
+    "your_best_run": "최고 기록",
+    "pts": "점",
+    "leaderboard_rank": "리더보드 {{rank}}위",
+    "continue": "계속"
+  },
+  "campaign_gameover": {
+    "game_over": "게임 오버",
+    "try_again": "다시 시도",
+    "main_menu": "메인 메뉴"
+  },
+  "auth": {
+    "sign_in_title": "로그인",
+    "signing_in": "로그인 중...",
+    "save_progress": "진행 상황과 업적을 저장하세요",
+    "email": "이메일",
+    "password": "비밀번호",
+    "forgot_password": "비밀번호를 잊으셨나요?",
+    "enter_email_password": "이메일과 비밀번호를 입력하세요.",
+    "continue_google": "Google로 계속하기",
+    "continue_apple": "Apple로 계속하기",
+    "create_account": "계정 만들기",
+    "create_account_title": "계정 만들기",
+    "creating_account": "계정 만드는 중...",
+    "confirm_password": "비밀번호 확인",
+    "enter_valid_email": "유효한 이메일 주소를 입력하세요.",
+    "password_too_short": "비밀번호는 최소 8자 이상이어야 합니다.",
+    "passwords_no_match": "비밀번호가 일치하지 않습니다.",
+    "account_created": "계정이 생성되었습니다. 환영합니다!",
+    "or": "또는",
+    "signed_out": "성공적으로 로그아웃되었습니다.",
+    "reset_password_title": "비밀번호 재설정",
+    "reset_password_desc": "이메일을 입력하면 재설정 링크를 보내드립니다",
+    "send_reset_link": "재설정 링크 보내기",
+    "sending": "전송 중...",
+    "enter_email": "이메일 주소를 입력하세요.",
+    "reset_link_sent": "이메일을 확인하세요. 재설정 링크를 보내드렸습니다.",
+    "set_new_password_title": "새 비밀번호 설정",
+    "set_new_password_desc": "계정의 새 비밀번호를 선택하세요",
+    "new_password": "새 비밀번호",
+    "confirm_new_password": "새 비밀번호 확인",
+    "saving": "저장 중...",
+    "update_password": "비밀번호 업데이트",
+    "enter_new_password": "새 비밀번호를 입력하세요.",
+    "password_updated": "비밀번호가 업데이트되었습니다! 로그인되었습니다.",
+    "something_wrong": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "settings": {
+    "music": "음악",
+    "track": "트랙",
+    "sound_effects": "효과음",
+    "vibration": "진동",
+    "about": "정보",
+    "language": "언어"
+  },
+  "common": {
+    "cancel": "취소",
+    "confirm": "확인",
+    "save": "저장",
+    "edit": "편집",
+    "back": "뒤로",
+    "loading": "로딩 중...",
+    "pts": "점"
+  },
+  "splash": {
+    "enter": "시작"
+  },
+  "header": {
+    "matchmaking": "매치메이킹",
+    "private_room": "비공개 방",
+    "quit": "나가기",
+    "surrender": "항복",
+    "quit_confirm": "캠페인을 나가시겠습니까?",
+    "surrender_confirm": "항복하시겠습니까?"
+  },
+  "leaderboard": {
+    "title": "리더보드",
+    "view_all": "전체 보기",
+    "empty": "아직 캠페인 우승 기록이 없습니다.\n최고 자리를 차지하려면 캠페인을 완료하세요."
+  },
+  "account": {
+    "title": "내 계정",
+    "auto_name_nudge": "자동 생성된 파이터 이름입니다. 직접 설정하시겠습니까?",
+    "campaign_section": "캠페인",
+    "clears": "클리어",
+    "best_run": "최고 기록",
+    "fighters_unlocked": "해금된 파이터",
+    "quick_match_section": "빠른 매치",
+    "record": "전적",
+    "win_rate": "승률",
+    "best_streak": "최고 연승",
+    "matches_played": "플레이한 경기",
+    "practice_section": "연습",
+    "sign_out": "로그아웃",
+    "sign_out_confirm": "로그아웃하시겠습니까?"
+  },
+  "about": {
+    "para1": "스도쿠 파이팅은 부모-자식 개발자 듀오 <strong>Leonard Downs Reese IV</strong>와 <strong>Kaius Lu Reese</strong>가 만든 열정 프로젝트입니다. 캐릭터 디자인, 크리에이티브 디렉션, 음악 기여는 Kaius가, 게임 디자인, 프로그래밍, 오리지널 사운드트랙은 Leonard가 담당했습니다.",
+    "para2": "<strong>Tingting Lu</strong>, 당신의 사랑과 지원, 그리고 집에서 두 명의 집착적인 광인들을 참아주신 것에 특별히 감사드립니다. 사랑합니다."
+  },
+  "credits": {
+    "created_by": "제작",
+    "game_design": "게임 디자인 및 프로그래밍",
+    "char_design": "캐릭터 디자인, 크리에이티브 디렉션, 음악 기여",
+    "ost_by": "오리지널 사운드트랙 작곡",
+    "all_music": "모든 음악은 스도쿠 파이팅을 위해 독점 제작되었습니다",
+    "special_thanks": "스페셜 땡스",
+    "name_tingting": "Tingting Lu",
+    "for_support": "사랑과 지원에 감사드립니다",
+    "tagline": "활발한 마음을 날카롭게 유지하기 위해 만들어졌습니다.",
+    "name_kaius": "Kaius Lu Reese"
+  }
+}

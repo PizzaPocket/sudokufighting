@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "2 PLAYER ONLINE",
+    "enter_queue": "Enter matchmaking queue",
+    "play_friend": "Play with a friend",
+    "quick_match": "QUICK MATCH",
+    "create_room": "CREATE ROOM",
+    "room_code_placeholder": "Room code",
+    "join": "JOIN",
+    "single_player": "SINGLE PLAYER",
+    "campaign": "CAMPAIGN",
+    "practice": "PRACTICE",
+    "tagline": "Competitive Sudoku with fighting game combat",
+    "privacy_policy": "Privacy Policy",
+    "all_unlocked": "ALL FIGHTERS UNLOCKED",
+    "invalid_room_code": "Enter a valid room code."
+  },
+  "char_select": {
+    "difficulty": "DIFFICULTY",
+    "choose_fighter": "Choose your fighter",
+    "start": "START",
+    "easy": "EASY",
+    "normal": "NORMAL",
+    "extreme": "EXTREME"
+  },
+  "lobby": {
+    "ready": "READY",
+    "waiting": "WAITING...",
+    "invite_code": "INVITE CODE",
+    "link_copied": "LINK COPIED!",
+    "invite": "INVITE",
+    "copy_link": "COPY LINK",
+    "share": "SHARE",
+    "share_game": "SHARE GAME",
+    "link_copied_toast": "Link copied!",
+    "arena": "ARENA",
+    "waiting_for_opponent": "Waiting for opponent…"
+  },
+  "sp_lobby": {
+    "difficulty": "DIFFICULTY",
+    "start": "START!"
+  },
+  "campaign_lobby": {
+    "fight_label": "FIGHT {{number}} — {{arena}}",
+    "start": "START!"
+  },
+  "gameplay": {
+    "paused": "PAUSED",
+    "resume": "RESUME"
+  },
+  "dialogue": {
+    "next": "NEXT ▶"
+  },
+  "overlay": {
+    "tie": "TIE",
+    "its_a_tie": "IT'S A TIE",
+    "victory": "VICTORY!",
+    "devastation": "DEVASTATION!",
+    "flawless": "Flawless",
+    "wins": "{{name}} WINS!",
+    "opponent_disconnected": "OPPONENT DISCONNECTED",
+    "continue": "CONTINUE",
+    "play_again": "PLAY AGAIN",
+    "rematch": "REMATCH",
+    "waiting": "WAITING…",
+    "back_to_menu": "BACK TO MENU",
+    "leave": "LEAVE",
+    "opponent_left": "Opponent left",
+    "opponent_wants_rematch": "Opponent wants a rematch",
+    "sign_in_cta": "SIGN IN / CREATE ACCOUNT"
+  },
+  "campaign_victory": {
+    "complete": "Campaign Complete!",
+    "fighters_unlocked": "{{count}} New Fighter Unlocked!",
+    "fighters_unlocked_other": "{{count}} New Fighters Unlocked!",
+    "your_best_run": "YOUR BEST RUN",
+    "pts": "PTS",
+    "leaderboard_rank": "# {{rank}} ON THE LEADERBOARD",
+    "continue": "CONTINUE"
+  },
+  "campaign_gameover": {
+    "game_over": "GAME OVER",
+    "try_again": "TRY AGAIN",
+    "main_menu": "MAIN MENU"
+  },
+  "auth": {
+    "sign_in_title": "SIGN IN",
+    "signing_in": "SIGNING IN...",
+    "save_progress": "Save your progress and achievements",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "enter_email_password": "Please enter your email and password.",
+    "continue_google": "Continue with Google",
+    "continue_apple": "Continue with Apple",
+    "create_account": "Create an Account",
+    "create_account_title": "CREATE ACCOUNT",
+    "creating_account": "CREATING ACCOUNT...",
+    "confirm_password": "Confirm password",
+    "enter_valid_email": "Please enter a valid email address.",
+    "password_too_short": "Password must be at least 8 characters.",
+    "passwords_no_match": "Passwords do not match.",
+    "account_created": "Account created. Welcome!",
+    "or": "or",
+    "signed_out": "Signed out successfully.",
+    "reset_password_title": "RESET PASSWORD",
+    "reset_password_desc": "Enter your email and we'll send you a reset link",
+    "send_reset_link": "SEND RESET LINK",
+    "sending": "SENDING...",
+    "enter_email": "Please enter your email address.",
+    "reset_link_sent": "Check your email. We've sent a reset link.",
+    "set_new_password_title": "SET NEW PASSWORD",
+    "set_new_password_desc": "Choose a new password for your account",
+    "new_password": "New password",
+    "confirm_new_password": "Confirm new password",
+    "saving": "SAVING...",
+    "update_password": "UPDATE PASSWORD",
+    "enter_new_password": "Please enter a new password.",
+    "password_updated": "Password updated! You're signed in.",
+    "something_wrong": "Something went wrong. Please try again."
+  },
+  "settings": {
+    "music": "MUSIC",
+    "track": "TRACK",
+    "sound_effects": "SOUND EFFECTS",
+    "vibration": "VIBRATION",
+    "about": "ABOUT",
+    "language": "LANGUAGE"
+  },
+  "common": {
+    "cancel": "CANCEL",
+    "confirm": "CONFIRM",
+    "save": "SAVE",
+    "edit": "EDIT",
+    "back": "BACK",
+    "loading": "LOADING...",
+    "pts": "PTS"
+  },
+  "splash": {
+    "enter": "ENTER"
+  },
+  "header": {
+    "matchmaking": "MATCHMAKING",
+    "private_room": "PRIVATE ROOM",
+    "quit": "QUIT",
+    "surrender": "SURRENDER",
+    "quit_confirm": "Quit campaign?",
+    "surrender_confirm": "Surrender?"
+  },
+  "leaderboard": {
+    "title": "LEADERBOARD",
+    "view_all": "View All",
+    "empty": "No campaign wins yet.\nClear a campaign to claim the top spot."
+  },
+  "account": {
+    "title": "MY ACCOUNT",
+    "auto_name_nudge": "This is an auto-generated fighter name. Want to set your own?",
+    "campaign_section": "Campaign",
+    "clears": "Clears",
+    "best_run": "Best run",
+    "fighters_unlocked": "Fighters unlocked",
+    "quick_match_section": "Quick Match",
+    "record": "Record",
+    "win_rate": "Win rate",
+    "best_streak": "Best streak",
+    "matches_played": "Matches played",
+    "practice_section": "Practice",
+    "sign_out": "SIGN OUT",
+    "sign_out_confirm": "SIGN OUT?"
+  },
+  "about": {
+    "para1": "Sudoku Fighting is a passion project by the parent-and-kid developer duo <strong>Leonard Downs Reese IV</strong> and <strong>Kaius Lu Reese</strong>. Character design, creative direction, and musical contribution by Kaius. Game design, programming, and original soundtrack by Leonard.",
+    "para2": "Special thanks to <strong>Tingting Lu</strong> for your love and support, and for putting up so much with two obsessive maniacs in your home. We love you."
+  },
+  "credits": {
+    "created_by": "Created By",
+    "game_design": "Game Design and Programming",
+    "char_design": "Character Design, Creative Direction, and Musical Contribution",
+    "ost_by": "Original soundtrack composed by",
+    "all_music": "All music created exclusively for Sudoku Fighting",
+    "special_thanks": "Special Thanks",
+    "name_tingting": "Tingting Lu",
+    "for_support": "For your love and support",
+    "tagline": "Created to keep our active minds sharp.",
+    "name_kaius": "Kaius Lu Reese"
+  }
+}

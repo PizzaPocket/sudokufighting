@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "双人在线",
+    "enter_queue": "进入匹配队列",
+    "play_friend": "与好友对战",
+    "quick_match": "快速匹配",
+    "create_room": "创建房间",
+    "room_code_placeholder": "房间码",
+    "join": "加入",
+    "single_player": "单人模式",
+    "campaign": "剧情模式",
+    "practice": "练习",
+    "tagline": "融合格斗游戏战斗的竞技数独",
+    "privacy_policy": "隐私政策",
+    "all_unlocked": "所有角色已解锁",
+    "invalid_room_code": "请输入有效的房间码。"
+  },
+  "char_select": {
+    "difficulty": "难度",
+    "choose_fighter": "选择角色",
+    "start": "开始",
+    "easy": "简单",
+    "normal": "普通",
+    "extreme": "极难"
+  },
+  "lobby": {
+    "ready": "准备",
+    "waiting": "等待中...",
+    "invite_code": "邀请码",
+    "link_copied": "链接已复制！",
+    "invite": "邀请",
+    "copy_link": "复制链接",
+    "share": "分享",
+    "share_game": "分享游戏",
+    "link_copied_toast": "链接已复制！",
+    "arena": "竞技场",
+    "waiting_for_opponent": "等待对手…"
+  },
+  "sp_lobby": {
+    "difficulty": "难度",
+    "start": "开始！"
+  },
+  "campaign_lobby": {
+    "fight_label": "第 {{number}} 战 — {{arena}}",
+    "start": "开始！"
+  },
+  "gameplay": {
+    "paused": "已暂停",
+    "resume": "继续"
+  },
+  "dialogue": {
+    "next": "下一步 ▶"
+  },
+  "overlay": {
+    "tie": "TIE",
+    "its_a_tie": "势均力敌",
+    "victory": "VICTORY!",
+    "devastation": "DEVASTATION!",
+    "flawless": "完美",
+    "wins": "{{name}} 获胜！",
+    "opponent_disconnected": "对手已断线",
+    "continue": "继续",
+    "play_again": "再来一局",
+    "rematch": "再战",
+    "waiting": "等待中…",
+    "back_to_menu": "返回主菜单",
+    "leave": "离开",
+    "opponent_left": "对手已离开",
+    "opponent_wants_rematch": "对手想要再战",
+    "sign_in_cta": "登录 / 创建账号"
+  },
+  "campaign_victory": {
+    "complete": "剧情通关！",
+    "fighters_unlocked": "{{count}} 名新战士已解锁！",
+    "fighters_unlocked_other": "{{count}} 名新战士已解锁！",
+    "your_best_run": "你的最佳成绩",
+    "pts": "分",
+    "leaderboard_rank": "排行榜第 {{rank}} 名",
+    "continue": "继续"
+  },
+  "campaign_gameover": {
+    "game_over": "游戏结束",
+    "try_again": "再试一次",
+    "main_menu": "主菜单"
+  },
+  "auth": {
+    "sign_in_title": "登录",
+    "signing_in": "登录中...",
+    "save_progress": "保存你的进度和成就",
+    "email": "邮箱",
+    "password": "密码",
+    "forgot_password": "忘记密码？",
+    "enter_email_password": "请输入邮箱和密码。",
+    "continue_google": "使用 Google 继续",
+    "continue_apple": "使用 Apple 继续",
+    "create_account": "创建账号",
+    "create_account_title": "创建账号",
+    "creating_account": "创建中...",
+    "confirm_password": "确认密码",
+    "enter_valid_email": "请输入有效的邮箱地址。",
+    "password_too_short": "密码至少需要 8 个字符。",
+    "passwords_no_match": "两次输入的密码不一致。",
+    "account_created": "账号已创建。欢迎！",
+    "or": "或",
+    "signed_out": "已退出登录。",
+    "reset_password_title": "重置密码",
+    "reset_password_desc": "请输入邮箱，我们将发送重置链接",
+    "send_reset_link": "发送重置链接",
+    "sending": "发送中...",
+    "enter_email": "请输入邮箱地址。",
+    "reset_link_sent": "请查收邮件，我们已发送重置链接。",
+    "set_new_password_title": "设置新密码",
+    "set_new_password_desc": "请为账户设置新密码",
+    "new_password": "新密码",
+    "confirm_new_password": "确认新密码",
+    "saving": "保存中...",
+    "update_password": "更新密码",
+    "enter_new_password": "请输入新密码。",
+    "password_updated": "密码已更新！您已登录。",
+    "something_wrong": "出现错误，请重试。"
+  },
+  "settings": {
+    "music": "音乐",
+    "track": "曲目",
+    "sound_effects": "音效",
+    "vibration": "震动",
+    "about": "关于",
+    "language": "语言"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "edit": "编辑",
+    "back": "返回",
+    "loading": "加载中...",
+    "pts": "分"
+  },
+  "splash": {
+    "enter": "开始"
+  },
+  "header": {
+    "matchmaking": "匹配对战",
+    "private_room": "私人房间",
+    "quit": "退出",
+    "surrender": "投降",
+    "quit_confirm": "退出剧情模式？",
+    "surrender_confirm": "投降？"
+  },
+  "leaderboard": {
+    "title": "排行榜",
+    "view_all": "查看全部",
+    "empty": "暂无剧情通关记录。\n完成剧情模式来占领榜首！"
+  },
+  "account": {
+    "title": "我的账户",
+    "auto_name_nudge": "这是自动生成的战士名称。想要自定义吗？",
+    "campaign_section": "剧情模式",
+    "clears": "通关次数",
+    "best_run": "最高分",
+    "fighters_unlocked": "已解锁战士",
+    "quick_match_section": "快速对战",
+    "record": "战绩",
+    "win_rate": "胜率",
+    "best_streak": "最高连胜",
+    "matches_played": "对战场数",
+    "practice_section": "练习",
+    "sign_out": "退出登录",
+    "sign_out_confirm": "确认退出？"
+  },
+  "about": {
+    "para1": "《数独格斗》是由亲子开发者组合 <strong>Leonard Downs Reese IV</strong> 与 <strong>吕恺</strong> 共同打造的兴趣项目。角色设计、创意方向及音乐贡献由吕恺负责；游戏设计、编程及原声音乐由 Leonard 负责。",
+    "para2": "特别感谢 <strong>吕婷婷</strong>，感谢你的爱与支持，以及对家里两个痴迷狂人的包容与陪伴。我们爱你。"
+  },
+  "credits": {
+    "created_by": "制作者",
+    "game_design": "游戏设计与编程",
+    "char_design": "角色设计、创意方向与音乐贡献",
+    "ost_by": "原声音乐制作",
+    "all_music": "所有音乐专为《数独格斗》创作",
+    "special_thanks": "特别感谢",
+    "name_tingting": "吕婷婷",
+    "for_support": "感谢你的爱与支持",
+    "tagline": "为保持思维活跃而生。",
+    "name_kaius": "吕恺"
+  }
+}

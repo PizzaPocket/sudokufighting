@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import { buildCampaignStartQueue } from '../../ai/useCampaign';
 import { fadeOutMusic, switchToSelectMusic, SELECT_TRACK_INDEX } from '../../audio/audioManager';
@@ -7,6 +8,7 @@ import { CAMPAIGN_FIGHTS } from '@sudoku-fighting/shared';
 import CharacterSprite from '../character/CharacterSprite';
 
 export default function CampaignGameOver() {
+  const { t } = useTranslation('ui');
   const myCharacter = useGameStore(s => s.myCharacter);
   const characters = useGameStore(s => s.characters);
   const p1AnimSignal = useGameStore(s => s.p1AnimSignal);
@@ -43,17 +45,17 @@ export default function CampaignGameOver() {
 
       {/* Layer 2 — UI + sprite in vertical flow (z-700) */}
       <div className={`gameover-ui${visible ? ' visible' : ''}`}>
-        <div className="gameover-title">GAME OVER</div>
+        <div className="gameover-title">{t('campaign_gameover.game_over')}</div>
         <div className="overlay-btn-row">
           <button className="btn" onClick={handleTryAgain}>
-            TRY AGAIN
+            {t('campaign_gameover.try_again')}
           </button>
           <button className="btn btn-secondary" onClick={() => {
             switchToSelectMusic();
             useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never);
             resetAll();
           }}>
-            MAIN MENU
+            {t('campaign_gameover.main_menu')}
           </button>
         </div>
         <div className="gameover-fighter">

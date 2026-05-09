@@ -212,8 +212,8 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
       "Sometimes you have to move to find the answer.",
     ]},
     fighter2: { speaker: 'Chuck', lines: [
-      "You're the quietest person I've ever faced.",
-      "Come on, lighten up! Even a little?",
+      "Huh. You look familiar. Which is weird, because I have great taste.",
+      "Come on, even I crack a smile. And I'm you.",
     ]},
     fighter3: { speaker: 'Jonathan', lines: [
       "All that stillness and not a word. Confident, or just waiting?",
@@ -253,7 +253,7 @@ export const MATCH_DIALOGUE: Record<string, Record<string, { speaker: string; li
     ]},
     fighter2: { speaker: 'Chuck', lines: [
       "Pretty sure of yourself for someone who hasn't won yet, yeah?",
-      "Let's find out if the confidence is actually earned.",
+      "I love the confidence though. Genuinely. Now let's see if it does anything.",
     ]},
     fighter2_alt: { speaker: 'Nun', lines: [
       "Your confidence fills the space before you arrive.",

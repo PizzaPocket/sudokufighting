@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { initAudio, playLogoAndSelectMusic } from '../audio/audioManager';
 import { hapticRipple } from '../audio/haptics';
@@ -46,6 +47,7 @@ const TRANSITION_MS = 800;
 interface Props { onComplete: () => void; }
 
 export default function SplashScreen({ onComplete }: Props) {
+  const { t } = useTranslation('ui');
   const setInitialInteractionDone = useGameStore(s => s.setInitialInteractionDone);
   const initialInteractionDone    = useGameStore(s => s.initialInteractionDone);
   const setScreen                 = useGameStore(s => s.setScreen);
@@ -214,15 +216,15 @@ export default function SplashScreen({ onComplete }: Props) {
           disabled={inputState !== 'correct'}
           onClick={handleEnter}
         >
-          ENTER
+          {t('splash.enter')}
         </button>
       </div>
 
       <h1 style={{ position:'absolute', width:'1px', height:'1px', overflow:'hidden', clip:'rect(0,0,0,0)', whiteSpace:'nowrap' }}>Sudoku Fighting</h1>
       <div className="screen-footer">
-        <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <span className="screen-footer-tagline">{t('start.tagline')}</span>
         <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
-        <button className="privacy-footer-link" onClick={() => setScreen('privacy')}>Privacy Policy</button>
+        <button className="privacy-footer-link" onClick={() => setScreen('privacy')}>{t('start.privacy_policy')}</button>
       </div>
     </div>
   );

@@ -158,6 +158,7 @@ interface GameStore {
   scoreboardOpen: boolean;
   aboutOpen: boolean;
   testCreditsOpen: boolean;
+  language: string;
 
   // ── Actions ───────────────────────────────────────────────────────────────
   setScreen: (screen: Screen) => void;
@@ -188,6 +189,7 @@ interface GameStore {
   setSettingsOpen: (open: boolean) => void;
   setScoreboardOpen: (open: boolean) => void;
   setAboutOpen: (open: boolean) => void;
+  setLanguage: (lang: string) => void;
   clearAttackFlash: () => void;
   removeFloatingPoints: (id: number) => void;
   setIsPaused: (v: boolean) => void;
@@ -310,6 +312,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   scoreboardOpen: false,
   aboutOpen: false,
   testCreditsOpen: false,
+  language: (() => { try { return localStorage.getItem('language') ?? 'en'; } catch { return 'en'; } })(),
 
   // ── Simple setters ────────────────────────────────────────────────────────
   setScreen: (screen) => set(s => ({ prevScreen: s.currentScreen, currentScreen: screen })),
@@ -333,6 +336,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setScoreboardOpen: (scoreboardOpen) => set({ scoreboardOpen }),
   setAboutOpen: (aboutOpen) => set({ aboutOpen }),
+  setLanguage: (language) => set({ language }),
   clearAttackFlash: () => set({ attackFlashType: null }),
   removeFloatingPoints: (id) => set(s => ({ floatingPoints: s.floatingPoints.filter(fp => fp.id !== id) })),
   setIsPaused: (isPaused) => {

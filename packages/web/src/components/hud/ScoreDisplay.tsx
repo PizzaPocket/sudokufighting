@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function ScoreDisplay({ seat, id }: Props) {
+  const { t } = useTranslation('ui');
   const score = useGameStore(s => s.score[seat]);
   const scoreFightOffset = useGameStore(s => s.scoreFightOffset[seat]);
   const perFightScore = score - scoreFightOffset;
@@ -54,7 +56,7 @@ export default function ScoreDisplay({ seat, id }: Props) {
 
   return (
     <span className="hud-score" id={id}>
-      {displayed} PTS
+      {displayed} {t('common.pts')}
     </span>
   );
 }

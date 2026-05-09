@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { CAMPAIGN_FIGHTS, ARENAS, resolveNextFight, getMatchDialogue, MASTER_CHOW_INTRO } from '@sudoku-fighting/shared';
+import { CAMPAIGN_FIGHTS, ARENAS, resolveNextFight } from '@sudoku-fighting/shared';
 import type { Character, DialogueEntry } from '@sudoku-fighting/shared';
+import i18next from '../i18n';
+import { getLocalisedChowIntro, getLocalisedMatchDialogue } from '../i18n/localisedDialogue';
 import { useGameStore } from '../store/gameStore';
 import { saveProgression } from '../progression/progressionService';
 import { fadeOutMusic } from '../audio/audioManager';
@@ -42,10 +44,10 @@ export function buildCampaignStartQueue(
 ): DialogueEntry[] {
   const queue: DialogueEntry[] = [];
 
-  const masterChowLines = MASTER_CHOW_INTRO[myCharacterId];
-  if (masterChowLines) {
+  const masterChowLines = getLocalisedChowIntro(myCharacterId);
+  if (masterChowLines.length > 0) {
     queue.push({
-      speakerName: 'Master Chow',
+      speakerName: i18next.t('characters:master_chow', { defaultValue: 'Master Chow' }),
       portraitPath: '/characters/portrait_master_chow.png',
       lines: masterChowLines,
       backgroundSrc: null,
@@ -70,7 +72,7 @@ export function buildOpponentDialogueEntry(
   const resolved = resolveNextFight(fightIndex, myCharacterId, characters);
   if (!resolved) return null;
 
-  const matchDialogue = getMatchDialogue(myCharacterId ?? '', resolved.opponentCharId);
+  const matchDialogue = getLocalisedMatchDialogue(myCharacterId ?? '', resolved.opponentCharId);
   if (!matchDialogue) return null;
 
   const opponentChar = characters.find(c => c.id === resolved.opponentCharId);

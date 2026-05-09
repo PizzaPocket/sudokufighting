@@ -64,7 +64,7 @@ export default function Birds({ containerRef }: Props) {
         'width:32px',
         'height:32px',
         'pointer-events:none',
-        'z-index:0',
+        'z-index:1',
         'image-rendering:pixelated',
         fromLeft ? '' : 'transform:scaleX(-1)',
       ].filter(Boolean).join(';');

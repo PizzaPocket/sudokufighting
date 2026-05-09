@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import type { Character, Difficulty } from '@sudoku-fighting/shared';
 import { buildCampaignStartQueue } from '../ai/useCampaign';
@@ -11,6 +12,7 @@ interface Props { active: boolean; }
 const DIFFICULTIES: Difficulty[] = ['easy', 'normal', 'extreme'];
 
 export default function CharacterSelectScreen({ active }: Props) {
+  const { t } = useTranslation('ui');
   const characters = useGameStore(s => s.characters);
   const unlockedCharacterIds = useGameStore(s => s.unlockedCharacterIds);
   const setCharacters = useGameStore(s => s.setCharacters);
@@ -43,8 +45,8 @@ export default function CharacterSelectScreen({ active }: Props) {
     screenRef.current?.scrollTo(0, 0);
     scrollRef.current?.scrollTo(0, 0);
     setSelected(null);
-    const t = setTimeout(() => setCardsReady(true), 50);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setCardsReady(true), 50);
+    return () => clearTimeout(timer);
   }, [active]);
 
   function handleSelectChar(char: Character) {
@@ -77,7 +79,7 @@ export default function CharacterSelectScreen({ active }: Props) {
       <div className="char-select-scroll" ref={scrollRef}>
         {isCampaign && (
           <div className="campaign-difficulty-selector">
-            <span className="start-mode-label">DIFFICULTY</span>
+            <span className="start-mode-label">{t('char_select.difficulty')}</span>
             <div className="sp-difficulty-btns">
               {DIFFICULTIES.map(d => (
                 <button
@@ -85,14 +87,14 @@ export default function CharacterSelectScreen({ active }: Props) {
                   className={`btn btn-sm btn-secondary sp-diff-btn${spDifficulty === d ? ' selected' : ''}`}
                   onClick={() => setSpDifficulty(d)}
                 >
-                  {d.toUpperCase()}
+                  {t('char_select.' + d)}
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        <p className="subtitle">Choose your fighter</p>
+        <p className="subtitle">{t('char_select.choose_fighter')}</p>
         <div id="character-grid">
           {visibleChars.map((char, i) => (
             <button
@@ -102,7 +104,7 @@ export default function CharacterSelectScreen({ active }: Props) {
               onClick={() => handleSelectChar(char)}
             >
               <img src={char.portraitPath} alt={char.name} draggable={false} />
-              <span className="char-name">{char.name}</span>
+              <span className="char-name">{t('characters:' + char.id, { defaultValue: char.name })}</span>
             </button>
           ))}
         </div>
@@ -114,7 +116,7 @@ export default function CharacterSelectScreen({ active }: Props) {
               disabled={!selected}
               onClick={handleContinue}
             >
-              START
+              {t('char_select.start')}
             </button>
           </div>
         )}

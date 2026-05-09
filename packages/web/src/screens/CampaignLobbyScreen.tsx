@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { CAMPAIGN_FIGHTS, ARENAS } from '@sudoku-fighting/shared';
 import { fadeOutMusic } from '../audio/audioManager';
@@ -8,6 +9,7 @@ import { startCampaignNextFight } from '../ai/useVsAI';
 interface Props { active: boolean; }
 
 export default function CampaignLobbyScreen({ active }: Props) {
+  const { t } = useTranslation('ui');
   const screenRef = useRef<HTMLDivElement>(null);
   const myCharacter = useGameStore(s => s.myCharacter);
   const characters = useGameStore(s => s.characters);
@@ -49,7 +51,7 @@ export default function CampaignLobbyScreen({ active }: Props) {
       <div className="campaign-lobby-players">
         <div className="lobby-player is-me">
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />
-          <span className="lobby-player-name">{myChar?.name ?? '—'}</span>
+          <span className="lobby-player-name">{myChar ? t('characters:' + myChar.id, { defaultValue: myChar.name }) : '—'}</span>
         </div>
 
         <span className="lobby-vs">VS</span>
@@ -60,16 +62,16 @@ export default function CampaignLobbyScreen({ active }: Props) {
             src={opponentChar?.portraitPath ?? '/characters/placeholder_fighter.svg'}
             alt={opponentName ?? 'CPU'}
           />
-          <span className="lobby-player-name">{opponentName ?? 'CPU'}</span>
+          <span className="lobby-player-name">{opponentChar ? t('characters:' + opponentChar.id, { defaultValue: opponentName ?? 'CPU' }) : (opponentName ?? 'CPU')}</span>
         </div>
       </div>
 
       <div className="campaign-fight-label">
-        FIGHT {campaignFightIndex + 1} — {arena?.name?.toUpperCase() ?? ''}
+        {t('campaign_lobby.fight_label', { number: campaignFightIndex + 1, arena: arena?.name?.toUpperCase() ?? '' })}
       </div>
 
       <button className="btn btn-alt" onClick={handleStart}>
-        START!
+        {t('campaign_lobby.start')}
       </button>
     </div>
   );

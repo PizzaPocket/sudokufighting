@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../auth/authStore';
 import { createAccount, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 import { showToast } from '../../toasts/toastStore';
 
 export default function CreateAccountSheet() {
+  const { t } = useTranslation('ui');
   const createAccountOpen = useAuthStore(s => s.createAccountOpen);
   const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
@@ -40,19 +42,19 @@ export default function CreateAccountSheet() {
 
   async function handleCreateAccount() {
     if (!email.trim() || !password) {
-      setError('Please enter your email and password.');
+      setError(t('auth.enter_email_password'));
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError('Please enter a valid email address.');
+      setError(t('auth.enter_valid_email'));
       return;
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError(t('auth.password_too_short'));
       return;
     }
     if (password !== confirm) {
-      setError('Passwords do not match.');
+      setError(t('auth.passwords_no_match'));
       return;
     }
     setLoading(true);
@@ -60,7 +62,7 @@ export default function CreateAccountSheet() {
     const err = await createAccount(email.trim(), password);
     setLoading(false);
     if (err) { setError(err); return; }
-    showToast('Account created. Welcome!', 'default');
+    showToast(t('auth.account_created'), 'default');
   }
 
   return (
@@ -74,7 +76,7 @@ export default function CreateAccountSheet() {
           >
             <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="" />
           </button>
-          <span className="modal-sheet-title">CREATE ACCOUNT</span>
+          <span className="modal-sheet-title">{t('auth.create_account_title')}</span>
           <button
             className="btn-utility header-icon-btn modal-sheet-close"
             onClick={handleClose}
@@ -85,11 +87,11 @@ export default function CreateAccountSheet() {
         </div>
 
         <div className="modal-sheet-body">
-          <p className="modal-sheet-value-prop">Save your progress and achievements</p>
+          <p className="modal-sheet-value-prop">{t('auth.save_progress')}</p>
           <input
             className="auth-field"
             type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={email}
             autoComplete="email"
             onChange={e => { setEmail(e.target.value); setError(''); }}
@@ -98,7 +100,7 @@ export default function CreateAccountSheet() {
           <input
             className="auth-field"
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             autoComplete="new-password"
             onChange={e => { setPassword(e.target.value); setError(''); }}
@@ -107,7 +109,7 @@ export default function CreateAccountSheet() {
           <input
             className="auth-field"
             type="password"
-            placeholder="Confirm password"
+            placeholder={t('auth.confirm_password')}
             value={confirm}
             autoComplete="new-password"
             onChange={e => { setConfirm(e.target.value); setError(''); }}
@@ -122,10 +124,10 @@ export default function CreateAccountSheet() {
             onClick={handleCreateAccount}
             disabled={loading}
           >
-            {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+            {loading ? t('auth.creating_account') : t('auth.create_account_title')}
           </button>
 
-          <div className="auth-divider"><span>or</span></div>
+          <div className="auth-divider"><span>{t('auth.or')}</span></div>
 
           <button className="btn-social btn-social-google" onClick={async () => {
               setLoading(true);
@@ -134,7 +136,7 @@ export default function CreateAccountSheet() {
               if (err) setError(err);
             }}>
             <img src="/assets/ui/icon-google.svg" className="btn-social-icon" alt="" />
-            Continue with Google
+            {t('auth.continue_google')}
           </button>
           {isAppleSignInAvailable() && (
             <button className="btn-social btn-social-apple" onClick={async () => {
@@ -144,7 +146,7 @@ export default function CreateAccountSheet() {
               if (err) setError(err);
             }}>
               <img src="/assets/ui/icon-apple.svg" className="btn-social-icon" alt="" />
-              Continue with Apple
+              {t('auth.continue_apple')}
             </button>
           )}
 

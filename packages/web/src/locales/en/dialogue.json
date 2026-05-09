@@ -1,0 +1,126 @@
+{
+  "chow_intro": {
+    "fighter1":     { "0": "Xiao Long, the time has come.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Show them the strength of your discipline." },
+    "fighter1_alt": { "0": "Brace, your path is less certain.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Let your instincts guide you, but do not lose yourself." },
+    "fighter2":     { "0": "Chuck, your spirit carries you far.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Perhaps now you will learn when to be serious." },
+    "fighter2_alt": { "0": "Nun, you have chosen a quieter path.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Let silence sharpen your mind." },
+    "fighter3":     { "0": "Jonathan, your confidence shines brightly.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Now prove that your strength matches your ambition." },
+    "fighter3_alt": { "0": "Johan, you stand as a champion already.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Show them why you deserve that title." },
+    "fighter4":     { "0": "Senna, you fight with raw instinct.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Now learn to control the chaos within you." },
+    "fighter4_alt": { "0": "Ninja S, your discipline is precise.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Let no movement be wasted." },
+    "fighter5":     { "0": "Boombox, you walk your own path now.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Show them you are more than what you were made to be." },
+    "fighter5_alt": { "0": "Icebox, your focus is unwavering.", "1": "Travel the world and face the greatest Sudoku Fighters.", "2": "Let nothing distract you from your purpose." }
+  },
+  "match": {
+    "fighter1": {
+      "fighter1_alt": { "lines": { "0": "You cling too tightly to control.", "1": "Sometimes you have to let go and trust yourself." } },
+      "fighter2":     { "lines": { "0": "You look like you're carrying the whole world on your shoulders.", "1": "Relax a little, yeah? This is meant to be fun." } },
+      "fighter2_alt": { "lines": { "0": "You move with discipline, but there is tension in you.", "1": "Silence alone will not bring you balance." } },
+      "fighter3":     { "lines": { "0": "Quiet and serious. You're not going to make this very entertaining.", "1": "I suppose I'll have to carry the show for both of us." } },
+      "fighter3_alt": { "lines": { "0": "You aim to be perfect, don't you?", "1": "Let's see if you can live up to that." } },
+      "fighter4":     { "lines": { "0": "You move like everything is planned out in advance.", "1": "Let's see how you handle someone unpredictable." } },
+      "fighter4_alt": { "lines": { "0": "Your movements are precise, almost too precise.", "1": "I will find the gap you are hiding." } },
+      "fighter5":     { "lines": { "0": "You fight like someone who has trained their whole life.", "1": "I wonder what happens when that training is pushed too far." } },
+      "fighter5_alt": { "lines": { "0": "You've shut everything down inside yourself.", "1": "Let's see if anything is still there beneath the surface." } }
+    },
+    "fighter1_alt": {
+      "fighter1":     { "lines": { "0": "You've traded discipline for instinct.", "1": "Let's see how that holds when it counts." } },
+      "fighter2":     { "lines": { "0": "No plan, no strategy, just going on vibes, yeah?", "1": "Same approach I use, honestly. But I'm better at it." } },
+      "fighter2_alt": { "lines": { "0": "You move without thinking.", "1": "Speed without direction only leads you in circles." } },
+      "fighter3":     { "lines": { "0": "All energy, no craft. You fight like a rough draft.", "1": "Let me show you how it's done properly." } },
+      "fighter3_alt": { "lines": { "0": "No structure, no refinement. Just instinct.", "1": "I have already moved past that." } },
+      "fighter4":     { "lines": { "0": "Now you're more my style.", "1": "Don't hold back, I won't." } },
+      "fighter4_alt": { "lines": { "0": "All that loose energy with no direction.", "1": "Precision will cut straight through it." } },
+      "fighter5":     { "lines": { "0": "Pure instinct, no map. Respect that, mate.", "1": "Let's see how far it gets ya." } },
+      "fighter5_alt": { "lines": { "0": "All impulse, no structure.", "1": "I've already run this scenario." } }
+    },
+    "fighter2": {
+      "fighter1":     { "lines": { "0": "You rely too much on jokes and distractions.", "1": "Focus yourself, or this will end quickly." } },
+      "fighter1_alt": { "lines": { "0": "You think letting go makes you stronger.", "1": "It only makes you careless." } },
+      "fighter2_alt": { "lines": { "0": "You hide behind laughter instead of facing yourself.", "1": "It is time you stood still." } },
+      "fighter3":     { "lines": { "0": "This is not a game, no matter how you treat it.", "1": "Keep up, or fall behind." } },
+      "fighter3_alt": { "lines": { "0": "Your lack of seriousness is a flaw, not a style.", "1": "I will make sure you understand the difference." } },
+      "fighter4":     { "lines": { "0": "You smile now, but you will not for long.", "1": "I do not go easy on anyone." } },
+      "fighter4_alt": { "lines": { "0": "Your movements lack discipline and structure.", "1": "I will correct that." } },
+      "fighter5":     { "lines": { "0": "All that energy and not a worry in the world, eh?", "1": "Try to stay focused long enough to make it interesting." } },
+      "fighter5_alt": { "lines": { "0": "Emotional, impulsive, unpredictable.", "1": "I have already accounted for each of those variables." } }
+    },
+    "fighter2_alt": {
+      "fighter1":     { "lines": { "0": "Your quiet is real.", "1": "I only wonder what it's protecting." } },
+      "fighter1_alt": { "lines": { "0": "All that stillness, and you call it strength?", "1": "Sometimes you have to move to find the answer." } },
+      "fighter2":     { "lines": { "0": "Huh. You look familiar. Which is weird, because I have great taste.", "1": "Come on, even I crack a smile. And I'm you." } },
+      "fighter3":     { "lines": { "0": "All that stillness and not a word. Confident, or just waiting?", "1": "Either way, I don't lose to patience." } },
+      "fighter3_alt": { "lines": { "0": "Stillness is not a method.", "1": "Perfection requires constant refinement, not waiting." } },
+      "fighter4":     { "lines": { "0": "What is with all the quiet?! You're just standing there.", "1": "I'll give you something to react to." } },
+      "fighter4_alt": { "lines": { "0": "Your stillness is controlled.", "1": "But stillness without precision is only waiting." } },
+      "fighter5":     { "lines": { "0": "Blimey, you're quiet. Not even gonna say g'day?", "1": "Fair enough. I'll let the game do the talking." } },
+      "fighter5_alt": { "lines": { "0": "You have found quiet. But quiet is not the same as clarity.", "1": "Something still persists within you." } }
+    },
+    "fighter3": {
+      "fighter1":     { "lines": { "0": "You treat this like a performance.", "1": "Let's see if the substance matches the show." } },
+      "fighter1_alt": { "lines": { "0": "All that style and showmanship.", "1": "I'm just here to fight." } },
+      "fighter2":     { "lines": { "0": "Pretty sure of yourself for someone who hasn't won yet, yeah?", "1": "I love the confidence though. Genuinely. Now let's see if it does anything." } },
+      "fighter2_alt": { "lines": { "0": "Your confidence fills the space before you arrive.", "1": "That noise leaves nowhere for clarity to take root." } },
+      "fighter3_alt": { "lines": { "0": "You look like me, but sharper somehow.", "1": "I suppose I'll have to prove which one is better." } },
+      "fighter4":     { "lines": { "0": "All that confidence.", "1": "Hope it holds when things get ugly." } },
+      "fighter4_alt": { "lines": { "0": "Your precision is impressive.", "1": "Let's see how you handle pressure." } },
+      "fighter5":     { "lines": { "0": "Big entrance, nice hair. Love the commitment, mate.", "1": "Hope the fight's as good as the show." } },
+      "fighter5_alt": { "lines": { "0": "The presentation is noted.", "1": "Now let's see what's underneath it." } }
+    },
+    "fighter3_alt": {
+      "fighter1":     { "lines": { "0": "Your control is solid, but it lacks refinement.", "1": "There is still another level beyond you." } },
+      "fighter1_alt": { "lines": { "0": "Everything so controlled, so refined.", "1": "You've planned for everything except someone who doesn't bother." } },
+      "fighter2":     { "lines": { "0": "Everything about you is so polished and serious.", "1": "Have you ever just... had fun with it?" } },
+      "fighter2_alt": { "lines": { "0": "You have refined yourself endlessly.", "1": "And yet you are still restless. What are you searching for?" } },
+      "fighter3":     { "lines": { "0": "You strive to become something greater.", "1": "I am already there." } },
+      "fighter4":     { "lines": { "0": "So polished it's almost boring.", "1": "Let's put some scratches on that finish." } },
+      "fighter4_alt": { "lines": { "0": "You are efficient, which I respect.", "1": "But efficiency is only the beginning." } },
+      "fighter5":     { "lines": { "0": "Every move calculated, every choice deliberate.", "1": "Let's see if you've accounted for someone who doesn't do that." } },
+      "fighter5_alt": { "lines": { "0": "You remove emotion, but not imperfection.", "1": "I will expose it." } }
+    },
+    "fighter4": {
+      "fighter1":     { "lines": { "0": "No pattern, no plan. Pure instinct.", "1": "I have trained for this too." } },
+      "fighter1_alt": { "lines": { "0": "Now that's more like it.", "1": "Let's see how far you can push it." } },
+      "fighter2":     { "lines": { "0": "Okay! You fight like you're angry at the whole world.", "1": "I'm just here for a good time. Try not to take it personally?" } },
+      "fighter2_alt": { "lines": { "0": "You move like a storm with no direction.", "1": "That energy will exhaust you before it reaches me." } },
+      "fighter3":     { "lines": { "0": "You look good when everything goes your way.", "1": "Let's see how you handle pressure." } },
+      "fighter3_alt": { "lines": { "0": "Unpredictable is another word for untrained.", "1": "I have no patience for it." } },
+      "fighter4_alt": { "lines": { "0": "You're the version of me that never hesitates.", "1": "Let's see which one wins." } },
+      "fighter5":     { "lines": { "0": "Scrappy and quick. Credit where it's due.", "1": "Still going down though." } },
+      "fighter5_alt": { "lines": { "0": "Loud, emotional, chaotic.", "1": "You're giving me a lot to work with." } }
+    },
+    "fighter4_alt": {
+      "fighter1":     { "lines": { "0": "Silent, precise, nothing wasted.", "1": "Let's see whose training runs deeper." } },
+      "fighter1_alt": { "lines": { "0": "So precise, so controlled.", "1": "Wonder what happens when you lose the script." } },
+      "fighter2":     { "lines": { "0": "You look like you've never laughed once in your life.", "1": "That seems exhausting. I could teach you, you know." } },
+      "fighter2_alt": { "lines": { "0": "Your discipline is sharp.", "1": "But sharpness that never rests will eventually break." } },
+      "fighter3":     { "lines": { "0": "No entrance, no warmup, no words.", "1": "All business. I can respect that. Still won't be enough." } },
+      "fighter3_alt": { "lines": { "0": "You are efficient, but not optimal.", "1": "I will prove the difference." } },
+      "fighter4":     { "lines": { "0": "All those years of training.", "1": "I learned mine in an alley. Let's see what sticks." } },
+      "fighter5":     { "lines": { "0": "Not a word, not a wink.", "1": "Alright then, I'll make enough noise for both of us." } },
+      "fighter5_alt": { "lines": { "0": "Your logic is sound.", "1": "We will test its limits." } }
+    },
+    "fighter5": {
+      "fighter1":     { "lines": { "0": "You carry a lot more than just strength.", "1": "I wonder if you've decided what to do with it." } },
+      "fighter1_alt": { "lines": { "0": "Big, loud, and direct.", "1": "I've got no plan either. Should be interesting." } },
+      "fighter2":     { "lines": { "0": "Wow. Okay. You are really big.", "1": "I'm going to need to be extra charming to get through this one." } },
+      "fighter2_alt": { "lines": { "0": "You carry a great deal of force.", "1": "But force without stillness cannot hold its own weight." } },
+      "fighter3":     { "lines": { "0": "You've got confidence for days.", "1": "Hope you've got the strength to match it." } },
+      "fighter3_alt": { "lines": { "0": "You reckon you're the finished product, yeah?", "1": "Let's test that theory." } },
+      "fighter4":     { "lines": { "0": "Okay. You're big. Real big.", "1": "Good thing I don't fight fair." } },
+      "fighter4_alt": { "lines": { "0": "Big and loud and not subtle about it.", "1": "Power without precision is easy to read." } },
+      "fighter5_alt": { "lines": { "0": "All heat, no calculation.", "1": "I've already mapped where this leads." } }
+    },
+    "fighter5_alt": {
+      "fighter1":     { "lines": { "0": "You rely on discipline to guide you.", "1": "I will test how far that can take you." } },
+      "fighter1_alt": { "lines": { "0": "Everything mapped out, every angle covered.", "1": "Let me introduce some variables." } },
+      "fighter2":     { "lines": { "0": "You are extremely intense right now.", "1": "Ever try smiling? Just once? It's free." } },
+      "fighter2_alt": { "lines": { "0": "You have emptied yourself.", "1": "But emptiness is not the same as stillness." } },
+      "fighter3":     { "lines": { "0": "Cold and blank. You're not going to give me anything to work with.", "1": "Fine. I can improvise." } },
+      "fighter3_alt": { "lines": { "0": "Efficient, cold, no wasted motion.", "1": "Optimised is not the same as perfected. I will show you the difference." } },
+      "fighter4":     { "lines": { "0": "All blueprint, no feeling.", "1": "I wonder if that's actually a weakness." } },
+      "fighter4_alt": { "lines": { "0": "Efficient. Optimised for different constraints.", "1": "We'll see which ones matter today." } },
+      "fighter5":     { "lines": { "0": "Oi. That's a bit unsettling.", "1": "What happened to all the fun?" } }
+    }
+  }
+}

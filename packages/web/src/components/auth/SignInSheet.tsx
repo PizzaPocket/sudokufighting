@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../auth/authStore';
 import { signIn, signInWithGoogle, signInWithApple, isAppleSignInAvailable } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 
 export default function SignInSheet() {
+  const { t } = useTranslation('ui');
   const signInOpen = useAuthStore(s => s.signInOpen);
   const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
@@ -41,7 +43,7 @@ export default function SignInSheet() {
 
   async function handleSignIn() {
     if (!email.trim() || !password) {
-      setError('Please enter your email and password.');
+      setError(t('auth.enter_email_password'));
       return;
     }
     setLoading(true);
@@ -58,7 +60,7 @@ export default function SignInSheet() {
         <div className="modal-sheet-header">
           {/* Left spacer balances the close button so title stays centred */}
           <div className="modal-sheet-back" />
-          <span className="modal-sheet-title">SIGN IN</span>
+          <span className="modal-sheet-title">{t('auth.sign_in_title')}</span>
           <button
             className="btn-utility header-icon-btn modal-sheet-close"
             onClick={handleClose}
@@ -69,11 +71,11 @@ export default function SignInSheet() {
         </div>
 
         <div className="modal-sheet-body">
-          <p className="modal-sheet-value-prop">Save your progress and achievements</p>
+          <p className="modal-sheet-value-prop">{t('auth.save_progress')}</p>
           <input
             className="auth-field"
             type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={email}
             autoComplete="email"
             onChange={e => { setEmail(e.target.value); setError(''); }}
@@ -82,7 +84,7 @@ export default function SignInSheet() {
           <input
             className="auth-field"
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             autoComplete="current-password"
             onChange={e => { setPassword(e.target.value); setError(''); }}
@@ -90,7 +92,7 @@ export default function SignInSheet() {
           />
 
           <button className="auth-link" style={{ fontSize: 'var(--text-sm)', textAlign: 'right', marginTop: '-4px' }} onClick={switchToForgotPassword}>
-            Forgot password?
+            {t('auth.forgot_password')}
           </button>
 
           <p className={`auth-error${error ? ' visible' : ''}`}>{error || '\u00A0'}</p>
@@ -101,10 +103,10 @@ export default function SignInSheet() {
             onClick={handleSignIn}
             disabled={loading}
           >
-            {loading ? 'SIGNING IN...' : 'SIGN IN'}
+            {loading ? t('auth.signing_in') : t('auth.sign_in_title')}
           </button>
 
-          <div className="auth-divider"><span>or</span></div>
+          <div className="auth-divider"><span>{t('auth.or')}</span></div>
 
           {oauthError && (
             <p className="auth-error visible" style={{ marginBottom: '8px' }} onClick={() => setOauthError(null)}>
@@ -120,7 +122,7 @@ export default function SignInSheet() {
               if (err) setError(err);
             }}>
             <img src="/assets/ui/icon-google.svg" className="btn-social-icon" alt="" />
-            Continue with Google
+            {t('auth.continue_google')}
           </button>
           {isAppleSignInAvailable() && (
             <button className="btn-social btn-social-apple" onClick={async () => {
@@ -131,12 +133,12 @@ export default function SignInSheet() {
               if (err) setError(err);
             }}>
               <img src="/assets/ui/icon-apple.svg" className="btn-social-icon" alt="" />
-              Continue with Apple
+              {t('auth.continue_apple')}
             </button>
           )}
 
           <button className="auth-link" onClick={handleCreateAccount}>
-            Create an Account
+            {t('auth.create_account')}
           </button>
         </div>
 

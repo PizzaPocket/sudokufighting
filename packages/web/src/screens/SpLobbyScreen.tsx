@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { ARENAS } from '@sudoku-fighting/shared';
 import { fadeOutMusic } from '../audio/audioManager';
@@ -18,6 +19,7 @@ function pickAICharacter(myCharId: string | null, characters: Character[], unloc
 }
 
 export default function SpLobbyScreen({ active }: Props) {
+  const { t } = useTranslation('ui');
   const spDifficulty = useGameStore(s => s.spDifficulty);
   const setSpDifficulty = useGameStore(s => s.setSpDifficulty);
   const spArenaIndex = useGameStore(s => s.spArenaIndex);
@@ -69,7 +71,7 @@ export default function SpLobbyScreen({ active }: Props) {
       <div className="lobby-players">
         <div id="sp-lobby-p1" className="lobby-player is-me">
           <img src={myChar?.portraitPath ?? '/characters/placeholder_fighter.svg'} alt="" />
-          <span className="lobby-player-name">{myChar?.name ?? '—'}</span>
+          <span className="lobby-player-name">{myChar ? t('characters:' + myChar.id, { defaultValue: myChar.name }) : '—'}</span>
         </div>
 
         <span className="lobby-vs">VS</span>
@@ -80,12 +82,12 @@ export default function SpLobbyScreen({ active }: Props) {
             src={aiChar?.portraitPath ?? '/characters/placeholder_fighter.svg'}
             alt={aiChar?.name ?? 'CPU'}
           />
-          <span className="lobby-player-name">{aiChar?.name ?? 'CPU'}</span>
+          <span className="lobby-player-name">{aiChar ? t('characters:' + aiChar.id, { defaultValue: aiChar.name }) : 'CPU'}</span>
         </div>
       </div>
 
       <div className="sp-difficulty">
-        <span className="sp-difficulty-label">DIFFICULTY</span>
+        <span className="sp-difficulty-label">{t('sp_lobby.difficulty')}</span>
         <div className="sp-difficulty-btns">
           {DIFFICULTIES.map(d => (
             <button
@@ -93,7 +95,7 @@ export default function SpLobbyScreen({ active }: Props) {
               className={`btn btn-sm btn-secondary sp-diff-btn${spDifficulty === d ? ' selected' : ''}`}
               onClick={() => setSpDifficulty(d)}
             >
-              {d.toUpperCase()}
+              {t('char_select.' + d)}
             </button>
           ))}
         </div>
@@ -106,7 +108,7 @@ export default function SpLobbyScreen({ active }: Props) {
       />
 
       <button id="btn-sp-start" className="btn btn-alt" onClick={handleStart}>
-        START!
+        {t('sp_lobby.start')}
       </button>
     </div>
   );

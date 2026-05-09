@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../auth/authStore';
 import { resetPassword } from '../../auth/authService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
 
 export default function ForgotPasswordSheet() {
+  const { t } = useTranslation('ui');
   const forgotPasswordOpen = useAuthStore(s => s.forgotPasswordOpen);
   const switching = useAuthStore(s => s.switching);
   const closeAll = useAuthStore(s => s.closeAll);
@@ -37,12 +39,12 @@ export default function ForgotPasswordSheet() {
 
   async function handleSend() {
     if (!email.trim()) {
-      setMessage('Please enter your email address.');
+      setMessage(t('auth.enter_email'));
       setIsSuccess(false);
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setMessage('Please enter a valid email address.');
+      setMessage(t('auth.enter_valid_email'));
       setIsSuccess(false);
       return;
     }
@@ -54,7 +56,7 @@ export default function ForgotPasswordSheet() {
       setMessage(err);
       setIsSuccess(false);
     } else {
-      setMessage('Check your email — we sent a reset link.');
+      setMessage(t('auth.reset_link_sent'));
       setIsSuccess(true);
     }
   }
@@ -70,7 +72,7 @@ export default function ForgotPasswordSheet() {
           >
             <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="" />
           </button>
-          <span className="modal-sheet-title">RESET PASSWORD</span>
+          <span className="modal-sheet-title">{t('auth.reset_password_title')}</span>
           <button
             className="btn-utility header-icon-btn modal-sheet-close"
             onClick={handleClose}
@@ -81,11 +83,11 @@ export default function ForgotPasswordSheet() {
         </div>
 
         <div className="modal-sheet-body">
-          <p className="modal-sheet-value-prop">Enter your email and we'll send a reset link</p>
+          <p className="modal-sheet-value-prop">{t('auth.reset_password_desc')}</p>
           <input
             className="auth-field"
             type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={email}
             autoComplete="email"
             onChange={e => { setEmail(e.target.value); setMessage(''); setIsSuccess(false); }}
@@ -94,7 +96,7 @@ export default function ForgotPasswordSheet() {
           />
 
           <p className={`auth-error${message ? ' visible' : ''}${isSuccess ? ' success' : ''}`}>
-            {message || '\u00A0'}
+            {message || ' '}
           </p>
 
           <button
@@ -103,7 +105,7 @@ export default function ForgotPasswordSheet() {
             onClick={handleSend}
             disabled={loading || isSuccess}
           >
-            {loading ? 'SENDING...' : 'SEND RESET LINK'}
+            {loading ? t('auth.sending') : t('auth.send_reset_link')}
           </button>
         </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import { CREDITS, CREDITS_SCROLL_DURATION_MS } from '../../creditsContent';
 import { useAuthStore } from '../../auth/authStore';
@@ -11,6 +12,7 @@ const WIN_LOOP_DURATION_MS = 2 * 300; // frames × frameDuration
 type Phase = 'credits' | 'unlocks';
 
 export default function CampaignVictory() {
+  const { t } = useTranslation('ui');
   const pendingUnlockIds = useGameStore(s => s.pendingUnlockIds);
   const characters = useGameStore(s => s.characters);
   const resetAll = useGameStore(s => s.resetAll);
@@ -47,8 +49,8 @@ export default function CampaignVictory() {
 
   const unlockCount = unlockChars.length;
   const headerText = unlockCount === 0
-    ? 'Campaign Complete!'
-    : `${unlockCount} New Fighter${unlockCount > 1 ? 's' : ''} Unlocked!`;
+    ? t('campaign_victory.complete')
+    : t('campaign_victory.fighters_unlocked', { count: unlockCount });
 
   return (
     <div className="campaign-victory-overlay">
@@ -59,13 +61,13 @@ export default function CampaignVictory() {
         >
           {campaignFinalScore !== null && (
             <div className="credits-score-card">
-              <div className="credits-score-label">YOUR BEST RUN</div>
+              <div className="credits-score-label">{t('campaign_victory.your_best_run')}</div>
               <div className="credits-score-value">
-                {campaignFinalScore.toLocaleString()} PTS
+                {campaignFinalScore.toLocaleString()} {t('common.pts')}
               </div>
               {campaignFinalRank !== null && campaignFinalRank <= 10 && (
                 <div className="credits-score-rank">
-                  <span className="credits-score-rank-callout"># {campaignFinalRank} ON THE LEADERBOARD</span>
+                  <span className="credits-score-rank-callout">{t('campaign_victory.leaderboard_rank', { rank: campaignFinalRank })}</span>
                   {username && <span className="credits-score-rank-name">{username}</span>}
                 </div>
               )}
@@ -80,9 +82,9 @@ export default function CampaignVictory() {
               </div>
             );
             if (line.type === 'spacer') return <div key={i} className="credits-spacer" />;
-            if (line.type === 'name') return <div key={i} className="credits-name">{line.text}</div>;
+            if (line.type === 'name') return <div key={i} className="credits-name">{line.i18nKey ? t(line.i18nKey) : line.text}</div>;
             if (line.type === 'copyright') return <div key={i} className="credits-copyright">{line.text}</div>;
-            return <div key={i} className="credits-body">{line.text}</div>;
+            return <div key={i} className="credits-body">{line.i18nKey ? t(line.i18nKey) : line.text}</div>;
           })}
         </div>
       )}
@@ -99,13 +101,13 @@ export default function CampaignVictory() {
                   style={{ animationDelay: `${i * 150}ms` }}
                 >
                   <img src={char.portraitPath} alt={char.name} draggable={false} />
-                  <span className="char-name">{char.name}</span>
+                  <span className="char-name">{t('characters:' + char.id, { defaultValue: char.name })}</span>
                 </div>
               ))}
             </div>
           )}
           <button className="btn" onClick={() => { switchToSelectMusic(); useGameStore.setState({ selectedTrackIndex: SELECT_TRACK_INDEX } as never); resetAll(); }}>
-            CONTINUE
+            {t('campaign_victory.continue')}
           </button>
         </div>
       )}

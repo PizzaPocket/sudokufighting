@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../auth/authStore';
 import { updatePassword } from '../../auth/authService';
 
 export default function ResetPasswordScreen() {
+  const { t } = useTranslation('ui');
   const resetPasswordMode = useAuthStore(s => s.resetPasswordMode);
   const setResetPasswordMode = useAuthStore(s => s.setResetPasswordMode);
 
@@ -16,15 +18,15 @@ export default function ResetPasswordScreen() {
 
   async function handleSubmit() {
     if (!password) {
-      setMessage('Please enter a new password.');
+      setMessage(t('auth.enter_new_password'));
       return;
     }
     if (password.length < 8) {
-      setMessage('Password must be at least 8 characters.');
+      setMessage(t('auth.password_too_short'));
       return;
     }
     if (password !== confirm) {
-      setMessage('Passwords do not match.');
+      setMessage(t('auth.passwords_no_match'));
       return;
     }
     setLoading(true);
@@ -35,11 +37,11 @@ export default function ResetPasswordScreen() {
         setMessage(err);
       } else {
         setIsSuccess(true);
-        setMessage('Password updated! You\'re now signed in.');
+        setMessage(t('auth.password_updated'));
         setTimeout(() => setResetPasswordMode(false), 2000);
       }
     } catch {
-      setMessage('Something went wrong — please try again.');
+      setMessage(t('auth.something_wrong'));
     } finally {
       setLoading(false);
     }
@@ -51,16 +53,16 @@ export default function ResetPasswordScreen() {
 
         <div className="modal-sheet-header">
           <div className="modal-sheet-back" />
-          <span className="modal-sheet-title">SET NEW PASSWORD</span>
+          <span className="modal-sheet-title">{t('auth.set_new_password_title')}</span>
           <div className="modal-sheet-close" />
         </div>
 
         <div className="modal-sheet-body">
-          <p className="modal-sheet-value-prop">Choose a new password for your account</p>
+          <p className="modal-sheet-value-prop">{t('auth.set_new_password_desc')}</p>
           <input
             className="auth-field"
             type="password"
-            placeholder="New password"
+            placeholder={t('auth.new_password')}
             value={password}
             autoComplete="new-password"
             onChange={e => { setPassword(e.target.value); setMessage(''); }}
@@ -70,7 +72,7 @@ export default function ResetPasswordScreen() {
           <input
             className="auth-field"
             type="password"
-            placeholder="Confirm new password"
+            placeholder={t('auth.confirm_new_password')}
             value={confirm}
             autoComplete="new-password"
             onChange={e => { setConfirm(e.target.value); setMessage(''); }}
@@ -79,7 +81,7 @@ export default function ResetPasswordScreen() {
           />
 
           <p className={`auth-error${message ? ' visible' : ''}${isSuccess ? ' success' : ''}`}>
-            {message || '\u00A0'}
+            {message || ' '}
           </p>
 
           <button
@@ -88,7 +90,7 @@ export default function ResetPasswordScreen() {
             onClick={handleSubmit}
             disabled={loading || isSuccess}
           >
-            {loading ? 'SAVING...' : 'UPDATE PASSWORD'}
+            {loading ? t('auth.saving') : t('auth.update_password')}
           </button>
         </div>
 

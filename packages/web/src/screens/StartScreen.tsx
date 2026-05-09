@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import LeaderboardCard from '../components/LeaderboardCard';
 import { CREDITS } from '../creditsContent';
@@ -15,6 +16,7 @@ const ALL_CHARACTERS = [
 interface Props { active: boolean; entering?: boolean; }
 
 export default function StartScreen({ active, entering }: Props) {
+  const { t } = useTranslation('ui');
   const setScreen = useGameStore(s => s.setScreen);
   const setGameMode = useGameStore(s => s.setGameMode);
   const lobbyJoinError = useGameStore(s => s.lobbyJoinError);
@@ -53,7 +55,7 @@ export default function StartScreen({ active, entering }: Props) {
     }
     const code = raw.toUpperCase();
     if (code.length !== 6 || !/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(code)) {
-      setLocalError('Enter a valid room code.');
+      setLocalError(t('start.invalid_room_code'));
       return;
     }
     setLocalError(null);
@@ -73,14 +75,14 @@ export default function StartScreen({ active, entering }: Props) {
 
         {/* Column 1 — 2 Player Online */}
         <div className="start-section">
-          <span className="start-mode-label">2 PLAYER ONLINE</span>
-          <span className="start-action-hint">Enter matchmaking queue</span>
+          <span className="start-mode-label">{t('start.online_mode')}</span>
+          <span className="start-action-hint">{t('start.enter_queue')}</span>
           <button className="btn" onClick={() => goToCharacterSelect('quick')}>
-            QUICK MATCH
+            {t('start.quick_match')}
           </button>
-          <span className="start-action-hint">Play with a friend</span>
+          <span className="start-action-hint">{t('start.play_friend')}</span>
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('friend')}>
-            CREATE ROOM
+            {t('start.create_room')}
           </button>
           <div className="combo-input">
             <input
@@ -88,24 +90,24 @@ export default function StartScreen({ active, entering }: Props) {
               className="combo-text"
               type="text"
               maxLength={10}
-              placeholder="Room code"
+              placeholder={t('start.room_code_placeholder')}
               onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
             />
-            <button id="btn-join-room" onClick={handleJoinRoom}>JOIN</button>
+            <button id="btn-join-room" onClick={handleJoinRoom}>{t('start.join')}</button>
           </div>
           <p className={`field-message${(cheatActive || errorMsg) ? ' visible' : ''}${cheatActive ? ' confirm' : ' error'}`}>
-            {cheatActive ? 'ALL FIGHTERS UNLOCKED' : (errorMsg ?? '\u00A0')}
+            {cheatActive ? t('start.all_unlocked') : (errorMsg ?? '\u00A0')}
           </p>
         </div>
 
         {/* Column 2 — Single Player */}
         <div id="start-single-player" className="start-section">
-          <span className="start-mode-label">SINGLE PLAYER</span>
+          <span className="start-mode-label">{t('start.single_player')}</span>
           <button className="btn btn-alt" onClick={() => goToCharacterSelect('campaign')}>
-            CAMPAIGN
+            {t('start.campaign')}
           </button>
           <button className="btn btn-secondary" onClick={() => goToCharacterSelect('practice')}>
-            PRACTICE
+            {t('start.practice')}
           </button>
         </div>
 
@@ -117,9 +119,9 @@ export default function StartScreen({ active, entering }: Props) {
       </div>
 
       <div className="screen-footer">
-        <span className="screen-footer-tagline">Competitive Sudoku with fighting game combat</span>
+        <span className="screen-footer-tagline">{t('start.tagline')}</span>
         <span className="screen-footer-copy">{CREDITS.find(l => l.text?.startsWith('©'))?.text}</span>
-        <button className="privacy-footer-link" onClick={() => setScreen('privacy')}>Privacy Policy</button>
+        <button className="privacy-footer-link" onClick={() => setScreen('privacy')}>{t('start.privacy_policy')}</button>
       </div>
     </div>
   );

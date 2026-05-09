@@ -1,0 +1,126 @@
+{
+  "chow_intro": {
+    "fighter1":     { "0": "Xiao Long, masanya telah tiba.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Tunjukkan kepada mereka kekuatan disiplin anda." },
+    "fighter1_alt": { "0": "Brace, laluan anda kurang pasti.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Biarkan naluri membimbing anda, tetapi jangan hilang diri." },
+    "fighter2":     { "0": "Chuck, semangat anda membawa anda jauh.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Mungkin kini anda akan belajar bila masa untuk serius." },
+    "fighter2_alt": { "0": "Nun, anda telah memilih laluan yang lebih sunyi.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Biarkan kesunyian mempertajam fikiran anda." },
+    "fighter3":     { "0": "Jonathan, keyakinan anda bersinar terang.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Kini buktikan bahawa kekuatan anda setanding dengan cita-cita anda." },
+    "fighter3_alt": { "0": "Johan, anda sudah berdiri sebagai seorang juara.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Tunjukkan mengapa anda layak dengan gelaran itu." },
+    "fighter4":     { "0": "Senna, anda bertempur dengan naluri tulen.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Kini belajar mengawal kekacauan dalam diri anda." },
+    "fighter4_alt": { "0": "Ninja S, disiplin anda tepat.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Jangan biarkan sebarang pergerakan terbuang sia-sia." },
+    "fighter5":     { "0": "Boombox, anda kini berjalan di laluan sendiri.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Tunjukkan bahawa anda lebih daripada apa yang anda dicipta." },
+    "fighter5_alt": { "0": "Icebox, fokus anda tidak goyah.", "1": "Jelajahi dunia dan hadapi Pejuang Sudoku terhebat.", "2": "Jangan biarkan apa-apa mengalihkan anda dari tujuan anda." }
+  },
+  "match": {
+    "fighter1": {
+      "fighter1_alt": { "lines": { "0": "Anda terlalu ketat memegang kawalan.", "1": "Kadang-kadang anda perlu melepaskan dan mempercayai diri sendiri." } },
+      "fighter2":     { "lines": { "0": "Nampaknya anda menanggung seluruh dunia di bahu anda.", "1": "Rehat sikit, ya? Ini sepatutnya menyeronokkan." } },
+      "fighter2_alt": { "lines": { "0": "Anda bergerak dengan disiplin, tetapi ada ketegangan dalam diri anda.", "1": "Kesunyian sahaja tidak akan membawa anda keseimbangan." } },
+      "fighter3":     { "lines": { "0": "Pendiam dan serius. Anda tidak akan menjadikan ini sangat menghiburkan.", "1": "Saya rasa saya perlu membawa persembahan untuk kita berdua." } },
+      "fighter3_alt": { "lines": { "0": "Anda ingin menjadi sempurna, bukan?", "1": "Mari kita lihat sama ada anda boleh memenuhinya." } },
+      "fighter4":     { "lines": { "0": "Anda bergerak seperti segalanya telah dirancang terlebih dahulu.", "1": "Mari kita lihat bagaimana anda menangani seseorang yang tidak boleh diramalkan." } },
+      "fighter4_alt": { "lines": { "0": "Pergerakan anda tepat, hampir terlalu tepat.", "1": "Saya akan mencari jurang yang anda sembunyikan." } },
+      "fighter5":     { "lines": { "0": "Anda bertempur seperti seseorang yang telah berlatih sepanjang hayat.", "1": "Saya tertanya-tanya apa yang berlaku apabila latihan itu ditolak terlalu jauh." } },
+      "fighter5_alt": { "lines": { "0": "Anda telah menutup segalanya dalam diri anda.", "1": "Mari kita lihat sama ada masih ada sesuatu di bawah permukaan." } }
+    },
+    "fighter1_alt": {
+      "fighter1":     { "lines": { "0": "Anda telah menukar disiplin dengan naluri.", "1": "Mari kita lihat bagaimana ia bertahan apabila diperlukan." } },
+      "fighter2":     { "lines": { "0": "Tiada rancangan, tiada strategi, hanya ikut perasaan, ya?", "1": "Pendekatan yang sama yang saya gunakan, jujurnya. Tapi saya lebih baik dalam hal ini." } },
+      "fighter2_alt": { "lines": { "0": "Anda bergerak tanpa berfikir.", "1": "Kelajuan tanpa arah hanya membawa anda berpusing." } },
+      "fighter3":     { "lines": { "0": "Penuh tenaga, tiada kemahiran. Anda bertempur seperti draf kasar.", "1": "Biar saya tunjukkan cara yang betul." } },
+      "fighter3_alt": { "lines": { "0": "Tiada struktur, tiada penghalusan. Hanya naluri.", "1": "Saya sudah melepasi tahap itu." } },
+      "fighter4":     { "lines": { "0": "Sekarang anda lebih seperti gaya saya.", "1": "Jangan tahan diri, saya pun tidak akan." } },
+      "fighter4_alt": { "lines": { "0": "Semua tenaga longgar itu tanpa arah.", "1": "Ketepatan akan memotong terus melaluinya." } },
+      "fighter5":     { "lines": { "0": "Naluri tulen, tiada peta. Hormat tu, kawan.", "1": "Mari kita lihat sejauh mana ia membawa anda." } },
+      "fighter5_alt": { "lines": { "0": "Semua impuls, tiada struktur.", "1": "Saya sudah menjalankan senario ini." } }
+    },
+    "fighter2": {
+      "fighter1":     { "lines": { "0": "Anda terlalu bergantung pada jenaka dan gangguan.", "1": "Fokuskan diri anda, atau ini akan berakhir dengan cepat." } },
+      "fighter1_alt": { "lines": { "0": "Anda fikir melepaskan diri menjadikan anda lebih kuat.", "1": "Ia hanya menjadikan anda cuai." } },
+      "fighter2_alt": { "lines": { "0": "Anda bersembunyi di sebalik tawa dan bukannya menghadapi diri sendiri.", "1": "Sudah tiba masanya anda berdiri teguh." } },
+      "fighter3":     { "lines": { "0": "Ini bukan permainan, tidak kira bagaimana anda menganggapnya.", "1": "Ikuti, atau ketinggalan." } },
+      "fighter3_alt": { "lines": { "0": "Kekurangan keseriusan anda adalah kelemahan, bukan gaya.", "1": "Saya akan pastikan anda faham perbezaannya." } },
+      "fighter4":     { "lines": { "0": "Anda tersenyum sekarang, tetapi tidak lama lagi.", "1": "Saya tidak memudahkan sesiapa." } },
+      "fighter4_alt": { "lines": { "0": "Pergerakan anda tidak berdisiplin dan tidak berstruktur.", "1": "Saya akan betulkan itu." } },
+      "fighter5":     { "lines": { "0": "Semua tenaga itu dan tiada satu pun kebimbangan, ye?", "1": "Cuba kekal fokus cukup lama untuk menjadikannya menarik." } },
+      "fighter5_alt": { "lines": { "0": "Emosional, impulsif, tidak dapat diramalkan.", "1": "Saya telah mengambil kira setiap pemboleh ubah tersebut." } }
+    },
+    "fighter2_alt": {
+      "fighter1":     { "lines": { "0": "Ketenangan anda adalah nyata.", "1": "Saya hanya tertanya-tanya apa yang dilindunginya." } },
+      "fighter1_alt": { "lines": { "0": "Semua ketenangan itu, dan anda menyebutnya kekuatan?", "1": "Kadang-kadang anda perlu bergerak untuk mencari jawapan." } },
+      "fighter2":     { "lines": { "0": "Hmm. Anda kelihatan biasa. Yang peliknya kerana selera saya sangat baik.", "1": "Jom, saya pun tersenyum. Dan saya adalah anda." } },
+      "fighter3":     { "lines": { "0": "Semua ketenangan itu dan tidak sepatah kata. Yakin, atau hanya menunggu?", "1": "Walau bagaimanapun, saya tidak kalah pada kesabaran." } },
+      "fighter3_alt": { "lines": { "0": "Ketenangan bukan satu kaedah.", "1": "Kesempurnaan memerlukan penghalusan berterusan, bukan menunggu." } },
+      "fighter4":     { "lines": { "0": "Apa hal dengan semua ketenangan itu?! Anda hanya berdiri di sana.", "1": "Saya akan beri anda sesuatu untuk bertindak balas." } },
+      "fighter4_alt": { "lines": { "0": "Ketenangan anda terkawal.", "1": "Tetapi ketenangan tanpa ketepatan hanyalah menunggu." } },
+      "fighter5":     { "lines": { "0": "Weh, anda sangat pendiam. Tak nak ucap salam ke?", "1": "Tak pe. Biar permainan yang bercakap." } },
+      "fighter5_alt": { "lines": { "0": "Anda telah menemui ketenangan. Tetapi ketenangan tidak sama dengan kejelasan.", "1": "Sesuatu masih kekal dalam diri anda." } }
+    },
+    "fighter3": {
+      "fighter1":     { "lines": { "0": "Anda menganggap ini seperti persembahan.", "1": "Mari kita lihat sama ada kandungannya setanding dengan pertunjukan." } },
+      "fighter1_alt": { "lines": { "0": "Semua gaya dan kemewahan itu.", "1": "Saya hanya di sini untuk bertempur." } },
+      "fighter2":     { "lines": { "0": "Cukup yakin untuk seseorang yang belum menang, ya?", "1": "Saya suka keyakinan itu walaupun. Sungguh-sungguh. Sekarang mari kita lihat apa yang dilakukannya." } },
+      "fighter2_alt": { "lines": { "0": "Keyakinan anda memenuhi ruang sebelum anda tiba.", "1": "Bunyi bising itu tidak meninggalkan ruang untuk kejelasan berakar." } },
+      "fighter3_alt": { "lines": { "0": "Anda kelihatan seperti saya, tetapi entah bagaimana lebih tajam.", "1": "Saya rasa perlu membuktikan yang mana lebih baik." } },
+      "fighter4":     { "lines": { "0": "Semua keyakinan itu.", "1": "Harap ia bertahan apabila keadaan menjadi sukar." } },
+      "fighter4_alt": { "lines": { "0": "Ketepatan anda mengagumkan.", "1": "Mari kita lihat bagaimana anda menangani tekanan." } },
+      "fighter5":     { "lines": { "0": "Masuk besar, rambut cantik. Suka komitmennya, kawan.", "1": "Harap pertarungannya sebagus pertunjukannya." } },
+      "fighter5_alt": { "lines": { "0": "Persembahan itu diambil perhatian.", "1": "Sekarang mari kita lihat apa yang ada di bawahnya." } }
+    },
+    "fighter3_alt": {
+      "fighter1":     { "lines": { "0": "Kawalan anda kukuh, tetapi kurang penghalusan.", "1": "Masih ada satu lagi tahap yang berada di luar anda." } },
+      "fighter1_alt": { "lines": { "0": "Segalanya sangat terkawal, sangat halus.", "1": "Anda telah merancang segalanya kecuali seseorang yang tidak ambil peduli." } },
+      "fighter2":     { "lines": { "0": "Segalanya tentang anda begitu dipoles dan serius.", "1": "Pernahkah anda hanya... berseronok dengannya?" } },
+      "fighter2_alt": { "lines": { "0": "Anda telah menghaluskan diri anda tanpa henti.", "1": "Namun anda masih gelisah. Apa yang anda cari?" } },
+      "fighter3":     { "lines": { "0": "Anda berusaha menjadi sesuatu yang lebih besar.", "1": "Saya sudah berada di sana." } },
+      "fighter4":     { "lines": { "0": "Begitu dipoles hingga hampir membosankan.", "1": "Mari kita buat beberapa calar pada kemasan itu." } },
+      "fighter4_alt": { "lines": { "0": "Anda cekap, yang saya hormati.", "1": "Tetapi kecekapan hanyalah permulaan." } },
+      "fighter5":     { "lines": { "0": "Setiap pergerakan dikira, setiap pilihan disengajakan.", "1": "Mari kita lihat sama ada anda telah mengambil kira seseorang yang tidak melakukan itu." } },
+      "fighter5_alt": { "lines": { "0": "Anda membuang emosi, tetapi bukan ketidaksempurnaan.", "1": "Saya akan mendedahkannya." } }
+    },
+    "fighter4": {
+      "fighter1":     { "lines": { "0": "Tiada corak, tiada rancangan. Naluri tulen.", "1": "Saya juga telah berlatih untuk ini." } },
+      "fighter1_alt": { "lines": { "0": "Sekarang ini lebih seperti ia.", "1": "Mari kita lihat sejauh mana anda boleh mendorongnya." } },
+      "fighter2":     { "lines": { "0": "Okay! Anda bertempur seperti marah kepada seluruh dunia.", "1": "Saya hanya di sini untuk berseronok. Cuba jangan ambil secara peribadi?" } },
+      "fighter2_alt": { "lines": { "0": "Anda bergerak seperti ribut tanpa arah.", "1": "Tenaga itu akan keletihan sebelum ia mencapai saya." } },
+      "fighter3":     { "lines": { "0": "Anda kelihatan baik apabila segalanya berjalan lancar.", "1": "Mari kita lihat bagaimana anda menangani tekanan." } },
+      "fighter3_alt": { "lines": { "0": "Tidak dapat diramalkan adalah kata lain untuk tidak terlatih.", "1": "Saya tidak mempunyai kesabaran untuk itu." } },
+      "fighter4_alt": { "lines": { "0": "Anda adalah versi saya yang tidak pernah ragu-ragu.", "1": "Mari kita lihat yang mana menang." } },
+      "fighter5":     { "lines": { "0": "Lasak dan pantas. Kredit diberikan.", "1": "Tetap akan kalah juga." } },
+      "fighter5_alt": { "lines": { "0": "Kuat, emosional, huru-hara.", "1": "Anda memberi saya banyak untuk digunakan." } }
+    },
+    "fighter4_alt": {
+      "fighter1":     { "lines": { "0": "Senyap, tepat, tiada yang terbuang.", "1": "Mari kita lihat latihan siapa yang lebih dalam." } },
+      "fighter1_alt": { "lines": { "0": "Begitu tepat, begitu terkawal.", "1": "Tertanya-tanya apa yang berlaku apabila anda kehilangan skrip." } },
+      "fighter2":     { "lines": { "0": "Anda kelihatan seperti tidak pernah ketawa sekali pun dalam hidup.", "1": "Itu kelihatan meletihkan. Saya boleh ajar, tahu." } },
+      "fighter2_alt": { "lines": { "0": "Disiplin anda tajam.", "1": "Tetapi ketajaman yang tidak pernah berehat akhirnya akan patah." } },
+      "fighter3":     { "lines": { "0": "Tiada masuk, tiada pemanasan, tiada kata-kata.", "1": "Semua urusan. Saya boleh hormati itu. Tetap tidak cukup." } },
+      "fighter3_alt": { "lines": { "0": "Anda cekap, tetapi tidak optimum.", "1": "Saya akan membuktikan perbezaannya." } },
+      "fighter4":     { "lines": { "0": "Semua tahun latihan itu.", "1": "Saya belajar milik saya di lorong. Mari kita lihat apa yang kekal." } },
+      "fighter5":     { "lines": { "0": "Tiada kata-kata, tiada kedip.", "1": "Baiklah, saya akan buat cukup bising untuk kita berdua." } },
+      "fighter5_alt": { "lines": { "0": "Logik anda kukuh.", "1": "Kita akan menguji hadnya." } }
+    },
+    "fighter5": {
+      "fighter1":     { "lines": { "0": "Anda membawa jauh lebih banyak daripada sekadar kekuatan.", "1": "Saya tertanya-tanya sama ada anda telah memutuskan apa yang hendak dilakukan dengannya." } },
+      "fighter1_alt": { "lines": { "0": "Besar, kuat, dan langsung.", "1": "Saya juga tiada rancangan. Patut menarik." } },
+      "fighter2":     { "lines": { "0": "Wow. Okay. Anda sangat besar.", "1": "Saya perlu menjadi sangat menarik untuk melalui yang ini." } },
+      "fighter2_alt": { "lines": { "0": "Anda membawa daya yang besar.", "1": "Tetapi daya tanpa ketenangan tidak dapat menanggung beratnya sendiri." } },
+      "fighter3":     { "lines": { "0": "Anda mempunyai keyakinan berhari-hari.", "1": "Harap anda ada kekuatan yang setanding." } },
+      "fighter3_alt": { "lines": { "0": "Anda rasa anda produk siap, ya?", "1": "Mari kita uji teori itu." } },
+      "fighter4":     { "lines": { "0": "Okay. Anda besar. Sangat besar.", "1": "Nasib baik saya tidak bertempur secara adil." } },
+      "fighter4_alt": { "lines": { "0": "Besar dan kuat dan tidak halus tentangnya.", "1": "Kuasa tanpa ketepatan mudah dibaca." } },
+      "fighter5_alt": { "lines": { "0": "Penuh perasaan, tiada pengiraan.", "1": "Saya sudah memetakan ke mana ini menuju." } }
+    },
+    "fighter5_alt": {
+      "fighter1":     { "lines": { "0": "Anda bergantung pada disiplin untuk membimbing anda.", "1": "Saya akan menguji sejauh mana ia boleh membawa anda." } },
+      "fighter1_alt": { "lines": { "0": "Segalanya dipetakan, setiap sudut diliputi.", "1": "Biar saya perkenalkan beberapa pemboleh ubah." } },
+      "fighter2":     { "lines": { "0": "Anda sangat serius sekarang.", "1": "Pernah cuba tersenyum? Sekali sahaja? Ia percuma." } },
+      "fighter2_alt": { "lines": { "0": "Anda telah mengosongkan diri anda.", "1": "Tetapi kekosongan tidak sama dengan ketenangan." } },
+      "fighter3":     { "lines": { "0": "Sejuk dan kosong. Anda tidak akan memberi saya apa-apa untuk digunakan.", "1": "Tak pe. Saya boleh improvisasi." } },
+      "fighter3_alt": { "lines": { "0": "Cekap, sejuk, tiada pergerakan yang terbuang.", "1": "Dioptimumkan tidak sama dengan disempurnakan. Saya akan tunjukkan perbezaannya." } },
+      "fighter4":     { "lines": { "0": "Semua pelan, tiada perasaan.", "1": "Saya tertanya-tanya sama ada itu sebenarnya satu kelemahan." } },
+      "fighter4_alt": { "lines": { "0": "Cekap. Dioptimumkan untuk kekangan yang berbeza.", "1": "Kita lihat yang mana penting hari ini." } },
+      "fighter5":     { "lines": { "0": "Eh. Itu agak menakutkan.", "1": "Di mana semua keseronokan itu pergi?" } }
+    }
+  }
+}

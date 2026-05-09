@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import { setupNextFight } from '../../ai/useCampaign';
 import { playTextBlip } from '../../audio/audioManager';
@@ -12,6 +13,7 @@ type Phase = 'entering' | 'active' | 'leaving';
 interface Props { active: boolean; }
 
 export default function DialogueCutscene({ active }: Props) {
+  const { t } = useTranslation('ui');
   const queue = useGameStore(s => s.campaignDialogueQueue);
 
   const [queueIndex, setQueueIndex] = useState(0);
@@ -124,7 +126,7 @@ export default function DialogueCutscene({ active }: Props) {
   const nextLabel = isTyping
     ? '▶▶'
     : lineIndex < (currentEntry?.lines.length ?? 1) - 1 || queueIndex < queue.length - 1
-    ? 'NEXT ▶'
+    ? t('dialogue.next')
     : 'FIGHT!';
 
   const bgStyle = currentEntry?.backgroundSrc

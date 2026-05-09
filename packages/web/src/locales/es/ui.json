@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "2 JUGADORES EN LÍNEA",
+    "enter_queue": "Entrar a la cola de emparejamiento",
+    "play_friend": "Jugar con un amigo",
+    "quick_match": "PARTIDA RÁPIDA",
+    "create_room": "CREAR SALA",
+    "room_code_placeholder": "Código de sala",
+    "join": "UNIRSE",
+    "single_player": "UN JUGADOR",
+    "campaign": "CAMPAÑA",
+    "practice": "PRÁCTICA",
+    "tagline": "Sudoku competitivo con combate de juego de lucha",
+    "privacy_policy": "Política de Privacidad",
+    "all_unlocked": "TODOS LOS LUCHADORES DESBLOQUEADOS",
+    "invalid_room_code": "Ingresa un código de sala válido."
+  },
+  "char_select": {
+    "difficulty": "DIFICULTAD",
+    "choose_fighter": "Elige tu luchador",
+    "start": "COMENZAR",
+    "easy": "FÁCIL",
+    "normal": "NORMAL",
+    "extreme": "EXTREMO"
+  },
+  "lobby": {
+    "ready": "LISTO",
+    "waiting": "ESPERANDO...",
+    "invite_code": "CÓDIGO DE INVITACIÓN",
+    "link_copied": "¡ENLACE COPIADO!",
+    "invite": "INVITAR",
+    "copy_link": "COPIAR ENLACE",
+    "share": "COMPARTIR",
+    "share_game": "COMPARTIR JUEGO",
+    "link_copied_toast": "¡Enlace copiado!",
+    "arena": "ARENA",
+    "waiting_for_opponent": "Esperando al oponente…"
+  },
+  "sp_lobby": {
+    "difficulty": "DIFICULTAD",
+    "start": "¡COMENZAR!"
+  },
+  "campaign_lobby": {
+    "fight_label": "COMBATE {{number}} — {{arena}}",
+    "start": "¡COMENZAR!"
+  },
+  "gameplay": {
+    "paused": "PAUSADO",
+    "resume": "REANUDAR"
+  },
+  "dialogue": {
+    "next": "SIGUIENTE ▶"
+  },
+  "overlay": {
+    "tie": "EMPATE",
+    "its_a_tie": "ES UN EMPATE",
+    "victory": "¡VICTORIA!",
+    "devastation": "¡DEVASTACIÓN!",
+    "flawless": "Impecable",
+    "wins": "¡{{name}} GANA!",
+    "opponent_disconnected": "OPONENTE DESCONECTADO",
+    "continue": "CONTINUAR",
+    "play_again": "JUGAR DE NUEVO",
+    "rematch": "REVANCHA",
+    "waiting": "ESPERANDO…",
+    "back_to_menu": "VOLVER AL MENÚ",
+    "leave": "SALIR",
+    "opponent_left": "El oponente se fue",
+    "opponent_wants_rematch": "El oponente quiere revancha",
+    "sign_in_cta": "INICIAR SESIÓN / CREAR CUENTA"
+  },
+  "campaign_victory": {
+    "complete": "¡Campaña Completada!",
+    "fighters_unlocked": "¡{{count}} Nuevo Luchador Desbloqueado!",
+    "fighters_unlocked_other": "¡{{count}} Nuevos Luchadores Desbloqueados!",
+    "your_best_run": "TU MEJOR PARTIDA",
+    "pts": "PTS",
+    "leaderboard_rank": "# {{rank}} EN EL MARCADOR",
+    "continue": "CONTINUAR"
+  },
+  "campaign_gameover": {
+    "game_over": "GAME OVER",
+    "try_again": "INTENTAR DE NUEVO",
+    "main_menu": "MENÚ PRINCIPAL"
+  },
+  "auth": {
+    "sign_in_title": "INICIAR SESIÓN",
+    "signing_in": "INICIANDO SESIÓN...",
+    "save_progress": "Guarda tu progreso y logros",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "enter_email_password": "Por favor ingresa tu correo y contraseña.",
+    "continue_google": "Continuar con Google",
+    "continue_apple": "Continuar con Apple",
+    "create_account": "Crear una Cuenta",
+    "create_account_title": "CREAR CUENTA",
+    "creating_account": "CREANDO CUENTA...",
+    "confirm_password": "Confirmar contraseña",
+    "enter_valid_email": "Por favor ingresa un correo electrónico válido.",
+    "password_too_short": "La contraseña debe tener al menos 8 caracteres.",
+    "passwords_no_match": "Las contraseñas no coinciden.",
+    "account_created": "Cuenta creada. ¡Bienvenido!",
+    "or": "o",
+    "signed_out": "Sesión cerrada correctamente.",
+    "reset_password_title": "RESTABLECER CONTRASEÑA",
+    "reset_password_desc": "Ingresa tu correo y te enviaremos un enlace de restablecimiento",
+    "send_reset_link": "ENVIAR ENLACE",
+    "sending": "ENVIANDO...",
+    "enter_email": "Por favor ingresa tu correo electrónico.",
+    "reset_link_sent": "Revisa tu correo. Te enviamos un enlace de restablecimiento.",
+    "set_new_password_title": "ESTABLECER NUEVA CONTRASEÑA",
+    "set_new_password_desc": "Elige una nueva contraseña para tu cuenta",
+    "new_password": "Nueva contraseña",
+    "confirm_new_password": "Confirmar nueva contraseña",
+    "saving": "GUARDANDO...",
+    "update_password": "ACTUALIZAR CONTRASEÑA",
+    "enter_new_password": "Por favor ingresa una nueva contraseña.",
+    "password_updated": "¡Contraseña actualizada! Has iniciado sesión.",
+    "something_wrong": "Algo salió mal. Por favor intenta de nuevo."
+  },
+  "settings": {
+    "music": "MÚSICA",
+    "track": "PISTA",
+    "sound_effects": "EFECTOS DE SONIDO",
+    "vibration": "VIBRACIÓN",
+    "about": "ACERCA DE",
+    "language": "IDIOMA"
+  },
+  "common": {
+    "cancel": "CANCELAR",
+    "confirm": "CONFIRMAR",
+    "save": "GUARDAR",
+    "edit": "EDITAR",
+    "back": "ATRÁS",
+    "loading": "CARGANDO...",
+    "pts": "PTS"
+  },
+  "splash": {
+    "enter": "ENTRAR"
+  },
+  "header": {
+    "matchmaking": "EMPAREJAMIENTO",
+    "private_room": "SALA PRIVADA",
+    "quit": "SALIR",
+    "surrender": "RENDIRSE",
+    "quit_confirm": "¿Salir de la campaña?",
+    "surrender_confirm": "¿Rendirse?"
+  },
+  "leaderboard": {
+    "title": "MARCADOR",
+    "view_all": "Ver Todo",
+    "empty": "Aún no hay victorias en campaña.\nCompleta una campaña para reclamar el primer lugar."
+  },
+  "account": {
+    "title": "MI CUENTA",
+    "auto_name_nudge": "Este es un nombre de luchador generado automáticamente. ¿Quieres establecer el tuyo?",
+    "campaign_section": "Campaña",
+    "clears": "Completadas",
+    "best_run": "Mejor partida",
+    "fighters_unlocked": "Luchadores desbloqueados",
+    "quick_match_section": "Partida Rápida",
+    "record": "Récord",
+    "win_rate": "Tasa de victorias",
+    "best_streak": "Mejor racha",
+    "matches_played": "Partidas jugadas",
+    "practice_section": "Práctica",
+    "sign_out": "CERRAR SESIÓN",
+    "sign_out_confirm": "¿CERRAR SESIÓN?"
+  },
+  "about": {
+    "para1": "Sudoku Fighting es un proyecto apasionado del dúo de desarrolladores padre e hijo <strong>Leonard Downs Reese IV</strong> y <strong>Kaius Lu Reese</strong>. Diseño de personajes, dirección creativa y contribución musical por Kaius. Diseño del juego, programación y banda sonora original por Leonard.",
+    "para2": "Agradecimiento especial a <strong>Tingting Lu</strong> por tu amor y apoyo, y por aguantar a dos maníacos obsesivos en tu hogar. Te amamos."
+  },
+  "credits": {
+    "created_by": "Creado Por",
+    "game_design": "Diseño y Programación del Juego",
+    "char_design": "Diseño de Personajes, Dirección Creativa y Contribución Musical",
+    "ost_by": "Banda sonora original compuesta por",
+    "all_music": "Toda la música creada exclusivamente para Sudoku Fighting",
+    "special_thanks": "Agradecimientos Especiales",
+    "name_tingting": "Tingting Lu",
+    "for_support": "Por tu amor y apoyo",
+    "tagline": "Creado para mantener nuestras mentes activas agudas.",
+    "name_kaius": "Kaius Lu Reese"
+  }
+}

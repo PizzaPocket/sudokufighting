@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "2 PEMAIN DALAM TALIAN",
+    "enter_queue": "Sertai giliran perlawanan",
+    "play_friend": "Main dengan rakan",
+    "quick_match": "PERLAWANAN PANTAS",
+    "create_room": "CIPTA BILIK",
+    "room_code_placeholder": "Kod bilik",
+    "join": "SERTAI",
+    "single_player": "PEMAIN TUNGGAL",
+    "campaign": "KEMPEN",
+    "practice": "LATIHAN",
+    "tagline": "Sudoku kompetitif dengan pertarungan pejuang",
+    "privacy_policy": "Dasar Privasi",
+    "all_unlocked": "SEMUA PEJUANG DIBUKA KUNCI",
+    "invalid_room_code": "Masukkan kod bilik yang sah."
+  },
+  "char_select": {
+    "difficulty": "KESUKARAN",
+    "choose_fighter": "Pilih pejuang anda",
+    "start": "MULA",
+    "easy": "MUDAH",
+    "normal": "BIASA",
+    "extreme": "MELAMPAU"
+  },
+  "lobby": {
+    "ready": "SEDIA",
+    "waiting": "MENUNGGU...",
+    "invite_code": "KOD JEMPUTAN",
+    "link_copied": "PAUTAN DISALIN!",
+    "invite": "JEMPUT",
+    "copy_link": "SALIN PAUTAN",
+    "share": "KONGSI",
+    "share_game": "KONGSI PERMAINAN",
+    "link_copied_toast": "Pautan disalin!",
+    "arena": "ARENA",
+    "waiting_for_opponent": "Menunggu lawan…"
+  },
+  "sp_lobby": {
+    "difficulty": "KESUKARAN",
+    "start": "MULA!"
+  },
+  "campaign_lobby": {
+    "fight_label": "PERTARUNGAN {{number}} — {{arena}}",
+    "start": "MULA!"
+  },
+  "gameplay": {
+    "paused": "DIJEDA",
+    "resume": "SAMBUNG"
+  },
+  "dialogue": {
+    "next": "SETERUSNYA ▶"
+  },
+  "overlay": {
+    "tie": "SERI",
+    "its_a_tie": "INI SERI",
+    "victory": "KEMENANGAN!",
+    "devastation": "KEHANCURAN!",
+    "flawless": "Sempurna",
+    "wins": "{{name}} MENANG!",
+    "opponent_disconnected": "LAWAN TERPUTUS",
+    "continue": "TERUSKAN",
+    "play_again": "MAIN SEMULA",
+    "rematch": "MAIN BALIK",
+    "waiting": "MENUNGGU…",
+    "back_to_menu": "KEMBALI KE MENU",
+    "leave": "TINGGALKAN",
+    "opponent_left": "Lawan telah pergi",
+    "opponent_wants_rematch": "Lawan mahu main balik",
+    "sign_in_cta": "LOG MASUK / CIPTA AKAUN"
+  },
+  "campaign_victory": {
+    "complete": "Kempen Selesai!",
+    "fighters_unlocked": "{{count}} Pejuang Baharu Dibuka Kunci!",
+    "fighters_unlocked_other": "{{count}} Pejuang Baharu Dibuka Kunci!",
+    "your_best_run": "SKOR TERBAIK ANDA",
+    "pts": "MATA",
+    "leaderboard_rank": "# {{rank}} DI PAPAN KEDUDUKAN",
+    "continue": "TERUSKAN"
+  },
+  "campaign_gameover": {
+    "game_over": "TAMAT PERMAINAN",
+    "try_again": "CUBA LAGI",
+    "main_menu": "MENU UTAMA"
+  },
+  "auth": {
+    "sign_in_title": "LOG MASUK",
+    "signing_in": "MENDAFTAR MASUK...",
+    "save_progress": "Simpan kemajuan dan pencapaian anda",
+    "email": "E-mel",
+    "password": "Kata laluan",
+    "forgot_password": "Lupa kata laluan?",
+    "enter_email_password": "Sila masukkan e-mel dan kata laluan anda.",
+    "continue_google": "Teruskan dengan Google",
+    "continue_apple": "Teruskan dengan Apple",
+    "create_account": "Cipta Akaun",
+    "create_account_title": "CIPTA AKAUN",
+    "creating_account": "MENCIPTA AKAUN...",
+    "confirm_password": "Sahkan kata laluan",
+    "enter_valid_email": "Sila masukkan alamat e-mel yang sah.",
+    "password_too_short": "Kata laluan mesti sekurang-kurangnya 8 aksara.",
+    "passwords_no_match": "Kata laluan tidak sepadan.",
+    "account_created": "Akaun dicipta. Selamat datang!",
+    "or": "atau",
+    "signed_out": "Berjaya log keluar.",
+    "reset_password_title": "TETAPKAN SEMULA KATA LALUAN",
+    "reset_password_desc": "Masukkan e-mel anda dan kami akan hantar pautan tetapan semula",
+    "send_reset_link": "HANTAR PAUTAN TETAPAN SEMULA",
+    "sending": "MENGHANTAR...",
+    "enter_email": "Sila masukkan alamat e-mel anda.",
+    "reset_link_sent": "Semak e-mel anda. Kami telah menghantar pautan tetapan semula.",
+    "set_new_password_title": "TETAPKAN KATA LALUAN BAHARU",
+    "set_new_password_desc": "Pilih kata laluan baharu untuk akaun anda",
+    "new_password": "Kata laluan baharu",
+    "confirm_new_password": "Sahkan kata laluan baharu",
+    "saving": "MENYIMPAN...",
+    "update_password": "KEMAS KINI KATA LALUAN",
+    "enter_new_password": "Sila masukkan kata laluan baharu.",
+    "password_updated": "Kata laluan dikemas kini! Anda telah log masuk.",
+    "something_wrong": "Ada yang tidak kena. Sila cuba lagi."
+  },
+  "settings": {
+    "music": "MUZIK",
+    "track": "TREK",
+    "sound_effects": "KESAN BUNYI",
+    "vibration": "GETARAN",
+    "about": "TENTANG",
+    "language": "BAHASA"
+  },
+  "common": {
+    "cancel": "BATAL",
+    "confirm": "SAHKAN",
+    "save": "SIMPAN",
+    "edit": "EDIT",
+    "back": "BALIK",
+    "loading": "MEMUATKAN...",
+    "pts": "MATA"
+  },
+  "splash": {
+    "enter": "MASUK"
+  },
+  "header": {
+    "matchmaking": "CARI PERLAWANAN",
+    "private_room": "BILIK PERSENDIRIAN",
+    "quit": "BERHENTI",
+    "surrender": "MENYERAH",
+    "quit_confirm": "Berhenti kempen?",
+    "surrender_confirm": "Menyerah?"
+  },
+  "leaderboard": {
+    "title": "PAPAN KEDUDUKAN",
+    "view_all": "Lihat Semua",
+    "empty": "Belum ada kemenangan kempen.\nSelesaikan kempen untuk menduduki tempat teratas."
+  },
+  "account": {
+    "title": "AKAUN SAYA",
+    "auto_name_nudge": "Ini nama pejuang yang dijana secara automatik. Nak tetapkan nama sendiri?",
+    "campaign_section": "Kempen",
+    "clears": "Selesai",
+    "best_run": "Skor terbaik",
+    "fighters_unlocked": "Pejuang dibuka kunci",
+    "quick_match_section": "Perlawanan Pantas",
+    "record": "Rekod",
+    "win_rate": "Kadar menang",
+    "best_streak": "Untaian terbaik",
+    "matches_played": "Perlawanan dimainkan",
+    "practice_section": "Latihan",
+    "sign_out": "LOG KELUAR",
+    "sign_out_confirm": "LOG KELUAR?"
+  },
+  "about": {
+    "para1": "Sudoku Fighting adalah projek penuh semangat oleh pasangan pengembang ibu-bapa dan anak <strong>Leonard Downs Reese IV</strong> dan <strong>Kaius Lu Reese</strong>. Reka bentuk watak, pengarahan kreatif, dan sumbangan muzik oleh Kaius. Reka bentuk permainan, pengaturcaraan, dan muzik latar asal oleh Leonard.",
+    "para2": "Terima kasih istimewa kepada <strong>Tingting Lu</strong> atas kasih sayang dan sokongan anda, dan kerana bersabar dengan dua orang maniak obsesif di rumah anda. Kami sayang anda."
+  },
+  "credits": {
+    "created_by": "Dicipta Oleh",
+    "game_design": "Reka Bentuk Permainan dan Pengaturcaraan",
+    "char_design": "Reka Bentuk Watak, Pengarahan Kreatif, dan Sumbangan Muzik",
+    "ost_by": "Muzik latar asal dikomposkan oleh",
+    "all_music": "Semua muzik dicipta khas untuk Sudoku Fighting",
+    "special_thanks": "Terima Kasih Khas",
+    "name_tingting": "Tingting Lu",
+    "for_support": "Atas kasih sayang dan sokongan",
+    "tagline": "Dicipta untuk mengekalkan minda aktif kita.",
+    "name_kaius": "Kaius Lu Reese"
+  }
+}

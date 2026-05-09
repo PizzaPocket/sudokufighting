@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useGameStore } from '../../store/gameStore';
 
 const CLOUD_WIDTHS = [820, 586, 550, 496, 316, 356];
@@ -51,7 +51,7 @@ export default function Clouds({ containerRef }: Props) {
         `left:${x}px`,
         `top:${y}px`,
         'pointer-events:none',
-        'z-index:0',
+        'z-index:1',
       ].join(';');
       cont.insertBefore(el, cont.firstChild);
       clouds.push({ el, x, naturalWidth, speed });

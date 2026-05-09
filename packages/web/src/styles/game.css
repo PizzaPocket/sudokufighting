@@ -1048,6 +1048,26 @@
 }
 #screen-character-select.campaign-select .char-select-scroll { padding-top: 0; }
 
+/* =========================================================
+   Widescreen — scale up fighters
+   ========================================================= */
+
+@media (min-width: 1024px) {
+  #arena { grid-template-columns: 1fr 360px 1fr; }
+  .character-sprite { width: 200px; height: 200px; }
+  .mistake-effect   { width: 200px; height: 200px; }
+  .character-wrap:first-child { margin-right: -33px; }
+  .character-wrap:last-child  { margin-left:  -33px; }
+}
+
+@media (min-width: 1440px) {
+  #arena { grid-template-columns: 1fr 440px 1fr; }
+  .character-sprite { width: 240px; height: 240px; }
+  .mistake-effect   { width: 240px; height: 240px; }
+  .character-wrap:first-child { margin-right: -40px; }
+  .character-wrap:last-child  { margin-left:  -40px; }
+}
+
 @media (max-width: 500px) {
   #screen-character-select.campaign-select .char-select-scroll {
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));

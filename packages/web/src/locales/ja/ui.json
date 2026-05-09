@@ -1,0 +1,187 @@
+{
+  "start": {
+    "online_mode": "2人オンライン",
+    "enter_queue": "マッチングキューに参加",
+    "play_friend": "友達と対戦",
+    "quick_match": "クイックマッチ",
+    "create_room": "ルーム作成",
+    "room_code_placeholder": "ルームコード",
+    "join": "参加",
+    "single_player": "シングルプレイヤー",
+    "campaign": "キャンペーン",
+    "practice": "練習",
+    "tagline": "格闘ゲームと融合した競技数独",
+    "privacy_policy": "プライバシーポリシー",
+    "all_unlocked": "全ファイター解放",
+    "invalid_room_code": "有効なルームコードを入力してください。"
+  },
+  "char_select": {
+    "difficulty": "難易度",
+    "choose_fighter": "ファイターを選択",
+    "start": "スタート",
+    "easy": "かんたん",
+    "normal": "ふつう",
+    "extreme": "エクストリーム"
+  },
+  "lobby": {
+    "ready": "準備完了",
+    "waiting": "待機中...",
+    "invite_code": "招待コード",
+    "link_copied": "コピーしました！",
+    "invite": "招待",
+    "copy_link": "リンクをコピー",
+    "share": "シェア",
+    "share_game": "ゲームをシェア",
+    "link_copied_toast": "リンクをコピーしました！",
+    "arena": "アリーナ",
+    "waiting_for_opponent": "対戦相手を待っています…"
+  },
+  "sp_lobby": {
+    "difficulty": "難易度",
+    "start": "スタート！"
+  },
+  "campaign_lobby": {
+    "fight_label": "バトル {{number}} — {{arena}}",
+    "start": "スタート！"
+  },
+  "gameplay": {
+    "paused": "ポーズ",
+    "resume": "再開"
+  },
+  "dialogue": {
+    "next": "次へ ▶"
+  },
+  "overlay": {
+    "tie": "TIE",
+    "its_a_tie": "引き分け！",
+    "victory": "VICTORY!",
+    "devastation": "DEVASTATION!",
+    "flawless": "フローレス",
+    "wins": "{{name}} の勝利！",
+    "opponent_disconnected": "対戦相手が切断しました",
+    "continue": "続ける",
+    "play_again": "もう一度",
+    "rematch": "再戦",
+    "waiting": "待機中…",
+    "back_to_menu": "メニューに戻る",
+    "leave": "退出",
+    "opponent_left": "対戦相手が退出しました",
+    "opponent_wants_rematch": "対戦相手が再戦を希望しています",
+    "sign_in_cta": "サインイン / アカウント作成"
+  },
+  "campaign_victory": {
+    "complete": "キャンペーンクリア！",
+    "fighters_unlocked": "{{count}} 人の新ファイターが解放！",
+    "fighters_unlocked_other": "{{count}} 人の新ファイターが解放！",
+    "your_best_run": "ベストスコア",
+    "pts": "PTS",
+    "leaderboard_rank": "ランキング第 {{rank}} 位",
+    "continue": "続ける"
+  },
+  "campaign_gameover": {
+    "game_over": "ゲームオーバー",
+    "try_again": "もう一度",
+    "main_menu": "メインメニュー"
+  },
+  "auth": {
+    "sign_in_title": "サインイン",
+    "signing_in": "サインイン中...",
+    "save_progress": "進捗と実績を保存",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "forgot_password": "パスワードを忘れた場合",
+    "enter_email_password": "メールアドレスとパスワードを入力してください。",
+    "continue_google": "Googleで続ける",
+    "continue_apple": "Appleで続ける",
+    "create_account": "アカウント作成",
+    "create_account_title": "アカウント作成",
+    "creating_account": "作成中...",
+    "confirm_password": "パスワードの確認",
+    "enter_valid_email": "有効なメールアドレスを入力してください。",
+    "password_too_short": "パスワードは8文字以上にしてください。",
+    "passwords_no_match": "パスワードが一致しません。",
+    "account_created": "アカウントを作成しました。ようこそ！",
+    "or": "または",
+    "signed_out": "サインアウトしました。",
+    "reset_password_title": "パスワードリセット",
+    "reset_password_desc": "メールアドレスを入力してください。リセットリンクをお送りします",
+    "send_reset_link": "リセットリンクを送信",
+    "sending": "送信中...",
+    "enter_email": "メールアドレスを入力してください。",
+    "reset_link_sent": "メールをご確認ください。リセットリンクを送信しました。",
+    "set_new_password_title": "新しいパスワードを設定",
+    "set_new_password_desc": "アカウントの新しいパスワードを設定してください",
+    "new_password": "新しいパスワード",
+    "confirm_new_password": "新しいパスワードを確認",
+    "saving": "保存中...",
+    "update_password": "パスワードを更新",
+    "enter_new_password": "新しいパスワードを入力してください。",
+    "password_updated": "パスワードが更新されました。サインインしました。",
+    "something_wrong": "エラーが発生しました。もう一度お試しください。"
+  },
+  "settings": {
+    "music": "音楽",
+    "track": "トラック",
+    "sound_effects": "効果音",
+    "vibration": "振動",
+    "about": "概要",
+    "language": "言語"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "save": "保存",
+    "edit": "編集",
+    "back": "戻る",
+    "loading": "読み込み中...",
+    "pts": "PTS"
+  },
+  "splash": {
+    "enter": "スタート"
+  },
+  "header": {
+    "matchmaking": "マッチング",
+    "private_room": "プライベートルーム",
+    "quit": "やめる",
+    "surrender": "降参",
+    "quit_confirm": "キャンペーンをやめますか？",
+    "surrender_confirm": "降参しますか？"
+  },
+  "leaderboard": {
+    "title": "リーダーボード",
+    "view_all": "すべて見る",
+    "empty": "キャンペーンクリアがまだありません。\nクリアしてトップを目指しましょう！"
+  },
+  "account": {
+    "title": "マイアカウント",
+    "auto_name_nudge": "これは自動生成されたファイター名です。自分で設定しますか？",
+    "campaign_section": "キャンペーン",
+    "clears": "クリア数",
+    "best_run": "ベストスコア",
+    "fighters_unlocked": "解放ファイター数",
+    "quick_match_section": "クイックマッチ",
+    "record": "戦績",
+    "win_rate": "勝率",
+    "best_streak": "最高連勝",
+    "matches_played": "対戦回数",
+    "practice_section": "練習",
+    "sign_out": "サインアウト",
+    "sign_out_confirm": "サインアウトしますか？"
+  },
+  "about": {
+    "para1": "「数独ファイティング」は、親子開発者デュオ <strong>Leonard Downs Reese IV</strong> と <strong>吕恺</strong> によるパッションプロジェクトです。キャラクターデザイン・クリエイティブディレクション・音楽は吕恺、ゲームデザイン・プログラミング・オリジナルサウンドトラックは Leonard が担当。",
+    "para2": "<strong>吕婷婷</strong>、あなたの愛とサポート、そして二人の熱狂的なマニアを家で支えてくれることへの感謝を込めて。大好きだよ。"
+  },
+  "credits": {
+    "created_by": "制作",
+    "game_design": "ゲームデザイン・プログラミング",
+    "char_design": "キャラクターデザイン・クリエイティブ・音楽",
+    "ost_by": "オリジナルサウンドトラック制作",
+    "all_music": "全楽曲は数独ファイティングのために制作",
+    "special_thanks": "スペシャルサンクス",
+    "name_tingting": "吕婷婷",
+    "for_support": "愛とサポートに感謝",
+    "tagline": "活発な心を保つために作られました。",
+    "name_kaius": "吕恺"
+  }
+}

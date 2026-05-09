@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { getArena } from '@sudoku-fighting/shared';
 import { useVsAI } from '../ai/useVsAI';
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function GameplayScreen({ active }: Props) {
+  const { t } = useTranslation('ui');
   const mySeat = useGameStore(s => s.mySeat);
   const backgroundId = useGameStore(s => s.backgroundId);
   const gameMode = useGameStore(s => s.gameMode);
@@ -87,8 +89,8 @@ export default function GameplayScreen({ active }: Props) {
       {isPaused && (gameMode === 'practice' || gameMode === 'campaign') && (
         <div className="pause-overlay">
           <div className="pause-dialog">
-            <span className="dialog-title">PAUSED</span>
-            <button className="btn" onClick={() => setIsPaused(false)}>RESUME</button>
+            <span className="dialog-title">{t('gameplay.paused')}</span>
+            <button className="btn" onClick={() => setIsPaused(false)}>{t('gameplay.resume')}</button>
           </div>
         </div>
       )}

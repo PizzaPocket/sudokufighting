@@ -119,3 +119,25 @@
   margin: 0;
   padding: 2px;
 }
+
+/* Language selector — dropdown */
+.lang-select {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--surface-frosted);
+  background: rgba(255,255,255,0.08);
+  color: var(--canvas-text);
+  cursor: pointer;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.lang-select option {
+  background: #141414;
+  color: #fff;
+}

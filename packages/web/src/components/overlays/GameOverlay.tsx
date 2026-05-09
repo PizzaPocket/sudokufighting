@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import ScoreReveal from './ScoreReveal';
 import { send } from '../../hooks/useGameSocket';
@@ -29,6 +30,7 @@ function charName(charId: string | null, characters: Array<{ id: string; name: s
 }
 
 export default function GameOverlay() {
+  const { t } = useTranslation('ui');
   const preRoundSignal = useGameStore(s => s.preRoundSignal);
   const roundOver = useGameStore(s => s.roundOver);
   const matchOver = useGameStore(s => s.matchOver);
@@ -149,13 +151,14 @@ export default function GameOverlay() {
       const winner = st.roundWinnerSeat ?? -1;
 
       if (winner === -1) {
-        showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
+        showOverlay({ main: t('overlay.tie'), sub: t('overlay.its_a_tie'), mainColor: '#8B49FF', nonce: Date.now() });
       } else {
         const isTrueKO = st.health[(1 - winner) as 0|1] <= 0;
         const winnerCharId = winner === st.mySeat ? st.myCharacter : st.opponentCharacter;
         const wName = charName(winnerCharId, st.characters) ?? (winner === st.mySeat ? st.myName : st.opponentName) ?? 'Player';
+        const wLocalName = winnerCharId ? t('characters:' + winnerCharId, { defaultValue: wName }) : wName;
         if (isTrueKO) playKOAnnouncer(); else playTKOAnnouncer();
-        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: wName + ' WINS!', mainColor: '#F00013', nonce: Date.now() });
+        showOverlay({ main: isTrueKO ? 'KO' : 'TKO', sub: t('overlay.wins', { name: wLocalName }), mainColor: '#F00013', nonce: Date.now() });
       }
 
       addTimer(() => {
@@ -206,26 +209,27 @@ export default function GameOverlay() {
       }
 
       if (isTie) {
-        showOverlay({ main: 'TIE', sub: "IT'S A TIE", mainColor: '#8B49FF', nonce: Date.now() });
+        showOverlay({ main: t('overlay.tie'), sub: t('overlay.its_a_tie'), mainColor: '#8B49FF', nonce: Date.now() });
         setShowButtons(true);
         return;
       }
 
       const winnerCharId = matchWinnerSeat === st.mySeat ? st.myCharacter : st.opponentCharacter;
       const winnerName = charName(winnerCharId, st.characters) ?? st.matchWinnerName ?? 'Unknown';
+      const winnerLocalName = winnerCharId ? t('characters:' + winnerCharId, { defaultValue: winnerName }) : winnerName;
       const winnerDisplayName = opponentDisconnected
-        ? 'OPPONENT DISCONNECTED'
-        : winnerName + ' WINS!';
+        ? t('overlay.opponent_disconnected')
+        : t('overlay.wins', { name: winnerLocalName });
 
       if (isWinner) {
         playVictoryAnnouncer();
         const flawless = useGameStore.getState().isFlawlessVictory;
         const isCampaignFinal = st.gameMode === 'campaign' && isFinalCampaignFight;
         showOverlay({
-          main: 'VICTORY!',
+          main: t('overlay.victory'),
           // Campaign final: sub stays empty — overlay exits into credits cinematic
           // and any lingering text would float over the credits scroll.
-          sub: isCampaignFinal ? '' : (flawless ? 'Flawless Victory' : winnerDisplayName),
+          sub: isCampaignFinal ? '' : winnerDisplayName,
           mainColor: '#FF8B16',
           mainShadow: '4px 5px 0 #8B49FF',
           subColor: flawless ? '#FFD700' : '#FFCA00',
@@ -235,7 +239,7 @@ export default function GameOverlay() {
       } else {
         if (!opponentDisconnected) playDevastationAnnouncer();
         showOverlay({
-          main: 'DEVASTATION!',
+          main: t('overlay.devastation'),
           sub: winnerDisplayName,
           mainColor: '#F00013',
           mainShadow: '4px 5px 0 #FF8B16',
@@ -282,7 +286,7 @@ export default function GameOverlay() {
           className={`overlay-sub${scoreGlowing ? ' overlay-sub--glow' : ''}`}
           style={{ color: '#FFD700', whiteSpace: 'nowrap' }}
         >
-          {isFlawlessVictory && 'Flawless: '}
+          {isFlawlessVictory && (t('overlay.flawless') + ': ')}
           <ScoreReveal
             rawScore={rawMatchScore}
             finalScore={finalMatchScore}
@@ -298,10 +302,10 @@ export default function GameOverlay() {
       {showButtons && (
         <div className="overlay-btn-row">
           {(gameMode === 'quick' || gameMode === 'friend') && rematchCancelled && !opponentDisconnected && (
-            <div className="overlay-status">Opponent left</div>
+            <div className="overlay-status">{t('overlay.opponent_left')}</div>
           )}
           {(gameMode === 'quick' || gameMode === 'friend') && rematchOffered && !rematchPending && !rematchCancelled && (
-            <div className="overlay-status">Opponent wants a rematch</div>
+            <div className="overlay-status">{t('overlay.opponent_wants_rematch')}</div>
           )}
           {gameMode === 'campaign' && !matchEndWasFinalFight.current && (
             <button
@@ -315,7 +319,7 @@ export default function GameOverlay() {
                 }, 600);
               }}
             >
-              CONTINUE
+              {t('overlay.continue')}
             </button>
           )}
           {gameMode === 'practice' && (
@@ -328,7 +332,7 @@ export default function GameOverlay() {
                 setHidden(true);
               }}
             >
-              PLAY AGAIN
+              {t('overlay.play_again')}
             </button>
           )}
           {(gameMode === 'quick' || gameMode === 'friend') && !opponentDisconnected && !rematchCancelled && (
@@ -340,7 +344,7 @@ export default function GameOverlay() {
                 send('rematch_vote', {});
               }}
             >
-              {rematchPending ? 'WAITING…' : 'REMATCH'}
+              {rematchPending ? t('overlay.waiting') : t('overlay.rematch')}
             </button>
           )}
           {gameMode !== 'campaign' && (
@@ -359,12 +363,12 @@ export default function GameOverlay() {
                 resetAll();
               }}
             >
-              {gameMode === 'practice' ? 'LEAVE' : 'BACK TO MENU'}
+              {gameMode === 'practice' ? t('overlay.leave') : t('overlay.back_to_menu')}
             </button>
           )}
           {!user && (
             <button className="btn btn-alt" onClick={openSignIn}>
-              SIGN IN / CREATE ACCOUNT
+              {t('overlay.sign_in_cta')}
             </button>
           )}
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/gameStore';
 import { useAuthStore } from '../auth/authStore';
 import {
@@ -9,6 +10,7 @@ import {
 const ROWS = 5;
 
 export default function LeaderboardCard() {
+  const { t } = useTranslation('ui');
   const setScoreboardOpen = useGameStore(s => s.setScoreboardOpen);
   const currentScreen = useGameStore(s => s.currentScreen);
   const profile = useAuthStore(s => s.profile);
@@ -31,7 +33,7 @@ export default function LeaderboardCard() {
 
   return (
     <div className="surface-card leaderboard-card">
-      <div className="surface-card-title">Leaderboard</div>
+      <div className="surface-card-title">{t('leaderboard.title')}</div>
 
       <div className="scoreboard-list">
         {rows.map((row, i) => {
@@ -48,13 +50,8 @@ export default function LeaderboardCard() {
               ) : (
                 <>
                   <span className="scoreboard-username">{row.username}</span>
-                  <span className="scoreboard-meta">
-                    <span className={`difficulty-badge ${row.difficulty}`}>
-                      {row.difficulty}
-                    </span>
-                    <span className="scoreboard-score">
-                      {row.adjusted_score.toLocaleString()}
-                    </span>
+                  <span className="scoreboard-score">
+                    {row.adjusted_score.toLocaleString()}
                   </span>
                 </>
               )}
@@ -64,7 +61,7 @@ export default function LeaderboardCard() {
       </div>
 
       <button className="leaderboard-card-footer" onClick={() => setScoreboardOpen(true)}>
-        <span className="auth-link">View All</span>
+        <span className="auth-link">{t('leaderboard.view_all')}</span>
       </button>
     </div>
   );

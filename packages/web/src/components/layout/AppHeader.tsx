@@ -1,29 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/gameStore';
 import { disconnect, send } from '../../hooks/useGameSocket';
 import { stopVsAI } from '../../ai/useVsAI';
 import { useAuthStore } from '../../auth/authStore';
 
-function screenTitle(screen: string, gameMode: string | null): string | null {
-  switch (screen) {
-    case 'character-select':
-      if (gameMode === 'quick')    return 'MATCHMAKING';
-      if (gameMode === 'friend')   return 'PRIVATE ROOM';
-      if (gameMode === 'practice') return 'PRACTICE';
-      if (gameMode === 'campaign') return 'CAMPAIGN';
-      return null;
-    case 'lobby':
-      return gameMode === 'friend' ? 'PRIVATE ROOM' : 'MATCHMAKING';
-    case 'practice-lobby':
-      return 'PRACTICE';
-    case 'campaign-lobby':
-      return 'CAMPAIGN';
-    default:
-      return null;
-  }
-}
-
 export default function AppHeader() {
+  const { t } = useTranslation('ui');
   const currentScreen = useGameStore(s => s.currentScreen);
   const prevScreen = useGameStore(s => s.prevScreen);
   const gameMode = useGameStore(s => s.gameMode);
@@ -43,7 +26,28 @@ export default function AppHeader() {
   const isGameplay = currentScreen === 'gameplay';
   const isAiMode = gameMode === 'practice' || gameMode === 'campaign';
   const showBack = ['character-select', 'lobby', 'practice-lobby', 'campaign-lobby', 'privacy'].includes(currentScreen);
-  const title = screenTitle(currentScreen, gameMode);
+
+  const title = useMemo(() => {
+    switch (currentScreen) {
+      case 'character-select':
+        if (gameMode === 'quick')    return t('header.matchmaking');
+        if (gameMode === 'friend')   return t('header.private_room');
+        if (gameMode === 'practice') return t('start.practice');
+        if (gameMode === 'campaign') return t('start.campaign');
+        return null;
+      case 'lobby':
+        return gameMode === 'friend' ? t('header.private_room') : t('header.matchmaking');
+      case 'practice-lobby':
+        return t('start.practice');
+      case 'campaign-lobby':
+        return t('start.campaign');
+      default:
+        return null;
+    }
+  }, [currentScreen, gameMode, t]);
+
+  const surrenderLabel = gameMode === 'campaign' ? t('header.quit') : t('header.surrender');
+  const confirmTitle   = gameMode === 'campaign' ? t('header.quit_confirm') : t('header.surrender_confirm');
 
   function handleBack() {
     if (currentScreen === 'character-select') {
@@ -72,9 +76,6 @@ export default function AppHeader() {
     }
   }
 
-  const surrenderLabel = gameMode === 'campaign' ? 'QUIT' : 'SURRENDER';
-  const confirmTitle = gameMode === 'campaign' ? 'Quit campaign?' : 'Surrender?';
-
   return (
     <>
       <header className="app-header">
@@ -82,7 +83,7 @@ export default function AppHeader() {
           {showBack && (
             <button className="btn-utility header-back-btn" onClick={handleBack} aria-label="Back">
               <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="" />
-              BACK
+              {t('common.back')}
             </button>
           )}
         </div>
@@ -133,7 +134,7 @@ export default function AppHeader() {
                 onClick={openSignIn}
                 aria-label="Sign in"
               >
-                SIGN IN
+                {t('auth.sign_in_title')}
               </button>
             )
           )}
@@ -153,10 +154,10 @@ export default function AppHeader() {
             <span className="dialog-title">{confirmTitle}</span>
             <div className="confirm-dialog-btns">
               <button className="btn btn-secondary" onClick={() => setConfirmOpen(false)}>
-                CANCEL
+                {t('common.cancel')}
               </button>
               <button className="btn" onClick={executeSurrender}>
-                CONFIRM
+                {t('common.confirm')}
               </button>
             </div>
           </div>

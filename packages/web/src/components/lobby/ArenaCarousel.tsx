@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ARENAS } from '@sudoku-fighting/shared';
 import { send } from '../../hooks/useGameSocket';
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function ArenaCarousel({ arenaIndex, onIndexChange, sendToServer, disabled }: Props) {
+  const { t } = useTranslation('ui');
   const arena = ARENAS[arenaIndex % ARENAS.length];
 
   function prev() {
@@ -27,7 +29,7 @@ export default function ArenaCarousel({ arenaIndex, onIndexChange, sendToServer,
 
   return (
     <div className="lobby-arena-picker">
-      <span className="settings-label" style={{ color: '#ffffff' }}>ARENA</span>
+      <span className="settings-label" style={{ color: '#ffffff' }}>{t('lobby.arena')}</span>
       <div className="track-carousel">
         <button className="btn-utility carousel-btn" onClick={prev} disabled={disabled}>
           <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="Previous" />

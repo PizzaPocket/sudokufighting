@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   rawScore: number;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function ScoreReveal({ rawScore, finalScore, isFlawless, onGlow }: Props) {
+  const { t } = useTranslation('ui');
   const [displayed, setDisplayed] = useState(rawScore);
   const rafRef = useRef<number | null>(null);
   const firedRef = useRef(false);
@@ -64,5 +66,5 @@ export default function ScoreReveal({ rawScore, finalScore, isFlawless, onGlow }
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <span>{displayed.toLocaleString()} PTS</span>;
+  return <span>{displayed.toLocaleString()} {t('common.pts')}</span>;
 }
