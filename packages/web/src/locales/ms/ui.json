@@ -34,7 +34,9 @@
     "share_game": "KONGSI PERMAINAN",
     "link_copied_toast": "Pautan disalin!",
     "arena": "ARENA",
-    "waiting_for_opponent": "Menunggu lawan…"
+    "waiting_for_opponent": "Menunggu lawan…",
+    "share_quick_text": "Main Sudoku Fighting — pertarungan teka-teki masa nyata:",
+    "share_invite_text": "Lawan aku dalam Sudoku Fighting! Sertai bilik aku:"
   },
   "sp_lobby": {
     "difficulty": "KESUKARAN",
@@ -183,5 +185,12 @@
     "for_support": "Atas kasih sayang dan sokongan",
     "tagline": "Dicipta untuk mengekalkan minda aktif kita.",
     "name_kaius": "Kaius Lu Reese"
+  },
+  "arenas": {
+    "bg_1": "Tropika Pantai",
+    "bg_2": "Paradiso",
+    "bg_3": "Kota Langit",
+    "bg_4": "Lorong Shinobi",
+    "bg_5": "Pertarungan Utama"
   }
 }

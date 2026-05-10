@@ -34,7 +34,9 @@
     "share_game": "SHARE GAME",
     "link_copied_toast": "Link copied!",
     "arena": "ARENA",
-    "waiting_for_opponent": "Waiting for opponent…"
+    "waiting_for_opponent": "Waiting for opponent…",
+    "share_quick_text": "Play Sudoku Fighting — real-time competitive puzzle battles:",
+    "share_invite_text": "Come fight me in Sudoku Fighting! Join my room:"
   },
   "sp_lobby": {
     "difficulty": "DIFFICULTY",
@@ -183,5 +185,12 @@
     "for_support": "For your love and support",
     "tagline": "Created to keep our active minds sharp.",
     "name_kaius": "Kaius Lu Reese"
+  },
+  "arenas": {
+    "bg_1": "El Tropical",
+    "bg_2": "Paradiso",
+    "bg_3": "Sky City",
+    "bg_4": "Shinobi Alley",
+    "bg_5": "The Big Time"
   }
 }

@@ -7,7 +7,7 @@ import { setHapticsEnabled } from '../../audio/haptics';
 import { setLocale, SUPPORTED_LOCALES, type SupportedLocale } from '../../i18n';
 
 const LOCALE_LABELS: Record<SupportedLocale, string> = {
-  en: 'EN',
+  en: 'English',
   'zh-CN': '中文',
   ja: '日本語',
   ta: 'தமிழ்',

@@ -34,7 +34,9 @@
     "share_game": "分享游戏",
     "link_copied_toast": "链接已复制！",
     "arena": "竞技场",
-    "waiting_for_opponent": "等待对手…"
+    "waiting_for_opponent": "等待对手…",
+    "share_quick_text": "来玩数独格斗 — 实时竞技解谜游戏:",
+    "share_invite_text": "来数独格斗和我对战！加入我的房间:"
   },
   "sp_lobby": {
     "difficulty": "难度",
@@ -57,7 +59,7 @@
     "victory": "VICTORY!",
     "devastation": "DEVASTATION!",
     "flawless": "完美",
-    "wins": "{{name}} 获胜！",
+    "wins": "{{name}}获胜！",
     "opponent_disconnected": "对手已断线",
     "continue": "继续",
     "play_again": "再来一局",
@@ -183,5 +185,12 @@
     "for_support": "感谢你的爱与支持",
     "tagline": "为保持思维活跃而生。",
     "name_kaius": "吕恺"
+  },
+  "arenas": {
+    "bg_1": "热带海滩",
+    "bg_2": "帕拉迪索",
+    "bg_3": "天空之城",
+    "bg_4": "忍者巷",
+    "bg_5": "巅峰对决"
   }
 }

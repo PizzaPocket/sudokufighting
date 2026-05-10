@@ -961,7 +961,7 @@
   background: var(--purple-dark); pointer-events: all;
 }
 .unlock-header {
-  font-family: var(--font-display); font-size: var(--text-3xl);
+  font-family: var(--font-display); font-size: var(--text-2xl);
   color: #fff; text-shadow: 3px 4px 0 var(--purple-deep);
   letter-spacing: 0.08em; text-align: center;
   animation: slam-from-top 0.55s cubic-bezier(0.22,1,0.36,1) both;

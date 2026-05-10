@@ -130,3 +130,11 @@
      them via getComputedStyle — env() is not directly accessible from JS. */
   --sab: env(safe-area-inset-bottom, 0px);
 }
+
+/* ── Locale-specific display font overrides ──────────────────────────
+   html[lang] is set by setLocale() / i18n init for the live app.
+   [data-lang] allows the style guide to demo each locale in isolation. */
+html[lang="zh-CN"], [data-lang="zh-CN"] { --font-display: 'Noto Sans SC', sans-serif; }
+html[lang="ja"],    [data-lang="ja"]    { --font-display: 'Noto Sans JP', sans-serif; }
+html[lang="ko"],    [data-lang="ko"]    { --font-display: 'Noto Sans KR', sans-serif; }
+html[lang="ta"],    [data-lang="ta"]    { --font-display: 'Noto Sans Tamil', sans-serif; }

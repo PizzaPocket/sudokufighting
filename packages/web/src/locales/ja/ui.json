@@ -34,7 +34,9 @@
     "share_game": "ゲームをシェア",
     "link_copied_toast": "リンクをコピーしました！",
     "arena": "アリーナ",
-    "waiting_for_opponent": "対戦相手を待っています…"
+    "waiting_for_opponent": "対戦相手を待っています…",
+    "share_quick_text": "数独ファイティングで遊ぼう — リアルタイム対戦パズルゲーム:",
+    "share_invite_text": "数独ファイティングで対戦しよう！ルームに参加して:"
   },
   "sp_lobby": {
     "difficulty": "難易度",
@@ -57,7 +59,7 @@
     "victory": "VICTORY!",
     "devastation": "DEVASTATION!",
     "flawless": "フローレス",
-    "wins": "{{name}} の勝利！",
+    "wins": "{{name}}の勝利！",
     "opponent_disconnected": "対戦相手が切断しました",
     "continue": "続ける",
     "play_again": "もう一度",
@@ -183,5 +185,12 @@
     "for_support": "愛とサポートに感謝",
     "tagline": "活発な心を保つために作られました。",
     "name_kaius": "吕恺"
+  },
+  "arenas": {
+    "bg_1": "トロピカルビーチ",
+    "bg_2": "パラディーゾ",
+    "bg_3": "スカイシティ",
+    "bg_4": "忍び横丁",
+    "bg_5": "ビッグタイム"
   }
 }

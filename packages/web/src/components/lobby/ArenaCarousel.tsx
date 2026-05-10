@@ -34,7 +34,7 @@ export default function ArenaCarousel({ arenaIndex, onIndexChange, sendToServer,
         <button className="btn-utility carousel-btn" onClick={prev} disabled={disabled}>
           <img src="/assets/ui/chevron-left.svg" className="header-icon-img" alt="Previous" />
         </button>
-        <span className="track-title">{arena.name}</span>
+        <span className="track-title">{t('arenas.' + arena.id)}</span>
         <button className="btn-utility carousel-btn" onClick={next} disabled={disabled}>
           <img src="/assets/ui/chevron-right.svg" className="header-icon-img" alt="Next" />
         </button>

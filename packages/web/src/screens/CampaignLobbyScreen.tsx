@@ -67,7 +67,7 @@ export default function CampaignLobbyScreen({ active }: Props) {
       </div>
 
       <div className="campaign-fight-label">
-        {t('campaign_lobby.fight_label', { number: campaignFightIndex + 1, arena: arena?.name?.toUpperCase() ?? '' })}
+        {t('campaign_lobby.fight_label', { number: campaignFightIndex + 1, arena: arena ? t('arenas.' + arena.id).toUpperCase() : '' })}
       </div>
 
       <button className="btn btn-alt" onClick={handleStart}>

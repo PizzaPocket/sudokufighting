@@ -123,7 +123,7 @@ export default function LobbyScreen({ active }: Props) {
     const url = `${origin}?room=${shareCode}`;
     if (canNativeShare) {
       try {
-        await navigator.share({ title: 'Sudoku Fighting', text: 'Come fight me in Sudoku Fighting! Join my room:', url });
+        await navigator.share({ title: 'Sudoku Fighting', text: t('lobby.share_invite_text'), url });
       } catch { /* cancelled */ }
     } else {
       navigator.clipboard.writeText(url).catch(() => {});
@@ -136,7 +136,7 @@ export default function LobbyScreen({ active }: Props) {
     const url = Capacitor.isNativePlatform() ? 'https://sudokufighting.com' : window.location.origin;
     if (canNativeShare) {
       try {
-        await navigator.share({ title: 'Sudoku Fighting', text: 'Play Sudoku Fighting — real-time competitive puzzle battles. Challenge a friend:', url });
+        await navigator.share({ title: 'Sudoku Fighting', text: t('lobby.share_quick_text'), url });
       } catch { /* cancelled */ }
     } else {
       navigator.clipboard.writeText(url).catch(() => {});

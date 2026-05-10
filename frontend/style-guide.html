@@ -6,7 +6,7 @@
   <title>Sudoku Fighting — Style Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@900&family=Noto+Sans+SC:wght@900&family=Noto+Sans+JP:wght@900&family=Noto+Sans+KR:wght@900&family=Noto+Sans+Tamil:wght@900&display=swap" rel="stylesheet" />
   <!-- Tokens imported from the canonical source — packages/web/src/styles/tokens.css,
        symlinked to frontend/css/tokens.css so this file never drifts from the app. -->
   <link rel="stylesheet" href="/css/tokens.css" />
@@ -179,6 +179,14 @@
       margin-bottom: 2px;
     }
     .sg-type-specimen { flex: 1; overflow: hidden; }
+    .sg-display-specimen {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: var(--weight-black);
+      line-height: 1.2;
+      color: var(--accent);
+      text-shadow: 3px 3px 0 #ffffff;
+    }
 
     /* ── Button specimens ────────────────────────────────────────────── */
     .btn {
@@ -2609,6 +2617,39 @@
         <strong>Portrait:</strong> 120×120px, radius-md, pixelated rendering<br>
         <strong>Actions:</strong> PLAY AGAIN (<code>.btn</code>) + LEAVE (<code>.btn.btn-danger</code>)
       </div>
+    </div>
+  </section>
+
+  <section class="sg-section">
+    <h2 class="sg-section-title">Typography</h2>
+
+    <p class="sg-note" style="margin-bottom: 24px;">
+      Heading display font — <code>--font-display</code> — switches automatically based on locale.
+      Latin locales (English, Español, Melayu) use <strong>Barlow Condensed 900</strong>.
+      Non-Latin locales use the matching <strong>Noto Sans</strong> variant.
+      The <code>data-lang</code> attribute on each row below triggers the same CSS token override
+      used by the live app via <code>html[lang]</code>.
+    </p>
+
+    <div class="sg-type-row">
+      <div class="sg-type-meta"><strong>English / Español / Melayu</strong>Barlow Condensed 900</div>
+      <div class="sg-type-specimen sg-display-specimen">VICTORY! ROUND 1</div>
+    </div>
+    <div class="sg-type-row" data-lang="zh-CN">
+      <div class="sg-type-meta"><strong>中文</strong>Noto Sans SC 900</div>
+      <div class="sg-type-specimen sg-display-specimen">胜利！第一回合</div>
+    </div>
+    <div class="sg-type-row" data-lang="ja">
+      <div class="sg-type-meta"><strong>日本語</strong>Noto Sans JP 900</div>
+      <div class="sg-type-specimen sg-display-specimen">勝利！ラウンド1</div>
+    </div>
+    <div class="sg-type-row" data-lang="ko">
+      <div class="sg-type-meta"><strong>한국어</strong>Noto Sans KR 900</div>
+      <div class="sg-type-specimen sg-display-specimen">승리! 참패! 1라운드</div>
+    </div>
+    <div class="sg-type-row" data-lang="ta">
+      <div class="sg-type-meta"><strong>தமிழ்</strong>Noto Sans Tamil 900</div>
+      <div class="sg-type-specimen sg-display-specimen">வெற்றி! சுற்று 1</div>
     </div>
   </section>
 

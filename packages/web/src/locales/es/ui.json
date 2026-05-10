@@ -34,7 +34,9 @@
     "share_game": "COMPARTIR JUEGO",
     "link_copied_toast": "¡Enlace copiado!",
     "arena": "ARENA",
-    "waiting_for_opponent": "Esperando al oponente…"
+    "waiting_for_opponent": "Esperando al oponente…",
+    "share_quick_text": "¡Juega Sudoku Fighting — batallas de puzles en tiempo real:",
+    "share_invite_text": "¡Pelea conmigo en Sudoku Fighting! Únete a mi sala:"
   },
   "sp_lobby": {
     "difficulty": "DIFICULTAD",
@@ -183,5 +185,12 @@
     "for_support": "Por tu amor y apoyo",
     "tagline": "Creado para mantener nuestras mentes activas agudas.",
     "name_kaius": "Kaius Lu Reese"
+  },
+  "arenas": {
+    "bg_1": "El Tropical",
+    "bg_2": "Paradiso",
+    "bg_3": "Ciudad Celeste",
+    "bg_4": "Callejón Shinobi",
+    "bg_5": "El Gran Combate"
   }
 }

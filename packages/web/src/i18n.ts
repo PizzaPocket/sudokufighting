@@ -49,10 +49,31 @@ function getInitialLocale(): SupportedLocale {
   }
 }
 
+const initialLocale = getInitialLocale();
+document.documentElement.lang = initialLocale;
+
+// Strip spaces adjacent to Han/Hiragana/Katakana characters (U+3040–U+9FFF,
+// U+F900–U+FAFF). These scripts don't use spaces between words, so spaces
+// around interpolated values (names, numbers) create wrong visual gaps —
+// especially with monospaced fonts. Korean Hangul and Tamil are excluded;
+// they do use spaces like Latin scripts.
+const cjkSpaceStripProcessor = {
+  type: 'postProcessor' as const,
+  name: 'cjkSpaceStrip',
+  process(value: string): string {
+    return value
+      .replace(/([぀-鿿豈-﫿]) ([぀-鿿豈-﫿])/g, '$1$2')
+      .replace(/([぀-鿿豈-﫿]) ([a-zA-Z0-9])/g, '$1$2')
+      .replace(/([a-zA-Z0-9]) ([぀-鿿豈-﫿])/g, '$1$2');
+  },
+};
+
 i18next
+  .use(cjkSpaceStripProcessor)
   .use(initReactI18next)
   .init({
-    lng: getInitialLocale(),
+    postProcess: ['cjkSpaceStrip'],
+    lng: initialLocale,
     fallbackLng: 'en',
     ns: ['ui', 'dialogue', 'characters'],
     defaultNS: 'ui',
@@ -70,6 +91,7 @@ i18next
 
 export function setLocale(locale: SupportedLocale): void {
   i18next.changeLanguage(locale);
+  document.documentElement.lang = locale;
   try { localStorage.setItem('language', locale); } catch { /* ignore */ }
 }
 
