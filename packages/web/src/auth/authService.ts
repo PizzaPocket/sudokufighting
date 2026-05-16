@@ -258,6 +258,34 @@ export async function signOut(): Promise<void> {
   await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
 }
 
+export async function deleteAccount(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return 'Session expired — please sign in again.';
+
+    const base = (import.meta.env.VITE_BACKEND_URL as string | undefined) ?? '';
+    const res = await fetch(`${base}/account`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as Record<string, string>;
+      return body.error || 'Failed to delete account — please try again.';
+    }
+
+    const store = useAuthStore.getState();
+    store.setUser(null);
+    store.setProfile(null);
+    store.closeAll();
+    await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+    return null;
+  } catch (e) {
+    console.error('[deleteAccount] threw:', e);
+    return 'Something went wrong — please try again.';
+  }
+}
+
 // ── Username management ───────────────────────────────────────────────────────
 
 export async function checkUsernameAvailable(username: string): Promise<boolean> {

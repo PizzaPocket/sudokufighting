@@ -168,7 +168,15 @@
     "matches_played": "对战场数",
     "practice_section": "练习",
     "sign_out": "退出登录",
-    "sign_out_confirm": "确认退出？"
+    "sign_out_confirm": "确认退出？",
+    "delete_section": "删除账户",
+    "delete_desc": "永久删除您的账户",
+    "delete_account": "删除账户",
+    "delete_confirm_title": "确认删除账户？",
+    "delete_confirm_body": "您的所有数据将被永久删除，无法恢复。",
+    "delete_confirm_cta": "删除",
+    "delete_account_toast": "账户已删除",
+    "delete_confirm_error": "无法删除账户 — 请重试。"
   },
   "about": {
     "para1": "《数独格斗》是由亲子开发者组合 <strong>Leonard Downs Reese IV</strong> 与 <strong>吕恺</strong> 共同打造的兴趣项目。角色设计、创意方向及音乐贡献由吕恺负责；游戏设计、编程及原声音乐由 Leonard 负责。",

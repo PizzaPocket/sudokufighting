@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../auth/authStore';
 import { useGameStore } from '../../store/gameStore';
-import { signOut, updateUsername } from '../../auth/authService';
+import { signOut, updateUsername, deleteAccount } from '../../auth/authService';
 import { loadMyStats, type MyStats } from '../../stats/statsService';
 import { BASE_UNLOCKED } from '../../progression/progressionService';
 import { useModalAnimation } from '../../hooks/useModalAnimation';
@@ -25,10 +25,18 @@ export default function AccountScreen() {
   const { rendered, closing } = useModalAnimation(accountOpen);
 
   const [confirmSignOut, setConfirmSignOut] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
-  // Reset confirm dialog whenever the modal closes so re-opening starts clean.
+  // Reset confirm dialogs whenever the modal closes so re-opening starts clean.
   useEffect(() => {
-    if (!accountOpen) setConfirmSignOut(false);
+    if (!accountOpen) {
+      setConfirmSignOut(false);
+      setConfirmDelete(false);
+      setDeleting(false);
+      setDeleteError('');
+    }
   }, [accountOpen]);
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState('');
@@ -76,6 +84,18 @@ export default function AccountScreen() {
     setConfirmSignOut(false);
     showToast(t('auth.signed_out'));
     await signOut();
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    setDeleteError('');
+    const err = await deleteAccount();
+    if (err) {
+      setDeleting(false);
+      setDeleteError(err);
+    } else {
+      showToast(t('account.delete_account_toast'));
+    }
   }
 
   // Detect auto-generated username pattern: AdjectiveNoun#N
@@ -212,6 +232,14 @@ export default function AccountScreen() {
 
           <div className="account-divider" />
 
+          <span className="account-section-label">{t('account.delete_section')}</span>
+          <p className="account-delete-desc">{t('account.delete_desc')}</p>
+          <button className="btn btn-danger btn-sm" onClick={() => setConfirmDelete(true)}>
+            {t('account.delete_account')}
+          </button>
+
+          <div className="account-divider" />
+
           <button className="auth-signout-link" onClick={() => setConfirmSignOut(true)}>
             {t('account.sign_out')}
           </button>
@@ -229,6 +257,25 @@ export default function AccountScreen() {
               </button>
               <button className="btn" onClick={handleSignOut}>
                 {t('account.sign_out')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className="confirm-overlay" onPointerDown={e => e.stopPropagation()}>
+          <div className="confirm-dialog">
+            <span className="dialog-title">{t('account.delete_confirm_title')}</span>
+            <p className="confirm-dialog-body">
+              {deleteError || t('account.delete_confirm_body')}
+            </p>
+            <div className="confirm-dialog-btns">
+              <button className="btn btn-secondary" onClick={() => { setConfirmDelete(false); setDeleteError(''); }} disabled={deleting}>
+                {t('common.cancel')}
+              </button>
+              <button className="btn btn-danger" onClick={handleDeleteAccount} disabled={deleting}>
+                {deleting ? '...' : t('account.delete_confirm_cta')}
               </button>
             </div>
           </div>

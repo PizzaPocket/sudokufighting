@@ -26,6 +26,9 @@ app.use(express.json());
 // CORS headers for cross-domain fetch
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  if (req.method === 'OPTIONS') return res.status(204).send();
   next();
 });
 
@@ -34,6 +37,26 @@ app.use(express.static(FRONTEND_DIR));
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', rooms: getRoomCount() });
+});
+
+app.delete('/account', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Service unavailable' });
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+  if (authErr || !user) return res.status(401).json({ error: 'Invalid token' });
+
+  const uid = user.id;
+  await supabase.from('progression').delete().eq('user_id', uid);
+  await supabase.from('match_history').delete().eq('user_id', uid);
+  await supabase.from('profiles').delete().eq('id', uid);
+  const { error: delErr } = await supabase.auth.admin.deleteUser(uid);
+  if (delErr) {
+    console.error('[delete-account]', delErr);
+    return res.status(500).json({ error: 'Failed to delete account' });
+  }
+  res.json({ ok: true });
 });
 
 const httpServer = createServer(app);

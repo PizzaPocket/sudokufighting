@@ -168,7 +168,15 @@
     "matches_played": "விளையாடிய போட்டிகள்",
     "practice_section": "பயிற்சி",
     "sign_out": "வெளியேறு",
-    "sign_out_confirm": "வெளியேறுவதா?"
+    "sign_out_confirm": "வெளியேறுவதா?",
+    "delete_section": "கணக்கை நீக்கு",
+    "delete_desc": "உங்கள் கணக்கை நிரந்தரமாக நீக்கு",
+    "delete_account": "கணக்கை நீக்கு",
+    "delete_confirm_title": "கணக்கை நீக்குவதா?",
+    "delete_confirm_body": "உங்கள் அனைத்து தரவும் நிரந்தரமாக நீக்கப்படும். இதை மீட்டெடுக்க முடியாது.",
+    "delete_confirm_cta": "நீக்கு",
+    "delete_account_toast": "கணக்கு நீக்கப்பட்டது",
+    "delete_confirm_error": "கணக்கை நீக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்."
   },
   "about": {
     "para1": "சுடோகு ஃபைட்டிங் என்பது பெற்றோர்-குழந்தை developer இரட்டையரான <strong>Leonard Downs Reese IV</strong> மற்றும் <strong>Kaius Lu Reese</strong> ஆல் உருவாக்கப்பட்ட ஒரு உணர்வுமிக்க திட்டம். கதாபாத்திர வடிவமைப்பு, படைப்பாற்றல் திசையமைப்பு மற்றும் இசை பங்களிப்பு Kaius அளித்தார்; விளையாட்டு வடிவமைப்பு, நிரலாக்கம் மற்றும் அசல் இசை Leonard அளித்தார்.",

@@ -168,7 +168,15 @@
     "matches_played": "플레이한 경기",
     "practice_section": "연습",
     "sign_out": "로그아웃",
-    "sign_out_confirm": "로그아웃하시겠습니까?"
+    "sign_out_confirm": "로그아웃하시겠습니까?",
+    "delete_section": "계정 삭제",
+    "delete_desc": "계정을 영구적으로 삭제",
+    "delete_account": "계정 삭제",
+    "delete_confirm_title": "계정을 삭제하시겠습니까?",
+    "delete_confirm_body": "모든 데이터가 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+    "delete_confirm_cta": "삭제",
+    "delete_account_toast": "계정이 삭제되었습니다",
+    "delete_confirm_error": "계정을 삭제할 수 없습니다 — 다시 시도해 주세요."
   },
   "about": {
     "para1": "스도쿠 파이팅은 부모-자식 개발자 듀오 <strong>Leonard Downs Reese IV</strong>와 <strong>Kaius Lu Reese</strong>가 만든 열정 프로젝트입니다. 캐릭터 디자인, 크리에이티브 디렉션, 음악 기여는 Kaius가, 게임 디자인, 프로그래밍, 오리지널 사운드트랙은 Leonard가 담당했습니다.",

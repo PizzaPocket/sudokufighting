@@ -168,7 +168,15 @@
     "matches_played": "Perlawanan dimainkan",
     "practice_section": "Latihan",
     "sign_out": "LOG KELUAR",
-    "sign_out_confirm": "LOG KELUAR?"
+    "sign_out_confirm": "LOG KELUAR?",
+    "delete_section": "Padam akaun",
+    "delete_desc": "Padamkan akaun anda secara kekal",
+    "delete_account": "Padam Akaun",
+    "delete_confirm_title": "PADAM AKAUN?",
+    "delete_confirm_body": "Semua data anda akan dipadamkan secara kekal. Tindakan ini tidak boleh dibatalkan.",
+    "delete_confirm_cta": "PADAM",
+    "delete_account_toast": "Akaun dipadamkan",
+    "delete_confirm_error": "Tidak dapat memadam akaun — sila cuba lagi."
   },
   "about": {
     "para1": "Sudoku Fighting adalah projek penuh semangat oleh pasangan pengembang ibu-bapa dan anak <strong>Leonard Downs Reese IV</strong> dan <strong>Kaius Lu Reese</strong>. Reka bentuk watak, pengarahan kreatif, dan sumbangan muzik oleh Kaius. Reka bentuk permainan, pengaturcaraan, dan muzik latar asal oleh Leonard.",

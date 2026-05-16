@@ -168,7 +168,15 @@
     "matches_played": "Partidas jugadas",
     "practice_section": "Práctica",
     "sign_out": "CERRAR SESIÓN",
-    "sign_out_confirm": "¿CERRAR SESIÓN?"
+    "sign_out_confirm": "¿CERRAR SESIÓN?",
+    "delete_section": "Eliminar cuenta",
+    "delete_desc": "Eliminar permanentemente tu cuenta",
+    "delete_account": "Eliminar cuenta",
+    "delete_confirm_title": "¿ELIMINAR CUENTA?",
+    "delete_confirm_body": "Todos tus datos se eliminarán de forma permanente. Esto no se puede deshacer.",
+    "delete_confirm_cta": "ELIMINAR",
+    "delete_account_toast": "Cuenta eliminada",
+    "delete_confirm_error": "No se pudo eliminar la cuenta — inténtalo de nuevo."
   },
   "about": {
     "para1": "Sudoku Fighting es un proyecto apasionado del dúo de desarrolladores padre e hijo <strong>Leonard Downs Reese IV</strong> y <strong>Kaius Lu Reese</strong>. Diseño de personajes, dirección creativa y contribución musical por Kaius. Diseño del juego, programación y banda sonora original por Leonard.",

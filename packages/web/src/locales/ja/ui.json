@@ -168,7 +168,15 @@
     "matches_played": "対戦回数",
     "practice_section": "練習",
     "sign_out": "サインアウト",
-    "sign_out_confirm": "サインアウトしますか？"
+    "sign_out_confirm": "サインアウトしますか？",
+    "delete_section": "アカウントを削除",
+    "delete_desc": "アカウントを完全に削除する",
+    "delete_account": "アカウントを削除",
+    "delete_confirm_title": "アカウントを削除しますか？",
+    "delete_confirm_body": "すべてのデータが完全に削除されます。この操作は取り消せません。",
+    "delete_confirm_cta": "削除",
+    "delete_account_toast": "アカウントを削除しました",
+    "delete_confirm_error": "アカウントを削除できませんでした — もう一度お試しください。"
   },
   "about": {
     "para1": "「数独ファイティング」は、親子開発者デュオ <strong>Leonard Downs Reese IV</strong> と <strong>吕恺</strong> によるパッションプロジェクトです。キャラクターデザイン・クリエイティブディレクション・音楽は吕恺、ゲームデザイン・プログラミング・オリジナルサウンドトラックは Leonard が担当。",
