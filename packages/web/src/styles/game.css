@@ -414,15 +414,14 @@
   font-size: var(--text-md); font-weight: var(--weight-heavy); color: var(--canvas-text);
   text-shadow: var(--text-shadow-md);
   letter-spacing: -0.4px; flex: 1; overflow: hidden;
-  display: flex; align-items: baseline; gap: 5px;
+  display: flex; align-items: baseline;
 }
 .hud-name.right { justify-content: flex-end; }
 .hud-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hud-me-arrow { flex-shrink: 0; line-height: 1; }
 #p1-name { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
 #p2-name { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
-.hud-me-arrow-p1 { text-shadow: 2px 2px 0 var(--p1-mid-dark); }
-.hud-me-arrow-p2 { text-shadow: 2px 2px 0 var(--p2-mid-dark); }
+#p1-name.is-me .hud-name-text { text-decoration: underline; text-decoration-color: var(--p1-mid-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+#p2-name.is-me .hud-name-text { text-decoration: underline; text-decoration-color: var(--p2-mid-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 .round-label { font-size: var(--text-md); font-weight: var(--weight-bold); color: var(--canvas-text); text-shadow: var(--text-shadow-md); letter-spacing: 0.1em; }
 
