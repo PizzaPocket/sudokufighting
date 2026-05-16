@@ -234,7 +234,7 @@ export default function AccountScreen() {
 
           <span className="account-section-label">{t('account.delete_section')}</span>
           <p className="account-delete-desc">{t('account.delete_desc')}</p>
-          <button className="btn btn-danger btn-sm" onClick={() => setConfirmDelete(true)}>
+          <button className="btn btn-sm btn-secondary btn-danger" style={{ alignSelf: 'flex-start' }} onClick={() => setConfirmDelete(true)}>
             {t('account.delete_account')}
           </button>
 

@@ -275,6 +275,13 @@
     .btn-danger:hover  { background: var(--danger-dark); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 #ffffff; }
     .btn-danger:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #ffffff; }
 
+    .btn.btn-secondary.btn-danger { color: var(--danger-color); box-shadow: 4px 4px 0 var(--danger-color); }
+    .btn.btn-secondary.btn-danger:hover { background: var(--danger-bg-light); box-shadow: 5px 6px 0 var(--danger-color); }
+    .btn.btn-secondary.btn-danger:active { box-shadow: 2px 2px 0 var(--danger-color); }
+    .btn.btn-sm.btn-secondary.btn-danger                      { box-shadow: 2px 2px 0 var(--danger-color); }
+    .btn.btn-sm.btn-secondary.btn-danger:hover  { box-shadow: 3px 3px 0 var(--danger-color); }
+    .btn.btn-sm.btn-secondary.btn-danger:active { box-shadow: 1px 1px 0 var(--danger-color); }
+
     /* ── Button table ────────────────────────────────────────────────── */
     .sg-btn-table {
       width: 100%;
@@ -1619,6 +1626,20 @@
       </div>
     </div>
 
+    <h3 class="sg-subsection-title">Secondary Destructive — <code>.btn.btn-secondary.btn-danger</code></h3>
+    <div class="sg-row center">
+      <div class="sg-card" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-sm btn-secondary btn-danger">Delete Account</button>
+      </div>
+      <div class="sg-card" style="font-size:var(--text-sm);color:var(--puzzle-text-dim);line-height:1.8;flex:1;min-width:220px">
+        <div class="sg-card-label">Usage</div>
+        A destructive action that warrants a confirm step rather than immediate effect — lower visual weight than <code>.btn-danger</code> but still signals danger via red text and shadow. Use when the action sits in a calm context (settings, account screen) and a confirm dialog provides the final barrier.<br><br>
+        <strong>Background:</strong> white #FFFFFF<br>
+        <strong>Text:</strong> <code>--danger-color</code> #F00013<br>
+        <strong>Shadow:</strong> <code>2px 2px 0 --danger-color</code> (sm) / <code>4px 4px 0 --danger-color</code> (default)
+      </div>
+    </div>
+
     <h3 class="sg-subsection-title">Utility — <code>.btn-utility</code></h3>
     <div class="sg-row center">
       <div class="sg-card arena" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
@@ -1662,6 +1683,13 @@
           <td>danger #F00013</td>
           <td>4px 4px white</td>
           <td>Destructive / irreversible action.</td>
+        </tr>
+        <tr>
+          <td><code>.btn.btn-secondary.btn-danger</code></td>
+          <td><button class="btn btn-sm btn-secondary btn-danger" style="margin:0">Delete Account</button></td>
+          <td>white #FFFFFF</td>
+          <td>2px 2px danger (sm)</td>
+          <td>Secondary destructive — danger signal without full red fill. Precedes a confirm step.</td>
         </tr>
         <tr>
           <td><code>.btn-secondary</code></td>
