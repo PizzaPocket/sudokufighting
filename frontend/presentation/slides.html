@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Making of Sudoku Fighting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Roboto+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@700&family=Noto+Sans+JP:wght@700&family=Noto+Sans+KR:wght@700&family=Noto+Sans+Tamil:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --accent:              #8B49FF;
+      --accent-hover:        #7235e0;
+      --orange:              #FF8B16;
+      --canvas-bg:           #0d0d0e;
+      --canvas-text:         #ffffff;
+      --canvas-text-dim:     rgba(255,255,255,0.65);
+      --canvas-text-muted:   rgba(255,255,255,0.45);
+      --surface-raised:      #1c1c1e;
+      --surface-frosted:     rgba(255,255,255,0.07);
+      --surface-frosted-edge:rgba(255,255,255,0.16);
+    }
+
+    .reveal-viewport { background: var(--canvas-bg); }
+
+    .reveal .slides {
+      font-family: 'Roboto Mono', monospace;
+      color: var(--canvas-text);
+    }
+
+    /* ── Headings ── */
+    .reveal h1, .reveal h2, .reveal h3 {
+      font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--canvas-text);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 0.25em;
+    }
+    .reveal h1 { font-size: 3em;   text-shadow: 3px 4px 0 var(--accent); }
+    .reveal h2 { font-size: 1.5em; text-shadow: 2px 2px 0 var(--accent); text-align: left; }
+    .reveal h3 { font-size: 1em;   text-shadow: 1px 2px 0 var(--accent); color: var(--canvas-text-dim); text-align: left; }
+
+    .section-header h1 { font-size: 4em; text-shadow: 4px 5px 0 var(--accent); }
+    .section-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9em; font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin: 0 0 0.4em;
+    }
+
+    /* ── Bullets ── */
+    .reveal ul { list-style: none; padding: 0; margin: 0; }
+    .reveal ul li {
+      font-size: 0.55em;
+      line-height: 1.5;
+      margin-bottom: 0.2em;
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .reveal ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ── Two-column layout ── */
+    .cols { display: flex; gap: 1.5em; align-items: flex-start; text-align: left; }
+    .col  { flex: 1; }
+    .col-head {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 0.78em;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.15em; margin-bottom: 0.35em;
+    }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8em;
+    }
+    .stat-card {
+      background: var(--surface-frosted);
+      border: 1px solid var(--surface-frosted-edge);
+      border-radius: 8px;
+      padding: 0.9em 0.7em;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2em; font-weight: 900;
+      color: var(--accent);
+      text-shadow: 1px 2px 0 var(--accent-hover);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.48em;
+      color: var(--canvas-text-dim);
+      margin-top: 0.3em;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    /* ── Code blocks ── */
+    .reveal pre {
+      width: 100%; box-shadow: none;
+      border-radius: 6px;
+      border: 1px solid rgba(139,73,255,0.3);
+      margin: 0.5em 0;
+    }
+    .reveal pre code {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.52em;
+      line-height: 1.55;
+      padding: 0.9em !important;
+    }
+    .reveal code:not(pre code) {
+      background: rgba(139,73,255,0.15);
+      border: 1px solid rgba(139,73,255,0.3);
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+      font-size: 0.82em;
+      color: #c9a2ff;
+    }
+
+    /* ── Tables ── */
+    .reveal table { font-size: 0.58em; border-collapse: collapse; width: 100%; }
+    .reveal table th {
+      background: var(--accent); color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.4em 0.8em;
+    }
+    .reveal table td { padding: 0.4em 0.8em; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .reveal table tr:nth-child(even) td { background: rgba(255,255,255,0.04); }
+
+    /* ── Callout boxes ── */
+    .callout {
+      background: rgba(139,73,255,0.1);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 0.45em 0.75em;
+      font-size: 0.58em;
+      margin: 0.3em 0;
+      text-align: left;
+    }
+    .callout-orange {
+      background: rgba(255,139,22,0.1);
+      border-left-color: var(--orange);
+    }
+
+    /* ── Sprite ── */
+    .slide-sprite {
+      position: absolute;
+      bottom: 12px; right: 30px;
+      width: 170px;
+      image-rendering: pixelated;
+      pointer-events: none; user-select: none;
+    }
+    .slide-sprite-left {
+      position: absolute;
+      bottom: 12px; left: 30px;
+      width: 170px;
+      image-rendering: pixelated;
+      pointer-events: none; user-select: none;
+      transform: scaleX(-1);
+    }
+    .bird-sprite {
+      position: absolute;
+      top: 60px; right: 80px;
+      width: 80px;
+      image-rendering: pixelated;
+      pointer-events: none; user-select: none;
+    }
+
+    /* ── Sprite comparison grid ── */
+    .sprite-compare {
+      display: grid;
+      grid-template-columns: 100px repeat(4, 1fr);
+      gap: 0.3em;
+      align-items: center;
+      margin-top: 0.5em;
+    }
+    .sprite-compare .char-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.6em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: right;
+      padding-right: 0.5em;
+    }
+    .sprite-compare img {
+      width: 100%;
+      image-rendering: pixelated;
+      border-radius: 4px;
+    }
+    .sprite-frame-labels {
+      display: grid;
+      grid-template-columns: 100px repeat(4, 1fr);
+      gap: 0.3em;
+      margin-bottom: 0.2em;
+    }
+    .sprite-frame-labels span {
+      font-size: 0.42em;
+      color: var(--canvas-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+
+    /* ── Utility ── */
+    .accent  { color: var(--accent); }
+    .orange  { color: var(--orange); }
+    .dim     { color: var(--canvas-text-dim); }
+    .muted   { color: var(--canvas-text-muted); }
+    .wrong   { color: #ff6b6b; }
+    .right   { color: #6bff9e; }
+
+    .formula {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.55em; font-weight: 900;
+      color: var(--accent);
+      text-shadow: 2px 2px 0 var(--accent-hover);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0.25em 0;
+    }
+
+    /* ── Architecture / service boxes ── */
+    .arch-box {
+      background: var(--surface-frosted);
+      border: 1px solid var(--surface-frosted-edge);
+      border-radius: 7px;
+      padding: 0.5em 0.9em;
+      text-align: center;
+      font-size: 0.58em;
+    }
+    .arch-box strong {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .arch-arrow { font-size: 1.3em; color: var(--accent); margin: 0 0.25em; }
+    .arch-row   { display: flex; align-items: center; justify-content: center; gap: 0.25em; margin: 0.35em 0; }
+
+    /* ── Service grid ── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6em;
+      margin-top: 0.3em;
+    }
+    .service-box {
+      background: var(--surface-frosted);
+      border: 1px solid var(--surface-frosted-edge);
+      border-radius: 7px;
+      padding: 0.55em 0.8em;
+    }
+    .service-box .svc-head {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 0.75em;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.3em;
+    }
+    .service-box ul { margin: 0; }
+    .service-box ul li { font-size: 0.55em; }
+
+    /* ── Reveal overrides ── */
+    .reveal .progress { color: var(--accent); }
+    .reveal .controls button { color: var(--accent); }
+    .reveal .slide-number { color: var(--canvas-text-muted); }
+
+    /* ── Locale demo (localization slide) ── */
+    #locale-select {
+      background: var(--surface-raised);
+      border: 1px solid var(--accent);
+      border-radius: 5px;
+      color: var(--canvas-text);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.56em;
+      padding: 0.3em 0.6em;
+      cursor: pointer;
+      margin-left: 0.5em;
+      vertical-align: middle;
+    }
+    #locale-demo {
+      background: var(--surface-frosted);
+      border: 1px solid var(--surface-frosted-edge);
+      border-radius: 8px;
+      padding: 0.6em 1em;
+      margin-top: 0.5em;
+      text-align: left;
+    }
+    .locale-row { font-size: 0.55em; margin: 0.25em 0; }
+    .locale-label { color: var(--canvas-text-muted); margin-right: 0.4em; }
+    .locale-tagline { color: var(--canvas-text-dim); }
+    .locale-enter { color: var(--accent); font-weight: 700; }
+    .locale-devas  { color: var(--orange); font-weight: 700; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ═══════════════════════════════════════════════════
+         0. PREVIOUSLY ON
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <h2>Previously on Leonard &amp; Kai make games</h2>
+      <div style="margin-top:0.6em; border-radius:12px; overflow:hidden;">
+        <video
+          src="/presentation/assets/es elemental.mov"
+          controls
+          style="width:100%; max-height:540px; display:block;"
+        ></video>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         1. TITLE
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/el-tropical/bg_cutscene.svg"
+      data-background-opacity="0.35"
+      data-background-size="cover"
+      style="text-align:center; padding-top:4em;">
+      <h1 style="font-size:3.6em; margin-bottom:0.08em; margin-top:0;">SUDOKU FIGHTING</h1>
+      <h3 style="font-size:1em; color:var(--canvas-text-dim); text-shadow:none; text-transform:none; font-family:'Roboto Mono',monospace; font-weight:400; text-align:center;">The Making Of</h3>
+      <p style="margin-top:0.7em; font-size:0.52em; color:var(--canvas-text-muted); letter-spacing:0.1em; text-transform:uppercase;">A game built with love</p>
+      <img class="slide-sprite" data-sprite="fighter1:idle:4:200" src="/characters/fighter1/idle_frame1.svg" alt="">
+      <aside class="notes">Welcome. This is the story of how Sudoku Fighting was made — a real-time competitive puzzle fighting game on the web and iOS App Store.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         2. WHAT IS IT
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <h2>What is Sudoku Fighting?</h2>
+      <div class="cols">
+        <div class="col">
+          <ul>
+            <li>Real-time competitive puzzle fighting game</li>
+            <li>Two players solve separate Sudoku grids simultaneously</li>
+            <li><strong class="accent">Correct inputs deal damage</strong></li>
+            <li>Speed and combo multipliers amplify every hit</li>
+            <li>Completing a row wipes that row on the opponent's grid</li>
+            <li>Guessing is punished — wrong answer costs 400 HP</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="callout">"What if solving puzzles was a <strong>contact sport?</strong>"</div>
+          <div class="stat-grid" style="grid-template-columns:repeat(2,1fr); margin-top:0.8em;">
+            <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Arenas</div></div>
+            <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Characters</div></div>
+            <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Languages</div></div>
+            <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Platforms</div></div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">The game fuses a fighting game and a puzzle game at full fidelity. Neither system concedes anything to the other.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: HOW IT WAS BUILT
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/derelict/bg.svg"
+      data-background-opacity="0.4"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">02 — The Build</p>
+      <h1>HOW IT WAS<br>BUILT</h1>
+      <img class="slide-sprite" data-sprite="fighter2:idle:4:200" src="/characters/fighter2/idle_frame1.svg" alt="">
+      <aside class="notes">Let's get into how this was actually made — the Claude Code workflow, the architecture, and every service involved.</aside>
+    </section>
+
+    <!-- ═══ Claude Code stats & approach ═══ -->
+    <section>
+      <h2>Idea to Production</h2>
+      <div class="stat-grid" style="margin-bottom:0.8em;">
+        <div class="stat-card"><div class="stat-num">157</div><div class="stat-label">Commits</div></div>
+        <div class="stat-card"><div class="stat-num">2.5mo</div><div class="stat-label">Build time</div></div>
+        <div class="stat-card"><div class="stat-num">1.3/day</div><div class="stat-label">Commit frequency</div></div>
+        <div class="stat-card"><div class="stat-num">Mar 29</div><div class="stat-label">First commit (2026)</div></div>
+      </div>
+      <ul>
+        <li><code>CLAUDE.md</code> — design rules, architecture constraints, naming laws. Read every session.</li>
+        <li><code>memory/</code> — persistent facts across resets: decisions, preferences, corrections</li>
+        <li><code>style-guide.html</code> — live component gallery Claude can reference visually</li>
+      </ul>
+      <aside class="notes">157 commits, first commit March 29 2026. Almost every line of code written with Claude Code in VSCode. The trick is investing in persistent context files so Claude never starts cold.</aside>
+    </section>
+
+    <!-- ═══ Our approach to engineering ═══ -->
+    <section>
+      <h2>Our approach to engineering</h2>
+      <div style="margin-top:0.6em; border-radius:12px; overflow:hidden;">
+        <video
+          src="/presentation/assets/Armegeddon.mov"
+          controls
+          style="width:100%; max-height:540px; display:block;"
+        ></video>
+      </div>
+    </section>
+
+    <!-- ═══ Full stack + all services ═══ -->
+    <section>
+      <h2>The full stack</h2>
+      <div class="service-grid">
+        <div class="service-box">
+          <div class="svc-head">Frontend</div>
+          <ul>
+            <li>React 18, TypeScript 5.4</li>
+            <li>Vite 5.4, Zustand 5</li>
+            <li>Global CSS + design tokens</li>
+          </ul>
+        </div>
+        <div class="service-box">
+          <div class="svc-head">Backend</div>
+          <ul>
+            <li>Node.js 20, Express</li>
+            <li>WebSocket (ws 8.16)</li>
+            <li>Shared pure-TS game logic</li>
+          </ul>
+        </div>
+        <div class="service-box">
+          <div class="svc-head">Auth & data</div>
+          <ul>
+            <li>Supabase (PostgreSQL + Auth)</li>
+            <li>Sign in with Google (OAuth)</li>
+            <li>Sign in with Apple</li>
+          </ul>
+        </div>
+        <div class="service-box">
+          <div class="svc-head">Native</div>
+          <ul>
+            <li>Capacitor 8.3</li>
+            <li>iOS App Store (live)</li>
+            <li>Android — Capacitor configured, Play Store next</li>
+          </ul>
+        </div>
+        <div class="service-box">
+          <div class="svc-head">Deploy — web</div>
+          <ul>
+            <li>GitHub → Vercel</li>
+            <li>Push to main → live in ~60s</li>
+            <li>sudokufighting.com</li>
+          </ul>
+        </div>
+        <div class="service-box">
+          <div class="svc-head">Deploy — backend</div>
+          <ul>
+            <li>GitHub → Fly.io</li>
+            <li>Docker, lax region, 256 MB</li>
+            <li>WebSocket long-lived server</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">The deployment split: React frontend to Vercel (serverless, CDN), WebSocket backend to Fly.io (persistent connections need a real long-lived server). Supabase handles auth and player data. Capacitor wraps the same React build for iOS with zero native code written by hand.</aside>
+    </section>
+
+    <!-- ═══ Platforms ═══ -->
+    <section>
+      <h2>One codebase, three platforms</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="callout" style="margin-bottom:0.55em;"><strong class="accent">Web —</strong> sudokufighting.com<br>Vercel, auto-deploys from main</div>
+          <div class="callout" style="margin-bottom:0.55em;"><strong class="accent">iOS —</strong> App Store (live)<br>Capacitor wraps the same React build. Zero native code written by hand.</div>
+          <div class="callout callout-orange"><strong class="orange">Android —</strong> On the roadmap<br>Capacitor already configured. Not yet submitted to Play Store — ready when the time comes.</div>
+        </div>
+        <div class="col">
+          <div class="col-head">What Capacitor does</div>
+          <ul>
+            <li>Wraps a WKWebView — game renders identically to the browser</li>
+            <li>Native APIs: haptics, safe-area insets, deep links via plugin layer</li>
+            <li>Custom URL scheme <code>sudokufighting://</code> for Sign in with Apple + Google deep-link OAuth</li>
+            <li>Still requires Xcode + provisioning profiles. Capacitor doesn't eliminate App Store admin.</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">One codebase targeting web, iOS, and eventually Android. The only platform-specific work was the iOS audio keep-alive strategy — more on that in the audio section.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: DESIGN SYSTEM
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/paradiso/bg.svg"
+      data-background-opacity="0.35"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">03 — Design System</p>
+      <h1>THE DESIGN<br>SYSTEM</h1>
+      <img class="slide-sprite-left" data-sprite="fighter1_alt:idle:4:200" src="/characters/fighter1_alt/idle_frame1.svg" alt="">
+      <aside class="notes">The design system is what makes Claude Code genuinely productive on a UI project. Without it, Claude makes inconsistent choices.</aside>
+    </section>
+
+    <!-- ═══ tokens.css ═══ -->
+    <section>
+      <h2>tokens.css — single source of truth</h2>
+      <div class="cols">
+        <div class="col">
+          <pre><code class="css">:root {
+  /* Dark canvas context */
+  --canvas-text:    #ffffff;
+  --surface-raised: #1c1c1e;
+
+  /* Brand accent */
+  --accent:       #8B49FF;
+  --orange:       #FF8B16;
+
+  /* Typography */
+  --font:         'Roboto Mono', monospace;
+  --font-display: 'Barlow Condensed', sans-serif;
+
+  /* Pixel shadows */
+  --text-shadow-lg: 2px 2px 0 var(--accent);
+  --text-shadow-xl: 2px 3px 0 var(--accent);
+}</code></pre>
+        </div>
+        <div class="col">
+          <ul>
+            <li>Two surface contexts: dark canvas (arena / screens) and light puzzle (Sudoku grid)</li>
+            <li>Symlinked into <code>frontend/css/</code> — change a token, hard-refresh, both the app and the style guide update</li>
+            <li>No CSS Modules — global. Living style guide at <code>/style-guide.html</code> catches visual regressions</li>
+            <li>Locale overrides via <code>html[lang]</code> selector — CJK scripts swap <code>--font-display</code> automatically</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">The symlink is the key detail. The style guide and the app share the exact same tokens.css file. Change a color anywhere and it updates everywhere on the next hard-refresh.</aside>
+    </section>
+
+    <!-- ═══ Pattern naming ═══ -->
+    <section>
+      <h2>Pattern-over-context naming</h2>
+      <p style="font-size:0.65em; margin-bottom:0.6em;">Name for the <strong class="accent">shape</strong>, not where it lives.</p>
+      <table>
+        <thead>
+          <tr>
+            <th class="wrong" style="background:#4a1a1a;">✗ Named for use case</th>
+            <th class="right" style="background:#1a3a28;">✓ Named for pattern</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>SettingsPanel</code></td><td><code>ContextualMenu</code></td></tr>
+          <tr><td><code>LobbyPlayerSlot</code></td><td><code>PlayerSlot</code></td></tr>
+          <tr><td><code>.join-combo</code></td><td><code>.combo-input</code></td></tr>
+          <tr><td><code>.lobby-status</code></td><td><code>.status-pill</code></td></tr>
+          <tr><td><code>GameButton</code></td><td><code>.btn</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout" style="margin-top:0.7em;">
+        Instance detail belongs in the <strong>parent</strong>, not the component. A <code>PlayerSlot</code> in a lobby is a lobby concern — not a <code>LobbyPlayerSlot</code>. Components stay reusable without renaming.
+      </div>
+      <aside class="notes">This rule sounds obvious until you're naming your twentieth component. Context-named components lie about what they are and can't be reused elsewhere. Pattern-named components are honest about their shape.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: AUDIO
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/el-tropical/bg_cutscene.svg"
+      data-background-opacity="0.3"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">04 — Audio</p>
+      <h1>AUDIO SYSTEM</h1>
+      <img class="slide-sprite" data-sprite="fighter5:idle:4:200" src="/characters/fighter5/idle_frame1.svg" alt="">
+      <aside class="notes">The audio system was technically the gnarliest part of the project — mostly because of iOS.</aside>
+    </section>
+
+    <!-- ═══ Gapless looping ═══ -->
+    <section>
+      <h2>Gapless music looping</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="callout callout-orange" style="margin-bottom:0.6em;"><code>HTMLAudioElement.loop</code> has an audible gap — browser seeks to 0 on loop.</div>
+          <pre><code class="javascript">const node = ctx.createBufferSource();
+node.buffer    = decodedBuffer;
+node.loopStart = LOOP_START_SEC;
+node.loopEnd   = LOOP_END_SEC;
+node.loop      = true;
+node.connect(gainNode);
+node.start(0);</code></pre>
+          <ul style="margin-top:0.6em;">
+            <li>Sample-level precision — no seek, no gap</li>
+            <li>6 arena-specific tracks, 500ms gain-ramped fades</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">The iOS problem</div>
+          <ul>
+            <li><strong>Problem 1:</strong> iOS suspends <code>AudioContext</code> on page load. Must call <code>ctx.resume()</code> inside a gesture handler. Silent keep-alive node prevents re-suspension.</li>
+            <li style="margin-top:0.4em;"><strong>Problem 2:</strong> iOS mute switch silences <code>AudioBufferSourceNode</code>. Fix: near-zero-volume <code>HTMLAudioElement</code> puts iOS into "playback" session mode — same trick Spotify uses.</li>
+          </ul>
+          <div class="callout" style="margin-top:0.6em;">All of this is encapsulated in <code>audioManager.ts</code>. Components just call <code>startFightMusic()</code>.</div>
+        </div>
+      </div>
+      <aside class="notes">The mute switch workaround is the sneakiest part. iOS classifies apps as either normal or media playback — media playback ignores the mute switch. A near-zero-volume HTMLAudioElement is enough to get iOS to classify the app as media playback.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: PUZZLE GENERATION
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/shinobi-alley/alley_wide.svg"
+      data-background-opacity="0.3"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">05 — Puzzle Generation</p>
+      <h1>PUZZLE<br>GENERATION</h1>
+      <img class="slide-sprite" data-sprite="fighter4:idle:4:200" src="/characters/fighter4/idle_frame1.svg" alt="">
+      <aside class="notes">Generating fair puzzles for a competitive game has an interesting constraint: the solution must be unique.</aside>
+    </section>
+
+    <!-- ═══ Generation + uniqueness ═══ -->
+    <section>
+      <h2>Generate, then carve</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="col-head">Step 1 — fill a valid grid</div>
+          <pre><code class="typescript">function fillGrid(grid: number[][]): boolean {
+  const [row, col] = findEmpty(grid);
+  if (row === -1) return true; // done
+
+  const digits = shuffle([1,2,3,4,5,6,7,8,9]);
+  for (const d of digits) {
+    if (isValid(grid, row, col, d)) {
+      grid[row][col] = d;
+      if (fillGrid(grid)) return true;
+      grid[row][col] = 0;
+    }
+  }
+  return false;
+}</code></pre>
+          <p style="font-size:0.5em; color:var(--canvas-text-muted);">38 lines total. Backtracking + Fisher-Yates shuffle.</p>
+        </div>
+        <div class="col">
+          <div class="col-head">Step 2 — remove cells, check uniqueness</div>
+          <ul>
+            <li>Randomly remove cells one-by-one from the complete solution</li>
+            <li>After each removal: <code>countSolutions(grid, 2)</code></li>
+            <li>Stops early if a second solution is found — only keep removals that leave <strong>exactly 1 solution</strong></li>
+            <li>Target: 28–33 removals → 52–53 given cells</li>
+          </ul>
+          <div class="callout" style="margin-top:0.6em;">
+            A puzzle with multiple solutions isn't fair — two players could take different valid paths to incompatible game states.
+          </div>
+        </div>
+      </div>
+      <aside class="notes">The key insight: always start from a complete valid solution, then carve cells out. Much simpler than building from scratch. The uniqueness check is critical for competitive fairness.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: COMBAT ENGINE
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/the-big-time/bg.svg"
+      data-background-opacity="0.35"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">06 — Combat</p>
+      <h1>COMBAT ENGINE<br>& BALANCE</h1>
+      <img class="slide-sprite" data-sprite="fighter3:punch:3:100" src="/characters/fighter3/punch_frame1.svg" alt="">
+      <aside class="notes">Where puzzle logic and fighting game mechanics collide.</aside>
+    </section>
+
+    <!-- ═══ Combat mechanics ═══ -->
+    <section>
+      <h2>How combat works</h2>
+      <div style="text-align:center; margin-bottom:0.4em;">
+        <div class="formula">CELL = 5 × SPEED × COMBO</div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <div class="col-head">Multipliers</div>
+          <ul>
+            <li><strong class="accent">Speed:</strong> starts 10×, decays 1pt/2s — resets on wrong guess</li>
+            <li><strong class="accent">Combo:</strong> +0.1× per consecutive correct cell. 10 in a row = 2×.</li>
+            <li><strong class="wrong">Wrong guess:</strong> 400 flat damage + both multipliers reset</li>
+          </ul>
+          <div class="col-head" style="margin-top:0.45em;">Wipes & counters</div>
+          <ul>
+            <li>Complete a row/col/box → wipes opponent's filled cells in that region</li>
+            <li>Counter window: fill a correct cell within 1500ms of an attack → 50% damage, attacker pays 60 HP</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">AI difficulty</div>
+          <table style="font-size:0.7em;">
+            <thead><tr><th>Tier</th><th>Speed</th><th>Error</th><th>Strategy</th></tr></thead>
+            <tbody>
+              <tr><td><span class="accent">Easy</span></td><td>10s</td><td>20%</td><td>Random order</td></tr>
+              <tr><td><span class="orange">Normal</span></td><td>5s</td><td>8%</td><td>Prioritize wipe cells</td></tr>
+              <tr><td><strong class="wrong">Extreme</strong></td><td>2.5s</td><td>2%</td><td>Re-sort every tick</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <aside class="notes">The multiplicative formula punishes guessing hard. A slow cautious player still does damage; a fast accurate player does 10–20× more. The wipe system makes it feel like a fighting game, not just "fastest solver wins."</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: SPRITES, ANIMATION & ART
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/paradiso/bg.svg"
+      data-background-opacity="0.35"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">07 — Art & Animation</p>
+      <h1>SPRITES,<br>ANIMATION & ART</h1>
+      <img class="bird-sprite" data-sprite="bird:bird:4:150:/assets/arenas/paradiso" src="/assets/arenas/paradiso/bird_frame1.svg" alt="">
+      <img class="slide-sprite" data-sprite="fighter3_alt:idle:4:200" src="/characters/fighter3_alt/idle_frame1.svg" alt="">
+      <aside class="notes">Every character has 39 SVG animation frames. The art pipeline and the animation system are closely linked, so I'm covering them together.</aside>
+    </section>
+
+    <!-- ═══ Why SVG + Figma story ═══ -->
+    <section>
+      <h2>SVG sprites & the art pipeline</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="col-head">Why SVG</div>
+          <ul>
+            <li>Claude generated placeholders first — flat geometric shapes, genuinely awful. Each frame replaced one by one with hand-designed art.</li>
+            <li>Editable in <strong class="accent">Figma</strong> — characters designed and iterated in a design tool, not just in code</li>
+            <li>Scale infinitely — one asset for all screen sizes</li>
+            <li>Alt characters reuse the same 11 animation states — only the directory path changes</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">Animation system</div>
+          <ul>
+            <li>39 frames per character, 11 states, priority 1–5. KO is terminal (freeze:true).</li>
+            <li>Frame swap via <code>&lt;img src&gt;</code> — exploits browser cache. All frames pre-fetched before the round.</li>
+          </ul>
+          <div class="col-head" style="margin-top:0.45em;">Arena art pipeline</div>
+          <ul>
+            <li>3-path: PNG → Pillow, simple SVG → Node.js, complex SVG → Playwright → Pillow → blocky rect strips</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">The placeholder-first workflow lets you build the entire animation system end-to-end before real art exists. When the real SVGs arrive, they slot in without touching any code.</aside>
+    </section>
+
+    <!-- ═══ Sprite comparison grid ═══ -->
+    <section>
+      <h2>One animation system, ten characters</h2>
+      <p style="font-size:0.55em; color:var(--canvas-text-dim); margin-bottom:0.4em;">Subgrid special — same 5 frames, different art, same state machine</p>
+      <div class="sprite-frame-labels" style="grid-template-columns: 120px repeat(5, 1fr);">
+        <span></span>
+        <span>Frame 1</span>
+        <span>Frame 2</span>
+        <span>Frame 3</span>
+        <span>Frame 4</span>
+        <span>Frame 5</span>
+      </div>
+      <div class="sprite-compare" style="grid-template-columns: 120px repeat(5, 1fr);">
+        <div class="char-label">Senna</div>
+        <img src="/characters/fighter4/subgrid_special_frame1.svg" alt="">
+        <img src="/characters/fighter4/subgrid_special_frame2.svg" alt="">
+        <img src="/characters/fighter4/subgrid_special_frame3.svg" alt="">
+        <img src="/characters/fighter4/subgrid_special_frame4.svg" alt="">
+        <img src="/characters/fighter4/subgrid_special_frame5.svg" alt="">
+        <div class="char-label">Jonathan</div>
+        <img src="/characters/fighter3/subgrid_special_frame1.svg" alt="">
+        <img src="/characters/fighter3/subgrid_special_frame2.svg" alt="">
+        <img src="/characters/fighter3/subgrid_special_frame3.svg" alt="">
+        <img src="/characters/fighter3/subgrid_special_frame4.svg" alt="">
+        <img src="/characters/fighter3/subgrid_special_frame5.svg" alt="">
+      </div>
+      <aside class="notes">The same ANIMATION_CONFIG drives every character. Add a new character: create a folder with 39 SVG files using the standard naming convention, and the entire system works immediately — no code changes.</aside>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: LOCALIZATION
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/shinobi-alley/bg.svg"
+      data-background-opacity="0.35"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">08 — Localization</p>
+      <h1>7 LANGUAGES</h1>
+      <img class="slide-sprite" data-sprite="fighter4_alt:idle:4:200" src="/characters/fighter4_alt/idle_frame1.svg" alt="">
+      <aside class="notes">The game ships in 7 languages including three CJK scripts. Building this in from day one was far less painful than retrofitting.</aside>
+    </section>
+
+    <!-- ═══ Languages + CJK ═══ -->
+    <section>
+      <h2>Localization system</h2>
+      <div class="cols">
+        <div class="col">
+          <table style="margin-bottom:0.6em;">
+            <thead><tr><th>Code</th><th>Language</th><th>Script</th></tr></thead>
+            <tbody>
+              <tr><td>en / es / ms</td><td>English, Spanish, Malay</td><td>Latin</td></tr>
+              <tr><td>zh-CN</td><td>Simplified Chinese</td><td>Han</td></tr>
+              <tr><td>ja</td><td>Japanese</td><td>Hiragana/Kanji</td></tr>
+              <tr><td>ko</td><td>Korean</td><td>Hangul</td></tr>
+              <tr><td>ta</td><td>Tamil</td><td>Indic</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="font-size:0.58em;">3 namespaces per locale: <code>ui.json</code>, <code>dialogue.json</code>, <code>characters.json</code>. Non-Latin locales use native script names — "Xiao Long" → "小龙" in zh-CN.</div>
+        </div>
+        <div class="col">
+          <div class="col-head">
+            Live demo
+            <select id="locale-select" onchange="switchLocale(this.value)">
+              <option value="en">English (en)</option>
+              <option value="es">Español (es)</option>
+              <option value="ms">Bahasa Melayu (ms)</option>
+              <option value="zh-CN">简体中文 (zh-CN)</option>
+              <option value="ja">日本語 (ja)</option>
+              <option value="ko">한국어 (ko)</option>
+              <option value="ta">தமிழ் (ta)</option>
+            </select>
+          </div>
+          <div id="locale-demo">
+            <div class="locale-row"><span class="locale-label">tagline:</span><span class="locale-tagline">Competitive Sudoku with fighting game combat</span></div>
+            <div class="locale-row"><span class="locale-label">enter:</span><span class="locale-enter">ENTER</span></div>
+            <div class="locale-row"><span class="locale-label">devastation:</span><span class="locale-devas">DEVASTATION!</span></div>
+          </div>
+          <ul style="margin-top:0.55em;">
+            <li>CJK post-processor: <code>"第 {{round}} 战"</code> → <code>"第1战"</code></li>
+            <li>Korean and Tamil excluded — they use word spaces like Latin</li>
+            <li>Font swaps via <code>html[lang]</code> CSS — Noto Sans SC/JP/KR/Tamil</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">The post-processor is a simple but important detail. Translators can write interpolations naturally with spaces on either side. The post-processor strips those spaces only for CJK scripts, transparently. No special syntax required from translators.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECTION: KEY LESSONS
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/el-tropical/bg_cutscene.svg"
+      data-background-opacity="0.3"
+      data-background-size="cover"
+      class="section-header"
+      style="text-align:center;">
+      <p class="section-num">09 — Lessons</p>
+      <h1>KEY LESSONS</h1>
+      <img class="slide-sprite-left" data-sprite="fighter2_alt:idle:4:200" src="/characters/fighter2_alt/idle_frame1.svg" alt="">
+      <aside class="notes">Things I'd tell myself at the start of the project.</aside>
+    </section>
+
+    <!-- ═══ The rhythm of Claude Code dev ═══ -->
+    <section>
+      <h2>The rhythm of Claude Code development</h2>
+      <div class="cols" style="gap:2em; align-items:flex-start; margin-top:0.6em;">
+        <div class="col" style="text-align:center;">
+          <img src="/presentation/assets/Prompting 1.png" alt="One Shot" style="width:100%; border-radius:8px; border:1px solid var(--surface-frosted-edge);">
+          <p style="font-size:0.48em; color:var(--canvas-text-dim); margin-top:0.5em; line-height:1.4;"><strong class="accent">One Shot:</strong> Making as much forward progress as possible in the initial prompt</p>
+        </div>
+        <div class="col" style="text-align:center;">
+          <img src="/presentation/assets/Prompting 2.png" alt="Grinding it Out" style="width:100%; border-radius:8px; border:1px solid var(--surface-frosted-edge);">
+          <p style="font-size:0.48em; color:var(--canvas-text-dim); margin-top:0.5em; line-height:1.4;"><strong class="accent">Grinding it Out:</strong> Iterative refinement, bug fixes, and admin</p>
+        </div>
+      </div>
+      <aside class="notes">This is the thing people who haven't shipped with Claude Code don't expect. The code arrives fast. What takes time is the testing, the iteration, and the judgement calls about what "right" looks like for your product.</aside>
+    </section>
+
+    <!-- ═══ Debugging + Admin ═══ -->
+    <section>
+      <h2>Two things nobody warns you about</h2>
+      <div class="cols">
+        <div class="col">
+          <div class="col-head">Debug right, not fast</div>
+          <ul>
+            <li>Vague bug reports → shallow, random changes. Not the fix.</li>
+            <li><strong class="accent">Add instrumentation first.</strong> Log the state. Make the problem visible before asking Claude to fix it.</li>
+            <li>Claude needs signal, not vibes.</li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="col-head">The admin iceberg</div>
+          <ul>
+            <li>Supabase dashboard, Fly.io config, Vercel settings, Google Cloud OAuth, Apple Developer portal — all manual</li>
+            <li>App Store prep is its own project: provisioning profiles, TestFlight, App Review, screenshots at every size</li>
+            <li>Claude can't do this for you</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">The debugging lesson is the most transferable. I wasted a lot of sessions giving Claude vague bug reports and watching it flail. Once I learned to add console.logs and reproduce the exact state first, Claude's fixes became reliable and minimal.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         Q&A / DEMO
+    ═══════════════════════════════════════════════════ -->
+    <section
+      data-background-image="/assets/arenas/the-big-time/bg.svg"
+      data-background-opacity="0.4"
+      data-background-size="cover"
+      style="text-align:center;">
+      <h1 style="font-size:3.2em; margin-bottom:0.2em;">PLAY IT</h1>
+      <p style="font-family:'Barlow Condensed',sans-serif; font-size:1.8em; font-weight:900; color:var(--accent); text-shadow:2px 2px 0 var(--accent-hover); letter-spacing:0.05em; text-transform:uppercase;">sudokufighting.com</p>
+      <p style="font-size:0.46em; color:var(--canvas-text-muted); margin-top:2em; text-transform:uppercase; letter-spacing:0.1em;">These slides — sudokufighting.com/presentation/slides.html</p>
+      <img class="slide-sprite" data-sprite="fighter5:win:2:300" src="/characters/fighter5/win_frame1.svg" alt="">
+      <aside class="notes">That's a wrap. Play the game, ask questions, happy to do a live demo.</aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'slide',
+    backgroundTransition: 'fade',
+    plugins: [RevealHighlight, RevealNotes],
+  });
+
+  // ── Sprite animation system ───────────────────────────────
+  // data-sprite format: "charId:state:frames:ms" or
+  //                     "charId:state:frames:ms:basePath"
+  const spriteTimers = {};
+
+  function stopAllSprites() {
+    Object.values(spriteTimers).forEach(id => clearInterval(id));
+    Object.keys(spriteTimers).forEach(k => delete spriteTimers[k]);
+  }
+
+  function startSprite(imgEl, charId, state, frames, ms, basePath) {
+    const base = basePath || `/characters/${charId}`;
+    const srcs = Array.from({ length: frames }, (_, i) =>
+      `${base}/${state}_frame${i + 1}.svg`
+    );
+    srcs.forEach(src => { const p = new Image(); p.src = src; });
+
+    let i = 0;
+    imgEl.src = srcs[0];
+    const key = charId + ':' + state + ':' + Date.now() + Math.random();
+    imgEl.dataset.spriteKey = key;
+    spriteTimers[key] = setInterval(() => {
+      imgEl.src = srcs[i++ % srcs.length];
+    }, ms);
+  }
+
+  function initSlideSprites(slide) {
+    slide.querySelectorAll('[data-sprite]').forEach(img => {
+      const parts = img.dataset.sprite.split(':');
+      const charId   = parts[0];
+      const state    = parts[1];
+      const frames   = parseInt(parts[2]);
+      const ms       = parseInt(parts[3]);
+      const basePath = parts.length > 4 ? parts.slice(4).join(':') : null;
+      startSprite(img, charId, state, frames, ms, basePath);
+    });
+  }
+
+  Reveal.on('ready',        e => initSlideSprites(e.currentSlide));
+  Reveal.on('slidechanged', e => {
+    stopAllSprites();
+    initSlideSprites(e.currentSlide);
+    // Reset locale demo to English on slide entry
+    const sel = e.currentSlide.querySelector('#locale-select');
+    if (sel) { sel.value = 'en'; switchLocale('en'); }
+  });
+
+  // ── Locale switcher ───────────────────────────────────
+  const LOCALE_DATA = {
+    'en':    { tagline: 'Competitive Sudoku with fighting game combat',      enter: 'ENTER',   devas: 'DEVASTATION!',   font: "'Barlow Condensed', sans-serif" },
+    'es':    { tagline: 'Sudoku competitivo con combate de juego de lucha',  enter: 'ENTRAR',  devas: '¡DEVASTACIÓN!',  font: "'Barlow Condensed', sans-serif" },
+    'ms':    { tagline: 'Sudoku kompetitif dengan pertarungan pejuang',      enter: 'MASUK',   devas: 'KEHANCURAN!',    font: "'Barlow Condensed', sans-serif" },
+    'zh-CN': { tagline: '融合格斗游戏战斗的竞技数独',                            enter: '开始',    devas: 'DEVASTATION!',   font: "'Noto Sans SC', sans-serif" },
+    'ja':    { tagline: '格闘ゲームと融合した競技数独',                            enter: 'スタート', devas: 'DEVASTATION!',  font: "'Noto Sans JP', sans-serif" },
+    'ko':    { tagline: '격투 게임 전투가 있는 경쟁 스도쿠',                        enter: '시작',    devas: '참패!',          font: "'Noto Sans KR', sans-serif" },
+    'ta':    { tagline: 'போர்வீட்டு விளையாட்டோடு போட்டி சுடோகு',               enter: 'நுழைக',  devas: 'அழிவு!',         font: "'Noto Sans Tamil', sans-serif" },
+  };
+
+  function switchLocale(code) {
+    const d = LOCALE_DATA[code] || LOCALE_DATA['en'];
+    const demo = document.getElementById('locale-demo');
+    if (!demo) return;
+    demo.style.fontFamily = d.font;
+    demo.querySelector('.locale-tagline').textContent = d.tagline;
+    demo.querySelector('.locale-enter').textContent   = d.enter;
+    demo.querySelector('.locale-devas').textContent   = d.devas;
+  }
+</script>
+</body>
+</html>
