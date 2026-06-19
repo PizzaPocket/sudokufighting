@@ -327,6 +327,27 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
+         XP FARMING
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <h2>XP Farming (Leveling Up)</h2>
+      <div class="cols" style="gap:2em; margin-top:0.6em; align-items:flex-start;">
+        <div class="col" style="text-align:center;">
+          <div style="border-radius:12px; overflow:hidden; border:1px solid var(--surface-frosted-edge);">
+            <img src="/presentation/assets/thumb_sesh.png" alt="Sesh" style="width:100%; display:block;">
+          </div>
+          <p style="font-size:0.48em; color:var(--canvas-text-dim); margin-top:0.5em;">sesh-gold.vercel.app</p>
+        </div>
+        <div class="col" style="text-align:center;">
+          <div style="border-radius:12px; overflow:hidden; border:1px solid var(--surface-frosted-edge);">
+            <img src="/presentation/assets/thumb_wordworld.png" alt="Word World" style="width:100%; display:block;">
+          </div>
+          <p style="font-size:0.48em; color:var(--canvas-text-dim); margin-top:0.5em;">wordworld.quest</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
          1. TITLE
     ═══════════════════════════════════════════════════ -->
     <section
@@ -336,9 +357,26 @@
       style="text-align:center; padding-top:4em;">
       <h1 style="font-size:3.6em; margin-bottom:0.08em; margin-top:0;">SUDOKU FIGHTING</h1>
       <h3 style="font-size:1em; color:var(--canvas-text-dim); text-shadow:none; text-transform:none; font-family:'Roboto Mono',monospace; font-weight:400; text-align:center;">The Making Of</h3>
-      <p style="margin-top:0.7em; font-size:0.52em; color:var(--canvas-text-muted); letter-spacing:0.1em; text-transform:uppercase;">A game built with love</p>
       <img class="slide-sprite" data-sprite="fighter1:idle:4:200" src="/characters/fighter1/idle_frame1.svg" alt="">
       <aside class="notes">Welcome. This is the story of how Sudoku Fighting was made — a real-time competitive puzzle fighting game on the web and iOS App Store.</aside>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         TABLE OF CONTENTS
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <h2>Contents</h2>
+      <ul style="margin-top:0.5em;">
+        <li><span class="accent">01</span> &nbsp;What is Sudoku Fighting?</li>
+        <li><span class="accent">02</span> &nbsp;How it was built</li>
+        <li><span class="accent">03</span> &nbsp;The design system</li>
+        <li><span class="accent">04</span> &nbsp;Audio system</li>
+        <li><span class="accent">05</span> &nbsp;Puzzle generation</li>
+        <li><span class="accent">06</span> &nbsp;Combat engine</li>
+        <li><span class="accent">07</span> &nbsp;Sprites, animation & art</li>
+        <li><span class="accent">08</span> &nbsp;7 languages</li>
+        <li><span class="accent">09</span> &nbsp;Key lessons</li>
+      </ul>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -391,7 +429,7 @@
       <div class="stat-grid" style="margin-bottom:0.8em;">
         <div class="stat-card"><div class="stat-num">157</div><div class="stat-label">Commits</div></div>
         <div class="stat-card"><div class="stat-num">2.5mo</div><div class="stat-label">Build time</div></div>
-        <div class="stat-card"><div class="stat-num">1.3/day</div><div class="stat-label">Commit frequency</div></div>
+        <div class="stat-card"><div class="stat-num">~14</div><div class="stat-label">Avg commits per weekend</div></div>
         <div class="stat-card"><div class="stat-num">Mar 29</div><div class="stat-label">First commit (2026)</div></div>
       </div>
       <ul>
@@ -414,23 +452,65 @@
       </div>
     </section>
 
-    <!-- ═══ Full stack + all services ═══ -->
+    <!-- ═══ Cost breakdown ═══ -->
     <section>
-      <h2>The full stack</h2>
-      <div class="service-grid">
+      <h2>What it cost</h2>
+      <div style="display:flex; gap:1.2em; align-items:flex-start; margin-top:0.5em;">
+      <table style="width:72%; font-size:0.48em;">
+        <thead>
+          <tr><th>Service</th><th style="text-align:right;">Cost</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Claude Code Pro</td><td class="accent" style="text-align:right;">SGD 300</td><td>Annual subscription</td></tr>
+          <tr><td>Claude Code top-ups</td><td class="accent" style="text-align:right;">SGD 114</td><td>Additional usage credits</td></tr>
+          <tr><td>Fly.io</td><td style="text-align:right;">~USD 10/mo</td><td>Backend — shared CPU, 256 MB RAM</td></tr>
+          <tr><td>Apple Developer Program</td><td style="text-align:right;">USD 99/yr</td><td>App Store access</td></tr>
+          <tr><td>Vercel</td><td class="right" style="text-align:right;">Free</td><td>Frontend hosting</td></tr>
+          <tr><td>Supabase</td><td class="right" style="text-align:right;">Free</td><td>Auth + database</td></tr>
+          <tr><td>GitHub</td><td class="right" style="text-align:right;">Free</td><td>Source control + CI/CD trigger</td></tr>
+          <tr style="border-top:2px solid var(--accent);">
+            <td><strong>Total to ship</strong></td>
+            <td style="text-align:right;"><strong class="accent">SGD ~600</strong></td>
+            <td><span class="dim">(excl. ongoing Fly.io)</span></td>
+          </tr>
+          <tr>
+            <td class="dim">L&amp;D budget subsidy</td>
+            <td class="right" style="text-align:right;">− SGD 300</td>
+            <td class="dim">Claude Code subscription covered</td>
+          </tr>
+          <tr style="border-top:2px solid var(--orange);">
+            <td><strong>Out of pocket</strong></td>
+            <td style="text-align:right;"><strong class="orange">SGD ~300</strong></td>
+            <td></td>
+          </tr>
+          <tr style="border-top:2px solid rgba(255,255,255,0.2);">
+            <td class="dim">Mastering the blade</td>
+            <td style="text-align:right;" class="accent"><strong>Priceless</strong></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+        <img src="/presentation/assets/the blade.png" alt="The blade" style="max-width:100%; max-height:560px; border-radius:12px; object-fit:contain;">
+      </div>
+      </div>
+    </section>
+
+    <!-- ═══ Stack + platforms ═══ -->
+    <section>
+      <h2>The stack</h2>
+      <div class="service-grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:0.65em;">
         <div class="service-box">
           <div class="svc-head">Frontend</div>
           <ul>
-            <li>React 18, TypeScript 5.4</li>
-            <li>Vite 5.4, Zustand 5</li>
-            <li>Global CSS + design tokens</li>
+            <li>React 18, TypeScript, Vite</li>
+            <li>Zustand, CSS design tokens</li>
           </ul>
         </div>
         <div class="service-box">
           <div class="svc-head">Backend</div>
           <ul>
-            <li>Node.js 20, Express</li>
-            <li>WebSocket (ws 8.16)</li>
+            <li>Node.js 20, Express, WebSocket</li>
             <li>Shared pure-TS game logic</li>
           </ul>
         </div>
@@ -438,58 +518,29 @@
           <div class="svc-head">Auth & data</div>
           <ul>
             <li>Supabase (PostgreSQL + Auth)</li>
-            <li>Sign in with Google (OAuth)</li>
-            <li>Sign in with Apple</li>
+            <li>Google + Apple sign-in</li>
           </ul>
         </div>
         <div class="service-box">
-          <div class="svc-head">Native</div>
+          <div class="svc-head">Deploy</div>
           <ul>
-            <li>Capacitor 8.3</li>
-            <li>iOS App Store (live)</li>
-            <li>Android — Capacitor configured, Play Store next</li>
-          </ul>
-        </div>
-        <div class="service-box">
-          <div class="svc-head">Deploy — web</div>
-          <ul>
-            <li>GitHub → Vercel</li>
-            <li>Push to main → live in ~60s</li>
-            <li>sudokufighting.com</li>
-          </ul>
-        </div>
-        <div class="service-box">
-          <div class="svc-head">Deploy — backend</div>
-          <ul>
-            <li>GitHub → Fly.io</li>
-            <li>Docker, lax region, 256 MB</li>
-            <li>WebSocket long-lived server</li>
+            <li>GitHub → Vercel (web)</li>
+            <li>GitHub → Fly.io (backend)</li>
           </ul>
         </div>
       </div>
-      <aside class="notes">The deployment split: React frontend to Vercel (serverless, CDN), WebSocket backend to Fly.io (persistent connections need a real long-lived server). Supabase handles auth and player data. Capacitor wraps the same React build for iOS with zero native code written by hand.</aside>
-    </section>
-
-    <!-- ═══ Platforms ═══ -->
-    <section>
-      <h2>One codebase, three platforms</h2>
-      <div class="cols">
+      <div class="cols" style="gap:1em;">
         <div class="col">
-          <div class="callout" style="margin-bottom:0.55em;"><strong class="accent">Web —</strong> sudokufighting.com<br>Vercel, auto-deploys from main</div>
-          <div class="callout" style="margin-bottom:0.55em;"><strong class="accent">iOS —</strong> App Store (live)<br>Capacitor wraps the same React build. Zero native code written by hand.</div>
-          <div class="callout callout-orange"><strong class="orange">Android —</strong> On the roadmap<br>Capacitor already configured. Not yet submitted to Play Store — ready when the time comes.</div>
+          <div class="callout"><strong class="accent">Web</strong> — sudokufighting.com. Push to main → live in ~60s.</div>
         </div>
         <div class="col">
-          <div class="col-head">What Capacitor does</div>
-          <ul>
-            <li>Wraps a WKWebView — game renders identically to the browser</li>
-            <li>Native APIs: haptics, safe-area insets, deep links via plugin layer</li>
-            <li>Custom URL scheme <code>sudokufighting://</code> for Sign in with Apple + Google deep-link OAuth</li>
-            <li>Still requires Xcode + provisioning profiles. Capacitor doesn't eliminate App Store admin.</li>
-          </ul>
+          <div class="callout"><strong class="accent">iOS</strong> — App Store, live. Capacitor wraps the React build. Zero native code written by hand.</div>
+        </div>
+        <div class="col">
+          <div class="callout callout-orange"><strong class="orange">Android</strong> — On the roadmap. Capacitor configured, Play Store submission next.</div>
         </div>
       </div>
-      <aside class="notes">One codebase targeting web, iOS, and eventually Android. The only platform-specific work was the iOS audio keep-alive strategy — more on that in the audio section.</aside>
+      <aside class="notes">One codebase, two live platforms. WebSocket backend needs a persistent server so it goes to Fly.io; the frontend is serverless on Vercel.</aside>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -507,64 +558,47 @@
       <aside class="notes">The design system is what makes Claude Code genuinely productive on a UI project. Without it, Claude makes inconsistent choices.</aside>
     </section>
 
-    <!-- ═══ tokens.css ═══ -->
+    <!-- ═══ Design system ═══ -->
     <section>
-      <h2>tokens.css — single source of truth</h2>
+      <h2>Design system</h2>
       <div class="cols">
         <div class="col">
-          <pre><code class="css">:root {
-  /* Dark canvas context */
-  --canvas-text:    #ffffff;
-  --surface-raised: #1c1c1e;
+          <div class="col-head">tokens.css — single source of truth</div>
+          <pre><code class="css">/* Dark canvas — arena, screens, overlays */
+--canvas-text:     #ffffff;
+--surface-frosted: rgba(255,255,255,0.12);
 
-  /* Brand accent */
-  --accent:       #8B49FF;
-  --orange:       #FF8B16;
+/* Light puzzle — sudoku grid only */
+--puzzle-bg:       #f2f2f2;
+--puzzle-text:     #111111;
 
-  /* Typography */
-  --font:         'Roboto Mono', monospace;
-  --font-display: 'Barlow Condensed', sans-serif;
-
-  /* Pixel shadows */
-  --text-shadow-lg: 2px 2px 0 var(--accent);
-  --text-shadow-xl: 2px 3px 0 var(--accent);
-}</code></pre>
-        </div>
-        <div class="col">
-          <ul>
-            <li>Two surface contexts: dark canvas (arena / screens) and light puzzle (Sudoku grid)</li>
-            <li>Symlinked into <code>frontend/css/</code> — change a token, hard-refresh, both the app and the style guide update</li>
-            <li>No CSS Modules — global. Living style guide at <code>/style-guide.html</code> catches visual regressions</li>
-            <li>Locale overrides via <code>html[lang]</code> selector — CJK scripts swap <code>--font-display</code> automatically</li>
+/* Player ramps */
+--p1-color: #17B9EF;  /* blue-cyan */
+--p2-color: #F31299;  /* magenta */</code></pre>
+          <ul style="margin-top:0.5em;">
+            <li>Symlinked — change a token, both app and style guide (<code>sudokufighting.com/style-guide.html</code>) update instantly</li>
+            <li>Locale overrides via <code>html[lang]</code> swap <code>--font-display</code> for CJK</li>
           </ul>
         </div>
+        <div class="col">
+          <div class="col-head">Name for the <span class="accent">shape</span>, not where it lives</div>
+          <table style="margin-bottom:0.5em;">
+            <thead>
+              <tr>
+                <th class="wrong" style="background:#4a1a1a;">✗ Use case</th>
+                <th class="right" style="background:#1a3a28;">✓ Pattern</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>SettingsPanel</code></td><td><code>ContextualMenu</code></td></tr>
+              <tr><td><code>LobbyPlayerSlot</code></td><td><code>PlayerSlot</code></td></tr>
+              <tr><td><code>.join-combo</code></td><td><code>.combo-input</code></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.5em; color:var(--canvas-text-dim);">Instance detail belongs in the parent, not the component.</p>
+        </div>
       </div>
-      <aside class="notes">The symlink is the key detail. The style guide and the app share the exact same tokens.css file. Change a color anywhere and it updates everywhere on the next hard-refresh.</aside>
-    </section>
-
-    <!-- ═══ Pattern naming ═══ -->
-    <section>
-      <h2>Pattern-over-context naming</h2>
-      <p style="font-size:0.65em; margin-bottom:0.6em;">Name for the <strong class="accent">shape</strong>, not where it lives.</p>
-      <table>
-        <thead>
-          <tr>
-            <th class="wrong" style="background:#4a1a1a;">✗ Named for use case</th>
-            <th class="right" style="background:#1a3a28;">✓ Named for pattern</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><code>SettingsPanel</code></td><td><code>ContextualMenu</code></td></tr>
-          <tr><td><code>LobbyPlayerSlot</code></td><td><code>PlayerSlot</code></td></tr>
-          <tr><td><code>.join-combo</code></td><td><code>.combo-input</code></td></tr>
-          <tr><td><code>.lobby-status</code></td><td><code>.status-pill</code></td></tr>
-          <tr><td><code>GameButton</code></td><td><code>.btn</code></td></tr>
-        </tbody>
-      </table>
-      <div class="callout" style="margin-top:0.7em;">
-        Instance detail belongs in the <strong>parent</strong>, not the component. A <code>PlayerSlot</code> in a lobby is a lobby concern — not a <code>LobbyPlayerSlot</code>. Components stay reusable without renaming.
-      </div>
-      <aside class="notes">This rule sounds obvious until you're naming your twentieth component. Context-named components lie about what they are and can't be reused elsewhere. Pattern-named components are honest about their shape.</aside>
+      <aside class="notes">Two rules that made Claude genuinely productive on UI: a token file it could always reference, and a naming convention that made every component findable and reusable.</aside>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -598,6 +632,7 @@ node.start(0);</code></pre>
           <ul style="margin-top:0.6em;">
             <li>Sample-level precision — no seek, no gap</li>
             <li>6 arena-specific tracks, 500ms gain-ramped fades</li>
+            <li>All tracks prefetched and decoded into <code>AudioBuffer</code> on app load — zero wait when a fight starts</li>
           </ul>
         </div>
         <div class="col">
@@ -657,9 +692,6 @@ node.start(0);</code></pre>
             <li>Stops early if a second solution is found — only keep removals that leave <strong>exactly 1 solution</strong></li>
             <li>Target: 28–33 removals → 52–53 given cells</li>
           </ul>
-          <div class="callout" style="margin-top:0.6em;">
-            A puzzle with multiple solutions isn't fair — two players could take different valid paths to incompatible game states.
-          </div>
         </div>
       </div>
       <aside class="notes">The key insight: always start from a complete valid solution, then carve cells out. Much simpler than building from scratch. The uniqueness check is critical for competitive fairness.</aside>
